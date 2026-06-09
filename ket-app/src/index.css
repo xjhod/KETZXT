@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* 启用 class 策略的深色模式 */
+@custom-variant dark (&:is(.dark *));
+
+/* 自定义基础样式 */
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-800 min-h-screen transition-colors duration-200;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors;
+  }
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded-lg transition-colors;
+  }
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-colors duration-200;
+  }
+  .dark .card {
+    @apply bg-gray-800 border-gray-700;
+  }
+}

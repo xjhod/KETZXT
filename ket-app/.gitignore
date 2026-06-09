@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
+out/
+
+# Temporary files
+*.tar.gz
+*.zip
+*.backup*
+*.bak
+*.broken*
+
+# Python scripts (temporary)
+*.py
+!vite.config.ts  # Keep config files
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/

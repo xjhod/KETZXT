@@ -1,0 +1,3 @@
+
+    { id: 'w2785', en: "progress", phonetic: '/ˈprəʊɡres/', zh: '进步', example: "I make good progress.", exampleZh: "我取得了很好的进步。" },
+    { id: 'w2786', en: "improve", phonetic: '/ɪmˈpruːv/', zh: '提高', example: "I improve my English.", exampleZh: "我提高了我的英语。" },
