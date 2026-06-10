@@ -151,6 +151,29 @@ export const part1Articles: Part1Article[] = [
     ],
   },
 
+  {
+    id: 'p1-002',
+    title: 'At the Park',
+    titleZh: '在公园',
+    difficulty: 'easy',
+    topic: '地点',
+    questions: [
+      { id: 'p1q002-1', emoji: '🏞️', imageDesc: '一个公园',
+        options: [
+          'This is a park.',
+          'This is a school.',
+          'This is a hospital.',
+          'This is a shop.',
+          'This is a restaurant.',
+          'This is a library.',
+          'This is a museum.',
+          'This is a cinema.',
+        ],
+        answer: 'This is a park.',
+      },
+    ],
+  },
+
   // 在这里添加更多 Part 1 文章...
 
 ];
