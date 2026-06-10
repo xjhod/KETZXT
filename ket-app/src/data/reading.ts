@@ -1241,7 +1241,34 @@ export const part1Articles: Part1Article[] = [
 
 export const part2Articles: Part2Article[] = [
 
-  // 在这里添加信息匹配文章...
+  // 示例文章（简单难度）
+  {
+    id: 'p2-001',
+    title: 'Shopping for the Weekend',
+    titleZh: '为周末购物',
+    difficulty: 'easy',
+    topic: '购物',
+    people: [
+      { id: 'p2-001-a', name: 'Anna', description: 'needs to buy food for a party' },
+      { id: 'p2-001-b', name: 'Ben', description: 'wants to buy a new phone' },
+      { id: 'p2-001-c', name: 'Clara', description: 'needs to buy books for school' },
+      { id: 'p2-001-d', name: 'David', description: 'wants to buy a birthday present' },
+      { id: 'p2-001-e', name: 'Eva', description: 'needs to buy clothes for winter' },
+    ],
+    statements: [
+      'I need to buy some fruit and vegetables.',
+      'I want to find a cheap smartphone.',
+      'I need to buy three books about history.',
+      'I am looking for a gift for my brother.',
+      'I need to buy a warm coat and boots.',
+      'I want to buy some meat and fish.',
+      'I need to buy a new laptop for university.',
+      'I am looking for a present for my mum.',
+    ],
+    answers: ['p2-001-a', 'p2-001-b', 'p2-001-c', 'p2-001-d', 'p2-001-e', 'p2-001-a', 'p2-001-b', 'p2-001-d'],
+  },
+
+  // 在这里添加更多 Part 2 文章...
 
 ];
 
