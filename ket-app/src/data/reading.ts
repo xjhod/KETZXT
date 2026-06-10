@@ -174,6 +174,29 @@ export const part1Articles: Part1Article[] = [
     ],
   },
 
+  {
+    id: 'p1-003',
+    title: 'At the Supermarket',
+    titleZh: '在超市',
+    difficulty: 'easy',
+    topic: '购物',
+    questions: [
+      { id: 'p1q003-1', emoji: '🛒', imageDesc: '一个超市',
+        options: [
+          'This is a supermarket.',
+          'This is a market.',
+          'This is a bakery.',
+          'This is a butcher.',
+          'This is a fish shop.',
+          'This is a clothes shop.',
+          'This is a bookshop.',
+          'This is a toy shop.',
+        ],
+        answer: 'This is a supermarket.',
+      },
+    ],
+  },
+
   // 在这里添加更多 Part 1 文章...
 
 ];
