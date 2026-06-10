@@ -1443,6 +1443,67 @@ export const part4TFArticles: Part4TFArticle[] = [
 
   // 在这里添加正误判断文章...
 
+  {
+    id: 'p4-011',
+    title: 'A Day at the Beach',
+    titleZh: '海滩的一天',
+    article: `Last Sunday, Tom and his family went to the beach. The weather was sunny and warm. Tom built a big sandcastle. His sister Lucy collected shells. Their parents sat under an umbrella and read books. They had a picnic for lunch. In the afternoon, they swam in the sea. They went home at 5 pm. Everyone was tired but happy.`,
+    articleZh: `上周日，Tom和他的家人去了海滩。天气晴朗温暖。Tom建了一个大大的沙堡。他的妹妹Lucy收集贝壳。他们的父母坐在伞下看书。他们午饭吃了野餐。下午，他们在海里游泳。他们下午5点回家。每个人都很累但很开心。`,
+    statements: [
+      {
+        id: 'tf011-1',
+        statement: 'Tom went to the beach last Saturday.',
+        statementZh: 'Tom上周六去了海滩。',
+        answer: 'F',
+        explanation: '原文说Last Sunday',
+      },
+      {
+        id: 'tf011-2',
+        statement: 'The weather was cold and windy.',
+        statementZh: '天气寒冷多风。',
+        answer: 'F',
+        explanation: '原文说sunny and warm',
+      },
+      {
+        id: 'tf011-3',
+        statement: 'Tom built a sandcastle.',
+        statementZh: 'Tom建了一个沙堡。',
+        answer: 'T',
+        explanation: '原文说Tom built a big sandcastle',
+      },
+      {
+        id: 'tf011-4',
+        statement: 'Lucy collected shells.',
+        statementZh: 'Lucy收集了贝壳。',
+        answer: 'T',
+        explanation: '原文说Lucy collected shells',
+      },
+      {
+        id: 'tf011-5',
+        statement: 'They had a restaurant meal for lunch.',
+        statementZh: '他们午饭在餐厅吃饭。',
+        answer: 'F',
+        explanation: '原文说They had a picnic',
+      },
+      {
+        id: 'tf011-6',
+        statement: 'They went home at 5 pm.',
+        statementZh: '他们下午5点回家。',
+        answer: 'T',
+        explanation: '原文说They went home at 5 pm',
+      },
+      {
+        id: 'tf011-7',
+        statement: 'Everyone was sad.',
+        statementZh: '每个人都很伤心。',
+        answer: 'F',
+        explanation: '原文说tired but happy',
+      },
+    ],
+    difficulty: 'easy',
+    topic: '家庭活动',
+  },
+
 ];
 
 // ==================== Part 5 数据 ====================
