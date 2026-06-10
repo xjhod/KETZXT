@@ -1,0 +1,28 @@
+# Ignore .workbuddy directory
+.workbuddy/
+
+# Ignore backup and temp files
+*.bak
+*.bak2
+*.bak3
+*.temp
+*.rebuild_bak
+
+# Ignore generated data files
+new_*.ts
+*_articles.ts
+
+# Ignore Python scripts (temporary generation scripts)
+generate_*.py
+insert_*.py
+fix_*.py
+rebuild_*.py
+count_*.py
+count_*.js
+
+# Ignore log files
+*.log
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
