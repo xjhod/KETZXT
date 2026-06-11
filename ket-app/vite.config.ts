@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/KETZXT/',  // GitHub Pages 需要仓库名作为子路径
+  base: './',       // 相对路径：本地 file:// 和 GitHub Pages 都能用
   plugins: [
     react(),
     tailwindcss(),
@@ -20,8 +20,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/KETZXT/',           // ✅ 修复：匹配 base 路径
-        start_url: '/KETZXT/',       // ✅ 修复：匹配 base 路径
+        scope: './',              // 相对路径，适配 base: './'
+        start_url: './',           // 相对路径，适配 base: './'
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
