@@ -1,4 +1,0 @@
-#Wed Jul 01 10:18:06 CST 2026
-base.0=C\:\\Users\\Rywl0\\WorkBuddy\\2026-06-03-10-50-15\\ketzxt-android\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
-renamed.0=classes.dex
-path.0=classes.dex
