@@ -23,33 +23,100 @@ export function AudioButton({
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [isLooping, setIsLooping] = useState(false);
   const [playCount, setPlayCount] = useState(0);
+  const [ttsReady, setTtsReady] = useState(false);
 
-  // 播放语音
-  const playSpeech = useCallback(async (rate = playbackRate) => {
+  // Initialize speechSynthesis voices on mount
+  // Mobile browsers (especially Android Edge) need this to load TTS engine
+  useEffect(() => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    
-    setIsPlaying(true);
-    window.speechSynthesis.cancel();
-    
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    utter.rate = rate;
-    utter.pitch = 1.0;
-    
-    utter.onend = () => {
-      setIsPlaying(false);
-      setPlayCount(prev => prev + 1);
-      if (isLooping) {
-        setTimeout(() => playSpeech(rate), 500);
+
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        setTtsReady(true);
       }
     };
-    
-    utter.onerror = () => {
-      setIsPlaying(false);
+
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    // Some browsers need a kick to load voices
+    window.speechSynthesis.getVoices();
+
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
     };
-    
-    window.speechSynthesis.speak(utter);
+  }, []);
+
+  // 播放语音 — with fallback for mobile browsers
+  const playSpeech = useCallback(async (rate = playbackRate) => {
+    if (typeof window === 'undefined') return;
+
+    // Try Web Speech API first
+    if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
+      setIsPlaying(true);
+      window.speechSynthesis.cancel();
+
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = rate;
+      utter.pitch = 1.0;
+
+      utter.onend = () => {
+        setIsPlaying(false);
+        setPlayCount(prev => prev + 1);
+        if (isLooping) {
+          setTimeout(() => playSpeech(rate), 500);
+        }
+      };
+
+      utter.onerror = () => {
+        setIsPlaying(false);
+        // Fallback to Audio API if speechSynthesis fails
+        playWithAudioFallback(text, rate);
+      };
+
+      // Try to speak — if no voices, onerror should fire
+      window.speechSynthesis.speak(utter);
+
+      // Safety timeout: if nothing happens in 3s, try fallback
+      setTimeout(() => {
+        if (window.speechSynthesis && !window.speechSynthesis.speaking) {
+          setIsPlaying(false);
+          playWithAudioFallback(text, rate);
+        }
+      }, 3000);
+    } else {
+      // No speechSynthesis at all — use Audio fallback
+      playWithAudioFallback(text, rate);
+    }
   }, [text, playbackRate, isLooping]);
+
+  // Fallback TTS using Audio API (works on mobile browsers without speechSynthesis)
+  const playWithAudioFallback = (text: string, rate: number) => {
+    try {
+      // Use Google Translate TTS as fallback (works in browsers)
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=en&client=tw-ob&ttsspeed=${rate}`;
+      const audio = new Audio(url);
+      audio.crossOrigin = 'anonymous';
+      audio.onended = () => {
+        setIsPlaying(false);
+        setPlayCount(prev => prev + 1);
+        if (isLooping) {
+          setTimeout(() => playSpeech(rate), 500);
+        }
+      };
+      audio.onerror = () => {
+        setIsPlaying(false);
+      };
+      audio.play().catch(() => {
+        setIsPlaying(false);
+      });
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
+  };
 
   // 停止播放
   const stopSpeech = () => {

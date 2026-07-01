@@ -541,6 +541,9 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
 
   // 渲染文章，在填空位置插入输入框
   const renderPassage = () => {
+    if (!set.passage) {
+      return <p className="text-gray-500 italic">（短文未配置）</p>;
+    }
     const parts = set.passage.split(/____ \(\d\)/);
     return parts.map((part, i) => (
       <span key={i}>
