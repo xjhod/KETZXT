@@ -7,21 +7,6 @@ import { AudioButton } from '../components/AudioButton';
 import { VoiceInputButton } from '../components/VoiceInputButton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
-// ========== 全局运行时错误捕获 ==========
-// 在页面顶层捕获所有未被 ErrorBoundary 捕获的运行时错误
-// 直接显示在页面上，不再出现白屏
-if (typeof window !== 'undefined') {
-  const origOnError = window.onerror;
-  window.onerror = (msg, url, line, col, error) => {
-    const el = document.createElement('div');
-    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;padding:16px;background:#ef4444;color:white;font-size:14px;font-family:monospace;white-space:pre-wrap;word-break:break-all;';
-    el.textContent = '🚨 RUNTIME ERROR: ' + (error?.message || (typeof msg === 'string' ? msg : String(msg)));
-    document.body.prepend(el);
-    if (origOnError) origOnError(msg, url, line, col, error);
-  };
-}
-
-
 // ========== 常量 ==========
 const SESSION_SIZE = 10;
 

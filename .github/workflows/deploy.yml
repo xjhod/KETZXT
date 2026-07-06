@@ -21,18 +21,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ✅ 使用 Node 22（兼容 Vite 8 / TypeScript 6 / React 19）
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '22'
           cache: npm
           cache-dependency-path: ket-app/package-lock.json
 
       - name: Install dependencies
-        run: cd ket-app && npm ci
+        run: cd ket-app && npm ci --ignore-scripts || npm install --ignore-scripts
 
       - name: Build
         run: cd ket-app && npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

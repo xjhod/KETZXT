@@ -148,36 +148,38 @@ export interface ListeningPart1Set extends ListeningSet {
   questions: ListeningPart1Question[];
 }
 
-/** Part 2: 信息匹配 — 5段独白，匹配人物与需求 */
-export interface ListeningPart2Item {
+/** Part 2: 对话听力选择题 */
+export interface ListeningPart2Question {
   id: string;
   person: string;        // 人物名称
-  personDesc: string;     // 人物描述（英文）
-  personDescZh?: string; // 人物描述（中文，可选）
-  audioText: string;      // 该人物的独白文本（用于朗读）
-  need?: string;          // 此人的需求（用于匹配，可选）
+  choices: string[];     // 选项列表
+  answer: string;        // 正确答案（选项文本）
+  hint: string;          // 提示（中文）
 }
 
 export interface ListeningPart2Set extends ListeningSet {
   part: 2;
-  items: ListeningPart2Item[];
-  options: string[];      // 匹配选项（如：A. swimming pool / B. library / C. cinema...）
-  answers: Record<string, string>;  // person id -> option letter
+  speaker: string;               // 对话者身份
+  conversationAudio: string;       // 对话原文
+  questions: ListeningPart2Question[];
+  transcript: string;             // 完整原文
 }
 
 /** Part 3: 听录音填空 — 一段长对话/独白，填空 */
 export interface ListeningPart3Blank {
   id: string;
-  position: number;        // 空格位置（第几个空）
-  answer: string;          // 正确答案
+  field: string;          // 字段名称（如：Name / Age / Phone）
+  fieldZh: string;        // 字段中文名称（如：姓名 / 年龄 / 电话）
+  answer: string;          // 正确答案（多个答案用 " / " 分隔）
   hint: string;            // 提示（中文）
   audioText: string;       // 包含此空的句子的朗读文本
+  choices?: string[];      // 选项列表（可选，有则此空显示为按钮选择）
 }
 
 export interface ListeningPart3Set extends ListeningSet {
   part: 3;
   passage: string;        // 完整短文（空格用 ____ 表示）
-  passageAudio: string;    // 整段短文的朗读文本
+  monologueAudio: string; // 整段短文的朗读文本（独白）
   blanks: ListeningPart3Blank[];
   transcript: string;      // 完整原文
 }
@@ -188,14 +190,15 @@ export interface ListeningPart4Question {
   question: string;       // 问题文本
   options: string[];       // A/B/C/D 选项
   answer: string;          // 正确答案
+  hint: string;            // 提示（中文）
   explanation: string;     // 解析
   audioText?: string;      // 相关对话片段的朗读文本（可选）
 }
 
 export interface ListeningPart4Set extends ListeningSet {
   part: 4;
-  dialogueScript: string;  // 完整对话原文
-  dialogueSummary: string;  // 对话摘要（中文）
+  monologueAudio: string;  // 完整独白/对话朗读文本
+  transcript: string;      // 完整原文
   questions: ListeningPart4Question[];
 }
 

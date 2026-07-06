@@ -278,7 +278,7 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
 
   const playDialogue = async () => {
     setIsPlaying(true);
-    await playSpeech('Dialogue: ' + set.dialogueScript, 1.0);
+    await playSpeech(set.monologueAudio || '', 1.0);
     setIsPlaying(false);
     setIdx(0);
   };
@@ -321,7 +321,12 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
     setSubmitted(true);
   };
 
-  const correctCount = submitted ? set.questions.filter(q => (answers[q.id] || '') === q.answer).length : 0;
+  const correctCount = submitted ? set.questions.filter(q => {
+    const userAns = answers[q.id] || '';
+    const userAnsIndex = q.options.indexOf(userAns);
+    const correctAnsIndex = q.answer.charCodeAt(0) - 65;
+    return userAnsIndex === correctAnsIndex;
+  }).length : 0;
 
   if (idx === -1) {
     return (
@@ -334,13 +339,13 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
         <div className="bg-white rounded-2xl shadow p-8 text-center">
           <p className="text-lg font-bold text-gray-700 mb-2">{set.titleZh}</p>
           <p className="text-sm text-gray-400 mb-1">{set.title}</p>
-          <p className="text-xs text-gray-400 mb-4">{set.dialogueSummary}</p>
+          <p className="text-xs text-gray-400 mb-4">{set.monologueAudio ? set.monologueAudio.substring(0, 100) + '...' : ''}</p>
           
           {/* 播放按钮 - 使用统一组件，增大尺寸 */}
           <div className="mb-4 flex justify-center">
             <AudioButton
-              text={'Dialogue: ' + set.dialogueScript}
-              label="播放对话"
+              text={set.monologueAudio || ''}
+              label="播放独白"
               size="large"
               showSpeedControl={true}
             />
@@ -386,7 +391,9 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
           <div className="text-left space-y-3 mb-4">
             {set.questions.map((q, qi) => {
               const userAns = answers[q.id] || '';
-              const correct = userAns === q.answer;
+              const userAnsIndex = q.options.indexOf(userAns);
+              const correctAnsIndex = q.answer.charCodeAt(0) - 65;
+              const correct = userAnsIndex === correctAnsIndex;
               return (
                 <div key={q.id} className={`p-2 rounded-lg ${correct ? 'bg-green-50' : 'bg-red-50'}`}>
                   <p className="text-sm font-bold">Q{qi + 1}. {q.question}</p>
@@ -564,7 +571,7 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
 
   const playPassage = async () => {
     setIsPlaying(true);
-    await playSpeech(set.passageAudio || '', 0.9);
+    await playSpeech(set.monologueAudio || '', 0.9);
     setIsPlaying(false);
     setPlayed(true);
   };
@@ -577,19 +584,26 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
   const handleSubmit = () => {
     set.blanks.forEach((b) => {
       const userAns = answers[b.id] || '';
+      // 支持多答案匹配（答案用 " / " 分隔）
+      const validAnswers = b.answer.split(' / ').map(a => a.trim().toLowerCase());
+      const isCorrect = validAnswers.some(a => userAns.trim().toLowerCase() === a);
       recordAnswer({
         module: 'listening',
         exerciseType: 'Part3-' + set.id,
         subjectId: set.id,
         subjectName: set.titleZh,
         questionId: b.id,
-        questionText: `填空 (${b.position})`,
+        questionText: `填空 (${b.field || b.id})`,
         userAnswer: userAns,
         correctAnswer: b.answer,
-        isCorrect: userAns.trim().toLowerCase() === b.answer.toLowerCase(),
+        isCorrect,
       });
     });
-    const correctCount = set.blanks.filter(b => (answers[b.id] || '').trim().toLowerCase() === b.answer.toLowerCase()).length;
+    const correctCount = set.blanks.filter(b => {
+      const userAns = answers[b.id] || '';
+      const validAnswers = b.answer.split(' / ').map(a => a.trim().toLowerCase());
+      return validAnswers.some(a => userAns.trim().toLowerCase() === a);
+    }).length;
     recordSession({
       module: 'listening',
       exerciseType: 'Part3-' + set.id,
@@ -602,31 +616,67 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
     setSubmitted(true);
   };
 
-  // 渲染文章，在填空位置插入输入框
+  // 渲染文章，在填空位置插入输入框或选项按钮
   const renderPassage = () => {
     const passage = set.passage || generatePassage(set.transcript || set.monologueAudio, set.blanks.length);
-    const parts = passage.split(/____ \(\d\)/);
-    return parts.map((part, i) => (
-      <span key={i}>
-        {part}
-        {i < set.blanks.length && (
-          <input
-            type="text"
-            value={answers[set.blanks[i].id] || ''}
-            onChange={(e) => handleAnswer(set.blanks[i].id, e.target.value)}
-            disabled={submitted}
-            className={`mx-1 px-2 py-0.5 border-b-2 w-24 text-center rounded ${
-              submitted
-                ? (answers[set.blanks[i].id] || '').trim().toLowerCase() === set.blanks[i].answer.toLowerCase()
-                  ? 'border-green-500 bg-green-50 text-green-700'
-                  : 'border-red-500 bg-red-50 text-red-700'
-                : 'border-blue-500 focus:outline-none'
-            }`}
-            placeholder={`(${set.blanks[i].position})`}
-          />
-        )}
-      </span>
-    ));
+    const parts = passage.split(/____ \(\d+\)/);
+    return parts.map((part, i) => {
+      if (i >= set.blanks.length) return <span key={i}>{part}</span>;
+      
+      const blank = set.blanks[i];
+      const choices = blank.choices || (blank.answer.includes(' / ') ? blank.answer.split(' / ').map(s => s.trim()) : null);
+      
+      return (
+        <span key={i}>
+          {part}
+          {choices ? (
+            // 显示选项按钮
+            <div className="inline-flex flex-wrap gap-1 mx-1 my-1">
+              {choices.map((choice, ci) => {
+                const label = String.fromCharCode(65 + ci);
+                const isSelected = (answers[blank.id] || '') === choice;
+                return (
+                  <button
+                    key={ci}
+                    onClick={() => handleAnswer(blank.id, choice)}
+                    disabled={submitted}
+                    className={`px-2 py-1 rounded-lg text-sm border-2 transition-all ${
+                      submitted
+                        ? choice.toLowerCase() === blank.answer.split(' / ').map(a => a.trim().toLowerCase()).join(' / ')
+                          ? 'border-green-500 bg-green-50 text-green-700'
+                          : isSelected
+                            ? 'border-red-500 bg-red-50 text-red-700'
+                            : 'border-gray-200 bg-gray-50 text-gray-400'
+                        : isSelected
+                          ? 'border-purple-500 bg-purple-50 text-purple-700'
+                          : 'border-gray-300 hover:border-purple-300 bg-white'
+                    }`}
+                  >
+                    <span className="font-bold text-purple-600">{label}. </span>{choice}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            // 显示文本输入框（短答案）
+            <input
+              type="text"
+              value={answers[blank.id] || ''}
+              onChange={(e) => handleAnswer(blank.id, e.target.value)}
+              disabled={submitted}
+              className={`mx-1 px-2 py-0.5 border-b-2 w-24 text-center rounded ${
+                submitted
+                  ? (answers[blank.id] || '').trim().toLowerCase() === blank.answer.toLowerCase()
+                    ? 'border-green-500 bg-green-50 text-green-700'
+                    : 'border-red-500 bg-red-50 text-red-700'
+                  : 'border-blue-500 focus:outline-none'
+              }`}
+              placeholder={`(${i + 1})`}
+            />
+          )}
+        </span>
+      );
+    });
   };
 
   const correctCount = submitted ? set.blanks.filter(b => (answers[b.id] || '').trim().toLowerCase() === b.answer.toLowerCase()).length : 0;
@@ -665,12 +715,14 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
           <p className="text-2xl font-bold mb-2">练习完成！</p>
           <p className="text-lg mb-4">得分：<b className="text-green-600">{correctCount}/{set.blanks.length}</b></p>
           <div className="text-left space-y-2 mb-4">
-            {set.blanks.map((b) => {
+            {set.blanks.map((b, bi) => {
               const userAns = answers[b.id] || '';
-              const correct = userAns.trim().toLowerCase() === b.answer.toLowerCase();
+              // 支持多答案匹配（答案用 " / " 分隔）
+              const validAnswers = b.answer.split(' / ').map(a => a.trim().toLowerCase());
+              const correct = validAnswers.some(a => userAns.trim().toLowerCase() === a);
               return (
                 <div key={b.id} className={`p-2 rounded-lg ${correct ? 'bg-green-50' : 'bg-red-50'}`}>
-                  <p className="text-sm">({b.position}) 提示：{b.hint}</p>
+                  <p className="text-sm">({bi + 1}) {b.fieldZh}：{b.hint}</p>
                   <p className={`text-xs ${correct ? 'text-green-600' : 'text-red-600'}`}>
                     你的答案：{userAns || '（未答）'} {correct ? '✅' : `❌ 正确答案：${b.answer}`}
                   </p>
