@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -118,12 +118,12 @@ function AppContent() {
   );
 }
 
-// ========== 应用入口（包含 BrowserRouter） ==========
+// ========== 应用入口（包含 HashRouter，兼容 APK/Capacitor 文件协议）==========
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
         <AppContent />
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

@@ -342,36 +342,33 @@ function Part3ClozeView({ article }: { article: typeof part3ClozeArticles[0] }) 
 
   // 渲染文章中的填空位置
   const renderPassageSpans = () => {
-    const parts = article.passage.split('___(');
+    // ✅ 修复：匹配实际数据格式 (1) ____ 而不是 ___(1)
+    const regex = /\(\d+\)\s*____/g;
+    const parts = article.passage.split(regex);
     const out: React.ReactNode[] = [];
     parts.forEach((part, idx) => {
-      if (idx === 0) { out.push(<span key={'t'+idx}>{part}</span>); return; }
-      const ci = part.indexOf(')');
-      const bnStr = part.substring(0, ci);
-      const after = part.substring(ci + 4);
-      const blank = article.blanks.find(b => b.position === Number(bnStr));
-      const sel = answers['b-' + article.id + '-' + bnStr];
-      // 填空显示
-      if (blank) {
+      out.push(<span key={'t' + idx}>{part}</span>);
+      if (idx < article.blanks.length) {
+        const blank = article.blanks[idx];
+        const sel = answers[blank.id];
         const ok = sel === blank.answer;
         if (showResult) {
           const bcls = ok ? 'px-2 py-1 rounded text-sm font-medium bg-green-100 text-green-800 border border-green-300'
             : 'px-2 py-1 rounded text-sm font-medium bg-red-100 text-red-800 border border-red-300';
-          out.push(<span key={'b'+idx}>
+          out.push(<span key={'b' + idx}>
             <span className="inline-flex items-center mx-1 align-middle">
-              <span className={bcls}>{ok ? String(sel ?? '?') : `${sel ?? '?'} → ${blank.answer}`}</span>
+              <span className={bcls}>{ok ? (sel || '?') : `${sel || '?'} → ${blank.answer}`}</span>
             </span>
           </span>);
         } else {
           const dcls = sel
             ? 'inline-flex items-center border-b-2 min-w-[80px] justify-center px-2 py-0.5 border-blue-400 text-blue-700'
             : 'inline-flex items-center border-b-2 border-dashed min-w-[80px] justify-center px-2 py-0.5 border-gray-300 text-gray-400';
-          out.push(<span key={'b'+idx}>
-            <span className="inline-flex items-center mx-1 align-middle"><span className={dcls}>{sel || '('+bnStr+')'}</span></span>
+          out.push(<span key={'b' + idx}>
+            <span className="inline-flex items-center mx-1 align-middle"><span className={dcls}>{sel || `(${blank.position})`}</span></span>
           </span>);
         }
       }
-      out.push(after);
     });
     return out;
   };

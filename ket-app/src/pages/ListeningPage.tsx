@@ -5,18 +5,83 @@ import { useProgressStore } from '../store/useProgressStore';
 import type { ListeningPart1Set, ListeningPart1Question, ListeningPart2Set, ListeningPart3Set, ListeningPart4Set, ListeningPart5Set } from '../types';
 import { AudioButton } from '../components/AudioButton';
 
-// ========== 工具函数：语音合成播放 ==========
+// ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
+let voicesReady = false;
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => { voicesReady = true; };
+}
+
 function playSpeech(text: string, rate = 0.9): Promise<void> {
   return new Promise((resolve) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) { resolve(); return; }
-    window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    utter.rate = rate;
-    utter.onend = () => resolve();
-    utter.onerror = () => resolve();
-    window.speechSynthesis.speak(utter);
+    if (typeof window === 'undefined') { resolve(); return; }
+
+    // Try Web Speech API
+    if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = rate;
+      utter.onend = () => resolve();
+      utter.onerror = () => {
+        // Fallback to Audio API
+        playWithAudio(text, rate).then(resolve);
+      };
+      window.speechSynthesis.speak(utter);
+
+      // Safety timeout: if nothing happens in 3s, try Audio fallback
+      const safety = setTimeout(() => {
+        if (!window.speechSynthesis?.speaking) {
+          playWithAudio(text, rate).then(resolve);
+        }
+      }, 3000);
+      // Prevent double resolve
+      const origOnEnd = utter.onend;
+      utter.onend = () => { clearTimeout(safety); resolve(); };
+      const origOnError = utter.onerror;
+      utter.onerror = () => { clearTimeout(safety); playWithAudio(text, rate).then(resolve); };
+    } else {
+      playWithAudio(text, rate).then(resolve);
+    }
   });
+}
+
+// Audio fallback using Google Translate TTS (works on all browsers including mobile)
+function playWithAudio(text: string, rate = 0.9): Promise<void> {
+  return new Promise((resolve) => {
+    try {
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=en&client=tw-ob&ttsspeed=${rate}`;
+      const audio = new Audio(url);
+      audio.onended = () => resolve();
+      audio.onerror = () => resolve();
+      audio.play().catch(() => resolve());
+    } catch { resolve(); }
+  });
+}
+
+// ========== Part 3：从 transcript 自动生成短文（passage fallback）==========
+function generatePassage(transcript: string, blankCount: number): string {
+  if (!transcript || blankCount <= 0) return transcript || '';
+  // Split into sentences
+  const sentences = transcript.split(/(?<=[.!?])\s+/).filter(s => s.trim());
+  if (sentences.length === 0) return transcript + ' ' + Array.from({length: blankCount}, (_, i) => `____ (${i + 1})`).join(' ');
+  // Distribute placeholders evenly across sentences
+  const result: string[] = [];
+  const step = sentences.length / (blankCount + 1);
+  let inserted = 0;
+  sentences.forEach((s, i) => {
+    result.push(s);
+    if (inserted < blankCount && (i + 1) >= Math.round((inserted + 1) * step)) {
+      inserted++;
+      result.push(`____ (${inserted})`);
+    }
+  });
+  // Ensure all placeholders are present
+  while (inserted < blankCount) {
+    inserted++;
+    result.push(`____ (${inserted})`);
+  }
+  return result.join(' ');
 }
 
 // ========== Part 1 练习视图 ==========
@@ -26,6 +91,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   const [submitted, setSubmitted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const { recordAnswer, recordSession } = useProgressStore();
+  const correctCountRef = useRef(0);
 
   // ✅ 存储每个题目的打乱后选项（只在初始化时打乱一次）
   const [shuffledMap, setShuffledMap] = useState<Record<string, string[]>>({});
@@ -56,15 +122,8 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   }
 
   const q: ListeningPart1Question = set.questions[idx];
-  // ✅ 选项打乱（避免正确答案总是A）
-  const displayOptions = useMemo(() => {
-    const shuffled = [...(q.options || [])];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  }, [q.id]); // 只在题目变化时重新打乱
+  // ✅ 使用 shuffledMap 显示打乱后的选项（避免重复使用 displayOptions）
+  const displayOptions = shuffledMap[q.id] || q.options || [];
 
 
   const playQuestion = async () => {
@@ -77,7 +136,10 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
 
   const handleSubmit = () => {
     if (!selected) return;
-    const correct = selected === q.answer;
+    // ✅ 修复：比较选项文本而不是标签
+    const selectedOriginalIndex = q.options.indexOf(selected);
+    const correctAnswerIndex = q.answer.charCodeAt(0) - 65;
+    const correct = selectedOriginalIndex === correctAnswerIndex;
     recordAnswer({
       module: 'listening',
       exerciseType: 'Part1-' + set.id,
@@ -86,9 +148,10 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
       questionId: q.id,
       questionText: q.audioText,
       userAnswer: selected,
-      correctAnswer: q.answer,
+      correctAnswer: q.options[correctAnswerIndex],
       isCorrect: correct,
     });
+    if (correct) correctCountRef.current++;
     setSubmitted(true);
   };
 
@@ -107,7 +170,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
         exerciseType: 'Part1-' + set.id,
         subjectId: set.id,
         subjectName: set.titleZh,
-        correct: 0,
+        correct: correctCountRef.current,
         total: set.questions.length,
         duration: Math.round((Date.now() - startTime.current) / 1000),
       });
@@ -142,11 +205,12 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
 
         {!submitted && (
           <div className="flex justify-center gap-3 flex-wrap">
-            {(displayOptions || q.options).map((opt: string, i: number) => {
+            {displayOptions.map((opt: string, i: number) => {
               const label = String.fromCharCode(65 + i);
+              const isSelected = selected === opt; // 比较选项文本
               return (
-                <button key={i} onClick={() => setSelected(label)} className={`px-4 py-3 rounded-xl border-2 transition-all ${
-                  selected === label ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                <button key={i} onClick={() => setSelected(opt)} className={`px-4 py-3 rounded-xl border-2 transition-all ${
+                  isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
                 }`}>
                   <span className="font-bold text-purple-600">{label}. </span>{opt}
                 </button>
@@ -161,10 +225,10 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
 
         {submitted && (
           <div className="mt-4 p-3 rounded-xl bg-gray-50 text-left">
-            <p className={`font-bold ${selected === q.answer ? 'text-green-600' : 'text-red-600'}`}>
-              {selected === q.answer ? '正确！' : '答错了'}
+            <p className={`font-bold ${selected && q.options.indexOf(selected) === q.answer.charCodeAt(0) - 65 ? 'text-green-600' : 'text-red-600'}`}>
+              {selected && q.options.indexOf(selected) === q.answer.charCodeAt(0) - 65 ? '正确！' : '答错了'}
             </p>
-            <p className="text-sm text-gray-600 mt-1">正确答案：<b>{q.answer}</b></p>
+            <p className="text-sm text-gray-600 mt-1">正确答案：<b>{q.options[q.answer.charCodeAt(0) - 65]}</b></p>
             <p className="text-xs text-gray-400 mt-2">原文：{q.transcript}</p>
             <button onClick={goNext} className="btn-primary mt-3">
               {isLast ? '查看结果' : '下一题'}
@@ -219,26 +283,39 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
     setIdx(0);
   };
 
-  const handleAnswer = (qId: string, letter: string) => {
+  const handleAnswer = (qId: string, letter: string, optText: string) => {
     if (submitted) return;
-    setAnswers(prev => ({ ...prev, [qId]: letter }));
+    setAnswers(prev => ({ ...prev, [qId]: optText }));
   };
 
   const handleSubmit = () => {
     set.questions.forEach((q) => {
       const userAns = answers[q.id] || '';
+      // ✅ 修复：比较选项文本而不是标签
+      const userAnsIndex = q.options.indexOf(userAns);
+      const correctAnsIndex = q.answer.charCodeAt(0) - 65;
+      const isCorrect = userAnsIndex === correctAnsIndex;
       recordAnswer({
         module: 'listening', exerciseType: 'Part4-' + set.id,
         subjectId: set.id, subjectName: set.titleZh,
         questionId: q.id, questionText: q.question,
-        userAnswer: userAns, correctAnswer: q.answer,
-        isCorrect: userAns === q.answer,
+        userAnswer: userAns,
+        correctAnswer: q.options[correctAnsIndex],
+        isCorrect,
       });
     });
+    // ✅ 修复：计算正确数
+    const correctCount = set.questions.filter(q => {
+      const userAns = answers[q.id] || '';
+      const userAnsIndex = q.options.indexOf(userAns);
+      const correctAnsIndex = q.answer.charCodeAt(0) - 65;
+      return userAnsIndex === correctAnsIndex;
+    }).length;
     recordSession({
       module: 'listening', exerciseType: 'Part4-' + set.id,
       subjectId: set.id, subjectName: set.titleZh,
-      correct: 0, total: set.questions.length,
+      correct: correctCount,
+      total: set.questions.length,
       duration: Math.round((Date.now() - startTime.current) / 1000),
     });
     setSubmitted(true);
@@ -288,9 +365,10 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {(shuffledMap[q.id] || q.options).map((opt, oi) => {
                   const label = String.fromCharCode(65 + oi);
+                  const isSelected = answers[q.id] === opt;
                   return (
-                    <button key={oi} onClick={() => handleAnswer(q.id, label)} className={`text-left px-3 py-2 rounded-lg border transition-all ${
-                      answers[q.id] === label ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                    <button key={oi} onClick={() => handleAnswer(q.id, label, opt)} className={`text-left px-3 py-2 rounded-lg border transition-all ${
+                      isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
                     }`}>
                       <span className="font-bold text-purple-600">{label}. </span>{opt}
                     </button>
@@ -329,28 +407,14 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
 
 // ========== Part 2 练习视图（信息匹配）==========
 function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => void }) {
-  const [playedIdx, setPlayedIdx] = useState(-1);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const { recordAnswer, recordSession } = useProgressStore();
 
-  // ✅ 选项打乱（避免正确答案总是A）
-  const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
-  useEffect(() => {
-    if (set && set.options) {
-      const arr = [...set.options];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      setShuffledOptions(arr);
-    }
-  }, [set.id]); // 只在套题变化时重新打乱
-
   const startTime = useRef(Date.now());
 
-  if (!set?.items || set.items.length === 0) {
+  if (!set?.questions || set.questions.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-400">套题数据为空</p>
@@ -359,48 +423,47 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
     );
   }
 
-  const playItem = async (idx: number) => {
-    setPlayedIdx(idx);
+  const playConversation = async () => {
     setIsPlaying(true);
-    await playSpeech(set.items[idx].audioText, 0.9);
+    await playSpeech(set.conversationAudio, 0.9);
     setIsPlaying(false);
   };
 
-  const handleSelect = (itemId: string, optionLetter: string) => {
+  const handleSelect = (qId: string, choice: string) => {
     if (submitted) return;
-    setAnswers(prev => ({ ...prev, [itemId]: optionLetter }));
+    setAnswers(prev => ({ ...prev, [qId]: choice }));
   };
 
   const handleSubmit = () => {
-    set.items.forEach((item) => {
-      const userAns = answers[item.id] || '';
-      const correctAns = set.answers[item.id] || '';
+    set.questions.forEach((q) => {
+      const userAns = answers[q.id] || '';
       recordAnswer({
         module: 'listening',
         exerciseType: 'Part2-' + set.id,
         subjectId: set.id,
         subjectName: set.titleZh,
-        questionId: item.id,
-        questionText: item.personDesc,
+        questionId: q.id,
+        questionText: q.hint,
         userAnswer: userAns,
-        correctAnswer: correctAns,
-        isCorrect: userAns === correctAns,
+        correctAnswer: q.answer,
+        isCorrect: userAns === q.answer,
       });
     });
+    const correctCount = set.questions.filter(q => (answers[q.id] || '') === q.answer).length;
     recordSession({
       module: 'listening',
       exerciseType: 'Part2-' + set.id,
       subjectId: set.id,
       subjectName: set.titleZh,
-      correct: 0,
-      total: set.items.length,
+      correct: correctCount,
+      total: set.questions.length,
       duration: Math.round((Date.now() - startTime.current) / 1000),
     });
     setSubmitted(true);
   };
 
-  const correctCount = submitted ? set.items.filter(item => (answers[item.id] || '') === set.answers[item.id]).length : 0;
-  const allAnswered = set.items.every(item => answers[item.id]);
+  const correctCount = submitted ? set.questions.filter(q => (answers[q.id] || '') === q.answer).length : 0;
+  const allAnswered = set.questions.every(q => answers[q.id]);
 
   return (
     <div>
@@ -413,44 +476,44 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
       {!submitted ? (
         <div className="space-y-4">
           <div className="bg-white rounded-2xl shadow p-4 mb-4">
-            <p className="text-sm text-gray-500 mb-2">说明：依次点击每个人物旁的播放按钮，听描述后选择匹配的选项。</p>
-            <div className="flex flex-wrap gap-2">
-              {set.options.map((opt, i) => {
-                const letter = String.fromCharCode(65 + i);
-                return (
-                  <span key={i} className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">{letter}. {opt}</span>
-                );
-              })}
-            </div>
+            <p className="text-sm text-gray-500 mb-2">说明：先点播放按钮听对话，然后回答每个问题。</p>
+            <button
+              onClick={playConversation}
+              disabled={isPlaying}
+              className={`px-4 py-2 rounded-full text-sm ${isPlaying ? 'bg-gray-200 text-gray-400' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}
+            >
+              {isPlaying ? '播放中...' : '🔊 播放对话'}
+            </button>
           </div>
 
-          {set.items.map((item, idx) => (
-            <div key={item.id} className={`bg-white rounded-xl shadow p-4 border-2 transition-all ${playedIdx === idx ? 'border-blue-400' : 'border-transparent'}`}>
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-bold text-gray-700">{item.id}. {item.person} <span className="text-xs text-gray-400 font-normal">（{item.personDescZh}）</span></p>
-                <button onClick={() => playItem(idx)} disabled={isPlaying} className={`text-xs px-3 py-1 rounded-full ${isPlaying ? 'bg-gray-200 text-gray-400' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}>
-                  {playedIdx === idx && isPlaying ? '播放中...' : '▶ 播放'}
-                </button>
+          {set.questions.map((q, idx) => {
+            const letters = ['A', 'B', 'C', 'D'];
+            return (
+              <div key={q.id} className="bg-white rounded-xl shadow p-4 border-2 border-transparent">
+                <p className="font-bold text-gray-700 mb-2">
+                  <span className="text-blue-600">{idx + 1}.</span> {q.hint}
+                  <span className="text-xs text-gray-400 font-normal ml-2">（{q.person}）</span>
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {q.choices.map((choice, ci) => {
+                    const letter = letters[ci] || String(ci);
+                    const selected = answers[q.id] === choice;
+                    return (
+                      <button
+                        key={ci}
+                        onClick={() => handleSelect(q.id, choice)}
+                        className={`text-left px-3 py-2 rounded-lg border text-sm transition-all ${
+                          selected ? 'border-blue-500 bg-blue-50 text-blue-700 font-bold' : 'border-gray-200 hover:border-blue-300 text-gray-700'
+                        }`}
+                      >
+                        <span className="font-bold">{letter}.</span> {choice}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
-                {(shuffledOptions || set.options).map((opt, oi) => {
-                  const letter = String.fromCharCode(65 + oi);
-                  const selected = answers[item.id] === letter;
-                  return (
-                    <button
-                      key={oi}
-                      onClick={() => handleSelect(item.id, letter)}
-                      className={`text-left px-2 py-1.5 rounded-lg border text-sm transition-all ${
-                        selected ? 'border-blue-500 bg-blue-50 text-blue-700 font-bold' : 'border-gray-200 hover:border-blue-300 text-gray-700'
-                      }`}
-                    >
-                      <span className="font-bold">{letter}.</span> {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+            );
+          })}
 
           <button onClick={handleSubmit} disabled={!allAnswered} className="btn-primary w-full disabled:opacity-40">
             提交答案
@@ -459,17 +522,16 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
       ) : (
         <div className="bg-white rounded-2xl shadow p-6 text-center">
           <p className="text-2xl font-bold mb-2">练习完成！</p>
-          <p className="text-lg mb-4">得分：<b className="text-blue-600">{correctCount}/{set.items.length}</b></p>
+          <p className="text-lg mb-4">得分：<b className="text-blue-600">{correctCount}/{set.questions.length}</b></p>
           <div className="text-left space-y-3 mb-4">
-            {set.items.map((item) => {
-              const userAns = answers[item.id] || '';
-              const correctAns = set.answers[item.id] || '';
-              const correct = userAns === correctAns;
+            {set.questions.map((q, idx) => {
+              const userAns = answers[q.id] || '';
+              const correct = userAns === q.answer;
               return (
-                <div key={item.id} className={`p-2 rounded-lg ${correct ? 'bg-green-50' : 'bg-red-50'}`}>
-                  <p className="text-sm font-bold">{item.id}. {item.person}（{item.personDescZh}）</p>
+                <div key={q.id} className={`p-2 rounded-lg ${correct ? 'bg-green-50' : 'bg-red-50'}`}>
+                  <p className="text-sm font-bold">{idx + 1}. {q.hint}</p>
                   <p className={`text-xs ${correct ? 'text-green-600' : 'text-red-600'}`}>
-                    你的答案：{userAns || '（未答）'} {correct ? '✅' : `❌ 正确答案：${correctAns}. ${set.options[String(correctAns).charCodeAt(0) - 65]}`}
+                    你的答案：{userAns || '（未答）'} {correct ? '✅' : `❌ 正确答案：${q.answer}`}
                   </p>
                 </div>
               );
@@ -502,7 +564,7 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
 
   const playPassage = async () => {
     setIsPlaying(true);
-    await playSpeech(set.passageAudio, 0.9);
+    await playSpeech(set.passageAudio || '', 0.9);
     setIsPlaying(false);
     setPlayed(true);
   };
@@ -527,12 +589,13 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
         isCorrect: userAns.trim().toLowerCase() === b.answer.toLowerCase(),
       });
     });
+    const correctCount = set.blanks.filter(b => (answers[b.id] || '').trim().toLowerCase() === b.answer.toLowerCase()).length;
     recordSession({
       module: 'listening',
       exerciseType: 'Part3-' + set.id,
       subjectId: set.id,
       subjectName: set.titleZh,
-      correct: 0,
+      correct: correctCount,
       total: set.blanks.length,
       duration: Math.round((Date.now() - startTime.current) / 1000),
     });
@@ -541,7 +604,8 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
 
   // 渲染文章，在填空位置插入输入框
   const renderPassage = () => {
-    const parts = set.passage.split(/____ \(\d\)/);
+    const passage = set.passage || generatePassage(set.transcript || set.monologueAudio, set.blanks.length);
+    const parts = passage.split(/____ \(\d\)/);
     return parts.map((part, i) => (
       <span key={i}>
         {part}
@@ -667,12 +731,13 @@ function Part5Practice({ set, onBack }: { set: ListeningPart5Set; onBack: () => 
         isCorrect: userAns.trim().toLowerCase() === n.answer.toLowerCase(),
       });
     });
+    const correctCount = set.notes.filter(n => (answers[n.id] || '').trim().toLowerCase() === n.answer.toLowerCase()).length;
     recordSession({
       module: 'listening',
       exerciseType: 'Part5-' + set.id,
       subjectId: set.id,
       subjectName: set.titleZh,
-      correct: 0,
+      correct: correctCount,
       total: set.notes.length,
       duration: Math.round((Date.now() - startTime.current) / 1000),
     });
