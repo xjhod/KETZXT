@@ -127,170 +127,182 @@ function Part1View({ article }: { article: typeof part1Articles[0] }) {
 }
 
 // ==================== Part 2 ====================
+// 数据结构：people[] 人物列表, statements[] 陈述列表, answers[] 位置映射 (answers[i] = personId)
+// 用户操作：先点击人物卡片选中，再点击下方陈述将其分配给该人物
 function Part2View({ article }: { article: typeof part2Articles[0] }) {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // answers: statementIndex → personId
+  const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResult, setShowResult] = useState(false);
-  // 当前选中的目标人物（用户先点击人物卡片选中，再点击信息进行匹配）
   const [activePerson, setActivePerson] = useState<string | null>(null);
   const { recordAnswer, recordSession } = useProgressStore();
 
   const handleSubmit = () => {
-    article.people.forEach(p => {
-      const isCorrect = answers[p.id] === article.answers[p.id];
+    article.statements.forEach((stmt, i) => {
+      const userPersonId = answers[i] || '';
+      const correctPersonId = article.answers[i] || '';
+      const userPerson = article.people.find(p => p.id === userPersonId);
+      const correctPerson = article.people.find(p => p.id === correctPersonId);
       recordAnswer({
         module: 'reading', exerciseType: 'reading_p2',
         subjectId: article.id, subjectName: article.titleZh,
-        questionId: p.id,
-        questionText: `[Part2] ${p.name} - ${p.description}`,
-        userAnswer: article.infoPieces.find(ip => ip.id === answers[p.id])?.text || '（未作答）',
-        correctAnswer: article.infoPieces.find(ip => ip.id === article.answers[p.id])?.text || '',
-        isCorrect,
+        questionId: `p2-${article.id}-s${i}`,
+        questionText: `[Part2] ${stmt}`,
+        userAnswer: userPerson?.name || '（未作答）',
+        correctAnswer: correctPerson?.name || '',
+        isCorrect: userPersonId === correctPersonId,
       });
     });
-    const correct = article.people.filter(p => answers[p.id] === article.answers[p.id]).length;
+    const correctStatements = article.statements.filter((_, i) => answers[i] === article.answers[i]).length;
     recordSession({
       module: 'reading', exerciseType: 'reading_p2',
       subjectId: article.id, subjectName: article.titleZh,
-      correct, total: article.people.length, duration: 0,
+      correct: correctStatements, total: article.statements.length, duration: 0,
     });
     setShowResult(true);
   };
 
-  // 点击信息项 -> 分配给当前选中的人物（或自动分配给第一个无匹配的人物）
-  const handleInfoClick = (infoId: string) => {
+  // 点击陈述 → 分配给当前选中的人物
+  const handleStatementClick = (stmtIdx: number) => {
     if (showResult) return;
     let targetPerson = activePerson;
-    // 如果没有手动选中人物，自动找第一个还没有匹配信息的人物
-    if (!targetPerson) {
-      targetPerson = article.people.find(p => !answers[p.id])?.id || null;
-    }
-    if (!targetPerson) return; // 所有人物都已匹配
-
-    // 如果这个信息已经被其他人物选了，先取消那个
-    const existingOwner = Object.entries(answers).find(([, v]) => v === infoId)?.[0];
-    const next = { ...answers };
-    if (existingOwner) delete next[existingOwner];
-    next[targetPerson] = infoId;
-    setAnswers(next);
-    setActivePerson(null); // 匹配后清除选中状态
+    if (!targetPerson) return;
+    setAnswers(prev => {
+      const next = { ...prev };
+      next[stmtIdx] = targetPerson!;
+      return next;
+    });
   };
 
-  // 取消某个人物的匹配
-  const removeMatch = (personId: string, e?: React.MouseEvent) => {
+  // 取消某条陈述的匹配
+  const removeMatch = (stmtIdx: number, e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (showResult) return;
-    setAnswers(prev => { const n = { ...prev }; delete n[personId]; return n; });
+    setAnswers(prev => { const n = { ...prev }; delete n[stmtIdx]; return n; });
   };
 
   const score = useMemo(() => {
     let c = 0;
-    Object.entries(article.answers).forEach(([p, a]) => { if (answers[p] === a) c++; });
+    article.statements.forEach((_, i) => { if (answers[i] === article.answers[i]) c++; });
     return c;
   }, [answers, showResult]);
-  const usedInfoIds = Object.values(answers);
-  const totalPeople = article.people.length;
-  const sc = score >= 4 ? '#16a34a' : score >= 3 ? '#eab308' : '#dc2626';
+  const totalStatements = article.statements.length;
+  const answeredCount = Object.keys(answers).length;
+  const sc = score >= 7 ? '#16a34a' : score >= 5 ? '#eab308' : '#dc2626';
 
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-800">{article.titleZh}</h3>
-        {!showResult && Object.keys(answers).length >= totalPeople && (
-          <button onClick={handleSubmit} className="btn-primary text-sm">提交答案 ({Object.keys(answers).length}/{totalPeople})</button>
+        {!showResult && answeredCount >= totalStatements && (
+          <button onClick={handleSubmit} className="btn-primary text-sm">提交答案 ({answeredCount}/{totalStatements})</button>
         )}
       </div>
 
       {/* 操作提示 */}
       {!showResult && (
         <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-          💡 <strong>操作方法：</strong>点击下方信息选项即可自动匹配到人物。也可以先点击上方人物卡片选中，再点信息分配给指定人物。
+          💡 <strong>操作方法：</strong>先点击上方人物卡片选中，再点击下方陈述将其分配给该人物。每条陈述对应一个人物。
+          {activePerson && <span className="block mt-1 font-medium">→ 当前选中：<span className="text-blue-700">{article.people.find(p => p.id === activePerson)?.name}</span></span>}
         </div>
       )}
 
       {/* 人物卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
         {article.people.map(p => {
-          const matchedInfoId = answers[p.id];
-          const ic = showResult ? matchedInfoId === article.answers[p.id] : null;
           const isActive = activePerson === p.id;
-          const ringClass = ic === true ? 'ring-2 ring-green-300 bg-green-50/30'
-            : ic === false ? 'ring-2 ring-red-300 bg-red-50/30'
-            : isActive ? 'ring-2 ring-blue-400 bg-blue-50/40'
-            : '';
-          // 找到已匹配的信息文本用于显示
-          const matchedText = matchedInfoId ? article.infoPieces.find(ip => ip.id === matchedInfoId)?.text : null;
+          const matchedCount = Object.values(answers).filter(a => a === p.id).length;
+          const isAllCorrect = showResult && article.statements.every((_, i) => article.answers[i] !== p.id || answers[i] === p.id);
+          const isAnyCorrect = showResult && Object.entries(answers).some(([idx, a]) => a === p.id && article.answers[Number(idx)] === p.id);
+          const isAnyWrong = showResult && Object.entries(answers).some(([idx, a]) => a === p.id && article.answers[Number(idx)] !== p.id);
+
+          let ringClass = '';
+          if (showResult) {
+            if (isAllCorrect) ringClass = 'ring-2 ring-green-300 bg-green-50/30';
+            else if (isAnyWrong) ringClass = 'ring-2 ring-red-300 bg-red-50/30';
+            else if (isAnyCorrect) ringClass = 'ring-2 ring-yellow-300 bg-yellow-50/30';
+          } else {
+            ringClass = isActive ? 'ring-2 ring-blue-400 bg-blue-50/40' : '';
+          }
 
           return (
             <div
               key={p.id}
-              onClick={() => !showResult && setActivePerson(activePerson === p.id ? null : p.id)}
+              onClick={() => !showResult && setActivePerson(isActive ? null : p.id)}
               className={`card p-3 text-center cursor-pointer transition-all hover:shadow-md ${ringClass}`}
             >
-              <span className="inline-block w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-sm leading-8 mb-1">{p.id}</span>
               <p className="font-semibold text-sm text-gray-800">{p.name}</p>
-              <p className="text-xs text-gray-500 mt-1 line-clamp-3">{p.description}</p>
-              {/* 已匹配的信息 */}
-              {matchedText && !showResult && (
-                <div className="mt-2 relative group">
-                  <p className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded truncate">📎 {matchedText.substring(0, 20)}...</p>
-                  <button
-                    onClick={(e) => removeMatch(p.id, e)}
-                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
-                  >✕</button>
-                </div>
-              )}
-              {showResult && ic !== null && (
-                <span className={`text-xs mt-1 inline-block ${ic ? 'text-green-600' : 'text-red-600'}`}>
-                  {ic ? '✓ 匹配正确' : `✗ 应选 ${article.answers[p.id]}`}
-                </span>
+              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{p.description}</p>
+              {matchedCount > 0 && (
+                <p className="text-xs text-blue-500 mt-1">📎 {matchedCount} 条陈述</p>
               )}
             </div>
           );
         })}
       </div>
 
-      {/* 信息选项 */}
+      {/* 陈述列表 */}
       <h4 className="font-semibold text-sm text-gray-600 mb-2">
-        信息选项（点击匹配）
-        {activePerson && <span className="ml-2 text-blue-500 text-xs">→ 正在为 {article.people.find(p => p.id === activePerson)?.name} 选择</span>}
+        陈述列表（共 {totalStatements} 条）
       </h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-        {article.infoPieces.map(info => {
-          const selectedBy = Object.entries(answers).find(([, v]) => v === info.id)?.[0];
-          const isUsed = usedInfoIds.includes(info.id);
+      <div className="space-y-2">
+        {article.statements.map((stmt, i) => {
+          const assignedPersonId = answers[i];
+          const assignedPerson = assignedPersonId ? article.people.find(p => p.id === assignedPersonId) : null;
+          const correctPersonId = article.answers[i];
+          const correctPerson = article.people.find(p => p.id === correctPersonId);
+          const isCorrect = showResult && assignedPersonId === correctPersonId;
+          const isWrong = showResult && !!assignedPersonId && assignedPersonId !== correctPersonId;
+
           let cls = 'card p-3 cursor-pointer transition-all border ';
           if (showResult) {
-            if (selectedBy && answers[selectedBy] === info.id && article.answers[selectedBy] === info.id) cls += 'border-green-300 bg-green-50';
-            else if (selectedBy && answers[selectedBy] === info.id) cls += 'border-red-300 bg-red-50';
+            if (isCorrect) cls += 'border-green-300 bg-green-50';
+            else if (isWrong) cls += 'border-red-300 bg-red-50';
             else cls += 'border-gray-200 opacity-60';
           } else {
-            if (isUsed) cls += 'border-blue-300 bg-blue-50 ring-1 ring-blue-200';
+            if (assignedPerson) cls += 'border-blue-300 bg-blue-50 ring-1 ring-blue-200';
             else if (activePerson) cls += 'border-blue-300 border-dashed hover:bg-blue-50/50';
             else cls += 'border-gray-200 hover:border-blue-200 hover:bg-gray-50';
           }
-          return (<div key={info.id} onClick={() => handleInfoClick(info.id)} className={cls}>
-            <span className="inline-block w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-xs font-bold leading-6 mr-2 text-center float-left mt-0.5">{info.id}</span>
-            <p className="text-sm text-gray-700 leading-relaxed">{info.text}</p>
-            {isUsed && !showResult && (
-              <p className="text-xs text-blue-500 mt-1 clear-both">✅ 已匹配 → {selectedBy} {article.people.find(p => p.id === selectedBy)?.name}</p>
-            )}
-          </div>);
+
+          return (
+            <div key={i} onClick={() => handleStatementClick(i)} className={cls}>
+              <div className="flex items-start gap-2">
+                <span className="inline-block w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-xs font-bold leading-6 text-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                <p className="text-sm text-gray-700 leading-relaxed flex-1">{stmt}</p>
+                {assignedPerson && !showResult && (
+                  <div className="relative group flex-shrink-0">
+                    <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">{assignedPerson.name}</span>
+                    <button
+                      onClick={(e) => removeMatch(i, e)}
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity leading-4 text-center"
+                    >✕</button>
+                  </div>
+                )}
+                {showResult && isWrong && (
+                  <span className="text-xs text-green-600 flex-shrink-0">→ {correctPerson?.name}</span>
+                )}
+                {showResult && isCorrect && <span className="text-xs text-green-600 flex-shrink-0">✓</span>}
+              </div>
+            </div>
+          );
         })}
       </div>
 
-      {/* 进度指示 + 提交按钮（未全部完成时也显示） */}
-      {!showResult && Object.keys(answers).length > 0 && Object.keys(answers).length < totalPeople && (
+      {/* 进度指示 + 提交按钮 */}
+      {!showResult && answeredCount > 0 && answeredCount < totalStatements && (
         <div className="mt-3 text-center">
-          <span className="text-sm text-gray-400">已匹配 {Object.keys(answers).length}/{totalPeople} 人</span>
+          <span className="text-sm text-gray-400">已匹配 {answeredCount}/{totalStatements} 条</span>
           <span className="mx-2 text-gray-300">|</span>
-          <button
-            onClick={handleSubmit}
-            className="text-sm text-orange-500 hover:text-orange-600 underline"
-          >提前交卷</button>
+          <button onClick={handleSubmit} className="text-sm text-orange-500 hover:text-orange-600 underline">提前交卷</button>
         </div>
       )}
 
-      {showResult && (<div className="mt-4 card p-4 text-center"><p className="text-2xl font-bold mb-1" style={{ color: sc }}>{score}/{totalPeople}</p><p className="text-sm text-gray-500">{score >= 4 ? '很棒的信息匹配能力！' : score >= 3 ? '继续努力！' : '多读几遍人物描述哦！'}</p></div>)}
+      {showResult && (
+        <div className="mt-4 card p-4 text-center">
+          <p className="text-2xl font-bold mb-1" style={{ color: sc }}>{score}/{totalStatements}</p>
+          <p className="text-sm text-gray-500">{score >= 7 ? '很棒的信息匹配能力！' : score >= 5 ? '继续努力！' : '多读几遍人物描述哦！'}</p>
+        </div>
+      )}
     </div>
   );
 }

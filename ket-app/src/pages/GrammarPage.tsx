@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgressStore } from '../store/useProgressStore';
 import {
@@ -387,6 +387,8 @@ function PracticePage({ grammarId, onBack }: { grammarId: string; onBack: () => 
 function QuizPage({ onBack }: { onBack: () => void }) {
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState(0);
+  const { recordAnswer, recordSession } = useProgressStore();
+  const startTime = useRef(Date.now());
 
   // 从所有考点的所有题型中随机抽取20道题
   const allQuestions = useMemo(() => {
@@ -452,7 +454,23 @@ function QuizPage({ onBack }: { onBack: () => void }) {
     return normalized.slice(0, 20);
   }, []);
 
-  if (idx >= allQuestions.length) {
+  const quizDone = idx >= allQuestions.length;
+
+  // ✅ 用 useEffect 记录综合测验结果，并用 ref 守卫避免 StrictMode 重复记录
+  const quizRecordedRef = useRef(false);
+  useEffect(() => {
+    if (quizDone && !quizRecordedRef.current) {
+      quizRecordedRef.current = true;
+      recordSession({
+        module: 'grammar', exerciseType: 'quiz',
+        subjectId: 'quiz', subjectName: '语法综合测验',
+        correct: score, total: allQuestions.length,
+        duration: Math.round((Date.now() - startTime.current) / 1000),
+      });
+    }
+  }, [quizDone, score, allQuestions.length]);
+
+  if (quizDone) {
     const pct = Math.round((score / allQuestions.length) * 100);
     return (
       <div className="text-center py-12 card max-w-lg mx-auto">
@@ -467,7 +485,7 @@ function QuizPage({ onBack }: { onBack: () => void }) {
           {pct >= 80 ? '太棒了！你已经掌握得很好！' : pct >= 60 ? '还不错，继续加油！' : '还需要多加练习哦！'}
         </p>
         <div className="flex gap-3 justify-center">
-          <button onClick={() => { setIdx(0); setScore(0); }}
+          <button onClick={() => { setIdx(0); setScore(0); startTime.current = Date.now(); quizRecordedRef.current = false; }}
             className="btn-primary">
             🔄 再测一次
           </button>
@@ -484,8 +502,19 @@ function QuizPage({ onBack }: { onBack: () => void }) {
   const typeLabels: Record<PracticeType, string> = { fill: '填空', choice: '选择', correction: '改错' };
   const typeIcons: Record<PracticeType, string> = { fill: '✏️', choice: '📋', correction: '🔧' };
 
-  const handleAnswer = (correct: boolean) => {
+  const handleAnswer = (correct: boolean, userAnswer: string) => {
     if (correct) setScore(score + 1);
+    const exType = q.type === 'fill' ? 'grammar_fill' : q.type === 'choice' ? 'grammar_choice' : 'grammar_correction';
+    const qText: string = q.type === 'fill' ? (q.sentence ?? '') : q.type === 'choice' ? (q.question ?? '') : (q.sentence ?? '');
+    recordAnswer({
+      module: 'grammar', exerciseType: exType,
+      subjectId: 'quiz', subjectName: '语法综合测验',
+      questionId: q.id,
+      questionText: qText,
+      userAnswer,
+      correctAnswer: q.answer,
+      isCorrect: correct,
+    });
   };
 
   return (

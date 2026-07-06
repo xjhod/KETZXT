@@ -523,10 +523,80 @@ export default function SpeakingPage() {
               </div>
             </div>
           )}
+
+          {/* 评分结果 */}
+          {scoreResult && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h4 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
+                ✅ 评分结果
+              </h4>
+
+              <div className="space-y-4">
+                {/* 分数 */}
+                <div className="text-center">
+                  <div className={`text-4xl font-bold ${
+                    scoreResult.score >= 80 ? 'text-green-500' :
+                    scoreResult.score >= 60 ? 'text-blue-500' :
+                    scoreResult.score >= 40 ? 'text-yellow-500' :
+                    'text-red-500'
+                  }`}>
+                    {scoreResult.score}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    得分（满分 100）
+                  </div>
+                </div>
+
+                {/* 关键词匹配 */}
+                <div>
+                  <div className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                    关键词匹配：{scoreResult.matchedKeywords.length} / {q.keywords.length}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {q.keywords.map((kw, i) => (
+                      <span
+                        key={i}
+                        className={`px-2 py-1 rounded text-xs ${
+                          scoreResult.matchedKeywords.includes(kw)
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                            : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+                        }`}
+                      >
+                        {kw}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 流利度 */}
+                <div>
+                  <div className="text-sm text-gray-700 dark:text-gray-300">
+                    单词数：{scoreResult.wordCount} 词
+                  </div>
+                </div>
+
+                {/* 反馈 */}
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                    {scoreResult.feedback}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        
+
         {/* 操作按钮 */}
         <div className="flex space-x-4">
+          {audioUrl && !scoreResult && (
+            <button
+              onClick={handleScore}
+              className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
+            >
+              ✅ 评分
+            </button>
+          )}
+
           <button
             onClick={handleNext}
             className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition"

@@ -86,7 +86,7 @@ function useSpeechRecognition() {
 
 // ========== 结果总结页 ==========
 function SessionResult({ correct, total, onBack, onRetry }: { correct: number; total: number; onBack: () => void; onRetry: () => void }) {
-  const pct = Math.round((correct / total) * 100);
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
   return (
     <div className="text-center py-10">
       <p className="text-5xl mb-4">{pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪'}</p>
@@ -355,19 +355,29 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   const clearError = () => setSpeechError(null);
 
   // 全部完成 —— 必须在访问 sessionQs[idx] 之前检查
-  if (idx >= sessionQs.length) {
-    recordSession({
-      module: 'vocabulary', exerciseType: 'spelling',
-      subjectId: themeId, subjectName: theme.nameZh,
-      correct: correctCount, total: sessionQs.length,
-      duration: Math.round((Date.now() - startTime.current) / 1000),
-    });
+  const sessionDone = idx >= sessionQs.length;
+
+  // ✅ 用 useEffect 记录练习结果，并用 ref 守卫，避免 StrictMode 下重复记录
+  const recordedRef = useRef(false);
+  useEffect(() => {
+    if (sessionDone && !recordedRef.current) {
+      recordedRef.current = true;
+      recordSession({
+        module: 'vocabulary', exerciseType: 'spelling',
+        subjectId: themeId, subjectName: theme.nameZh,
+        correct: correctCount, total: sessionQs.length,
+        duration: Math.round((Date.now() - startTime.current) / 1000),
+      });
+    }
+  }, [sessionDone, correctCount, sessionQs.length]);
+
+  if (sessionDone) {
     return (
       <SessionResult
         correct={correctCount}
         total={sessionQs.length}
         onBack={onBack}
-        onRetry={() => { setIdx(0); setCorrectCount(0); startTime.current = Date.now(); }}
+        onRetry={() => { setIdx(0); setCorrectCount(0); startTime.current = Date.now(); recordedRef.current = false; }}
       />
     );
   }
@@ -504,19 +514,29 @@ function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   const startTime = useRef(Date.now());
 
   // 全部完成 —— 必须在访问 sessionQs[idx] 之前检查
-  if (idx >= sessionQs.length) {
-    recordSession({
-      module: 'vocabulary', exerciseType: 'matching',
-      subjectId: themeId, subjectName: theme.nameZh,
-      correct: correctCount, total: sessionQs.length,
-      duration: Math.round((Date.now() - startTime.current) / 1000),
-    });
+  const sessionDone = idx >= sessionQs.length;
+
+  // ✅ 用 useEffect 记录练习结果，并用 ref 守卫，避免 StrictMode 下重复记录
+  const recordedRef = useRef(false);
+  useEffect(() => {
+    if (sessionDone && !recordedRef.current) {
+      recordedRef.current = true;
+      recordSession({
+        module: 'vocabulary', exerciseType: 'matching',
+        subjectId: themeId, subjectName: theme.nameZh,
+        correct: correctCount, total: sessionQs.length,
+        duration: Math.round((Date.now() - startTime.current) / 1000),
+      });
+    }
+  }, [sessionDone, correctCount, sessionQs.length]);
+
+  if (sessionDone) {
     return (
       <SessionResult
         correct={correctCount}
         total={sessionQs.length}
         onBack={onBack}
-        onRetry={() => { setIdx(0); setCorrectCount(0); startTime.current = Date.now(); }}
+        onRetry={() => { setIdx(0); setCorrectCount(0); startTime.current = Date.now(); recordedRef.current = false; }}
       />
     );
   }
@@ -634,19 +654,29 @@ function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () =>
   const startTime = useRef(Date.now());
 
   // 全部完成 —— 必须在访问 sessionQs[idx] 之前检查
-  if (idx >= sessionQs.length) {
-    recordSession({
-      module: 'vocabulary', exerciseType: 'fill_blank',
-      subjectId: themeId, subjectName: theme.nameZh,
-      correct: correctCount, total: sessionQs.length,
-      duration: Math.round((Date.now() - startTime.current) / 1000),
-    });
+  const sessionDone = idx >= sessionQs.length;
+
+  // ✅ 用 useEffect 记录练习结果，并用 ref 守卫，避免 StrictMode 下重复记录
+  const recordedRef = useRef(false);
+  useEffect(() => {
+    if (sessionDone && !recordedRef.current) {
+      recordedRef.current = true;
+      recordSession({
+        module: 'vocabulary', exerciseType: 'fill_blank',
+        subjectId: themeId, subjectName: theme.nameZh,
+        correct: correctCount, total: sessionQs.length,
+        duration: Math.round((Date.now() - startTime.current) / 1000),
+      });
+    }
+  }, [sessionDone, correctCount, sessionQs.length]);
+
+  if (sessionDone) {
     return (
       <SessionResult
         correct={correctCount}
         total={sessionQs.length}
         onBack={onBack}
-        onRetry={() => { setIdx(0); setCorrectCount(0); startTime.current = Date.now(); }}
+        onRetry={() => { setIdx(0); setCorrectCount(0); startTime.current = Date.now(); recordedRef.current = false; }}
       />
     );
   }
