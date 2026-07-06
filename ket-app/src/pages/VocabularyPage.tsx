@@ -121,7 +121,8 @@ function speakWord(word: string) {
 
 // ========== 单词卡片学习（每次10题）==========
 function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void }) {
-  const theme = allThemes.find(t => t.id === themeId)!;
+  const theme = allThemes.find(t => t.id === themeId);
+  if (!theme) return <div className="text-center py-20 text-gray-400">主题未找到，请返回重新选择</div>;
   const [sessionWords] = useState(() => {
     const shuffled = [...theme.words].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, Math.min(SESSION_SIZE, shuffled.length));
@@ -488,7 +489,8 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
 
 // ========== 词义匹配（每次10题）==========
 function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => void }) {
-  const theme = allThemes.find(t => t.id === themeId)!;
+  const theme = allThemes.find(t => t.id === themeId);
+  if (!theme) return <div className="text-center py-20 text-gray-400">主题未找到，请返回重新选择</div>;
   const allQs = matchingQuestions.filter(q => q.themeId === themeId);
   const [sessionQs] = useState(() => {
     const s = [...allQs].sort(() => Math.random() - 0.5);
@@ -617,7 +619,8 @@ function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
 
 // ========== 选词填空（每次10题）==========
 function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () => void }) {
-  const theme = allThemes.find(t => t.id === themeId)!;
+  const theme = allThemes.find(t => t.id === themeId);
+  if (!theme) return <div className="text-center py-20 text-gray-400">主题未找到，请返回重新选择</div>;
   const allQs = fillBlankQuestions.filter(q => q.themeId === themeId);
   const [sessionQs] = useState(() => {
     const s = [...allQs].sort(() => Math.random() - 0.5);

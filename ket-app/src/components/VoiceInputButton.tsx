@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { usePronunciationChecker } from '../hooks/usePronunciationChecker';
 
 interface VoiceInputButtonProps {
@@ -18,85 +18,24 @@ export function VoiceInputButton({
   showScore = true,
   className = '',
 }: VoiceInputButtonProps) {
-  const [isRecording, setIsRecording] = useState(false);
-  const [score, setScore] = useState<number | null>(null);
-  const [transcript, setTranscript] = useState('');
-  const [showPlayback, setShowPlayback] = useState(false);
-  
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const { isRecording, result, error, startRecord, stopRecord, reset } = usePronunciationChecker();
 
-  // 使用发音检查器
-  const { checkPronunciation, isChecking } = usePronunciationChecker();
-
-  // 开始录音
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        
-        // 播放回放
-        const audioUrl = URL.createObjectURL(audioBlob);
-        if (audioPlayerRef.current) {
-          audioPlayerRef.current.src = audioUrl;
-        }
-
-        // 评分
-        if (expectedText) {
-          const result = await checkPronunciation(expectedText, audioBlob);
-          setScore(result.score);
-          setTranscript(result.transcript);
-          onResult?.(result);
-        }
-
-        // 停止所有音轨
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-    } catch (error) {
-      console.error('无法访问麦克风:', error);
-      alert('无法访问麦克风，请检查权限设置');
-    }
-  };
-
-  // 停止录音
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      setShowPlayback(true);
-    }
-  };
-
-  // 播放回放
-  const playPlayback = () => {
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.play();
-    }
-  };
-
-  // 组件卸载时清理
+  // 将结果通知父组件
   useEffect(() => {
-    return () => {
-      if (mediaRecorderRef.current && isRecording) {
-        mediaRecorderRef.current.stop();
-      }
-    };
-  }, [isRecording]);
+    if (result) {
+      onResult?.(result);
+    }
+  }, [result]);
+
+  // 点击按钮：开始/停止录音
+  const handleClick = () => {
+    if (isRecording) {
+      stopRecord();
+    } else {
+      reset();
+      startRecord(expectedText);
+    }
+  };
 
   // 尺寸样式映射
   const sizeStyles = {
@@ -106,18 +45,10 @@ export function VoiceInputButton({
   };
 
   // 评分颜色
-  const getScoreColor = (s: number | null) => {
-    if (s === null) return 'text-gray-400';
+  const getScoreColor = (s: number): string => {
     if (s >= 90) return 'text-green-500';
     if (s >= 70) return 'text-yellow-500';
     return 'text-red-500';
-  };
-
-  const getScoreLabel = (s: number | null) => {
-    if (s === null) return '';
-    if (s >= 90) return '优秀！';
-    if (s >= 70) return '良好';
-    return '需改进';
   };
 
   return (
@@ -125,14 +56,13 @@ export function VoiceInputButton({
       {/* 主录音按钮 */}
       <div className="relative">
         <button
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={isChecking}
+          onClick={handleClick}
+          disabled={!expectedText}
           className={`
             ${sizeStyles[size]}
             rounded-full 
             transition-all duration-300
             active:scale-95
-            disabled:opacity-50 disabled:cursor-not-allowed
             flex items-center justify-center
             relative
             ${isRecording
@@ -140,12 +70,11 @@ export function VoiceInputButton({
               : 'bg-gradient-to-br from-blue-400 to-purple-600 hover:from-blue-500 hover:to-purple-700 shadow-lg hover:shadow-2xl'
             }
             text-white
+            disabled:opacity-50 disabled:cursor-not-allowed
           `}
           title={isRecording ? '点击停止录音' : '点击开始录音'}
         >
-          {isChecking ? (
-            <span className="text-2xl">⏳</span>
-          ) : isRecording ? (
+          {isRecording ? (
             <span className="text-5xl">⏹️</span>
           ) : (
             <span className="text-5xl">🎤</span>
@@ -169,38 +98,25 @@ export function VoiceInputButton({
         {isRecording && (
           <p className="text-xs text-red-500 mt-1 animate-pulse">录音中...</p>
         )}
-        {isChecking && (
-          <p className="text-xs text-yellow-500 mt-1">评分中...</p>
+        {error && (
+          <p className="text-xs text-red-500 mt-1">{error}</p>
         )}
       </div>
 
       {/* 评分结果显示 */}
-      {showScore && score !== null && (
-        <div className="text-center p-3 bg-gray-50 rounded-xl">
-          <p className={`text-2xl font-bold ${getScoreColor(score)}`}>
-            {score}分
+      {showScore && result && (
+        <div className="text-center p-3 bg-gray-50 rounded-xl max-w-xs">
+          <p className={`text-2xl font-bold ${getScoreColor(result.score)}`}>
+            {result.score}分
           </p>
-          <p className={`text-xs ${getScoreColor(score)}`}>
-            {getScoreLabel(score)}
+          <p className={`text-xs ${getScoreColor(result.score)}`}>
+            {result.feedback}
           </p>
-          {transcript && (
+          {result.recognizedText && (
             <p className="text-xs text-gray-500 mt-1">
-              你说的是：{transcript}
+              识别结果：{result.recognizedText}
             </p>
           )}
-        </div>
-      )}
-
-      {/* 录音回放 */}
-      {showPlayback && !isRecording && (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={playPlayback}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all text-xs"
-          >
-            🔊 播放回放
-          </button>
-          <audio ref={audioPlayerRef} className="hidden" />
         </div>
       )}
 
