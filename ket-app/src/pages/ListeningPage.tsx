@@ -46,6 +46,23 @@ function playSpeech(text: string, rate = 0.9): Promise<void> {
   });
 }
 
+// ========== 优先播放预生成音频文件，缺失时回退 TTS ==========
+function playAudioFile(id: string, fallbackText: string, rate = 0.9): Promise<void> {
+  return new Promise((resolve) => {
+    try {
+      const audio = new Audio(`/audio/${id}.mp3`);
+      audio.playbackRate = rate;
+      let done = false;
+      const finish = () => { if (!done) { done = true; resolve(); } };
+      audio.onended = finish;
+      audio.onerror = () => { playSpeech(fallbackText, rate).then(finish); };
+      audio.play().catch(() => { playSpeech(fallbackText, rate).then(finish); });
+    } catch {
+      playSpeech(fallbackText, rate).then(resolve);
+    }
+  });
+}
+
 // Audio fallback using Google Translate TTS (works on all browsers including mobile)
 function playWithAudio(text: string, rate = 0.9): Promise<void> {
   return new Promise((resolve) => {
@@ -132,7 +149,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   const playQuestion = async () => {
     if (!q) return;
     setIsPlaying(true);
-    await playSpeech(q.audioText, 0.85);
+    await playAudioFile(q.id, q.audioText, 0.85);
     setIsPlaying(false);
   };
   useEffect(() => { playQuestion(); }, [idx]);
@@ -225,6 +242,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
         <div className="mb-4 flex justify-center">
           <AudioButton
             text={q.audioText}
+            audioSrc={`/audio/${q.id}.mp3`}
             label="播放听力"
             size="large"
             showSpeedControl={true}
@@ -306,7 +324,7 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
 
   const playDialogue = async () => {
     setIsPlaying(true);
-    await playSpeech(set.monologueAudio || '', 1.0);
+    await playAudioFile(set.id, set.monologueAudio || '', 1.0);
     setIsPlaying(false);
     setIdx(0);
   };
@@ -373,6 +391,7 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
           <div className="mb-4 flex justify-center">
             <AudioButton
               text={set.monologueAudio || ''}
+              audioSrc={`/audio/${set.id}.mp3`}
               label="播放独白"
               size="large"
               showSpeedControl={true}
@@ -460,7 +479,7 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
 
   const playConversation = async () => {
     setIsPlaying(true);
-    await playSpeech(set.conversationAudio, 0.9);
+    await playAudioFile(set.id, set.conversationAudio, 0.9);
     setIsPlaying(false);
   };
 
@@ -599,7 +618,7 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
 
   const playPassage = async () => {
     setIsPlaying(true);
-    await playSpeech(set.monologueAudio || '', 0.9);
+    await playAudioFile(set.id, set.monologueAudio || '', 0.9);
     setIsPlaying(false);
     setPlayed(true);
   };
@@ -786,7 +805,7 @@ function Part5Practice({ set, onBack }: { set: ListeningPart5Set; onBack: () => 
 
   const playMonologue = async () => {
     setIsPlaying(true);
-    await playSpeech(set.monologueAudio, 0.9);
+    await playAudioFile(set.id, set.monologueAudio, 0.9);
     setIsPlaying(false);
     setPlayed(true);
   };

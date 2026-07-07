@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
 interface AudioButtonProps {
-  text: string;           // 要播放的文本
+  text: string;           // 要播放的文本（无预生成音频时走 TTS）
+  audioSrc?: string;      // 可选：优先播放的预生成音频文件（/audio/xxx.mp3）
   label?: string;         // 按钮下方的文字说明
   size?: 'normal' | 'large' | 'xlarge';  // 按钮尺寸
   showSpeedControl?: boolean;  // 是否显示速度控制
@@ -12,6 +13,7 @@ interface AudioButtonProps {
 
 export function AudioButton({
   text,
+  audioSrc,
   label = '播放发音',
   size = 'large',
   showSpeedControl = false,
@@ -23,6 +25,7 @@ export function AudioButton({
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [isLooping, setIsLooping] = useState(false);
   const [playCount, setPlayCount] = useState(0);
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
 
   // 播放语音
   const playSpeech = useCallback(async (rate = playbackRate) => {
@@ -51,15 +54,41 @@ export function AudioButton({
     window.speechSynthesis.speak(utter);
   }, [text, playbackRate, isLooping]);
 
-  // 停止播放
-  const stopSpeech = () => {
+  // 停止播放（文件 + TTS 统一停止）
+  const stopAll = () => {
+    audioElRef.current?.pause();
+    audioElRef.current = null;
     window.speechSynthesis?.cancel();
     setIsPlaying(false);
   };
 
+  // 优先播放预生成音频文件；失败/缺失时回退到 TTS
+  const playFile = useCallback(() => {
+    if (!audioSrc) { playSpeech(); return; }
+    setIsPlaying(true);
+    const el = new Audio(audioSrc);
+    audioElRef.current = el;
+    el.onended = () => {
+      audioElRef.current = null;
+      setIsPlaying(false);
+      setPlayCount(prev => prev + 1);
+      if (isLooping) setTimeout(playFile, 500);
+    };
+    el.onerror = () => {
+      audioElRef.current = null;
+      playSpeech();
+    };
+    el.play().catch(() => {
+      audioElRef.current = null;
+      playSpeech();
+    });
+  }, [audioSrc, isLooping, playSpeech]);
+
   // 组件卸载时停止播放
   useEffect(() => {
     return () => {
+      audioElRef.current?.pause();
+      audioElRef.current = null;
       window.speechSynthesis?.cancel();
     };
   }, []);
@@ -78,9 +107,9 @@ export function AudioButton({
         onClick={(e) => {
           e.stopPropagation();
           if (isPlaying) {
-            stopSpeech();
+            stopAll();
           } else if (!maxPlays || playCount < maxPlays) {
-            playSpeech();
+            playFile();
           }
         }}
         disabled={!text || (maxPlays ? playCount >= maxPlays : false)}
