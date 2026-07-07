@@ -458,7 +458,7 @@ export default function SpeakingPage() {
           ) : (
             <div className="mt-4 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
               <img
-                src={`/${q.imageUrl}`}
+                src={q.imageUrl}
                 alt={`口语场景 ${q.id}`}
                 className="w-full h-auto object-cover"
                 onError={() => setImgError(true)}
