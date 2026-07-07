@@ -90,6 +90,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   const [selected, setSelected] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [sessionDone, setSessionDone] = useState(false);
   const { recordAnswer, recordSession } = useProgressStore();
   const correctCountRef = useRef(0);
 
@@ -123,6 +124,31 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
 
   // ✅ 防止 idx 越界导致 q 为 undefined
   const q = set.questions[idx];
+
+  // ✅ 练习完成后显示成绩总结
+  if (sessionDone) {
+    const total = set.questions.length;
+    const correct = correctCountRef.current;
+    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+    const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#eab308' : '#dc2626';
+    return (
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <button onClick={onBack} className="text-blue-600 text-sm hover:underline">返回列表</button>
+          <span className="text-sm text-gray-400">|</span>
+          <span className="text-sm text-gray-500">Part 1 · {set.titleZh}</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-8 text-center max-w-md mx-auto">
+          <p className="text-4xl mb-2">{pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}</p>
+          <p className="text-3xl font-bold mb-2" style={{ color }}>{correct} / {total}</p>
+          <p className="text-gray-500 text-sm mb-6">{pct >= 80 ? '很棒！听力能力很强！' : pct >= 50 ? '不错，继续加油！' : '多听几遍，下次会更好！'}</p>
+          <button onClick={() => { setIdx(0); setSelected(''); setSubmitted(false); setSessionDone(false); correctCountRef.current = 0; startTime.current = Date.now(); }} className="btn-primary mr-3">再练一次</button>
+          <button onClick={onBack} className="px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600 transition-all font-medium">返回列表</button>
+        </div>
+      </div>
+    );
+  }
+
   if (!q) return null;
   // ✅ 使用 shuffledMap 显示打乱后的选项（避免重复使用 displayOptions）
   const displayOptions = shuffledMap[q.id] || q.options || [];
@@ -158,7 +184,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   };
 
   const goNext = () => {
-    if (isLast) return; // 最后一题不再自增，避免 idx 越界
+    if (isLast) { setSessionDone(true); return; }
     setSelected('');
     setSubmitted(false);
     setIdx(idx + 1);
