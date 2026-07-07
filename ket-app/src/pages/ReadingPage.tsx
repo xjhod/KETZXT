@@ -2,11 +2,11 @@ import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   part1Articles, part2Articles, part3ClozeArticles,
-  part3RCArticles, part4TFArticles,
+  part3RCArticles, part4TFArticles, part5Articles,
 } from '../data/reading';
 import { useProgressStore } from '../store/useProgressStore';
 
-type ReadingPart = 'part1' | 'part2' | 'part3c' | 'part3r' | 'part4';
+type ReadingPart = 'part1' | 'part2' | 'part3c' | 'part3r' | 'part4' | 'part5';
 
 const PART_INFO: Record<ReadingPart, { label: string; icon: string; desc: string; color: string }> = {
   part1:   { label: 'Part 1 看图配对', icon: '\uD83D\uDDBC\uFE0F', desc: '5张图片 + 8个句子，选出匹配项', color: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -14,6 +14,7 @@ const PART_INFO: Record<ReadingPart, { label: string; icon: string; desc: string
   part3c:  { label: 'Part 3-1 完形填空', icon: '\uD83D\uDCDD', desc: '短文6空格，三选一', color: 'bg-purple-50 text-purple-700 border-purple-200' },
   part3r:  { label: 'Part 3-2 阅读选择', icon: '\uD83D\uDCD6', desc: '文章 + 7道四选一选择题', color: 'bg-orange-50 text-orange-700 border-orange-200' },
   part4:   { label: 'Part 4 正误判断', icon: '\u2705', desc: '长文 + T/F/DN 判断题', color: 'bg-red-50 text-red-700 border-red-200' },
+  part5:   { label: 'Part 5 开放填空', icon: '\u270D\uFE0F', desc: '短文挖空，填写合适单词', color: 'bg-teal-50 text-teal-700 border-teal-200' },
 };
 
 // ==================== Part 1 ====================
@@ -637,6 +638,141 @@ function Part4TFView({ article }: { article: typeof part4TFArticles[0] }) {
   );
 }
 
+// ==================== Part 5 开放填空 ====================
+function Part5View({ article }: { article: typeof part5Articles[0] }) {
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [showResult, setShowResult] = useState(false);
+  const [hints, setHints] = useState<Record<number, boolean>>({});
+  const { recordAnswer, recordSession } = useProgressStore();
+
+  const toggleHint = (pos: number) =>
+    setHints(prev => ({ ...prev, [pos]: !prev[pos] }));
+  const setAns = (pos: number, v: string) => {
+    if (!showResult) setAnswers(prev => ({ ...prev, [pos]: v }));
+  };
+
+  const isCorrect = (b: typeof article.blanks[0]) => {
+    const u = (answers[b.position] || '').trim().toLowerCase();
+    if (!u) return false;
+    if (b.accept && b.accept.length) return b.accept.map(a => a.toLowerCase()).includes(u);
+    return u === b.answer.toLowerCase();
+  };
+
+  const score = useMemo(
+    () => article.blanks.filter(b => isCorrect(b)).length,
+    [answers, showResult]
+  );
+
+  const handleSubmit = () => {
+    article.blanks.forEach(b => {
+      recordAnswer({
+        module: 'reading', exerciseType: 'reading_p5',
+        subjectId: article.id, subjectName: article.titleZh,
+        questionId: `${article.id}-b${b.position}`,
+        questionText: `[开放填空] 第${b.position}空`,
+        userAnswer: answers[b.position] || '（未作答）',
+        correctAnswer: b.accept && b.accept.length ? [b.answer, ...b.accept].join(' / ') : b.answer,
+        isCorrect: isCorrect(b),
+      });
+    });
+    const correct = article.blanks.filter(b => isCorrect(b)).length;
+    recordSession({
+      module: 'reading', exerciseType: 'reading_p5',
+      subjectId: article.id, subjectName: article.titleZh,
+      correct, total: article.blanks.length, duration: 0,
+    });
+    setShowResult(true);
+  };
+
+  const renderPassage = () => {
+    const regex = /\(\d+\)\s*____/g;
+    const parts = article.passage.split(regex);
+    const out: React.ReactNode[] = [];
+    parts.forEach((part, idx) => {
+      out.push(<span key={'t' + idx}>{part}</span>);
+      if (idx < article.blanks.length) {
+        const b = article.blanks[idx];
+        const u = answers[b.position] || '';
+        const ok = isCorrect(b);
+        const showH = hints[b.position];
+        if (showResult) {
+          const bcls = ok
+            ? 'px-2 py-1 rounded text-sm font-medium bg-green-100 text-green-800 border border-green-300'
+            : 'px-2 py-1 rounded text-sm font-medium bg-red-100 text-red-800 border border-red-300';
+          const correctText = b.accept && b.accept.length ? [b.answer, ...b.accept].join('/') : b.answer;
+          out.push(
+            <span key={'b' + idx} className="inline-flex items-center mx-1 align-middle">
+              <span className={bcls}>{ok ? (u || '?') : `${u || '?'} → ${correctText}`}</span>
+            </span>
+          );
+        } else {
+          const dcls = u
+            ? 'w-28 px-2 py-1 rounded border-2 border-blue-400 text-blue-700 text-sm text-center outline-none'
+            : 'w-28 px-2 py-1 rounded border-2 border-dashed border-gray-300 text-gray-400 text-sm text-center outline-none focus:border-blue-400';
+          out.push(
+            <span key={'b' + idx} className="inline-flex items-center mx-1 align-middle">
+              <input
+                value={u}
+                onChange={e => setAns(b.position, e.target.value)}
+                placeholder={`(${b.position})`}
+                className={dcls}
+              />
+            </span>
+          );
+        }
+        if (!showResult) {
+          out.push(
+            <span key={'h' + idx} className="inline-flex items-center ml-1 align-middle">
+              <button onClick={() => toggleHint(b.position)} className="text-xs text-blue-500 hover:underline">
+                {showH ? '隐藏提示' : '提示'}
+              </button>
+              {showH && (
+                <span className="ml-1 text-xs text-gray-400">💡 {b.hintZh}（{b.hint}）</span>
+              )}
+            </span>
+          );
+        }
+      }
+    });
+    return out;
+  };
+
+  const scCol = score >= 4 ? '#16a34a' : score >= 3 ? '#eab308' : '#dc2626';
+
+  return (
+    <div>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-bold text-gray-800">{article.titleZh}</h3>
+        {!showResult && Object.keys(answers).length === article.blanks.length && (
+          <button onClick={handleSubmit} className="btn-primary text-sm">提交答案</button>
+        )}
+      </div>
+
+      {/* 文章区域 */}
+      <div className="card p-5 mb-4 prose prose-sm max-w-none text-gray-700 leading-relaxed text-base whitespace-pre-line">
+        {renderPassage()}
+      </div>
+
+      {!showResult && (
+        <p className="text-xs text-gray-400 mb-2">在每个空格填入一个合适的英文单词，可点击「提示」获得线索。</p>
+      )}
+
+      {showResult && (
+        <>
+          <div className="mt-4 card p-4 text-center">
+            <p className="text-2xl font-bold mb-1" style={{ color: scCol }}>{score} / {article.blanks.length}</p>
+            <p className="text-sm text-gray-500">{score >= 4 ? '单词填空很棒！' : score >= 3 ? '不错，注意词义和拼写！' : '多读短文，结合上下文猜词哦！'}</p>
+          </div>
+          <details className="mt-3 card p-4">
+            <summary className="cursor-pointer text-sm font-medium text-blue-600">查看完整原文（含答案）</summary>
+            <p className="mt-2 text-sm text-gray-600 leading-relaxed whitespace-pre-line">{article.passageFull}</p>
+          </details>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ==================== 文章列表页 ====================
 function ArticleListView({ pt, onSelectArticle, onBack }: { pt: ReadingPart; onSelectArticle: (i: number) => void; onBack: () => void }) {
   const pi = PART_INFO[pt];
@@ -648,6 +784,7 @@ function ArticleListView({ pt, onSelectArticle, onBack }: { pt: ReadingPart; onS
       case 'part3c': return part3ClozeArticles;
       case 'part3r': return part3RCArticles;
       case 'part4': return part4TFArticles;
+      case 'part5': return part5Articles;
     }
   }
 
@@ -688,6 +825,7 @@ export default function ReadingPage() {
       {sp === 'part3c' && <Part3ClozeView article={part3ClozeArticles[si]} />}
       {sp === 'part3r' && <Part3RCView article={part3RCArticles[si]} />}
       {sp === 'part4' && <Part4TFView article={part4TFArticles[si]} />}
+      {sp === 'part5' && <Part5View article={part5Articles[si]} />}
     </div>);
   }
 
