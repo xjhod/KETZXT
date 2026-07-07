@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { speakingPart1, speakingPart2 } from '../data/speaking';
 import type { SpeakingPart1Question, SpeakingPart2Question } from '../types/speaking';
 import { getCurrentUser } from '../utils/auth';
+import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
 
 // ========== 类型定义 ==========
 interface ScoreResult {
@@ -71,6 +72,50 @@ function playModelAnswer(text: string): void {
   }
 }
 
+// ========== 转录结果面板（真实语音识别）==========
+function TranscriptPanel({
+  transcript,
+  interim,
+  error,
+  isRecording,
+}: {
+  transcript: string;
+  interim: string;
+  error: string | null;
+  isRecording: boolean;
+}) {
+  return (
+    <div className="mt-4 space-y-2">
+      {error && (
+        <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded">
+          <p className="text-xs text-red-700 dark:text-red-300">⚠️ {error}</p>
+        </div>
+      )}
+      {transcript && (
+        <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded">
+          <p className="text-xs text-green-800 dark:text-green-300 mb-1">
+            📝 识别结果（真实语音识别）：
+          </p>
+          <p className="text-sm text-green-700 dark:text-green-300">{transcript}</p>
+        </div>
+      )}
+      {isRecording && interim && (
+        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded">
+          <p className="text-xs text-blue-800 dark:text-blue-300 mb-1">🎙️ 正在识别...</p>
+          <p className="text-sm text-blue-700 dark:text-blue-300 italic">{interim}</p>
+        </div>
+      )}
+      {!transcript && !error && !isRecording && (
+        <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            点击下方「开始录音」后说出你的回答，系统会自动识别文字并评分。
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ========== 主组件 ==========
 export default function SpeakingPage() {
   const navigate = useNavigate();
@@ -82,9 +127,13 @@ export default function SpeakingPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [transcript, setTranscript] = useState<string>('');
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [showKeywords, setShowKeywords] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  // 真实语音识别（Web Speech API，无需大模型）
+  const transcriber = useSpeechTranscriber();
+  const transcript = transcriber.transcript;
   
   // 录音相关
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -114,25 +163,19 @@ export default function SpeakingPage() {
         // 创建播放 URL
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
-        
-        // 模拟语音识别（实际应接入 API）
-        // 这里用 prompt 作为模拟转录
-        if (activePart === 1) {
-          setTranscript(`[模拟识别结果] 用户回答了关于"${currentPart1.questionZh}"的问题。实际使用时需要接入语音识别 API（如讯飞、Google）。`);
-        } else {
-          setTranscript(`[模拟识别结果] 用户描述了图片内容并回答了讨论问题。实际使用时需要接入语音识别 API。`);
-        }
+        // 真实识别结果由 transcriber 提供，不再使用模拟转录
       };
       
       recorder.start();
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
       setScoreResult(null); // 清除之前的评分
+      transcriber.start();  // 启动真实语音识别（与录音并行）
     } catch (err) {
       console.error('无法访问麦克风：', err);
       alert('无法访问麦克风。请确保已授予麦克风权限。');
     }
-  }, [activePart, currentIndex, currentPart1]);
+  }, [activePart, currentIndex, currentPart1, transcriber]);
   
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
@@ -142,7 +185,8 @@ export default function SpeakingPage() {
       // 停止所有音轨
       mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
     }
-  }, [isRecording]);
+    transcriber.stop(); // 停止语音识别，保留最终转录文本
+  }, [isRecording, transcriber]);
   
   // ========== 播放录音 ==========
   const playRecording = useCallback(() => {
@@ -169,15 +213,16 @@ export default function SpeakingPage() {
     setCurrentIndex(prev => prev + 1);
     setAudioBlob(null);
     setAudioUrl(null);
-    setTranscript('');
+    transcriber.reset();
     setScoreResult(null);
     setShowKeywords(false);
+    setImgError(false);
     
     // 停止 TTS
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
-  }, []);
+  }, [transcriber]);
   
   // ========== 清理 URL ==========
   useEffect(() => {
@@ -289,17 +334,13 @@ export default function SpeakingPage() {
                 </button>
               </div>
               
-              {/* 识别结果（模拟） */}
-              {transcript && (
-                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded">
-                  <p className="text-xs text-yellow-800 dark:text-yellow-300 mb-1">
-                    📝 识别结果（模拟）：
-                  </p>
-                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                    {transcript}
-                  </p>
-                </div>
-              )}
+              {/* 识别结果（真实语音识别）*/}
+              <TranscriptPanel
+                transcript={transcript}
+                interim={transcriber.interim}
+                error={transcriber.error}
+                isRecording={isRecording}
+              />
             </div>
           )}
         </div>
@@ -406,16 +447,24 @@ export default function SpeakingPage() {
             </div>
           </div>
           
-          {/* 图片占位符 */}
-          <div className="mt-4 p-8 bg-gray-100 dark:bg-gray-700 rounded-lg text-center">
-            <div className="text-6xl mb-4">🖼️</div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              图片：{q.imageUrl}
-            </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-              （实际使用时将显示图片）
-            </p>
-          </div>
+          {/* 图片（真实资源，加载失败显示占位）*/}
+          {imgError ? (
+            <div className="mt-4 p-8 bg-gray-100 dark:bg-gray-700 rounded-lg text-center">
+              <div className="text-6xl mb-4">🖼️</div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                图片加载失败：{q.imageUrl}
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+              <img
+                src={`/${q.imageUrl}`}
+                alt={`口语场景 ${q.id}`}
+                className="w-full h-auto object-cover"
+                onError={() => setImgError(true)}
+              />
+            </div>
+          )}
         </div>
         
         {/* 讨论问题 */}
@@ -524,6 +573,14 @@ export default function SpeakingPage() {
             </div>
           )}
 
+          {/* 识别结果（真实语音识别）*/}
+          <TranscriptPanel
+            transcript={transcript}
+            interim={transcriber.interim}
+            error={transcriber.error}
+            isRecording={isRecording}
+          />
+
           {/* 评分结果 */}
           {scoreResult && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -626,6 +683,14 @@ export default function SpeakingPage() {
           KET 口语考试模拟练习
         </p>
       </div>
+
+      {!transcriber.supported && (
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+          <p className="text-sm text-red-700 dark:text-red-300">
+            ⚠️ 当前浏览器不支持语音识别功能。请使用 <strong>Chrome</strong> 或 <strong>Edge</strong> 浏览器打开本页面，否则无法录音评分。
+          </p>
+        </div>
+      )}
       
       {/* Part 切换 */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-1 flex">
@@ -635,7 +700,8 @@ export default function SpeakingPage() {
             setCurrentIndex(0);
             setAudioBlob(null);
             setAudioUrl(null);
-            setTranscript('');
+            transcriber.reset();
+            setImgError(false);
             setScoreResult(null);
           }}
           className={`flex-1 py-3 rounded-lg text-sm font-semibold transition ${
@@ -652,7 +718,8 @@ export default function SpeakingPage() {
             setCurrentIndex(0);
             setAudioBlob(null);
             setAudioUrl(null);
-            setTranscript('');
+            transcriber.reset();
+            setImgError(false);
             setScoreResult(null);
           }}
           className={`flex-1 py-3 rounded-lg text-sm font-semibold transition ${
@@ -672,8 +739,8 @@ export default function SpeakingPage() {
       <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
         <p className="text-sm text-yellow-800 dark:text-yellow-300">
           💡 <strong>提示：</strong> 
-          当前使用浏览器内置语音合成（TTS）。录音识别功能需要接入语音识别 API（如讯飞、Google）才能获得真实结果。
-          标准答案播放使用浏览器的语音合成功能，可能在部分浏览器中不支持。
+          已接入浏览器内置语音识别（Web Speech API），无需联网即可将你的口语实时转为文字并自动评分。
+          建议使用 Chrome 或 Edge 浏览器，并在弹窗中允许麦克风权限。标准答案播放使用浏览器语音合成。
         </p>
       </div>
     </div>
