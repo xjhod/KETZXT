@@ -93,6 +93,7 @@ export interface Part5Blank {
   answer: string;
   hint: string;           // 提示（英文解释）
   hintZh: string;         // 提示中文
+  accept?: string[];      // 可选：其他可接受答案（开放填空常有多种填法）
 }
 
 export interface Part5Article {
