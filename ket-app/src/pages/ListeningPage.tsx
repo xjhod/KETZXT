@@ -121,7 +121,9 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
     );
   }
 
-  const q: ListeningPart1Question = set.questions[idx];
+  // ✅ 防止 idx 越界导致 q 为 undefined
+  const q = set.questions[idx];
+  if (!q) return null;
   // ✅ 使用 shuffledMap 显示打乱后的选项（避免重复使用 displayOptions）
   const displayOptions = shuffledMap[q.id] || q.options || [];
 
@@ -156,6 +158,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   };
 
   const goNext = () => {
+    if (isLast) return; // 最后一题不再自增，避免 idx 越界
     setSelected('');
     setSubmitted(false);
     setIdx(idx + 1);
@@ -191,8 +194,7 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
 
       <div className="bg-white rounded-2xl shadow p-6 mb-6 text-center">
         <div className="text-6xl mb-3">{q.imageEmoji}</div>
-        <p className="text-sm text-gray-400 mb-3">{q.imageDesc}</p>
-        
+
         {/* 播放按钮 - 使用统一组件，增大尺寸 */}
         <div className="mb-4 flex justify-center">
           <AudioButton
