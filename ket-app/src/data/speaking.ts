@@ -249,7 +249,7 @@ export const speakingPart1: SpeakingPart1Question[] = [
 export const speakingPart2: SpeakingPart2Question[] = [
   {
     id: 's2-001',
-    imageUrl: 'speaking/s2-001.jpg',
+    imageUrl: 'speaking/s2-001.png',
     questions: [
       'What can you see in the picture?',
       'Where do you think this is?',
@@ -264,7 +264,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-002',
-    imageUrl: 'speaking/s2-002.jpg',
+    imageUrl: 'speaking/s2-002.png',
     questions: [
       'What is happening in the picture?',
       'How do the people feel?',
@@ -279,7 +279,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-003',
-    imageUrl: 'speaking/s2-003.jpg',
+    imageUrl: 'speaking/s2-003.png',
     questions: [
       'What can you see in the picture?',
       'Do you like this activity? Why or why not?',
@@ -294,7 +294,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-004',
-    imageUrl: 'speaking/s2-004.jpg',
+    imageUrl: 'speaking/s2-004.png',
     questions: [
       'Where is this?',
       'What are the people doing?',
@@ -309,7 +309,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-005',
-    imageUrl: 'speaking/s2-005.jpg',
+    imageUrl: 'speaking/s2-005.png',
     questions: [
       'What is the weather like in the picture?',
       'What clothes are the people wearing?',
@@ -324,7 +324,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-006',
-    imageUrl: 'speaking/s2-006.jpg',
+    imageUrl: 'speaking/s2-006.png',
     questions: [
       'What can you see in the picture?',
       'Have you ever done this?',
@@ -339,7 +339,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-007',
-    imageUrl: 'speaking/s2-007.jpg',
+    imageUrl: 'speaking/s2-007.png',
     questions: [
       'What is the child doing?',
       'Do you like this hobby?',
@@ -354,7 +354,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-008',
-    imageUrl: 'speaking/s2-008.jpg',
+    imageUrl: 'speaking/s2-008.png',
     questions: [
       'What is happening in the picture?',
       'Do you like animals?',
@@ -369,7 +369,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-009',
-    imageUrl: 'speaking/s2-009.jpg',
+    imageUrl: 'speaking/s2-009.png',
     questions: [
       'What can you see in the picture?',
       'Do you celebrate this festival?',
@@ -384,7 +384,7 @@ export const speakingPart2: SpeakingPart2Question[] = [
   },
   {
     id: 's2-010',
-    imageUrl: 'speaking/s2-010.jpg',
+    imageUrl: 'speaking/s2-010.png',
     questions: [
       'What is the problem in the picture?',
       'What should the person do?',
