@@ -125,46 +125,20 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
   // ✅ 防止 idx 越界导致 q 为 undefined
   const q = set.questions[idx];
 
-  // ✅ 练习完成后显示成绩总结
-  if (sessionDone) {
-    const total = set.questions.length;
-    const correct = correctCountRef.current;
-    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-    const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#eab308' : '#dc2626';
-    return (
-      <div>
-        <div className="flex items-center gap-3 mb-4">
-          <button onClick={onBack} className="text-blue-600 text-sm hover:underline">返回列表</button>
-          <span className="text-sm text-gray-400">|</span>
-          <span className="text-sm text-gray-500">Part 1 · {set.titleZh}</span>
-        </div>
-        <div className="bg-white rounded-2xl shadow p-8 text-center max-w-md mx-auto">
-          <p className="text-4xl mb-2">{pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪'}</p>
-          <p className="text-3xl font-bold mb-2" style={{ color }}>{correct} / {total}</p>
-          <p className="text-gray-500 text-sm mb-6">{pct >= 80 ? '很棒！听力能力很强！' : pct >= 50 ? '不错，继续加油！' : '多听几遍，下次会更好！'}</p>
-          <button onClick={() => { setIdx(0); setSelected(''); setSubmitted(false); setSessionDone(false); correctCountRef.current = 0; startTime.current = Date.now(); }} className="btn-primary mr-3">再练一次</button>
-          <button onClick={onBack} className="px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600 transition-all font-medium">返回列表</button>
-        </div>
-      </div>
-    );
-  }
+  // ✅ 使用 shuffledMap 显示打乱后的选项
+  const displayOptions = q ? shuffledMap[q.id] || q.options || [] : [];
 
-  if (!q) return null;
-  // ✅ 使用 shuffledMap 显示打乱后的选项（避免重复使用 displayOptions）
-  const displayOptions = shuffledMap[q.id] || q.options || [];
-
-
+  // ✅ 所有 hooks 必须在条件返回之前调用，避免 #300
   const playQuestion = async () => {
+    if (!q) return;
     setIsPlaying(true);
     await playSpeech(q.audioText, 0.85);
     setIsPlaying(false);
   };
-
   useEffect(() => { playQuestion(); }, [idx]);
 
   const handleSubmit = () => {
-    if (!selected) return;
-    // ✅ 修复：比较选项文本而不是标签
+    if (!selected || !q) return;
     const selectedOriginalIndex = q.options.indexOf(selected);
     const correctAnswerIndex = q.answer.charCodeAt(0) - 65;
     const correct = selectedOriginalIndex === correctAnswerIndex;
@@ -183,14 +157,14 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
     setSubmitted(true);
   };
 
+  const isLast = idx >= set.questions.length - 1;
+
   const goNext = () => {
     if (isLast) { setSessionDone(true); return; }
     setSelected('');
     setSubmitted(false);
     setIdx(idx + 1);
   };
-
-  const isLast = idx >= set.questions.length - 1;
 
   useEffect(() => {
     if (submitted && isLast) {
@@ -205,6 +179,32 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
       });
     }
   }, [submitted, isLast]);
+
+  // ✅ 练习完成后显示成绩总结（在所有 hooks 之后）
+  if (sessionDone) {
+    const total = set.questions.length;
+    const correct = correctCountRef.current;
+    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+    const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#eab308' : '#dc2626';
+    return (
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <button onClick={onBack} className="text-blue-600 text-sm hover:underline">返回列表</button>
+          <span className="text-sm text-gray-400">|</span>
+          <span className="text-sm text-gray-500">Part 1 · {set.titleZh}</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-8 text-center max-w-md mx-auto">
+          <p className="text-4xl mb-2">{pct >= 80 ? '\u{1F389}' : pct >= 50 ? '\u{1F44D}' : '\u{1F4AA}'}</p>
+          <p className="text-3xl font-bold mb-2" style={{ color }}>{correct} / {total}</p>
+          <p className="text-gray-500 text-sm mb-6">{pct >= 80 ? '\u5F88\u68D2\uFF01\u542C\u529B\u80FD\u529B\u5F88\u5F3A\uFF01' : pct >= 50 ? '\u4E0D\u9519\uFF0C\u7EE7\u7EED\u52A0\u6CB9\uFF01' : '\u591A\u542C\u51E0\u904D\uFF0C\u4E0B\u6B21\u4F1A\u66F4\u597D\uFF01'}</p>
+          <button onClick={() => { setIdx(0); setSelected(''); setSubmitted(false); setSessionDone(false); correctCountRef.current = 0; startTime.current = Date.now(); }} className="btn-primary mr-3">\u518D\u7EC3\u4E00\u6B21</button>
+          <button onClick={onBack} className="px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600 transition-all font-medium">\u8FD4\u56DE\u5217\u8868</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!q) return null;
 
   return (
     <div>
