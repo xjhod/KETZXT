@@ -4,6 +4,7 @@ import { speakingPart1, speakingPart2 } from '../data/speaking';
 import type { SpeakingPart1Question, SpeakingPart2Question } from '../types/speaking';
 import { getCurrentUser } from '../utils/auth';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
+import { useProgressStore } from '../store/useProgressStore';
 
 // ========== 类型定义 ==========
 interface ScoreResult {
@@ -134,6 +135,17 @@ export default function SpeakingPage() {
   // 真实语音识别（Web Speech API，无需大模型）
   const transcriber = useSpeechTranscriber();
   const transcript = transcriber.transcript;
+
+  // 进度记录（从 store 取 action，避免整页重渲染）
+  const recordAnswer = useProgressStore((s) => s.recordAnswer);
+  const recordSession = useProgressStore((s) => s.recordSession);
+  // 本轮会话累计（用 ref 避免触发重渲染）
+  const sessionStatsRef = useRef({ total: 0, correct: 0 });
+  const questionScoredRef = useRef(false); // 当前题是否已计入本轮回话累计（防重复）
+  const roundStartRef = useRef(Date.now()); // 本轮开始时间（用于估算时长）
+
+  // 当前 Part 的题量（一轮题数）
+  const TOTAL = activePart === 1 ? speakingPart1.length : speakingPart2.length;
   
   // 录音相关
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -202,27 +214,75 @@ export default function SpeakingPage() {
       alert('请先录音并获取识别结果。');
       return;
     }
-    
+
     const keywords = activePart === 1 ? currentPart1.keywords : currentPart2.keywords;
     const result = scoreAnswer(transcript, keywords);
     setScoreResult(result);
-  }, [transcript, activePart, currentPart1, currentPart2]);
-  
+
+    // 口语达标制：60 分及以上记为"达标"（相当于答对）
+    const isCorrect = result.score >= 60;
+    const q = activePart === 1 ? currentPart1 : currentPart2;
+    const questionText =
+      activePart === 1
+        ? (currentPart1.questionZh || currentPart1.question)
+        : (currentPart2.questions[0] || currentPart2.prompts[0] || q.id);
+
+    // 记录单题（用于错题本 / 答题历史）
+    recordAnswer({
+      module: 'speaking',
+      exerciseType: activePart === 1 ? 'speaking_p1' : 'speaking_p2',
+      subjectId: q.id,
+      subjectName: `口语 Part ${activePart}`,
+      questionId: q.id,
+      questionText,
+      userAnswer: transcript,
+      correctAnswer: keywords.join('、'),
+      isCorrect,
+    });
+
+    // 累计到本轮回话（每题只计一次，避免重复点"评分"重复累加）
+    if (!questionScoredRef.current) {
+      sessionStatsRef.current.total += 1;
+      if (isCorrect) sessionStatsRef.current.correct += 1;
+      questionScoredRef.current = true;
+    }
+  }, [transcript, activePart, currentPart1, currentPart2, recordAnswer]);
+
   // ========== 下一题 ==========
   const handleNext = useCallback(() => {
-    setCurrentIndex(prev => prev + 1);
+    // 计算下一题索引：若回到 0 说明刚完成一轮，记录本轮回话
+    const nextIndex = currentIndex + 1;
+    const justFinishedRound = nextIndex % TOTAL === 0;
+
+    if (justFinishedRound) {
+      recordSession({
+        module: 'speaking',
+        exerciseType: activePart === 1 ? 'speaking_p1' : 'speaking_p2',
+        subjectId: activePart === 1 ? 'speaking-p1' : 'speaking-p2',
+        subjectName: `口语 Part ${activePart}`,
+        correct: sessionStatsRef.current.correct,
+        total: sessionStatsRef.current.total,
+        duration: Math.round((Date.now() - roundStartRef.current) / 1000),
+      });
+      // 重置本轮累计
+      sessionStatsRef.current = { total: 0, correct: 0 };
+      roundStartRef.current = Date.now();
+    }
+
+    setCurrentIndex(nextIndex);
     setAudioBlob(null);
     setAudioUrl(null);
     transcriber.reset();
     setScoreResult(null);
     setShowKeywords(false);
     setImgError(false);
-    
+    questionScoredRef.current = false;
+
     // 停止 TTS
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
-  }, [transcriber]);
+  }, [currentIndex, TOTAL, activePart, transcriber, recordSession]);
   
   // ========== 清理 URL ==========
   useEffect(() => {
@@ -703,6 +763,9 @@ export default function SpeakingPage() {
             transcriber.reset();
             setImgError(false);
             setScoreResult(null);
+            sessionStatsRef.current = { total: 0, correct: 0 };
+            questionScoredRef.current = false;
+            roundStartRef.current = Date.now();
           }}
           className={`flex-1 py-3 rounded-lg text-sm font-semibold transition ${
             activePart === 1
@@ -721,6 +784,9 @@ export default function SpeakingPage() {
             transcriber.reset();
             setImgError(false);
             setScoreResult(null);
+            sessionStatsRef.current = { total: 0, correct: 0 };
+            questionScoredRef.current = false;
+            roundStartRef.current = Date.now();
           }}
           className={`flex-1 py-3 rounded-lg text-sm font-semibold transition ${
             activePart === 2

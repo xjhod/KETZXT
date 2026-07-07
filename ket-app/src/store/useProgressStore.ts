@@ -5,7 +5,7 @@ import { persist } from 'zustand/middleware';
 // 数据类型定义
 // ========================
 
-export type ModuleType = 'vocabulary' | 'grammar' | 'reading' | 'listening';
+export type ModuleType = 'vocabulary' | 'grammar' | 'reading' | 'listening' | 'speaking';
 export type ExerciseType =
   | 'spelling'       // 词汇拼写
   | 'matching'       // 词汇匹配
@@ -18,6 +18,8 @@ export type ExerciseType =
   | 'reading_p2'     // 阅读Part2
   | 'reading_p3'     // 阅读Part3
   | 'reading_p4'     // 阅读Part4
+  | 'speaking_p1'    // 口语Part1
+  | 'speaking_p2'    // 口语Part2
   | string;
 
 // 单次答题记录

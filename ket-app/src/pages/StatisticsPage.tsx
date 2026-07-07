@@ -23,6 +23,7 @@ const MODULE_NAMES: Record<string, string> = {
   grammar: '语法',
   reading: '阅读',
   listening: '听力',
+  speaking: '口语',
 };
 
 const MODULE_COLORS: Record<string, string> = {
@@ -30,6 +31,7 @@ const MODULE_COLORS: Record<string, string> = {
   grammar: '#10b981',
   reading: '#f59e0b',
   listening: '#ef4444',
+  speaking: '#ec4899',
 };
 
 export default function StatisticsPage() {
@@ -145,6 +147,7 @@ export default function StatisticsPage() {
       grammar: 0,
       reading: 0,
       listening: 0,
+      speaking: 0,
     };
 
     filteredRecords.forEach((r) => {
@@ -159,12 +162,13 @@ export default function StatisticsPage() {
       { name: '语法', value: counts.grammar, color: '#10b981' },
       { name: '阅读', value: counts.reading, color: '#f59e0b' },
       { name: '听力', value: counts.listening, color: '#ef4444' },
+      { name: '口语', value: counts.speaking, color: '#ec4899' },
     ].filter((item) => item.value > 0);
   }, [filteredRecords]);
 
   // 各模块正确率
   const moduleAccuracy = useMemo(() => {
-    return ['vocabulary', 'grammar', 'reading', 'listening'].map((module) => {
+    return ['vocabulary', 'grammar', 'reading', 'listening', 'speaking'].map((module) => {
       const moduleRecords = filteredRecords.filter((r) => r.module === module);
       const correct = moduleRecords.filter((r) => r.isCorrect).length;
       const total = moduleRecords.length;

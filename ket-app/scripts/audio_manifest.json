@@ -1,0 +1,362 @@
+[
+  {
+    "id": "L1-01-Q1",
+    "text": "Listen: The boy is playing football in the park."
+  },
+  {
+    "id": "L1-01-Q2",
+    "text": "Listen: The girl is eating an apple."
+  },
+  {
+    "id": "L1-01-Q3",
+    "text": "Listen: The man is riding a bicycle to work."
+  },
+  {
+    "id": "L1-01-Q4",
+    "text": "Listen: The girl is reading a book in the library."
+  },
+  {
+    "id": "L1-01-Q5",
+    "text": "Listen: The boy is playing the guitar."
+  },
+  {
+    "id": "L1-02-Q1",
+    "text": "Listen: This is a photo of my family. There are three people."
+  },
+  {
+    "id": "L1-02-Q2",
+    "text": "Listen: My dog's name is Bobo. He is two years old."
+  },
+  {
+    "id": "L1-02-Q3",
+    "text": "Listen: My grandmother likes knitting sweaters."
+  },
+  {
+    "id": "L1-02-Q4",
+    "text": "Listen: My little brother is drawing a picture of our house."
+  },
+  {
+    "id": "L1-02-Q5",
+    "text": "Listen: My mother is cooking dinner in the kitchen."
+  },
+  {
+    "id": "L1-03-Q1",
+    "text": "Listen: My school is very big. It has 20 classrooms."
+  },
+  {
+    "id": "L1-03-Q2",
+    "text": "Listen: We read books in the library every Monday."
+  },
+  {
+    "id": "L1-03-Q3",
+    "text": "Listen: We play football in PE class on Friday."
+  },
+  {
+    "id": "L1-03-Q4",
+    "text": "Listen: We eat lunch in the dining hall at 12 o'clock."
+  },
+  {
+    "id": "L1-03-Q5",
+    "text": "Listen: The school bus takes me home at 4pm."
+  },
+  {
+    "id": "L1-04-Q1",
+    "text": "Listen: Today is sunny and warm. Let's go to the beach!"
+  },
+  {
+    "id": "L1-04-Q2",
+    "text": "Listen: It is raining outside. Take your umbrella."
+  },
+  {
+    "id": "L1-04-Q3",
+    "text": "Listen: In winter, it snows a lot in my city."
+  },
+  {
+    "id": "L1-04-Q4",
+    "text": "Listen: After the rain, we saw a beautiful rainbow."
+  },
+  {
+    "id": "L1-04-Q5",
+    "text": "Listen: The wind is very strong today. Hold your hat!"
+  },
+  {
+    "id": "L1-05-Q1",
+    "text": "Listen: My favorite food is pizza with cheese and tomatoes."
+  },
+  {
+    "id": "L1-05-Q2",
+    "text": "Listen: I love eating ice cream in summer. It is very cold!"
+  },
+  {
+    "id": "L1-05-Q3",
+    "text": "Listen: Bananas are my favorite fruit. They are yellow."
+  },
+  {
+    "id": "L1-05-Q4",
+    "text": "Listen: Would you like a milkshake? It is very delicious!"
+  },
+  {
+    "id": "L1-05-Q5",
+    "text": "Listen: My mother made a chocolate cake for my birthday."
+  },
+  {
+    "id": "L1-06-Q1",
+    "text": "Listen: I have a pet dog. His name is Lucky."
+  },
+  {
+    "id": "L1-06-Q2",
+    "text": "Listen: My grandmother's cat is sleeping on the sofa."
+  },
+  {
+    "id": "L1-06-Q3",
+    "text": "Listen: Listen! A bird is singing in the tree."
+  },
+  {
+    "id": "L1-06-Q4",
+    "text": "Listen: My brother has a fish tank with five fish."
+  },
+  {
+    "id": "L1-06-Q5",
+    "text": "Listen: The rabbit is eating a carrot in the garden."
+  },
+  {
+    "id": "L1-07-Q1",
+    "text": "Listen: I play football with my friends after school."
+  },
+  {
+    "id": "L1-07-Q2",
+    "text": "Listen: My sister goes swimming every Saturday morning."
+  },
+  {
+    "id": "L1-07-Q3",
+    "text": "Listen: I ride my bicycle to school every day."
+  },
+  {
+    "id": "L1-07-Q4",
+    "text": "Listen: My father goes running in the park every morning."
+  },
+  {
+    "id": "L1-07-Q5",
+    "text": "Listen: Do you want to play tennis with me this weekend?"
+  },
+  {
+    "id": "L1-08-Q1",
+    "text": "Listen: My favorite color is red. I have a red bike."
+  },
+  {
+    "id": "L1-08-Q2",
+    "text": "Listen: The sky is blue and the clouds are white."
+  },
+  {
+    "id": "L1-08-Q3",
+    "text": "Listen: Grass is green and trees are green too."
+  },
+  {
+    "id": "L1-08-Q4",
+    "text": "Listen: The school bus is yellow in my country."
+  },
+  {
+    "id": "L1-08-Q5",
+    "text": "Listen: My mother has a purple dress for parties."
+  },
+  {
+    "id": "L1-09-Q1",
+    "text": "Listen: I take the bus to school every day."
+  },
+  {
+    "id": "L1-09-Q2",
+    "text": "Listen: My father drives his car to work."
+  },
+  {
+    "id": "L1-09-Q3",
+    "text": "Listen: My mother rides her bicycle to the market."
+  },
+  {
+    "id": "L1-09-Q4",
+    "text": "Listen: We are going to America by plane."
+  },
+  {
+    "id": "L1-09-Q5",
+    "text": "Listen: The train journey takes 3 hours."
+  },
+  {
+    "id": "L1-10-Q1",
+    "text": "Listen: I live in a small house with my family."
+  },
+  {
+    "id": "L1-10-Q2",
+    "text": "Listen: My bedroom is blue. I have a desk and a bed."
+  },
+  {
+    "id": "L1-10-Q3",
+    "text": "Listen: My mother cooks dinner in the kitchen."
+  },
+  {
+    "id": "L1-10-Q4",
+    "text": "Listen: The bathroom has a shower and a toilet."
+  },
+  {
+    "id": "L1-10-Q5",
+    "text": "Listen: I do my homework in the study every evening."
+  },
+  {
+    "id": "L2-01",
+    "text": "A: Hi Tom! What do you want to do this weekend? B: I want to go swimming. A: That sounds fun! I want to go to the cinema. B: Great! Saturday morning, let us meet at 10. A: OK! I also need to buy some food. B: Me too. Let us go to the supermarket after swimming. A: Perfect!"
+  },
+  {
+    "id": "L2-02",
+    "text": "A: Which subject do you like best? B: I like Science best because we do experiments. A: I prefer English. It is fun to learn new words. B: What about Maths? A: Maths is difficult for me. I need more practice. B: I can help you! Let us study together after school. A: That is very kind of you!"
+  },
+  {
+    "id": "L2-03",
+    "text": "A: Are you coming to my birthday party on Saturday? B: Yes! What time does it start? A: At 3pm. Please bring a gift if you like. B: Should I bring food? A: No, my mum will cook. Just bring yourself! B: OK. Where is your house? A: Number 15, Green Street. See you on Saturday!"
+  },
+  {
+    "id": "L2-04",
+    "text": "A: What do you like to do in your free time? B: I love painting. I go to art class every Wednesday. A: That is cool! I enjoy playing the guitar. B: How long have you played? A: For two years. I also like photography. B: Really? Can you teach me? A: Of course! Let us start next week."
+  },
+  {
+    "id": "L2-05",
+    "text": "A: Can I help you? B: Yes, I want to buy a birthday gift for my sister. A: How about a book? B: She already has many books. A: What about a necklace? B: That is a good idea. How much is it? A: It is 20 pounds. B: OK, I will take it. Do you have a gift box? A: Yes, it is free!"
+  },
+  {
+    "id": "L2-06",
+    "text": "A: Where do you want to go for the holiday? B: I want to go to Paris. I love French food. A: That sounds great! I prefer to go to Japan. I like Japanese culture. B: How will you get there? A: By plane, of course! B: I will take the train to Paris. It is cheaper. A: Good idea! How long will you stay? B: For one week. What about you? A: Me too!"
+  },
+  {
+    "id": "L2-07",
+    "text": "A: Good morning. What is wrong with you? B: I have a bad cough and my throat hurts. A: How long have you been like this? B: Since yesterday. A: Do you have a fever? B: No, my temperature is normal. A: OK. Take this medicine three times a day. Drink more water and rest. B: Thank you, doctor."
+  },
+  {
+    "id": "L2-08",
+    "text": "A: What club do you want to join this term? B: I want to join the football club. A: But you are not good at sports! B: That is why I need practice. What about you? A: I will join the chess club. B: That is perfect for you! A: Yes. The club meets every Tuesday after school. B: Our football club meets on Thursday. Let us go together after clubs!"
+  },
+  {
+    "id": "L2-09",
+    "text": "A: Mum, can I go out with my friends this weekend? B: After you finish your chores. A: What do I need to do? B: First, clean your bedroom. Then, wash your bicycle. A: That will take all Saturday! B: You can also help me cook dinner on Sunday. A: OK, I will do my chores. Can I go out on Sunday afternoon? B: Yes, that is fine."
+  },
+  {
+    "id": "L2-10",
+    "text": "A: Do you have any plans for the summer holiday? B: Yes! My family is going to Italy. A: That is amazing! How will you get there? B: We will fly to Rome. A: How long will you stay? B: For two weeks. We will visit museums, eat pizza, and go to the beach. A: I am going to a summer camp in the mountains. B: That sounds fun too! Will there be internet? A: No, it is a digital detox camp!"
+  },
+  {
+    "id": "L3-01",
+    "text": "Hello! Welcome to Sunny Summer Camp. To register, please fill in this form. First, write your name and age. Next, choose your activity: swimming, hiking, or art class. Then, write your parent's phone number. Finally, tick any food allergies you have. The camp starts on July 1st. See you there!"
+  },
+  {
+    "id": "L3-02",
+    "text": "Welcome to the City Library! To become a member, please fill in this form. First, write your full name and address. Then, choose your membership type: student membership is free, adult membership is 10 pounds per year. Next, write the subjects you are interested in: history, science, or fiction. Finally, sign at the bottom. You can borrow up to 5 books at a time. The library opens from 9am to 7pm, Monday to Saturday."
+  },
+  {
+    "id": "L3-03",
+    "text": "Welcome to Active Fitness Centre! My name is Coach Sarah. To become a member, please fill in this form. First, write your name and address. Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month. The premium membership includes a free personal trainer session every month. Next, write any injuries or health problems you have. Finally, sign at the bottom. We open every day from 6am to 10pm!"
+  },
+  {
+    "id": "L3-04",
+    "text": "Hello and welcome to Brighton Language School! To enroll, please complete this form. First, write your full name and nationality. Then, choose your course: General English, Business English, or Exam Preparation. Next, select your level: Beginner, Intermediate, or Advanced. After that, write your emergency contact number. Finally, pay the course fee: 200 pounds for 4 weeks. Classes start every Monday. Good luck with your studies!"
+  },
+  {
+    "id": "L3-05",
+    "text": "Welcome to Starlight Holiday Camp! To book your place, please fill in this form. First, write the camper's name and age. Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks. Next, select activities: sports, arts and crafts, or music. The cost is 150 pounds per week. include lunch and snacks. Finally, provide any dietary requirements. We look forward to seeing you!"
+  },
+  {
+    "id": "L3-06",
+    "text": "Hello! Welcome to Melody Music School. To apply, please complete this form. First, write your name and phone number. Then, choose your instrument: piano, guitar, violin, or drums. Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson). After that, choose your preferred day: Monday, Wednesday, or Saturday. Finally, sign at the bottom. We also offer a free trial lesson!"
+  },
+  {
+    "id": "L3-07",
+    "text": "Welcome to Champion Sports Club! To register, please fill in this form. First, write your name, age, and emergency contact. Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday). Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports. Finally, collect your club T-shirt from reception. Training starts next week!"
+  },
+  {
+    "id": "L3-08",
+    "text": "Hello artists! Welcome to Creative Art Studio. To book your place, please complete this form. First, write your name and email address. Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm). Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes. Finally, bring your own brushes and canvas. We provide all paints and materials. See you in class!"
+  },
+  {
+    "id": "L3-09",
+    "text": "Welcome to Tasty Cooking Workshop! To join our cooking classes, please register using this form. First, write your name and any food allergies. Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm). The cost is 35 per workshop, including all ingredients and recipes to take home. Next, indicate if you want to join our monthly cooking competition. Finally, provide your phone number for updates. Bon appétit!"
+  },
+  {
+    "id": "L3-10",
+    "text": "Thank you for your interest in our Community Volunteer Program! To apply, please complete this application form. First, write your full name, age, and occupation (student, worker, or retired). Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday). Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9). Finally, provide two references with their contact information. We will contact you within one week!"
+  },
+  {
+    "id": "L4-01",
+    "text": "Good morning, students! Today we are going to the City Museum. The bus leaves at 8:30 am, so please arrive 15 minutes early. The museum has three floors: the first floor is about dinosaurs, the second floor is about space, and the third floor is about ocean life. We will have a guided tour at 10 am. Please bring your notebook and pencil. Do not bring food or drinks into the museum. Any questions?"
+  },
+  {
+    "id": "L4-02",
+    "text": "Hi everyone! I am planning a weekend trip to the beach. We will leave on Saturday morning at 7 am. The journey takes about 2 hours by bus. We will stay in a small hotel near the sea. On Saturday afternoon, we can swim and play beach volleyball. On Sunday morning, we will visit the aquarium. The cost is 50 pounds per person, including hotel and breakfast. Please tell me by Thursday if you want to come!"
+  },
+  {
+    "id": "L4-03",
+    "text": "My favorite subject at school is Science. We have Science on Monday and Wednesday. In Science class, we do experiments and learn about plants, animals, and the human body. My second favorite subject is Art. We have Art on Friday. I love drawing and painting. I do not like Maths very much because it is difficult. But my teacher says I am getting better. We have Maths every day except Wednesday. After school on Tuesday and Thursday, I go to Maths club to practice more."
+  },
+  {
+    "id": "L4-04",
+    "text": "Hello everyone! Today I want to talk about healthy eating. A healthy meal should have vegetables, fruit, protein, and grains. For breakfast, you can eat eggs, bread, and a banana. For lunch, try to eat a sandwich with chicken or cheese, and some carrots or cucumbers. For dinner, eat fish or chicken with rice or potatoes, and lots of vegetables. Remember to drink 6 to 8 glasses of water every day. Try not to eat too much candy or chips. If you eat well, you will feel better and have more energy!"
+  },
+  {
+    "id": "L4-05",
+    "text": "I live in a house with my family. There are four people in my family: my mum, my dad, my sister, and me. My mum is a doctor. She works at the hospital from 8am to 5pm. My dad is a teacher. He teaches Maths at a secondary school. My sister is 18 years old. She is a university student. She studies English and History. I am 12 years old and I go to secondary school. We have dinner together every evening at 7pm. On weekends, we like to go to the park or watch a movie together."
+  },
+  {
+    "id": "L4-06",
+    "text": "Welcome to Star Sports Club! We have many sports for you to choose from. Football training is on Tuesday and Thursday from 4pm to 6pm. Basketball training is on Monday and Wednesday from 4pm to 6pm. Swimming is available every day except Sunday, from 10am to 8pm. The membership fee is 40 pounds per month for one sport, or 60 pounds per month for two sports. We also have a gym that is open from 6am to 10pm every day. Please sign up at the reception desk. See you on the field!"
+  },
+  {
+    "id": "L4-07",
+    "text": "I am having a birthday party next Saturday. I will be 13 years old. The party is at my house from 3pm to 6pm. My mum will make a chocolate cake. My dad will buy some pizza and juice. I have invited 15 friends from school. We will play games like musical chairs and pass the parcel. I also want to watch a movie with my friends. My mum says I can choose any movie I want. I hope it does not rain, because then we cannot play in the garden. I am very excited!"
+  },
+  {
+    "id": "L4-08",
+    "text": "My family is going to Italy for the summer holiday. We will fly to Rome on July 15th. We will stay in a hotel near the beach. The hotel has a swimming pool and a restaurant. We will stay for two weeks. During the holiday, we will visit museums, eat pizza and pasta, and go to the beach every day. My sister wants to go shopping. My dad wants to visit historical places. My mum wants to relax by the swimming pool. I want to swim and play beach volleyball. I am very excited about this trip!"
+  },
+  {
+    "id": "L4-09",
+    "text": "Welcome to the City Library! Here are some important rules. First, please be quiet in the library. No talking or loud noises. Second, you can borrow up to 5 books at a time. The loan period is 3 weeks. If you return books late, you must pay a fine. Third, you cannot eat or drink in the library. Fourth, you must show your library card to borrow books. Finally, the library is open from 9am to 7pm, Monday to Saturday. We are closed on Sunday. If you have any questions, please ask at the reception desk."
+  },
+  {
+    "id": "L4-10",
+    "text": "I go to school every day from Monday to Friday. My school day starts at 8:30am. I take the bus to school. The journey takes 20 minutes. My first class is English at 9am. Then I have Maths at 10am. At 11am, we have a 20-minute break. I usually eat a snack and talk with my friends. After break, I have Science at 11:20am. We have lunch at 1pm. After lunch, I have History at 2pm and Art at 3pm. School finishes at 4pm. I go home by bus and arrive at 4:30pm."
+  },
+  {
+    "id": "L5-01",
+    "text": "Welcome to the City Library! To become a member, please fill in this form. First, write your full name and address. Then, choose your membership type: student membership is free, adult membership is 10 pounds per year. Next, write the subjects you are interested in: history, science, or fiction. Finally, sign at the bottom. You can borrow up to 5 books at a time. The library opens from 9am to 7pm, Monday to Saturday."
+  },
+  {
+    "id": "L5-02",
+    "text": "Welcome to Active Fitness Centre! My name is Coach Sarah. To become a member, please fill in this form. First, write your name and address. Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month. The premium membership includes a free personal trainer session every month. Next, write any injuries or health problems you have. Finally, sign at the bottom. We open every day from 6am to 10pm!"
+  },
+  {
+    "id": "L5-03",
+    "text": "Hello and welcome to Brighton Language School! To enroll, please complete this form. First, write your full name and nationality. Then, choose your course: General English, Business English, or Exam Preparation. Next, select your level: Beginner, Intermediate, or Advanced. After that, write your emergency contact number. Finally, pay the course fee: 200 pounds for 4 weeks. Classes start every Monday. Good luck with your studies!"
+  },
+  {
+    "id": "L5-04",
+    "text": "Welcome to Starlight Holiday Camp! To book your place, please fill in this form. First, write the camper's name and age. Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks. Next, select activities: sports, arts and crafts, or music. The cost is 150 pounds per week. Include lunch and snacks. Finally, provide any dietary requirements. We look forward to seeing you!"
+  },
+  {
+    "id": "L5-05",
+    "text": "Hello! Welcome to Melody Music School. To apply, please complete this form. First, write your name and phone number. Then, choose your instrument: piano, guitar, violin, or drums. Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson). After that, choose your preferred day: Monday, Wednesday, or Saturday. Finally, sign at the bottom. We also offer a free trial lesson!"
+  },
+  {
+    "id": "L5-06",
+    "text": "Welcome to Champion Sports Club! To register, please fill in this form. First, write your name, age, and emergency contact. Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday). Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports. Finally, collect your club T-shirt from reception. Training starts next week!"
+  },
+  {
+    "id": "L5-07",
+    "text": "Hello artists! Welcome to Creative Art Studio. To book your place, please complete this form. First, write your name and email address. Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm). Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes. Finally, bring your own brushes and canvas. We provide all paints and materials. See you in class!"
+  },
+  {
+    "id": "L5-08",
+    "text": "Welcome to Tasty Cooking Workshop! To join our cooking classes, please register using this form. First, write your name and any food allergies. Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm). The cost is 35 per workshop, including all ingredients and recipes to take home. Next, indicate if you want to join our monthly cooking competition. Finally, provide your phone number for updates. Bon appétit!"
+  },
+  {
+    "id": "L5-09",
+    "text": "Thank you for your interest in our Community Volunteer Program! To apply, please complete this application form. First, write your full name, age, and occupation (student, worker, or retired). Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday). Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9). Finally, provide two references with their contact information. We will contact you within one week!"
+  },
+  {
+    "id": "L5-10",
+    "text": "Hello! Welcome to Sunny Summer Camp. To register, please fill in this form. First, write your name and age. Next, choose your activity: swimming, hiking, or art class. Then, write your parent's phone number. Finally, tick any food allergies you have. The camp starts on July 1st. See you there!"
+  }
+]

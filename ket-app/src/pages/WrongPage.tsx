@@ -7,6 +7,7 @@ const MODULE_LABELS: Record<ModuleType, { label: string; icon: string; color: st
   grammar: { label: '语法', icon: '📝', color: 'text-purple-700', bg: 'bg-purple-50 border-purple-200' },
   reading: { label: '阅读', icon: '📖', color: 'text-green-700', bg: 'bg-green-50 border-green-200' },
   listening: { label: '听力', icon: '🎧', color: 'text-orange-700', bg: 'bg-orange-50 border-orange-200' },
+  speaking: { label: '口语', icon: '🗣️', color: 'text-pink-700', bg: 'bg-pink-50 border-pink-200' },
 };
 
 const EXERCISE_LABELS: Record<string, string> = {
@@ -21,6 +22,8 @@ const EXERCISE_LABELS: Record<string, string> = {
   reading_p2: '阅读Part2',
   reading_p3: '阅读Part3',
   reading_p4: '阅读Part4',
+  speaking_p1: '口语Part1',
+  speaking_p2: '口语Part2',
 };
 
 function formatDate(iso: string) {
@@ -206,12 +209,12 @@ export default function WrongPage() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // 添加"listening"到模块列表
-  const modules: Array<ModuleType | 'all'> = ['all', 'vocabulary', 'grammar', 'reading', 'listening'];
+  const modules: Array<ModuleType | 'all'> = ['all', 'vocabulary', 'grammar', 'reading', 'listening', 'speaking'];
 
   const wrongList = getWrongAnswers(activeModule === 'all' ? undefined : activeModule);
 
   // 各模块统计
-  const stats = (['vocabulary', 'grammar', 'reading', 'listening'] as ModuleType[]).map((m) => ({
+  const stats = (['vocabulary', 'grammar', 'reading', 'listening', 'speaking'] as ModuleType[]).map((m) => ({
     module: m,
     ...getModuleStats(m),
   }));
