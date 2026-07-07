@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface AudioButtonProps {
   text: string;           // 要播放的文本（无预生成音频时走 TTS）
