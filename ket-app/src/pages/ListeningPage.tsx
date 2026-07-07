@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
 import type { ListeningPart1Set, ListeningPart1Question, ListeningPart2Set, ListeningPart3Set, ListeningPart4Set, ListeningPart5Set } from '../types';
-import { AudioButton } from '../components/AudioButton';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
 let voicesReady = false;
@@ -238,15 +237,11 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
       <div className="bg-white rounded-2xl shadow p-6 mb-6 text-center">
         <div className="text-6xl mb-3">{q.imageEmoji}</div>
 
-        {/* 播放按钮 - 使用统一组件，增大尺寸 */}
+        {/* 播放按钮 - 简洁风格 */}
         <div className="mb-4 flex justify-center">
-          <AudioButton
-            text={q.audioText}
-            audioSrc={`/audio/${q.id}.mp3`}
-            label="播放听力"
-            size="large"
-            showSpeedControl={true}
-          />
+          <button onClick={playQuestion} disabled={isPlaying} className={`btn-primary mb-4 ${isPlaying ? 'animate-pulse' : ''}`}>
+            {isPlaying ? '播放中...' : '🔊 播放听力'}
+          </button>
         </div>
 
         {!submitted && (
@@ -387,16 +382,13 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
           <p className="text-sm text-gray-400 mb-1">{set.title}</p>
           <p className="text-xs text-gray-400 mb-4">{set.monologueAudio ? set.monologueAudio.substring(0, 100) + '...' : ''}</p>
           
-          {/* 播放按钮 - 使用统一组件，增大尺寸 */}
+          {/* 播放按钮 - 简洁风格，播完后自动显示选项 */}
           <div className="mb-4 flex justify-center">
-            <AudioButton
-              text={set.monologueAudio || ''}
-              audioSrc={`/audio/${set.id}.mp3`}
-              label="播放独白"
-              size="large"
-              showSpeedControl={true}
-            />
+            <button onClick={playDialogue} disabled={isPlaying} className={`btn-primary mb-4 ${isPlaying ? 'animate-pulse' : ''}`}>
+              {isPlaying ? '播放中...' : '🔊 播放听力'}
+            </button>
           </div>
+          <p className="text-xs text-gray-400 text-center">点击播放后听录音，然后选择答案</p>
         </div>
       </div>
     );
