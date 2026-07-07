@@ -530,6 +530,10 @@ function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
     }
   }, [sessionDone, correctCount, sessionQs.length]);
 
+  const q = sessionQs[idx];
+  // ✅ useMemo 必须在 early return 之前调用，否则 sessionDone 切换时 hooks 数量变化会触发 Error #300
+  const shuffledOptions = useMemo(() => (q ? [...q.options].sort(() => Math.random() - 0.5) : []), [q]);
+
   if (sessionDone) {
     return (
       <SessionResult
@@ -540,8 +544,6 @@ function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
       />
     );
   }
-
-  const q = sessionQs[idx];
 
   const submitAnswer = () => {
     if (!selected) return;
@@ -564,9 +566,6 @@ function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
     setSelected(null);
     setResult(null);
   };
-
-  // 打乱选项顺序（每题重新生成）
-  const shuffledOptions = useMemo(() => [...q.options].sort(() => Math.random() - 0.5), [q.id]);
 
   return (
     <div>
@@ -670,6 +669,15 @@ function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () =>
     }
   }, [sessionDone, correctCount, sessionQs.length]);
 
+  const q = sessionQs[idx];
+  // ✅ useMemo 必须在 early return 之前调用，否则 sessionDone 切换时 hooks 数量变化会触发 Error #300
+  const choiceOptions = useMemo(() => {
+    if (!q) return [];
+    const others = theme.words.filter(w => w.en !== q.answer).map(w => w.en);
+    const distractors = [...others].sort(() => Math.random() - 0.5).slice(0, 3);
+    return [q.answer, ...distractors].sort(() => Math.random() - 0.5);
+  }, [q, theme.words]);
+
   if (sessionDone) {
     return (
       <SessionResult
@@ -680,15 +688,6 @@ function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () =>
       />
     );
   }
-
-  const q = sessionQs[idx];
-
-  // 从同主题单词中生成选项（每题动态生成干扰项）
-  const choiceOptions = useMemo(() => {
-    const others = theme.words.filter(w => w.en !== q.answer).map(w => w.en);
-    const distractors = [...others].sort(() => Math.random() - 0.5).slice(0, 3);
-    return [q.answer, ...distractors].sort(() => Math.random() - 0.5);
-  }, [q.id, q.answer, theme.words]);
 
   const submitAnswer = () => {
     if (!input.trim()) return;

@@ -299,8 +299,13 @@ function PracticePage({ grammarId, onBack }: { grammarId: string; onBack: () => 
     if (!typeMap) return [];
     return typeMap[pType] || [];
   }, [pType, grammarId]);
-  if (questions.length === 0 || idx >= questions.length) {
-    if (idx > 0) {
+  const sessionDone = questions.length === 0 || idx >= questions.length;
+
+  // ✅ 用 useEffect 记录练习结果，并用 ref 守卫，避免渲染体内调用 recordSession 导致无限重渲染卡死
+  const practiceRecordedRef = useRef(false);
+  useEffect(() => {
+    if (sessionDone && idx > 0 && !practiceRecordedRef.current) {
+      practiceRecordedRef.current = true;
       recordSession({
         module: 'grammar',
         exerciseType: pType === 'fill' ? 'grammar_fill' : pType === 'choice' ? 'grammar_choice' : 'grammar_correction',
@@ -309,6 +314,9 @@ function PracticePage({ grammarId, onBack }: { grammarId: string; onBack: () => 
         duration: Math.round((Date.now() - startTime.current) / 1000),
       });
     }
+  }, [sessionDone, idx, score, pType, grammarId, gp?.nameZh]);
+
+  if (sessionDone) {
     return (
       <div className="text-center py-12 card">
         <p className="text-4xl mb-4">🎉</p>
@@ -355,7 +363,7 @@ function PracticePage({ grammarId, onBack }: { grammarId: string; onBack: () => 
       <div className="flex gap-2 mb-4">
         {(Object.keys(pTypeLabels) as PracticeType[]).map(pt => (
           <button key={pt}
-            onClick={() => { setPType(pt); setIdx(0); setScore(0); }}
+            onClick={() => { setPType(pt); setIdx(0); setScore(0); practiceRecordedRef.current = false; }}
             className={`px-3 py-1 rounded text-sm ${pType === pt ? 'bg-blue-100 text-blue-700 font-medium' : 'bg-gray-100 text-gray-600'}`}
           >
             {pt === 'fill' ? '✏️ 填空' : pt === 'choice' ? '📋 选择' : '🔧 改错'}
