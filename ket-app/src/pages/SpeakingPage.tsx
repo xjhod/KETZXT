@@ -61,16 +61,15 @@ function scoreAnswer(transcript: string, keywords: string[]): ScoreResult {
 
 // ========== TTS 播放标准答案 ==========
 function playModelAnswer(text: string): void {
-  if ('speechSynthesis' in window) {
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis) {
     window.speechSynthesis.cancel(); // 停止当前播放
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = 0.9; // 稍慢
     utterance.pitch = 1.0;
     window.speechSynthesis.speak(utterance);
-  } else {
-    alert('您的浏览器不支持语音合成。请使用 Chrome 或 Edge 浏览器。');
   }
+  // 不支持语音合成时静默（发音按钮已通过 AudioButton 提示）
 }
 
 // ========== 转录结果面板（真实语音识别）==========
@@ -131,6 +130,7 @@ export default function SpeakingPage() {
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [showKeywords, setShowKeywords] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [manualText, setManualText] = useState('');
 
   // 真实语音识别（Web Speech API，无需大模型）
   const transcriber = useSpeechTranscriber();
@@ -159,7 +159,15 @@ export default function SpeakingPage() {
   const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      // 兼容不同浏览器支持的录音格式（部分国产浏览器不支持 audio/webm）
+      let mimeType = '';
+      const candidateTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+      if (typeof MediaRecorder !== 'undefined' && typeof MediaRecorder.isTypeSupported === 'function') {
+        for (const t of candidateTypes) {
+          if (MediaRecorder.isTypeSupported(t)) { mimeType = t; break; }
+        }
+      }
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       audioChunksRef.current = [];
       
       recorder.ondataavailable = (e: BlobEvent) => {
@@ -210,13 +218,14 @@ export default function SpeakingPage() {
   
   // ========== 评分 ==========
   const handleScore = useCallback(() => {
-    if (!transcript) {
-      alert('请先录音并获取识别结果。');
+    const answer = (transcript || manualText).trim();
+    if (!answer) {
+      alert('请先录音获取识别结果，或在下方输入框输入文字后评分。');
       return;
     }
 
     const keywords = activePart === 1 ? currentPart1.keywords : currentPart2.keywords;
-    const result = scoreAnswer(transcript, keywords);
+    const result = scoreAnswer(answer, keywords);
     setScoreResult(result);
 
     // 口语达标制：60 分及以上记为"达标"（相当于答对）
@@ -235,7 +244,7 @@ export default function SpeakingPage() {
       subjectName: `口语 Part ${activePart}`,
       questionId: q.id,
       questionText,
-      userAnswer: transcript,
+      userAnswer: answer,
       correctAnswer: keywords.join('、'),
       isCorrect,
     });
@@ -273,6 +282,7 @@ export default function SpeakingPage() {
     setAudioBlob(null);
     setAudioUrl(null);
     transcriber.reset();
+    setManualText('');
     setScoreResult(null);
     setShowKeywords(false);
     setImgError(false);
@@ -378,7 +388,21 @@ export default function SpeakingPage() {
               建议回答 30 秒左右
             </p>
           </div>
-          
+
+          {/* 手动输入（语音识别不可用时的替代方案）*/}
+          <div className="w-full mt-2">
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+              或用键盘输入你的回答：
+            </label>
+            <textarea
+              value={manualText}
+              onChange={(e) => setManualText(e.target.value)}
+              rows={3}
+              placeholder="在此输入英文回答，例如：I like playing football with my friends."
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
           {/* 录音回放 */}
           {audioUrl && (
             <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -468,7 +492,7 @@ export default function SpeakingPage() {
         
         {/* 操作按钮 */}
         <div className="flex space-x-4">
-          {audioUrl && !scoreResult && (
+          {(audioUrl || manualText.trim()) && !scoreResult && (
             <button
               onClick={handleScore}
               className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
@@ -615,7 +639,21 @@ export default function SpeakingPage() {
               建议回答 1-2 分钟，覆盖所有讨论问题
             </p>
           </div>
-          
+
+          {/* 手动输入（语音识别不可用时的替代方案）*/}
+          <div className="w-full mt-2">
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+              或用键盘输入你的回答：
+            </label>
+            <textarea
+              value={manualText}
+              onChange={(e) => setManualText(e.target.value)}
+              rows={3}
+              placeholder="在此输入英文回答，覆盖各个讨论问题。"
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
           {/* 录音回放 */}
           {audioUrl && (
             <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -705,7 +743,7 @@ export default function SpeakingPage() {
 
         {/* 操作按钮 */}
         <div className="flex space-x-4">
-          {audioUrl && !scoreResult && (
+          {(audioUrl || manualText.trim()) && !scoreResult && (
             <button
               onClick={handleScore}
               className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
@@ -745,9 +783,9 @@ export default function SpeakingPage() {
       </div>
 
       {!transcriber.supported && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-          <p className="text-sm text-red-700 dark:text-red-300">
-            ⚠️ 当前浏览器不支持语音识别功能。请使用 <strong>Chrome</strong> 或 <strong>Edge</strong> 浏览器打开本页面，否则无法录音评分。
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            ⚠️ 当前浏览器的语音识别不可用（多为国产手机浏览器或网络限制）。你可以直接在题目下方的输入框打字作答，评分与进度记录均正常可用。
           </p>
         </div>
       )}

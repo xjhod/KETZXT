@@ -27,6 +27,9 @@ export function AudioButton({
   const [playCount, setPlayCount] = useState(0);
   const audioElRef = useRef<HTMLAudioElement | null>(null);
 
+  // 浏览器语音合成(TTS)可用性检测：部分国产手机浏览器不支持 speechSynthesis
+  const ttsAvailable = typeof window !== 'undefined' && !!window.speechSynthesis;
+
   // 播放语音
   const playSpeech = useCallback(async (rate = playbackRate) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
@@ -112,7 +115,7 @@ export function AudioButton({
             playFile();
           }
         }}
-        disabled={!text || (maxPlays ? playCount >= maxPlays : false)}
+        disabled={!text || (maxPlays ? playCount >= maxPlays : false) || (!audioSrc && !ttsAvailable)}
         className={`
           ${sizeStyles[size]}
           rounded-full 
@@ -140,6 +143,9 @@ export function AudioButton({
       {/* 按钮文字说明 */}
       <div className="text-center">
         <p className="text-sm font-medium text-gray-700">{label}</p>
+        {!audioSrc && !ttsAvailable && (
+          <p className="text-xs text-amber-500 mt-1">⚠️ 当前浏览器不支持语音播放</p>
+        )}
         {maxPlays && (
           <p className="text-xs text-gray-400 mt-1">
             剩余 {maxPlays - playCount} 次

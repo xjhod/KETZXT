@@ -112,6 +112,7 @@ function SessionResult({ correct, total, onBack, onRetry }: { correct: number; t
 
 // ========== 单词发音工具函数 ==========
 function speakWord(word: string) {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(word);
   utter.lang = 'en-US';
@@ -140,7 +141,7 @@ function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void })
     if (word) {
       setFlipped(false);
       resetPro();
-      const timer = setTimeout(() => speakWord(word.en), 300);
+      const timer = setTimeout(() => { if (typeof window !== 'undefined' && window.speechSynthesis) speakWord(word.en); }, 300);
       return () => clearTimeout(timer);
     }
   }, [idx]);
@@ -326,6 +327,7 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   const [transcript, setTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState<string | null>(null);
+  const [manualInput, setManualInput] = useState('');
   const { recordAnswer, recordSession } = useProgressStore();
   const startTime = useRef(Date.now());
 
@@ -385,8 +387,9 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   const q = sessionQs[idx];
 
   const checkAnswer = () => {
-    if (!transcript) return;
-    const ok = transcript.toLowerCase().replace(/[.\s]/g, '') === q.en.toLowerCase();
+    const answer = (transcript || manualInput).trim().toLowerCase().replace(/[.\s]/g, '');
+    if (!answer) return;
+    const ok = answer === q.en.toLowerCase();
     setResult(ok ? 'correct' : 'wrong');
     if (ok) setCorrectCount(correctCount + 1);
     recordAnswer({
@@ -394,7 +397,7 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
       subjectId: themeId, subjectName: theme.nameZh,
       questionId: q.id,
       questionText: `拼写单词: ${q.audioText}（音标: ${q.phonetic}）`,
-      userAnswer: transcript,
+      userAnswer: answer,
       correctAnswer: q.en,
       isCorrect: ok,
     });
@@ -467,6 +470,20 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
             <button onClick={clearError} className="text-xs text-yellow-600 underline mt-1">关闭提示</button>
           </div>
         )}
+
+        {/* 手动输入（语音识别不可用时的替代方案）*/}
+        <div className="mb-4">
+          <input
+            type="text"
+            value={manualInput}
+            onChange={(e) => setManualInput(e.target.value)}
+            placeholder="或在此直接输入单词（适合不支持语音的浏览器）"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {manualInput.trim() && !isListening && !result && (
+            <button onClick={checkAnswer} className="btn-primary mt-2 w-full">确认提交</button>
+          )}
+        </div>
 
         {/* 识别结果 */}
         {transcript && !result && (
