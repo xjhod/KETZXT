@@ -1836,7 +1836,7 @@ export const theme17: VocabularyTheme = {
 };
 
 // ========== 所有主题导出 ==========
-export const allThemes: VocabularyTheme[] = [themeFamily, themeFood, themeSchool, themeTransport, themeHome, themeHealth, themeWeather, themeClothing, themeAnimals, themeJobs, themeSports, themeDietHealth, themeEmotion, themeDirection, themeTime, themeSocialShopping, themeAdverbsPreps, themeShoppingMoney, themeTravel, themeTechnology, themeDailyActivities, theme06, theme07, theme08, theme09, theme10, theme11, theme12, theme13, theme14, theme15, theme16, theme17];
+export const allThemes: VocabularyTheme[] = [themeFamily, themeFood, themeSchool, themeTransport, themeHome, themeHealth, themeWeather, themeClothing, themeAnimals, themeJobs, themeSports, themeDietHealth, themeEmotion, themeDirection, themeTime, themeSocialShopping, themeAdverbsPreps, themeShoppingMoney, themeTravel, themeTechnology, themeDailyActivities];
 
 // ========== 拼写练习题（所有词） ==========
 const makeSpelling = (words: { id: string; en: string; phonetic: string }[], startId: number): SpellingQuestion[] =>
@@ -1864,18 +1864,6 @@ export const spellingQuestions: SpellingQuestion[] = [
   ...makeSpelling(themeTravel.words, 1286),
   ...makeSpelling(themeTechnology.words, 1356),
   ...makeSpelling(themeDailyActivities.words, 1426),
-  ...makeSpelling(theme06.words, 1501),
-  ...makeSpelling(theme07.words, 1601),
-  ...makeSpelling(theme08.words, 1701),
-  ...makeSpelling(theme09.words, 1801),
-  ...makeSpelling(theme10.words, 1901),
-  ...makeSpelling(theme11.words, 2001),
-  ...makeSpelling(theme12.words, 2101),
-  ...makeSpelling(theme13.words, 2201),
-  ...makeSpelling(theme14.words, 2301),
-  ...makeSpelling(theme15.words, 2401),
-  ...makeSpelling(theme16.words, 2501),
-  ...makeSpelling(theme17.words, 2553),
 ];
 
 // ========== 词义匹配题（每个主题10题）==========
