@@ -121,9 +121,9 @@ export const themeFamily: VocabularyTheme = {
     { id: 'w3268', en: 'teenage', phonetic: '/ˈtiˌneɪʤ/', zh: '青少年的', example: 'This is a teenage.', exampleZh: '这是一个青少年的。' },
     { id: 'w3269', en: 'ugly', phonetic: '/ˈəgli/', zh: '丑陋的', example: 'This is an ugly.', exampleZh: '这是一个丑陋的。' },
     { id: 'w3270', en: 'youth', phonetic: '/juθ/', zh: '青春', example: 'This is a youth.', exampleZh: '这是一个青春。' },
-    { id: 'w3682', en: 'students', phonetic: /ˈstudənts/, zh: '学生们', example: 'The students are in the classroom.', exampleZh: '学生们在教室里。' },
-    { id: 'w3683', en: 'teenagers', phonetic: /ˈtiˌneɪʤərz/, zh: '青少年', example: 'Teenagers love music.', exampleZh: '青少年热爱音乐。' },
-    { id: 'w3684', en: 'shorter', phonetic: /ˈʃɔrtər/, zh: '更矮的', example: 'She is shorter than me.', exampleZh: '她比我矮。' },
+    { id: 'w3682', en: 'students', phonetic: '/ˈstudənts/', zh: '学生们', example: 'The students are in the classroom.', exampleZh: '学生们在教室里。' },
+    { id: 'w3683', en: 'teenagers', phonetic: '/ˈtiˌneɪʤərz/', zh: '青少年', example: 'Teenagers love music.', exampleZh: '青少年热爱音乐。' },
+    { id: 'w3684', en: 'shorter', phonetic: '/ˈʃɔrtər/', zh: '更矮的', example: 'She is shorter than me.', exampleZh: '她比我矮。' },
 
   ],
 };
@@ -238,12 +238,12 @@ export const themeFood: VocabularyTheme = {
     { id: 'w3448', en: 'toast', phonetic: '/toʊst/', zh: '吐司', example: 'This is a toast.', exampleZh: '这是一个吐司。' },
     { id: 'w3449', en: 'turkey', phonetic: '/ˈtɜːki/', zh: '火鸡', example: 'We eat turkey at Christmas.', exampleZh: '我们圣诞节吃火鸡。' },
     { id: 'w3450', en: 'yogurt', phonetic: '/ˈjoʊgərt/', zh: '酸奶；酵母乳', example: 'This is a yogurt.', exampleZh: '这是一个酸奶；酵母乳。' },
-    { id: 'w3676', en: 'vegetables', phonetic: /ˈvɛʤtəbəlz/, zh: '蔬菜', example: 'Children should eat more vegetables.', exampleZh: '孩子们应该多吃蔬菜。' },
-    { id: 'w3677', en: 'potatoes', phonetic: /pəˈteɪtoʊz/, zh: '土豆', example: 'I like potatoes.', exampleZh: '我喜欢土豆。' },
-    { id: 'w3678', en: 'tomatoes', phonetic: /təˈmɑtoʊz/, zh: '西红柿', example: 'Tomatoes are red.', exampleZh: '西红柿是红色的。' },
-    { id: 'w3679', en: 'onions', phonetic: /ˈənjənz/, zh: '洋葱', example: 'I don\'t like onions.', exampleZh: '我不喜欢洋葱。' },
-    { id: 'w3680', en: 'carrots', phonetic: /ˈkɛrəts/, zh: '胡萝卜', example: 'Carrots are orange.', exampleZh: '胡萝卜是橙色的。' },
-    { id: 'w3681', en: 'eggs', phonetic: /ɛgz/, zh: '鸡蛋（复数）', example: 'I eat eggs for breakfast.', exampleZh: '我早餐吃鸡蛋。' },
+    { id: 'w3676', en: 'vegetables', phonetic: '/ˈvɛʤtəbəlz/', zh: '蔬菜', example: 'Children should eat more vegetables.', exampleZh: '孩子们应该多吃蔬菜。' },
+    { id: 'w3677', en: 'potatoes', phonetic: '/pəˈteɪtoʊz/', zh: '土豆', example: 'I like potatoes.', exampleZh: '我喜欢土豆。' },
+    { id: 'w3678', en: 'tomatoes', phonetic: '/təˈmɑtoʊz/', zh: '西红柿', example: 'Tomatoes are red.', exampleZh: '西红柿是红色的。' },
+    { id: 'w3679', en: 'onions', phonetic: '/ˈənjənz/', zh: '洋葱', example: 'I don\'t like onions.', exampleZh: '我不喜欢洋葱。' },
+    { id: 'w3680', en: 'carrots', phonetic: '/ˈkɛrəts/', zh: '胡萝卜', example: 'Carrots are orange.', exampleZh: '胡萝卜是橙色的。' },
+    { id: 'w3681', en: 'eggs', phonetic: '/ɛgz/', zh: '鸡蛋（复数）', example: 'I eat eggs for breakfast.', exampleZh: '我早餐吃鸡蛋。' },
 
   ],
 };
@@ -382,7 +382,7 @@ export const themeSchool: VocabularyTheme = {
     { id: 'w3165', en: 'trainer', phonetic: '/ˈtreɪnər/', zh: '教练员', example: 'This is a trainer.', exampleZh: '这是一个教练员。' },
     { id: 'w3166', en: 'university', phonetic: '/ˌjunəˈvərsəti/', zh: '大学', example: 'This is an university.', exampleZh: '这是一个大学。' },
     { id: 'w3685', en: '3', phonetic: '/θriː/', zh: '三', example: 'I am in Class 3.', exampleZh: '我在三班。' },
-    { id: 'w3686', en: 'teaches', phonetic: /ˈtiʧɪz/, zh: '教（第三人称单数）', example: 'My teacher teaches me English.', exampleZh: '我的老师教我英语。' },
+    { id: 'w3686', en: 'teaches', phonetic: '/ˈtiʧɪz/', zh: '教（第三人称单数）', example: 'My teacher teaches me English.', exampleZh: '我的老师教我英语。' },
 
   ],
 };
@@ -497,9 +497,9 @@ export const themeTransport: VocabularyTheme = {
     { id: 'w3524', en: 'truck', phonetic: '/trək/', zh: '卡车', example: 'This is a truck.', exampleZh: '这是一个卡车。' },
     { id: 'w3525', en: 'wheel', phonetic: '/wil/', zh: '车轮；方向盘', example: 'This is a wheel.', exampleZh: '这是一个车轮；方向盘。' },
     { id: 'w3526', en: 'wing', phonetic: '/wɪŋ/', zh: '机翼', example: 'The bird has two wings.', exampleZh: '鸟有两只翅膀。' },
-    { id: 'w3687', en: 'delayed', phonetic: /dɪˈleɪd/, zh: '延误的', example: 'The flight is delayed.', exampleZh: '航班延误了。' },
-    { id: 'w3688', en: 'departs', phonetic: /dɪˈpɑrts/, zh: '出发（第三人称单数）', example: 'The bus departs at 8 a.m.', exampleZh: '公交车早上8点出发。' },
-    { id: 'w3689', en: 'rank', phonetic: /ræŋk/, zh: '出租车站', example: 'There is a taxi rank outside.', exampleZh: '外面有一个出租车站。' },
+    { id: 'w3687', en: 'delayed', phonetic: '/dɪˈleɪd/', zh: '延误的', example: 'The flight is delayed.', exampleZh: '航班延误了。' },
+    { id: 'w3688', en: 'departs', phonetic: '/dɪˈpɑrts/', zh: '出发（第三人称单数）', example: 'The bus departs at 8 a.m.', exampleZh: '公交车早上8点出发。' },
+    { id: 'w3689', en: 'rank', phonetic: '/ræŋk/', zh: '出租车站', example: 'There is a taxi rank outside.', exampleZh: '外面有一个出租车站。' },
 
   ],
 };
@@ -956,8 +956,8 @@ export const themeAnimals: VocabularyTheme = {
     { id: 'w2872', en: 'thick', phonetic: '/θɪk/', zh: '厚的', example: 'The book is very thick.', exampleZh: '这本书很厚。' },
     { id: 'w2873', en: 'valley', phonetic: '/ˈvæli/', zh: '山谷', example: 'The river runs through the valley.', exampleZh: '河流穿过山谷。' },
     { id: 'w2874', en: 'waterfall', phonetic: '/ˈwɔtərˌfɔl/', zh: '瀑布', example: 'The waterfall is very loud.', exampleZh: '瀑布声音很大。' },
-    { id: 'w3693', en: 'birds', phonetic: /bərdz/, zh: '鸟', example: 'Birds can fly in the sky.', exampleZh: '鸟能在天上飞。' },
-    { id: 'w3694', en: 'flowers', phonetic: /flaʊərz/, zh: '花', example: 'The flowers are beautiful.', exampleZh: '这些花很美。' },
+    { id: 'w3693', en: 'birds', phonetic: '/bərdz/', zh: '鸟', example: 'Birds can fly in the sky.', exampleZh: '鸟能在天上飞。' },
+    { id: 'w3694', en: 'flowers', phonetic: '/flaʊərz/', zh: '花', example: 'The flowers are beautiful.', exampleZh: '这些花很美。' },
 
   ],
 };
@@ -1034,7 +1034,7 @@ export const themeJobs: VocabularyTheme = {
     { id: 'w3314', en: 'waitress', phonetic: '/ˈweɪtrəs/', zh: '女服务员', example: 'This is a waitress.', exampleZh: '这是一个女服务员。' },
     { id: 'w3315', en: 'worker', phonetic: '/ˈwərkər/', zh: '工人', example: 'This is a worker.', exampleZh: '这是一个工人。' },
     { id: 'w3316', en: 'writer', phonetic: '/ˈraɪtər/', zh: '作家；作者', example: 'This is a writer.', exampleZh: '这是一个作家；作者。' },
-    { id: 'w3695', en: 'farmers', phonetic: /ˈfɑrmərz/, zh: '农民', example: 'Farmers grow food for us.', exampleZh: '农民为我们种植粮食。' },
+    { id: 'w3695', en: 'farmers', phonetic: '/ˈfɑrmərz/', zh: '农民', example: 'Farmers grow food for us.', exampleZh: '农民为我们种植粮食。' },
 
   ],
 };
@@ -1255,9 +1255,9 @@ export const themeHealth: VocabularyTheme = {
     { id: 'w3574', en: 'use', phonetic: '/juz/', zh: '使用', example: 'This is an use.', exampleZh: '这是一个使用。' },
     { id: 'w3575', en: 'walk', phonetic: '/wɔk/', zh: '步行', example: 'This is a walk.', exampleZh: '这是一个步行。' },
     { id: 'w3576', en: 'weight', phonetic: '/weɪt/', zh: '体重', example: 'This is a weight.', exampleZh: '这是一个体重。' },
-    { id: 'w3690', en: 'eyes', phonetic: /aɪz/, zh: '眼睛', example: 'She has blue eyes.', exampleZh: '她有一双蓝眼睛。' },
-    { id: 'w3691', en: 'vitamins', phonetic: /ˈvaɪtəmənz/, zh: '维生素', example: 'Take vitamins every day.', exampleZh: '每天服用维生素。' },
-    { id: 'w3692', en: 'tablets', phonetic: /ˈtæbləts/, zh: '药片', example: 'Take two tablets after meals.', exampleZh: '饭后服两片药。' },
+    { id: 'w3690', en: 'eyes', phonetic: '/aɪz/', zh: '眼睛', example: 'She has blue eyes.', exampleZh: '她有一双蓝眼睛。' },
+    { id: 'w3691', en: 'vitamins', phonetic: '/ˈvaɪtəmənz/', zh: '维生素', example: 'Take vitamins every day.', exampleZh: '每天服用维生素。' },
+    { id: 'w3692', en: 'tablets', phonetic: '/ˈtæbləts/', zh: '药片', example: 'Take two tablets after meals.', exampleZh: '饭后服两片药。' },
 
   ],
 };
@@ -1525,7 +1525,7 @@ export const themeTime: VocabularyTheme = {
     { id: 'w3407', en: 'Friday', phonetic: '/ˈfraɪˌdeɪ/', zh: '星期五', example: 'This is a Friday.', exampleZh: '这是一个星期五。' },
     { id: 'w3408', en: 'Saturday', phonetic: '/ˈsæˌtɪˌdeɪ/', zh: '星期六', example: 'This is a Saturday.', exampleZh: '这是一个星期六。' },
     { id: 'w3409', en: 'Sunday', phonetic: '/ˈsənˌdi/', zh: '星期日', example: 'This is a Sunday.', exampleZh: '这是一个星期日。' },
-    { id: 'w3696', en: 'time', phonetic: /taɪm/, zh: '时间', example: 'The time is 8 o\'clock.', exampleZh: '时间是8点。' },
+    { id: 'w3696', en: 'time', phonetic: '/taɪm/', zh: '时间', example: 'The time is 8 o\'clock.', exampleZh: '时间是8点。' },
 
   ],
 };
@@ -1623,8 +1623,8 @@ export const themeSocialShopping: VocabularyTheme = {
     { id: 'w3104', en: 'oh dear!', phonetic: '/oʊ dɪr!/', zh: '天哪', example: 'This is an oh dear!.', exampleZh: '这是一个天哪。' },
     { id: 'w3105', en: 'wow', phonetic: '/waʊ/', zh: '呀；哇', example: 'This is a wow.', exampleZh: '这是一个呀；哇。' },
     { id: 'w3106', en: 'yeah', phonetic: '/jæ/', zh: '是的；没错', example: 'This is a yeah.', exampleZh: '这是一个是的；没错。' },
-    { id: 'w3697', en: 'excuse', phonetic: /ɪkˈskjuz/, zh: '原谅；打扰', example: 'Excuse me, where is the station?', exampleZh: '打扰一下，车站在哪里？' },
-    { id: 'w3698', en: 'thank', phonetic: /θæŋk/, zh: '感谢', example: 'Thank you for your help.', exampleZh: '谢谢你的帮助。' },
+    { id: 'w3697', en: 'excuse', phonetic: '/ɪkˈskjuz/', zh: '原谅；打扰', example: 'Excuse me, where is the station?', exampleZh: '打扰一下，车站在哪里？' },
+    { id: 'w3698', en: 'thank', phonetic: '/θæŋk/', zh: '感谢', example: 'Thank you for your help.', exampleZh: '谢谢你的帮助。' },
 
   ],
 };
@@ -1717,7 +1717,7 @@ export const themeShoppingMoney: VocabularyTheme = {
     { id: 'w3621', en: 'salesman', phonetic: '/ˈseɪlzmən/', zh: '销售人员', example: 'This is a salesman.', exampleZh: '这是一个销售人员。' },
     { id: 'w3622', en: 'shop assistant', phonetic: '/ʃɒp əˈsɪstənt/', zh: '售货员', example: 'The shop assistant helps me.', exampleZh: '店员帮助我。' },
     { id: 'w3623', en: 'travel agent', phonetic: '/ˈtrævəl ˈeɪʤənt/', zh: '旅行社', example: 'This is a travel agent.', exampleZh: '这是一个旅行社。' },
-    { id: 'w3699', en: 'pounds', phonetic: /paʊnz/, zh: '英镑', example: 'It is five pounds.', exampleZh: '这是五英镑。' },
+    { id: 'w3699', en: 'pounds', phonetic: '/paʊnz/', zh: '英镑', example: 'It is five pounds.', exampleZh: '这是五英镑。' },
 
   ],
 };
@@ -1874,11 +1874,11 @@ export const themeDailyActivities: VocabularyTheme = {
     { id: 'w2118', en: 'shop', phonetic: '/ʃɒp/', zh: '购物', example: 'I shop at the weekend.', exampleZh: '我周末购物。' },
     { id: 'w2119', en: 'exercise', phonetic: '/ˈeksəsaɪz/', zh: '锻炼', example: 'I exercise every morning.', exampleZh: '我每天早上锻炼。' },
     { id: 'w2120', en: 'relax', phonetic: '/rɪˈlæks/', zh: '放松', example: 'I relax at home.', exampleZh: '我在家放松。' },
-    { id: 'w3700', en: 'wake', phonetic: /weɪk/, zh: '醒来', example: 'I wake up at 7 o\'clock.', exampleZh: '我7点醒来。' },
-    { id: 'w3701', en: 'get', phonetic: /gɪt/, zh: '变得；得到', example: 'I get up at 7:10.', exampleZh: '我7:10起床。' },
-    { id: 'w3702', en: 'have', phonetic: /hæv/, zh: '有；吃', example: 'I have breakfast at 7:30.', exampleZh: '我7:30吃早餐。' },
-    { id: 'w3703', en: 'go', phonetic: /goʊ/, zh: '去', example: 'I go to school at 8.', exampleZh: '我8点去上学。' },
-    { id: 'w3704', en: 'do', phonetic: /du/, zh: '做', example: 'I do homework after school.', exampleZh: '放学后我做作业。' },
+    { id: 'w3700', en: 'wake', phonetic: '/weɪk/', zh: '醒来', example: 'I wake up at 7 o\'clock.', exampleZh: '我7点醒来。' },
+    { id: 'w3701', en: 'get', phonetic: '/gɪt/', zh: '变得；得到', example: 'I get up at 7:10.', exampleZh: '我7:10起床。' },
+    { id: 'w3702', en: 'have', phonetic: '/hæv/', zh: '有；吃', example: 'I have breakfast at 7:30.', exampleZh: '我7:30吃早餐。' },
+    { id: 'w3703', en: 'go', phonetic: '/goʊ/', zh: '去', example: 'I go to school at 8.', exampleZh: '我8点去上学。' },
+    { id: 'w3704', en: 'do', phonetic: '/du/', zh: '做', example: 'I do homework after school.', exampleZh: '放学后我做作业。' },
 
   ],
 };
@@ -2782,26 +2782,26 @@ export const themeExamCommon: VocabularyTheme = {
     { id: 'we238', en: 'unfortunately', phonetic: "/ʌn'fɔːtʃənətli/", zh: '不幸地', example: 'Unfortunately, we lost the game.', exampleZh: '不幸的是，我们输了比赛。' },
     { id: 'we239', en: 'suggest', phonetic: "/sə'dʒest/", zh: '建议', example: 'I suggest we go by bus.', exampleZh: '我建议我们坐公交车去。' },
     { id: 'we240', en: 'suddenly', phonetic: "/'sʌdnli/", zh: '突然', example: 'Suddenly, it started to rain.', exampleZh: '突然开始下雨了。' },
-    { id: 'w3656', en: 'choose', phonetic: /ʧuz/, zh: '选择', example: 'You can choose your favourite colour.', exampleZh: '你可以选择你最喜欢的颜色。' },
-    { id: 'w3657', en: 'complete', phonetic: /kəmˈplit/, zh: '完成；填写', example: 'Please complete the form.', exampleZh: '请填好这张表。' },
-    { id: 'w3658', en: 'join', phonetic: /ʤɔɪn/, zh: '连接；参加', example: 'Join the two words with \'and\'.', exampleZh: '用 and 把两个词连起来。' },
-    { id: 'w3659', en: 'tick', phonetic: /tɪk/, zh: '打勾', example: 'Tick the correct box.', exampleZh: '在正确的方框里打勾。' },
-    { id: 'w3660', en: 'circle', phonetic: /ˈsərkəl/, zh: '圈出', example: 'Circle the odd word.', exampleZh: '圈出不同的那个词。' },
-    { id: 'w3661', en: 'underline', phonetic: /ˌʌndərˈlaɪn/, zh: '在……下划线', example: 'Underline the key words.', exampleZh: '在关键词下划线。' },
-    { id: 'w3662', en: 'but', phonetic: /bʌt/, zh: '但是', example: 'I like tea, but he likes coffee.', exampleZh: '我喜欢茶，但他喜欢咖啡。' },
-    { id: 'w3663', en: 'if', phonetic: /ɪf/, zh: '如果', example: 'If it rains, we stay at home.', exampleZh: '如果下雨，我们就待在家。' },
-    { id: 'w3664', en: 'or', phonetic: /ər/, zh: '或者', example: 'Tea or coffee?', exampleZh: '茶还是咖啡？' },
-    { id: 'w3665', en: 'when', phonetic: /wɪn/, zh: '当……时候', example: 'Call me when you arrive.', exampleZh: '你到了就给我打电话。' },
-    { id: 'w3666', en: 'however', phonetic: /ˌhaʊˈɛvər/, zh: '然而', example: 'It rained; however, we went out.', exampleZh: '下雨了；然而我们还是出去了。' },
-    { id: 'w3667', en: 'therefore', phonetic: /ˈðɛrˌfɔr/, zh: '因此', example: 'It was late; therefore we left.', exampleZh: '天晚了，因此我们离开了。' },
+    { id: 'w3656', en: 'choose', phonetic: '/ʧuz/', zh: '选择', example: 'You can choose your favourite colour.', exampleZh: '你可以选择你最喜欢的颜色。' },
+    { id: 'w3657', en: 'complete', phonetic: '/kəmˈplit/', zh: '完成；填写', example: 'Please complete the form.', exampleZh: '请填好这张表。' },
+    { id: 'w3658', en: 'join', phonetic: '/ʤɔɪn/', zh: '连接；参加', example: 'Join the two words with \'and\'.', exampleZh: '用 and 把两个词连起来。' },
+    { id: 'w3659', en: 'tick', phonetic: '/tɪk/', zh: '打勾', example: 'Tick the correct box.', exampleZh: '在正确的方框里打勾。' },
+    { id: 'w3660', en: 'circle', phonetic: '/ˈsərkəl/', zh: '圈出', example: 'Circle the odd word.', exampleZh: '圈出不同的那个词。' },
+    { id: 'w3661', en: 'underline', phonetic: '/ˌʌndərˈlaɪn/', zh: '在……下划线', example: 'Underline the key words.', exampleZh: '在关键词下划线。' },
+    { id: 'w3662', en: 'but', phonetic: '/bʌt/', zh: '但是', example: 'I like tea, but he likes coffee.', exampleZh: '我喜欢茶，但他喜欢咖啡。' },
+    { id: 'w3663', en: 'if', phonetic: '/ɪf/', zh: '如果', example: 'If it rains, we stay at home.', exampleZh: '如果下雨，我们就待在家。' },
+    { id: 'w3664', en: 'or', phonetic: '/ər/', zh: '或者', example: 'Tea or coffee?', exampleZh: '茶还是咖啡？' },
+    { id: 'w3665', en: 'when', phonetic: '/wɪn/', zh: '当……时候', example: 'Call me when you arrive.', exampleZh: '你到了就给我打电话。' },
+    { id: 'w3666', en: 'however', phonetic: '/ˌhaʊˈɛvər/', zh: '然而', example: 'It rained; however, we went out.', exampleZh: '下雨了；然而我们还是出去了。' },
+    { id: 'w3667', en: 'therefore', phonetic: '/ˈðɛrˌfɔr/', zh: '因此', example: 'It was late; therefore we left.', exampleZh: '天晚了，因此我们离开了。' },
     { id: 'w3668', en: 'for example', phonetic: '/fər ɪɡˈzɑːmpl/', zh: '例如', example: 'Many sports are fun, for example football.', exampleZh: '很多运动很有趣，例如足球。' },
-    { id: 'w3669', en: 'especially', phonetic: /əˈspɛʃəli/, zh: '尤其', example: 'I like fruit, especially apples.', exampleZh: '我喜欢水果，尤其是苹果。' },
-    { id: 'w3670', en: 'actually', phonetic: /ˈæˌkʧuəli/, zh: '实际上', example: 'Actually, I disagree.', exampleZh: '实际上，我不同意。' },
-    { id: 'w3671', en: 'possible', phonetic: /ˈpɑsəbəl/, zh: '可能的', example: 'Is it possible to win?', exampleZh: '有可能赢吗？' },
-    { id: 'w3672', en: 'necessary', phonetic: /ˈnɛsəˌsɛri/, zh: '必要的', example: 'Sleep is necessary for health.', exampleZh: '睡眠对健康是必要的。' },
-    { id: 'w3673', en: 'enough', phonetic: /ɪˈnʌf/, zh: '足够的', example: 'Do you have enough time?', exampleZh: '你有足够的时间吗？' },
-    { id: 'w3674', en: 'different', phonetic: /ˈdɪfərənt/, zh: '不同的', example: 'They are different from each other.', exampleZh: '它们彼此不同。' },
-    { id: 'w3675', en: 'about', phonetic: /əˈbaʊt/, zh: '关于；大约', example: 'Write a story about a cat.', exampleZh: '写一个关于猫的故事。' },
+    { id: 'w3669', en: 'especially', phonetic: '/əˈspɛʃəli/', zh: '尤其', example: 'I like fruit, especially apples.', exampleZh: '我喜欢水果，尤其是苹果。' },
+    { id: 'w3670', en: 'actually', phonetic: '/ˈæˌkʧuəli/', zh: '实际上', example: 'Actually, I disagree.', exampleZh: '实际上，我不同意。' },
+    { id: 'w3671', en: 'possible', phonetic: '/ˈpɑsəbəl/', zh: '可能的', example: 'Is it possible to win?', exampleZh: '有可能赢吗？' },
+    { id: 'w3672', en: 'necessary', phonetic: '/ˈnɛsəˌsɛri/', zh: '必要的', example: 'Sleep is necessary for health.', exampleZh: '睡眠对健康是必要的。' },
+    { id: 'w3673', en: 'enough', phonetic: '/ɪˈnʌf/', zh: '足够的', example: 'Do you have enough time?', exampleZh: '你有足够的时间吗？' },
+    { id: 'w3674', en: 'different', phonetic: '/ˈdɪfərənt/', zh: '不同的', example: 'They are different from each other.', exampleZh: '它们彼此不同。' },
+    { id: 'w3675', en: 'about', phonetic: '/əˈbaʊt/', zh: '关于；大约', example: 'Write a story about a cat.', exampleZh: '写一个关于猫的故事。' },
 
   ],
 };
