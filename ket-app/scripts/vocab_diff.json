@@ -1,0 +1,4522 @@
+{
+  "T02": [
+    {
+      "en": "bean",
+      "zh": "豆",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "biscuit",
+      "zh": "饼干",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "burger",
+      "zh": "汉堡",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "can",
+      "zh": "罐头；罐",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "candy",
+      "zh": "糖果",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "cereal",
+      "zh": "谷类食物",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "chilli",
+      "zh": "辣椒",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "chips",
+      "zh": "薯条",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "chocolate",
+      "zh": "巧克力",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "coconut",
+      "zh": "椰子",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "Coke",
+      "zh": "可口可乐",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "cola",
+      "zh": "可乐",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "cookie",
+      "zh": "曲奇饼干",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "cream",
+      "zh": "奶油",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "cucumber",
+      "zh": "黄瓜",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "curry",
+      "zh": "咖喱",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "dessert",
+      "zh": "甜品",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "dish",
+      "zh": "盘；一盘食物",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "duck",
+      "zh": "鸭肉",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "ﬁsh",
+      "zh": "鱼",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "ﬂour",
+      "zh": "面粉",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "food",
+      "zh": "食物",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "garlic",
+      "zh": "大蒜",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "grape",
+      "zh": "葡萄",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "ham",
+      "zh": "火腿",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "lamb",
+      "zh": "羊肉",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "lemon",
+      "zh": "柠檬",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "mango",
+      "zh": "芒果",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "melon",
+      "zh": "甜瓜",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "mushroom",
+      "zh": "蘑菇",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "omelette",
+      "zh": "煎蛋卷",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "orange",
+      "zh": "橙",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "pasta",
+      "zh": "意大利面食",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "pear",
+      "zh": "梨",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "pie",
+      "zh": "派",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "roll",
+      "zh": "面包卷",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "sausage",
+      "zh": "香肠",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "steak",
+      "zh": "牛排",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "strawberry",
+      "zh": "草莓",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "toast",
+      "zh": "吐司",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "turkey",
+      "zh": "火鸡",
+      "source": "PDF_T1"
+    },
+    {
+      "en": "yogurt",
+      "zh": "酸奶；酵母乳",
+      "source": "PDF_T1"
+    }
+  ],
+  "T11": [
+    {
+      "en": "ball",
+      "zh": "球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "badminton",
+      "zh": "羽毛球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "baseball",
+      "zh": "棒球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "bat",
+      "zh": "球拍；球棒",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "boxing",
+      "zh": "拳击",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "cricket",
+      "zh": "板球（运动）",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "cycling",
+      "zh": "骑自行车",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "diving",
+      "zh": "潜水",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "ﬁshing",
+      "zh": "钓鱼",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "ﬁshing rod",
+      "zh": "钓鱼竿",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "glove",
+      "zh": "手套",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "goal",
+      "zh": "球门；得分",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "golf",
+      "zh": "高尔夫球运动",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "helmet",
+      "zh": "头盔",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "hockey",
+      "zh": "曲棍球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "jogging",
+      "zh": "慢跑",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "marathon",
+      "zh": "马拉松赛跑",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "net",
+      "zh": "网",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "play",
+      "zh": "比赛",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "player",
+      "zh": "运动员",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "pool",
+      "zh": "游泳池",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "race",
+      "zh": "比赛；竞赛",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "n.",
+      "zh": "骑；乘；",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "v.",
+      "zh": "骑马；乘车",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "rugby",
+      "zh": "英式橄榄球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "running",
+      "zh": "跑步",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "sailing",
+      "zh": "帆船运动",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "skate",
+      "zh": "滑冰",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "skateboard",
+      "zh": "滑板",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "ski v.",
+      "zh": "滑雪",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "skiing n.",
+      "zh": "滑雪",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "snowboard",
+      "zh": "滑雪板",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "snowboarding",
+      "zh": "单板滑雪运动",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "stadium",
+      "zh": "体育场",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "surf",
+      "zh": "冲浪",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "surfboard",
+      "zh": "冲浪板",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "swimming",
+      "zh": "游泳",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "swimming pool",
+      "zh": "游泳池",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "swimsuit",
+      "zh": "泳衣",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "table tennis",
+      "zh": "乒乓球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "throw",
+      "zh": "投；扔；摔",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "track",
+      "zh": "跑道",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "volleyball",
+      "zh": "排球",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "windsurﬁng",
+      "zh": "帆板运动",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "winner",
+      "zh": "胜利者",
+      "source": "PDF_T2"
+    },
+    {
+      "en": "build",
+      "zh": "建造",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "buy",
+      "zh": "购买",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "collect",
+      "zh": "收集",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "cooking",
+      "zh": "烹饪",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "cycling",
+      "zh": "骑自行车运动",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "exchange",
+      "zh": "交换；交流",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "horse-riding",
+      "zh": "骑马",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "increase",
+      "zh": "增加",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "keep ﬁt",
+      "zh": "保持健康",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "painting",
+      "zh": "画画",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "perform",
+      "zh": "表演",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "photography",
+      "zh": "摄影",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "skiing",
+      "zh": "滑雪",
+      "source": "PDF_T11"
+    },
+    {
+      "en": "act",
+      "zh": "表演",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "actor",
+      "zh": "演员",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "actress",
+      "zh": "女演员",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "ballet",
+      "zh": "芭蕾舞",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "box ofﬁce",
+      "zh": "票房",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "cartoon",
+      "zh": "卡通片",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "character",
+      "zh": "性格；角色",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "clap",
+      "zh": "拍手，鼓掌",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "comedy",
+      "zh": "喜剧",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "concert",
+      "zh": "演唱会",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "drama",
+      "zh": "戏剧",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "drum",
+      "zh": "鼓",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "exhibition",
+      "zh": "展览",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "ﬁlm",
+      "zh": "电影",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "guitar",
+      "zh": "吉他",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "instrument",
+      "zh": "乐器",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "jazz",
+      "zh": "爵士乐",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "make-up",
+      "zh": "化妆品",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "musician",
+      "zh": "音乐家",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "mystery",
+      "zh": "神秘；谜",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "novel （",
+      "zh": "长篇）小说",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "perform",
+      "zh": "表演",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "performance",
+      "zh": "表演",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "piano",
+      "zh": "钢琴",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "poem",
+      "zh": "诗",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "produce",
+      "zh": "创作，制造",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "role",
+      "zh": "角色",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "romantic",
+      "zh": "浪漫的",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "scene （",
+      "zh": "戏剧的）一场",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "scenery",
+      "zh": "舞台布景",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "science ﬁction",
+      "zh": "科幻小说",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "show",
+      "zh": "演出",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "sound",
+      "zh": "声音",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "stage",
+      "zh": "舞台",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "ticket",
+      "zh": "票",
+      "source": "PDF_T16"
+    },
+    {
+      "en": "violin",
+      "zh": "小提琴",
+      "source": "PDF_T16"
+    }
+  ],
+  "T12": [
+    {
+      "en": "add",
+      "zh": "增加",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "bake",
+      "zh": "烘培；烤",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "barbecue",
+      "zh": "户外烧烤",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "boil",
+      "zh": "煮沸；烧开",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "burn",
+      "zh": "燃烧",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "cook",
+      "zh": "烹调",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "cut",
+      "zh": "切",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "fry",
+      "zh": "油炸；油煎",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "mix",
+      "zh": "混合",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "pour",
+      "zh": "灌；倒",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "recipe",
+      "zh": "烹饪法；食谱",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "roast",
+      "zh": "烘；烤",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "stir",
+      "zh": "搅拌",
+      "source": "PDF_T3"
+    },
+    {
+      "en": "taste",
+      "zh": "尝",
+      "source": "PDF_T3"
+    }
+  ],
+  "T04": [
+    {
+      "en": "arrival",
+      "zh": "到达",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by air",
+      "zh": "乘飞机",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by land",
+      "zh": "由陆路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by rail",
+      "zh": "乘火车；由铁路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by road",
+      "zh": "由公路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by sea",
+      "zh": "乘船；走水路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "check-in",
+      "zh": "登记；登记处",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "comfortable",
+      "zh": "舒服的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "convenient",
+      "zh": "方便的，便利的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "crowded",
+      "zh": "拥挤的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "dangerous",
+      "zh": "危险的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "empty",
+      "zh": "空的；空闲的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "fare",
+      "zh": "票价",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "ﬂight",
+      "zh": "班机",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "land",
+      "zh": "着陆",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "leave",
+      "zh": "离开",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "lounge",
+      "zh": "休息室",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "noisy",
+      "zh": "吵闹的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "quiet",
+      "zh": "安静的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "safe",
+      "zh": "安全的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "safety",
+      "zh": "安全",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "tourist",
+      "zh": "旅行者",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "trafﬁc",
+      "zh": "交通",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "trafﬁc lights",
+      "zh": "交通信号灯",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "visit",
+      "zh": "访问；参观",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "visitor",
+      "zh": "来访者；参观者",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "uncomfortable",
+      "zh": "不舒服的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "waiting room",
+      "zh": "候车室",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "aeroplane",
+      "zh": "飞机",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "bicycle/bike",
+      "zh": "自行车",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "cab",
+      "zh": "出租车",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "coach",
+      "zh": "长途汽车",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "lorry",
+      "zh": "卡车；货车",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "seatbelt",
+      "zh": "安全带",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "ship",
+      "zh": "轮船",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "truck",
+      "zh": "卡车",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "wheel",
+      "zh": "车轮；方向盘",
+      "source": "PDF_T37"
+    },
+    {
+      "en": "wing",
+      "zh": "机翼",
+      "source": "PDF_T37"
+    }
+  ],
+  "T19": [
+    {
+      "en": "airport",
+      "zh": "机场",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "arrival",
+      "zh": "到达",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "backpack",
+      "zh": "背包；背包旅行",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "boarding pass",
+      "zh": "登机牌",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by air",
+      "zh": "乘飞机",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by land",
+      "zh": "由陆路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by rail",
+      "zh": "乘火车；由铁路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by road",
+      "zh": "由公路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "by sea",
+      "zh": "乘船；走水路",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "check-in",
+      "zh": "登记；登记处",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "comfortable",
+      "zh": "舒服的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "convenient",
+      "zh": "方便的，便利的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "crowded",
+      "zh": "拥挤的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "dangerous",
+      "zh": "危险的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "delay",
+      "zh": "延期；耽搁",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "driver",
+      "zh": "司机",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "empty",
+      "zh": "空的；空闲的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "fare",
+      "zh": "票价",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "ﬂight",
+      "zh": "班机",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "gate",
+      "zh": "登机门",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "land",
+      "zh": "着陆",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "leave",
+      "zh": "离开",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "lounge",
+      "zh": "休息室",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "luggage",
+      "zh": "行李",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "noisy",
+      "zh": "吵闹的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "passenger",
+      "zh": "乘客",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "pilot",
+      "zh": "飞行员",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "platform",
+      "zh": "站台",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "quiet",
+      "zh": "安静的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "safe",
+      "zh": "安全的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "safety",
+      "zh": "安全",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "seat",
+      "zh": "座位",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "station",
+      "zh": "车站",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "take off",
+      "zh": "起飞",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "terminal",
+      "zh": "终点站；枢纽站",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "timetable",
+      "zh": "时刻表",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "trafﬁc",
+      "zh": "交通",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "trafﬁc lights",
+      "zh": "交通信号灯",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "trip",
+      "zh": "旅行",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "visit",
+      "zh": "访问；参观",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "visitor",
+      "zh": "来访者；参观者",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "uncomfortable",
+      "zh": "不舒服的",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "waiting room",
+      "zh": "候车室",
+      "source": "PDF_T4"
+    },
+    {
+      "en": "upset",
+      "zh": "心烦意乱的",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "worried",
+      "zh": "担心的",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "campsite",
+      "zh": "野营地",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "climbing",
+      "zh": "爬山",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "club",
+      "zh": "社团，俱乐部",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "dancing",
+      "zh": "跳舞",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "equipment",
+      "zh": "设备",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "fee",
+      "zh": "费用",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "life jacket",
+      "zh": "救生衣",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "member",
+      "zh": "会员",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "membership",
+      "zh": "会员身份",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "sailing",
+      "zh": "帆船运动",
+      "source": "PDF_T12"
+    },
+    {
+      "en": "society",
+      "zh": "社团",
+      "source": "PDF_T12"
+    }
+  ],
+  "T03": [
+    {
+      "en": "art",
+      "zh": "艺术",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "biology",
+      "zh": "生物学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "boring",
+      "zh": "无聊的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "chemistry",
+      "zh": "化学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "difﬁcult",
+      "zh": "困难的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "dull",
+      "zh": "无趣的，乏味的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "English",
+      "zh": "英语",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "enjoyable",
+      "zh": "愉快的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "geography",
+      "zh": "地理",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "hard",
+      "zh": "困难的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "history",
+      "zh": "历史",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "language",
+      "zh": "语言",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "literature",
+      "zh": "文学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "maths",
+      "zh": "数学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "mathematics",
+      "zh": "数学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "music",
+      "zh": "音乐",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "physics",
+      "zh": "物理学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "science",
+      "zh": "科学",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "sport",
+      "zh": "体育运动",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "useful",
+      "zh": "有用的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "useless",
+      "zh": "无用的",
+      "source": "PDF_T5"
+    },
+    {
+      "en": "reading",
+      "zh": "阅读；阅读材料",
+      "source": "PDF_T14"
+    },
+    {
+      "en": "say",
+      "zh": "说",
+      "source": "PDF_T14"
+    },
+    {
+      "en": "speaking",
+      "zh": "说话；谈话",
+      "source": "PDF_T14"
+    },
+    {
+      "en": "spelling",
+      "zh": "拼写",
+      "source": "PDF_T14"
+    },
+    {
+      "en": "vocabulary",
+      "zh": "词汇",
+      "source": "PDF_T14"
+    },
+    {
+      "en": "writing",
+      "zh": "写作",
+      "source": "PDF_T14"
+    },
+    {
+      "en": "advanced",
+      "zh": "高级的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "beginner",
+      "zh": "初学者",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "bell",
+      "zh": "铃；钟",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "bookshelf",
+      "zh": "书架",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "break",
+      "zh": "间歇",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "classmate",
+      "zh": "同班同学",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "fair",
+      "zh": "公平的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "clever",
+      "zh": "聪明的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "college",
+      "zh": "学院；大学",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "course",
+      "zh": "课程；科目",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "fail an exam",
+      "zh": "考试不及格",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "failure",
+      "zh": "失败",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "fair",
+      "zh": "公平的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "intelligent",
+      "zh": "聪明的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "kind",
+      "zh": "和蔼的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "laboratory",
+      "zh": "实验室",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "make progress",
+      "zh": "取得进步",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "mark",
+      "zh": "分数",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "method",
+      "zh": "方法",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "note",
+      "zh": "笔记",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "notebook",
+      "zh": "笔记本",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "pass an exam",
+      "zh": "考试及格",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "pupil",
+      "zh": "小学生",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "report",
+      "zh": "报告",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "result",
+      "zh": "结果",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "revise",
+      "zh": "复习",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "rubber",
+      "zh": "橡皮；黑板擦",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "serious",
+      "zh": "严肃的；认真的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "strict",
+      "zh": "严格的；严厉的",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "take an exam",
+      "zh": "参加考试",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "term",
+      "zh": "学期",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "test",
+      "zh": "测试；试验",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "textbook",
+      "zh": "课本",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "trainer",
+      "zh": "教练员",
+      "source": "PDF_T23"
+    },
+    {
+      "en": "university",
+      "zh": "大学",
+      "source": "PDF_T23"
+    }
+  ],
+  "T06": [
+    {
+      "en": "ache",
+      "zh": "疼痛",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "appointment",
+      "zh": "预约",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "be injured",
+      "zh": "受伤",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "break (a nose)",
+      "zh": "折断（鼻子）",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "burn (yourself)",
+      "zh": "烫伤",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "check",
+      "zh": "检查；核查",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "dentist",
+      "zh": "牙医",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "feel",
+      "zh": "感觉",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "glasses",
+      "zh": "眼镜",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "patient",
+      "zh": "病人",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "put on weight",
+      "zh": "增肥",
+      "source": "PDF_T6"
+    },
+    {
+      "en": "active",
+      "zh": "活跃的；积极的",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "cycle",
+      "zh": "骑自行车",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "fat",
+      "zh": "脂肪",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "ﬁt",
+      "zh": "健康的；健壮的",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "gym",
+      "zh": "体育馆；健身房",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "inactive",
+      "zh": "不活跃的",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "get/keep ﬁt",
+      "zh": "变得 / 保持健康",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "park",
+      "zh": "公园",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "run",
+      "zh": "跑；奔跑",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "swim",
+      "zh": "游泳",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "thirsty",
+      "zh": "口渴的",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "use",
+      "zh": "使用",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "walk",
+      "zh": "步行",
+      "source": "PDF_T40"
+    },
+    {
+      "en": "weight",
+      "zh": "体重",
+      "source": "PDF_T40"
+    }
+  ],
+  "T05": [
+    {
+      "en": "air-conditioning",
+      "zh": "空调系统",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "alarm clock",
+      "zh": "闹钟",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "armchair",
+      "zh": "扶手椅",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "basement",
+      "zh": "地下室",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "basin",
+      "zh": "洗脸盆",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "bath",
+      "zh": "浴缸；洗澡",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "blanket",
+      "zh": "毯子；毛毯",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "bookcase",
+      "zh": "书架",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "bowl",
+      "zh": "碗",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "cabinet",
+      "zh": "贮藏柜",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "carpet",
+      "zh": "地毯",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "CD",
+      "zh": "光盘",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "CD player CD",
+      "zh": "播放器",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "central heating",
+      "zh": "中央暖气系统",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "chair",
+      "zh": "椅子",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "chest of drawer",
+      "zh": "抽屉柜",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "chimney",
+      "zh": "烟囱",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "product",
+      "zh": "清洁用品",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "closet",
+      "zh": "壁橱",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "clothes line",
+      "zh": "晒衣绳",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "computer",
+      "zh": "电脑",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "convenient",
+      "zh": "方便的",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "cooker",
+      "zh": "炊具",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "curtain",
+      "zh": "窗帘",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "dining room",
+      "zh": "餐厅",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "downstairs",
+      "zh": "往楼下，在楼下",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "drawer",
+      "zh": "抽屉",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "DVD DVD",
+      "zh": "光碟",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "DVD player DVD",
+      "zh": "影碟机",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "entrance",
+      "zh": "入口",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "ﬂoor",
+      "zh": "地板",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "frying pan",
+      "zh": "煎锅",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "gate",
+      "zh": "大门",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "hall",
+      "zh": "大厅；礼堂",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "heating",
+      "zh": "供暖；暖气",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "knife",
+      "zh": "刀",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "lawn",
+      "zh": "草地",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "microwave",
+      "zh": "微波炉",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "MP3 player MP3",
+      "zh": "播放器",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "mug",
+      "zh": "马克杯",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "neat",
+      "zh": "整洁的",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "pillow",
+      "zh": "枕头",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "radio",
+      "zh": "收音机",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "refrigerator",
+      "zh": "电冰箱",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "roof",
+      "zh": "屋顶",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "sheet",
+      "zh": "床单",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "shelf",
+      "zh": "架子；搁板",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "sink",
+      "zh": "洗碗槽",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "sitting room",
+      "zh": "起居室，客厅",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "space",
+      "zh": "空间",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "tap （",
+      "zh": "水）龙头",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "toilet",
+      "zh": "厕所",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "tool",
+      "zh": "工具",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "toy",
+      "zh": "玩具",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "video recorder",
+      "zh": "录像机",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "machine",
+      "zh": "洗衣机",
+      "source": "PDF_T7"
+    },
+    {
+      "en": "bar",
+      "zh": "酒吧",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "beautiful",
+      "zh": "美丽的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "bookshop",
+      "zh": "书店",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "boring",
+      "zh": "无聊的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "bus station",
+      "zh": "公交车站",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "busy",
+      "zh": "忙碌的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "city centre",
+      "zh": "市中心",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "coffee shop",
+      "zh": "咖啡店",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "crowded",
+      "zh": "拥挤的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "disco",
+      "zh": "迪斯科舞厅",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "motorway",
+      "zh": "高速公路",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "noise",
+      "zh": "噪音",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "palace",
+      "zh": "宫殿",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "park",
+      "zh": "公园",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "railway station",
+      "zh": "火车站",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "roundabout",
+      "zh": "环岛",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "square",
+      "zh": "广场",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "street",
+      "zh": "街道",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "supermarket",
+      "zh": "超市",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "trafﬁc lights",
+      "zh": "交通信号灯",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "turning",
+      "zh": "转弯处；岔路口",
+      "source": "PDF_T32"
+    }
+  ],
+  "T08": [
+    {
+      "en": "bag",
+      "zh": "袋子",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "clothes",
+      "zh": "衣服",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "comfortable",
+      "zh": "舒服的",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "costume",
+      "zh": "服装；戏服",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "fashionable",
+      "zh": "时尚的",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "ﬁt",
+      "zh": "适合",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "get dressed",
+      "zh": "穿上衣服",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "glove",
+      "zh": "手套",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "handkerchief",
+      "zh": "手帕",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "jewellery",
+      "zh": "珠宝；首饰",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "jumper",
+      "zh": "针织套衫",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "kit",
+      "zh": "全套衣服和装备",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "lipstick",
+      "zh": "唇膏；口红",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "match",
+      "zh": "匹配",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "old-fashioned",
+      "zh": "过时的",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "pullover",
+      "zh": "套头衫",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "put on",
+      "zh": "穿上",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "（shoe",
+      "zh": "的复数）",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "sock",
+      "zh": "短袜",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "take off",
+      "zh": "脱下",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "trainer",
+      "zh": "运动鞋",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "T-shirt T",
+      "zh": "恤衫",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "valuable",
+      "zh": "贵重的；值钱的",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "wear out",
+      "zh": "穿破",
+      "source": "PDF_T8"
+    },
+    {
+      "en": "woolen",
+      "zh": "羊毛的",
+      "source": "PDF_T8"
+    }
+  ],
+  "T13": [
+    {
+      "en": "afraid",
+      "zh": "害怕的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "alone",
+      "zh": "独自地；独自的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "amazed",
+      "zh": "吃惊的，惊奇的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "annoyed",
+      "zh": "烦恼的，恼怒的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "anxious",
+      "zh": "焦虑的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "ashamed",
+      "zh": "羞愧的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "be fond of",
+      "zh": "喜爱",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "be keen on",
+      "zh": "喜爱",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "bored",
+      "zh": "无聊的，烦厌的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "calm",
+      "zh": "平静的，镇定的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "cool",
+      "zh": "酷的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "depressed",
+      "zh": "沮丧的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "difﬁcult",
+      "zh": "困难的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "disappointed",
+      "zh": "失望的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "dislike",
+      "zh": "讨厌",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "embarrassed",
+      "zh": "尴尬的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "favourite",
+      "zh": "特别喜爱的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "frightened",
+      "zh": "害怕的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "great",
+      "zh": "伟大的；美好的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "hate",
+      "zh": "厌恶，讨厌",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "look forward to",
+      "zh": "期待",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "love",
+      "zh": "喜爱；热爱",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "lucky",
+      "zh": "幸运的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "miserable",
+      "zh": "痛苦的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "pleased",
+      "zh": "高兴的，满意的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "relaxed",
+      "zh": "放松的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "satisﬁed",
+      "zh": "感到满意的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "sure",
+      "zh": "确信；必定",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "surprised",
+      "zh": "惊讶的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "terrible",
+      "zh": "可怕的；糟糕的",
+      "source": "PDF_T10"
+    },
+    {
+      "en": "calm",
+      "zh": "平静的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "cheerful",
+      "zh": "高兴的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "dull",
+      "zh": "迟钝的；呆笨的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "exciting",
+      "zh": "令人兴奋的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "fashionable",
+      "zh": "时髦的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "interested",
+      "zh": "感兴趣的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "interesting",
+      "zh": "有趣的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "silly",
+      "zh": "愚蠢的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "stupid",
+      "zh": "愚蠢的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "tiring",
+      "zh": "令人感到疲倦的",
+      "source": "PDF_T31"
+    },
+    {
+      "en": "upset",
+      "zh": "心烦意乱的",
+      "source": "PDF_T31"
+    }
+  ],
+  "T16": [
+    {
+      "en": "advertisement",
+      "zh": "广告",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "ad",
+      "zh": "广告",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "article",
+      "zh": "文章",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "card",
+      "zh": "卡片",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "comic",
+      "zh": "连环漫画",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "diary",
+      "zh": "日记",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "diploma",
+      "zh": "毕业文凭",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "form",
+      "zh": "表格",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "licence",
+      "zh": "许可证；执照",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "menu",
+      "zh": "菜单",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "message",
+      "zh": "信息",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "passport",
+      "zh": "护照",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "text",
+      "zh": "文本；课文",
+      "source": "PDF_T13"
+    },
+    {
+      "en": "anniversary",
+      "zh": "周年纪念日",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "band",
+      "zh": "乐队",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "bride",
+      "zh": "新娘",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "cake",
+      "zh": "蛋糕",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "disco",
+      "zh": "迪斯科舞厅",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "guest",
+      "zh": "客人",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "invitation",
+      "zh": "邀请",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "neighbour",
+      "zh": "邻居",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "party",
+      "zh": "派对",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "reception",
+      "zh": "招待会",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "ring",
+      "zh": "戒指",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "speech",
+      "zh": "演讲；发言",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "wedding",
+      "zh": "婚礼",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "assistant",
+      "zh": "助手",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "bill",
+      "zh": "账单",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "cash",
+      "zh": "现金",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "cent",
+      "zh": "分；美分",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "change",
+      "zh": "零钱",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "charge",
+      "zh": "费用",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "close",
+      "zh": "关闭；结束",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "cost",
+      "zh": "花费；费用",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "credit card",
+      "zh": "信用卡",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "customer",
+      "zh": "顾客",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "dollar",
+      "zh": "美元",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "discount",
+      "zh": "打折；折扣",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "dry-cleaner's",
+      "zh": "干洗店",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "euro",
+      "zh": "欧元",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "for sale",
+      "zh": "待售",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "go shopping",
+      "zh": "去购物",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "grocery store",
+      "zh": "杂货店",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "hairdresser",
+      "zh": "美发师",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "jeweller",
+      "zh": "珠宝商；珠宝店",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "mall",
+      "zh": "大规模购物中心",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "manager",
+      "zh": "经理",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "penny",
+      "zh": "便士",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "pound",
+      "zh": "英镑",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "receipt",
+      "zh": "发票",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "salesman",
+      "zh": "销售人员",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "spend",
+      "zh": "花费",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "travel agent",
+      "zh": "旅行社",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "chat",
+      "zh": "聊天；闲谈",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "conversation",
+      "zh": "会话",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "note",
+      "zh": "便条",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "speak",
+      "zh": "讲话",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "telephone",
+      "zh": "电话",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "text message",
+      "zh": "短信",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "write",
+      "zh": "写",
+      "source": "PDF_T21"
+    },
+    {
+      "en": "good night",
+      "zh": "晚安",
+      "source": "PDF_T35"
+    },
+    {
+      "en": "hey",
+      "zh": "嘿；喂",
+      "source": "PDF_T35"
+    },
+    {
+      "en": "hi",
+      "zh": "嘿；喂；你好",
+      "source": "PDF_T35"
+    },
+    {
+      "en": "oh",
+      "zh": "噢；哎；啊",
+      "source": "PDF_T35"
+    },
+    {
+      "en": "oh dear!",
+      "zh": "天哪",
+      "source": "PDF_T35"
+    },
+    {
+      "en": "wow",
+      "zh": "呀；哇",
+      "source": "PDF_T35"
+    },
+    {
+      "en": "yeah",
+      "zh": "是的；没错",
+      "source": "PDF_T35"
+    }
+  ],
+  "T09": [
+    {
+      "en": "beach",
+      "zh": "海滩",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "branch",
+      "zh": "树枝",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "cave",
+      "zh": "洞穴",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "coast",
+      "zh": "海岸",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "earth",
+      "zh": "土；泥土",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "egg",
+      "zh": "鸡蛋",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "farm",
+      "zh": "农场",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "farmer",
+      "zh": "农民",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "ﬁeld",
+      "zh": "田地",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "ﬂower",
+      "zh": "花",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "garden",
+      "zh": "花园",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "hill",
+      "zh": "小山",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "island",
+      "zh": "岛屿",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "lake",
+      "zh": "湖",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "leaf",
+      "zh": "叶子",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "ocean",
+      "zh": "海洋",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "path",
+      "zh": "小路",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "pet",
+      "zh": "宠物",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "plant",
+      "zh": "植物",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "rock",
+      "zh": "岩石",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "rose",
+      "zh": "玫瑰",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "sand",
+      "zh": "沙子",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "sea",
+      "zh": "海",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "seaside",
+      "zh": "海边",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "snow",
+      "zh": "雪",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "space",
+      "zh": "空间；太空",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "village",
+      "zh": "村庄",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "wave",
+      "zh": "波浪",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "wet",
+      "zh": "潮湿的",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "wood",
+      "zh": "树林；木材",
+      "source": "PDF_T15"
+    },
+    {
+      "en": "bark",
+      "zh": "狗叫；狗叫声",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "bat",
+      "zh": "蝙蝠",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "bear",
+      "zh": "熊",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "bee",
+      "zh": "蜜蜂",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "bull",
+      "zh": "公牛",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "butterﬂy",
+      "zh": "蝴蝶",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "camel",
+      "zh": "骆驼",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "chicken",
+      "zh": "鸡",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "cow",
+      "zh": "奶牛；母牛",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "dolphin",
+      "zh": "海豚",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "duck",
+      "zh": "鸭子",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "ﬁsh",
+      "zh": "鱼",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "fur",
+      "zh": "毛皮",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "giraffe",
+      "zh": "长颈鹿",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "goat",
+      "zh": "山羊",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "insect",
+      "zh": "昆虫",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "kitten",
+      "zh": "小猫",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "lamb",
+      "zh": "羔羊",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "mouse",
+      "zh": "老鼠",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "parrot",
+      "zh": "鹦鹉",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "pet",
+      "zh": "宠物",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "pig",
+      "zh": "猪",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "sea creature",
+      "zh": "海洋动物",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "sheep",
+      "zh": "绵羊",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "snake",
+      "zh": "蛇",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "turkey",
+      "zh": "火鸡",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "whale",
+      "zh": "鲸",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "wild animals",
+      "zh": "野生动物",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "wing",
+      "zh": "翅膀；翼",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "zebra",
+      "zh": "斑马",
+      "source": "PDF_T19"
+    },
+    {
+      "en": "climate change",
+      "zh": "气候变化",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "coal",
+      "zh": "煤",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "countryside",
+      "zh": "乡村",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "environment",
+      "zh": "环境",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "ﬂood",
+      "zh": "洪水",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "fuel",
+      "zh": "燃料",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "glass",
+      "zh": "玻璃",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "global warming",
+      "zh": "全球变暖",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "litter",
+      "zh": "垃圾",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "metal",
+      "zh": "金属",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "nature",
+      "zh": "自然",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "paper",
+      "zh": "纸",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "petrol",
+      "zh": "汽油",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "plant",
+      "zh": "植物",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "plastic",
+      "zh": "塑料",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "pollution",
+      "zh": "污染",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "rainforest (",
+      "zh": "热带 ) 雨林",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "rubbish",
+      "zh": "垃圾",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "tin",
+      "zh": "罐头盒",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "transport",
+      "zh": "交通运输系统",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "waste",
+      "zh": "浪费；废弃物",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "wildlife",
+      "zh": "野生生物",
+      "source": "PDF_T27"
+    },
+    {
+      "en": "bay",
+      "zh": "海湾",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "capital",
+      "zh": "首都；省会",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "coast",
+      "zh": "海岸",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "desert",
+      "zh": "沙漠",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "farmland",
+      "zh": "农田",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "island",
+      "zh": "岛屿",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "ocean",
+      "zh": "海洋",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "sandy",
+      "zh": "沙的；多沙的",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "sea",
+      "zh": "海洋；大海",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "soil",
+      "zh": "土地；土壤",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "stream",
+      "zh": "溪；小河",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "thick",
+      "zh": "厚的",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "valley",
+      "zh": "山谷",
+      "source": "PDF_T38"
+    },
+    {
+      "en": "waterfall",
+      "zh": "瀑布",
+      "source": "PDF_T38"
+    }
+  ],
+  "T01": [
+    {
+      "en": "anniversary",
+      "zh": "周年纪念日",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "band",
+      "zh": "乐队",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "bride",
+      "zh": "新娘",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "cake",
+      "zh": "蛋糕",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "disco",
+      "zh": "迪斯科舞厅",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "invitation",
+      "zh": "邀请",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "party",
+      "zh": "派对",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "reception",
+      "zh": "招待会",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "ring",
+      "zh": "戒指",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "speech",
+      "zh": "演讲；发言",
+      "source": "PDF_T17"
+    },
+    {
+      "en": "bring up",
+      "zh": "抚养长大",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "dad",
+      "zh": "爸爸",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "get on",
+      "zh": "进展；进步",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "get up",
+      "zh": "起床",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "give up",
+      "zh": "放弃",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grand(d)ad",
+      "zh": "爷爷；外公",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "granddaughter (",
+      "zh": "外 ) 孙女",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grandfather (",
+      "zh": "外 ) 祖父",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grandma",
+      "zh": "奶奶；外婆",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grandmother (",
+      "zh": "外 ) 祖母",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grandpa",
+      "zh": "爷爷；外公",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grandson",
+      "zh": "外孙；孙子",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "granny",
+      "zh": "奶奶；外婆",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "grow up",
+      "zh": "成长；长大",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "guy",
+      "zh": "小伙子；家伙",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "look after",
+      "zh": "照看；照顾",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "mum",
+      "zh": "妈妈",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "nephew",
+      "zh": "侄子；外甥",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "niece",
+      "zh": "外甥女；侄女",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "parents",
+      "zh": "父母",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "pen friend",
+      "zh": "笔友",
+      "source": "PDF_T24"
+    },
+    {
+      "en": "adult",
+      "zh": "成年人",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "beautiful",
+      "zh": "美丽的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "blond(e)",
+      "zh": "金发的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "bright",
+      "zh": "聪明的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "curly",
+      "zh": "卷曲的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "dark",
+      "zh": "深色的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "elderly",
+      "zh": "年长的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "fat",
+      "zh": "肥胖的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "good-looking",
+      "zh": "好看的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "handsome",
+      "zh": "英俊的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "light",
+      "zh": "轻的；浅色的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "long",
+      "zh": "长的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "middle-aged",
+      "zh": "中年的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "pretty",
+      "zh": "漂亮的；可爱的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "slim",
+      "zh": "苗条的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "smart",
+      "zh": "聪明的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "straight",
+      "zh": "直的；直率的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "teenage",
+      "zh": "青少年的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "ugly",
+      "zh": "丑陋的",
+      "source": "PDF_T36"
+    },
+    {
+      "en": "youth",
+      "zh": "青春",
+      "source": "PDF_T36"
+    }
+  ],
+  "T10": [
+    {
+      "en": "actor",
+      "zh": "演员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "actress",
+      "zh": "女演员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "architect",
+      "zh": "建筑师",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "businessman",
+      "zh": "商人",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "businesswoman",
+      "zh": "女商人",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "carpenter",
+      "zh": "木匠",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "career",
+      "zh": "职业；生涯",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "chef",
+      "zh": "厨师；厨师长",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "chemist",
+      "zh": "药剂师",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "cleaner",
+      "zh": "清洁工",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "dancer",
+      "zh": "舞蹈家",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "dentist",
+      "zh": "牙医",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "designer",
+      "zh": "设计师",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "detective",
+      "zh": "侦探",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "doctor (Dr.)",
+      "zh": "医生",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "employment",
+      "zh": "雇佣；就业",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "ﬁlm star",
+      "zh": "电影明星",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "ﬁre ﬁghter",
+      "zh": "救火队员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "football player",
+      "zh": "足球运动员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "hairdresser",
+      "zh": "美发师",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "income",
+      "zh": "收入",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "journalist",
+      "zh": "记者",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "judge",
+      "zh": "裁判；法官",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "lawyer",
+      "zh": "律师",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "librarian",
+      "zh": "图书管理员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "mechanic",
+      "zh": "技工",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "novelist",
+      "zh": "小说家",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "occupation",
+      "zh": "职业；工作",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "painter",
+      "zh": "画家",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "pay",
+      "zh": "工资",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "photographer",
+      "zh": "摄影师",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "physician",
+      "zh": "医师；内科医生",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "poet",
+      "zh": "诗人",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "police ofﬁcer",
+      "zh": "警官；警员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "porter",
+      "zh": "搬运工人",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "publisher",
+      "zh": "出版人",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "receptionist",
+      "zh": "接待员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "sales assistant",
+      "zh": "销售助理",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "secretary",
+      "zh": "秘书",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "security guard",
+      "zh": "保安人员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "singer",
+      "zh": "歌手",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "trade",
+      "zh": "贸易",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "tour guide",
+      "zh": "导游",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "waiter",
+      "zh": "服务员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "waitress",
+      "zh": "女服务员",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "worker",
+      "zh": "工人",
+      "source": "PDF_T18"
+    },
+    {
+      "en": "writer",
+      "zh": "作家；作者",
+      "source": "PDF_T18"
+    }
+  ],
+  "T18": [
+    {
+      "en": "assistant",
+      "zh": "助手",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "bill",
+      "zh": "账单",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "buy",
+      "zh": "购买",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "cash",
+      "zh": "现金",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "charge",
+      "zh": "费用",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "cheap",
+      "zh": "便宜的",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "close",
+      "zh": "关闭；结束",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "credit card",
+      "zh": "信用卡",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "dry-cleaner's",
+      "zh": "干洗店",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "euro",
+      "zh": "欧元",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "expensive",
+      "zh": "昂贵的",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "for sale",
+      "zh": "待售",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "go shopping",
+      "zh": "去购物",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "grocery store",
+      "zh": "杂货店",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "hairdresser",
+      "zh": "美发师",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "jeweller",
+      "zh": "珠宝商；珠宝店",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "mall",
+      "zh": "大规模购物中心",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "manager",
+      "zh": "经理",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "pay",
+      "zh": "支付；给以报酬",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "penny",
+      "zh": "便士",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "price",
+      "zh": "价格",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "salesman",
+      "zh": "销售人员",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "shop assistant",
+      "zh": "售货员",
+      "source": "PDF_T20"
+    },
+    {
+      "en": "travel agent",
+      "zh": "旅行社",
+      "source": "PDF_T20"
+    }
+  ],
+  "T20": [
+    {
+      "en": "blog",
+      "zh": "博客",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "click (",
+      "zh": "用鼠标 ) 点击",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "laptop",
+      "zh": "笔记本电脑",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "net",
+      "zh": "互联网",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "program",
+      "zh": "程序",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "save",
+      "zh": "保存",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "software",
+      "zh": "软件",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "surf",
+      "zh": "上网冲浪",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "web",
+      "zh": "网络",
+      "source": "PDF_T22"
+    },
+    {
+      "en": "web page",
+      "zh": "网页",
+      "source": "PDF_T22"
+    }
+  ],
+  "T07": [
+    {
+      "en": "bright",
+      "zh": "明亮的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "clear",
+      "zh": "晴朗的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "foggy",
+      "zh": "有雾的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "heat",
+      "zh": "热",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "heavy",
+      "zh": "大量的；猛烈的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "high",
+      "zh": "高的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "icy",
+      "zh": "冰冷的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "light",
+      "zh": "明亮的；光线",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "low",
+      "zh": "低的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "mild",
+      "zh": "温和的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "stormy",
+      "zh": "暴风雨的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "strong (",
+      "zh": "自然力 ) 强的",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "sunshine",
+      "zh": "阳光",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "thunderstorm",
+      "zh": "雷暴",
+      "source": "PDF_T26"
+    },
+    {
+      "en": "December",
+      "zh": "十二月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "east",
+      "zh": "东方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "fall",
+      "zh": "秋天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "north",
+      "zh": "北方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "northeast",
+      "zh": "东北",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "northwest",
+      "zh": "西北",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "November",
+      "zh": "十一月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "October",
+      "zh": "十月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "south",
+      "zh": "南方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "southeast",
+      "zh": "东南",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "southwest",
+      "zh": "西南",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "west",
+      "zh": "西方",
+      "source": "PDF_T28"
+    }
+  ],
+  "T14": [
+    {
+      "en": "April",
+      "zh": "四月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "August",
+      "zh": "八月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "autumn",
+      "zh": "秋天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "December",
+      "zh": "十二月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "fall",
+      "zh": "秋天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "February",
+      "zh": "二月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "January",
+      "zh": "一月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "July",
+      "zh": "七月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "June",
+      "zh": "六月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "March",
+      "zh": "三月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "May",
+      "zh": "五月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "northeast",
+      "zh": "东北",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "northwest",
+      "zh": "西北",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "November",
+      "zh": "十一月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "October",
+      "zh": "十月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "September",
+      "zh": "九月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "southeast",
+      "zh": "东南",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "southwest",
+      "zh": "西南",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "spring",
+      "zh": "春天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "summer",
+      "zh": "夏天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "winter",
+      "zh": "冬天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "bar",
+      "zh": "酒吧",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "beautiful",
+      "zh": "美丽的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "bookshop",
+      "zh": "书店",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "boring",
+      "zh": "无聊的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "bus station",
+      "zh": "公交车站",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "busy",
+      "zh": "忙碌的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "city centre",
+      "zh": "市中心",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "clean",
+      "zh": "干净的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "coffee shop",
+      "zh": "咖啡店",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "crowded",
+      "zh": "拥挤的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "dangerous",
+      "zh": "危险的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "dirty",
+      "zh": "肮脏的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "disco",
+      "zh": "迪斯科舞厅",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "motorway",
+      "zh": "高速公路",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "noise",
+      "zh": "噪音",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "palace",
+      "zh": "宫殿",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "park",
+      "zh": "公园",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "quiet",
+      "zh": "安静的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "railway station",
+      "zh": "火车站",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "roundabout",
+      "zh": "环岛",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "safe",
+      "zh": "安全的",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "square",
+      "zh": "广场",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "street",
+      "zh": "街道",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "supermarket",
+      "zh": "超市",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "trafﬁc lights",
+      "zh": "交通信号灯",
+      "source": "PDF_T32"
+    },
+    {
+      "en": "turning",
+      "zh": "转弯处；岔路口",
+      "source": "PDF_T32"
+    }
+  ],
+  "T15": [
+    {
+      "en": "April",
+      "zh": "四月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "August",
+      "zh": "八月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "autumn",
+      "zh": "秋天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "December",
+      "zh": "十二月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "east",
+      "zh": "东方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "fall",
+      "zh": "秋天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "February",
+      "zh": "二月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "July",
+      "zh": "七月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "June",
+      "zh": "六月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "March",
+      "zh": "三月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "May",
+      "zh": "五月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "north",
+      "zh": "北方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "northeast",
+      "zh": "东北",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "northwest",
+      "zh": "西北",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "November",
+      "zh": "十一月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "October",
+      "zh": "十月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "September",
+      "zh": "九月",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "south",
+      "zh": "南方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "southeast",
+      "zh": "东南",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "southwest",
+      "zh": "西南",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "spring",
+      "zh": "春天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "summer",
+      "zh": "夏天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "west",
+      "zh": "西方",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "winter",
+      "zh": "冬天",
+      "source": "PDF_T28"
+    },
+    {
+      "en": "after",
+      "zh": "在…之后；以后",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "a.m.",
+      "zh": "上午",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "before",
+      "zh": "在 .. 之前；以前",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "century",
+      "zh": "世纪",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "date",
+      "zh": "日期",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "day",
+      "zh": "一天",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "half",
+      "zh": "一半；一般的",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "midnight",
+      "zh": "午夜",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "moment",
+      "zh": "时刻；片刻",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "noon",
+      "zh": "中午",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "now",
+      "zh": "现在；此刻",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "p.m.",
+      "zh": "下午",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "tonight",
+      "zh": "今晚",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "weekday",
+      "zh": "工作日",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "weekend",
+      "zh": "周末；周末的",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "working hours",
+      "zh": "工作时间",
+      "source": "PDF_T29"
+    },
+    {
+      "en": "Tuesday",
+      "zh": "星期二",
+      "source": "PDF_T30"
+    },
+    {
+      "en": "Wednesday",
+      "zh": "星期三",
+      "source": "PDF_T30"
+    },
+    {
+      "en": "Thursday",
+      "zh": "星期四",
+      "source": "PDF_T30"
+    },
+    {
+      "en": "Friday",
+      "zh": "星期五",
+      "source": "PDF_T30"
+    },
+    {
+      "en": "Saturday",
+      "zh": "星期六",
+      "source": "PDF_T30"
+    },
+    {
+      "en": "Sunday",
+      "zh": "星期日",
+      "source": "PDF_T30"
+    }
+  ],
+  "T17": [
+    {
+      "en": "advise",
+      "zh": "建议",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "agree",
+      "zh": "同意",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "decide",
+      "zh": "决定",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "describe",
+      "zh": "描述",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "explain",
+      "zh": "解释；说明",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "review",
+      "zh": "评论",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "suggest",
+      "zh": "建议",
+      "source": "PDF_T34"
+    },
+    {
+      "en": "warn",
+      "zh": "警告",
+      "source": "PDF_T34"
+    }
+  ]
+}

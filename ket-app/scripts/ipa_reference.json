@@ -1,0 +1,4430 @@
+{
+ "mother": {
+  "phonetic": "/ˈmʌðə/",
+  "zh": "母亲",
+  "example": "My mother cooks dinner every day.",
+  "exampleZh": "我妈妈每天做晚饭。"
+ },
+ "father": {
+  "phonetic": "/ˈfɑːðə/",
+  "zh": "父亲",
+  "example": "My father works in an office.",
+  "exampleZh": "我爸爸在办公室工作。"
+ },
+ "parent": {
+  "phonetic": "/ˈpeərənt/",
+  "zh": "父母",
+  "example": "Her parents are very kind.",
+  "exampleZh": "她的父母非常善良。"
+ },
+ "brother": {
+  "phonetic": "/ˈbrʌðə/",
+  "zh": "兄弟",
+  "example": "My brother is taller than me.",
+  "exampleZh": "我哥哥比我高。"
+ },
+ "sister": {
+  "phonetic": "/ˈsɪstə/",
+  "zh": "姐妹",
+  "example": "My sister likes reading books.",
+  "exampleZh": "我妹妹喜欢读书。"
+ },
+ "son": {
+  "phonetic": "/sʌn/",
+  "zh": "儿子",
+  "example": "Their son is ten years old.",
+  "exampleZh": "他们的儿子十岁了。"
+ },
+ "daughter": {
+  "phonetic": "/ˈdɔːtə/",
+  "zh": "女儿",
+  "example": "Their daughter goes to my school.",
+  "exampleZh": "他们的女儿和我上同一所学校。"
+ },
+ "grandmother": {
+  "phonetic": "/ˈɡrænmʌðə/",
+  "zh": "祖母/外祖母",
+  "example": "My grandmother tells great stories.",
+  "exampleZh": "我奶奶很会讲故事。"
+ },
+ "grandfather": {
+  "phonetic": "/ˈɡrænfɑːðə/",
+  "zh": "祖父/外祖父",
+  "example": "My grandfather rides a bike every morning.",
+  "exampleZh": "我爷爷每天早上骑自行车。"
+ },
+ "uncle": {
+  "phonetic": "/ˈʌŋkl/",
+  "zh": "叔叔/舅舅",
+  "example": "My uncle lives in London.",
+  "exampleZh": "我叔叔住在伦敦。"
+ },
+ "aunt": {
+  "phonetic": "/ɑːnt/",
+  "zh": "阿姨/姑姑",
+  "example": "My aunt is a doctor.",
+  "exampleZh": "我姑姑是医生。"
+ },
+ "cousin": {
+  "phonetic": "/ˈkʌzn/",
+  "zh": "表兄弟姐妹",
+  "example": "My cousin visits us every summer.",
+  "exampleZh": "我表哥每年夏天来看我们。"
+ },
+ "friend": {
+  "phonetic": "/frend/",
+  "zh": "朋友",
+  "example": "She is my best friend.",
+  "exampleZh": "她是我最好的朋友。"
+ },
+ "teacher": {
+  "phonetic": "/ˈtiːtʃə/",
+  "zh": "老师",
+  "example": "He is a teacher.",
+  "exampleZh": "他是一名老师。"
+ },
+ "student": {
+  "phonetic": "/ˈstjuːdənt/",
+  "zh": "学生",
+  "example": "There are twenty students in the class.",
+  "exampleZh": "班上有二十名学生。"
+ },
+ "child": {
+  "phonetic": "/tʃaɪld/",
+  "zh": "孩子",
+  "example": "Every child loves playing.",
+  "exampleZh": "每个孩子都喜欢玩。"
+ },
+ "baby": {
+  "phonetic": "/ˈbeɪbi/",
+  "zh": "婴儿",
+  "example": "I have a baby brother.",
+  "exampleZh": "我有一个小弟弟。"
+ },
+ "people": {
+  "phonetic": "/ˈpiːpl/",
+  "zh": "人们",
+  "example": "There are many people here.",
+  "exampleZh": "这里有很多人。"
+ },
+ "man": {
+  "phonetic": "/mæn/",
+  "zh": "男人",
+  "example": "That man is my neighbour.",
+  "exampleZh": "那个男人是我的邻居。"
+ },
+ "woman": {
+  "phonetic": "/ˈwʊmən/",
+  "zh": "女人",
+  "example": "The woman is a doctor.",
+  "exampleZh": "那位女士是医生。"
+ },
+ "boy": {
+  "phonetic": "/bɔɪ/",
+  "zh": "男孩",
+  "example": "The boy is playing football.",
+  "exampleZh": "男孩在踢足球。"
+ },
+ "girl": {
+  "phonetic": "/ɡɜːl/",
+  "zh": "女孩",
+  "example": "The girl likes singing.",
+  "exampleZh": "女孩喜欢唱歌。"
+ },
+ "children": {
+  "phonetic": "/ˈtʃɪldrən/",
+  "zh": "孩子们",
+  "example": "The children play in the park.",
+  "exampleZh": "孩子们在公园里玩。"
+ },
+ "teenager": {
+  "phonetic": "/ˈtiːneɪdʒə/",
+  "zh": "青少年",
+  "example": "Teenagers like music.",
+  "exampleZh": "青少年喜欢音乐。"
+ },
+ "neighbour": {
+  "phonetic": "/ˈneɪbə/",
+  "zh": "邻居",
+  "example": "My neighbour is very kind.",
+  "exampleZh": "我的邻居很善良。"
+ },
+ "classmate": {
+  "phonetic": "/ˈklɑːsmeɪt/",
+  "zh": "同学",
+  "example": "My classmate sits next to me.",
+  "exampleZh": "我同学坐在我旁边。"
+ },
+ "name": {
+  "phonetic": "/neɪm/",
+  "zh": "名字",
+  "example": "What is your name?",
+  "exampleZh": "你叫什么名字？"
+ },
+ "age": {
+  "phonetic": "/eɪdʒ/",
+  "zh": "年龄",
+  "example": "What is your age?",
+  "exampleZh": "你多大了？"
+ },
+ "young": {
+  "phonetic": "/jʌŋ/",
+  "zh": "年轻的",
+  "example": "She is young and energetic.",
+  "exampleZh": "她年轻有活力。"
+ },
+ "old": {
+  "phonetic": "/əʊld/",
+  "zh": "年老的",
+  "example": "My grandfather is old.",
+  "exampleZh": "我爷爷年纪大了。"
+ },
+ "tall": {
+  "phonetic": "/tɔːl/",
+  "zh": "高的",
+  "example": "He is very tall.",
+  "exampleZh": "他很高。"
+ },
+ "short": {
+  "phonetic": "/ʃɔːt/",
+  "zh": "矮的",
+  "example": "She is shorter than me.",
+  "exampleZh": "她比我矮。"
+ },
+ "strong": {
+  "phonetic": "/strɒŋ/",
+  "zh": "强壮的",
+  "example": "He is strong.",
+  "exampleZh": "他很强壮。"
+ },
+ "thin": {
+  "phonetic": "/θɪn/",
+  "zh": "瘦的",
+  "example": "She is tall and thin.",
+  "exampleZh": "她又高又瘦。"
+ },
+ "kind": {
+  "phonetic": "/kaɪnd/",
+  "zh": "善良的",
+  "example": "She is a kind person.",
+  "exampleZh": "她是一个善良的人。"
+ },
+ "friendly": {
+  "phonetic": "/ˈfrendli/",
+  "zh": "友好的",
+  "example": "He is very friendly.",
+  "exampleZh": "他非常友好。"
+ },
+ "happy": {
+  "phonetic": "/ˈhæpi/",
+  "zh": "开心的",
+  "example": "I am happy today.",
+  "exampleZh": "我今天很开心。"
+ },
+ "sad": {
+  "phonetic": "/sæd/",
+  "zh": "伤心的",
+  "example": "She is sad because she lost her dog.",
+  "exampleZh": "她很伤心，因为丢了狗。"
+ },
+ "angry": {
+  "phonetic": "/ˈæŋɡri/",
+  "zh": "生气的",
+  "example": "My father is angry.",
+  "exampleZh": "我爸爸生气了。"
+ },
+ "tired": {
+  "phonetic": "/ˈtaɪəd/",
+  "zh": "累的",
+  "example": "I am tired after work.",
+  "exampleZh": "我下班后很累。"
+ },
+ "excited": {
+  "phonetic": "/ɪkˈsaɪtɪd/",
+  "zh": "兴奋的",
+  "example": "The children are excited.",
+  "exampleZh": "孩子们很兴奋。"
+ },
+ "nervous": {
+  "phonetic": "/ˈnɜːvəs/",
+  "zh": "紧张的",
+  "example": "I feel nervous before exams.",
+  "exampleZh": "考试前我感到紧张。"
+ },
+ "shy": {
+  "phonetic": "/ʃaɪ/",
+  "zh": "害羞的",
+  "example": "She is a shy girl.",
+  "exampleZh": "她是一个害羞的女孩。"
+ },
+ "brave": {
+  "phonetic": "/breɪv/",
+  "zh": "勇敢的",
+  "example": "He is a brave boy.",
+  "exampleZh": "他是一个勇敢的男孩。"
+ },
+ "honest": {
+  "phonetic": "/ˈɒnɪst/",
+  "zh": "诚实的",
+  "example": "She is an honest girl.",
+  "exampleZh": "她是一个诚实的女孩。"
+ },
+ "polite": {
+  "phonetic": "/pəˈlaɪt/",
+  "zh": "有礼貌的",
+  "example": "Be polite to teachers.",
+  "exampleZh": "对老师要有礼貌。"
+ },
+ "rude": {
+  "phonetic": "/ruːd/",
+  "zh": "粗鲁的",
+  "example": "Do not be rude.",
+  "exampleZh": "不要粗鲁。"
+ },
+ "funny": {
+  "phonetic": "/ˈfʌni/",
+  "zh": "有趣的",
+  "example": "The film is very funny.",
+  "exampleZh": "这部电影非常有趣。"
+ },
+ "quiet": {
+  "phonetic": "/ˈkwaɪət/",
+  "zh": "安静的",
+  "example": "The library is quiet.",
+  "exampleZh": "图书馆很安静。"
+ },
+ "noisy": {
+  "phonetic": "/ˈnɔɪzi/",
+  "zh": "吵闹的",
+  "example": "The classroom is noisy.",
+  "exampleZh": "教室很吵闹。"
+ },
+ "husband": {
+  "phonetic": "/ˈhʌzbənd/",
+  "zh": "丈夫",
+  "example": "Her husband is a teacher.",
+  "exampleZh": "她的丈夫是老师。"
+ },
+ "wife": {
+  "phonetic": "/waɪf/",
+  "zh": "妻子",
+  "example": "His wife is a doctor.",
+  "exampleZh": "他的妻子是医生。"
+ },
+ "twin": {
+  "phonetic": "/twɪn/",
+  "zh": "双胞胎",
+  "example": "They are twins.",
+  "exampleZh": "他们是双胞胎。"
+ },
+ "guest": {
+  "phonetic": "/ɡest/",
+  "zh": "客人",
+  "example": "We have guests today.",
+  "exampleZh": "今天我们家有客人。"
+ },
+ "host": {
+  "phonetic": "/həʊst/",
+  "zh": "主人",
+  "example": "Our host is very nice.",
+  "exampleZh": "我们的主人很好。"
+ },
+ "family": {
+  "phonetic": "/ˈfæməli/",
+  "zh": "家庭",
+  "example": "I love my family.",
+  "exampleZh": "我爱我的家庭。"
+ },
+ "relative": {
+  "phonetic": "/ˈrelətɪv/",
+  "zh": "亲戚",
+  "example": "I have many relatives.",
+  "exampleZh": "我有很多亲戚。"
+ },
+ "marry": {
+  "phonetic": "/ˈmæri/",
+  "zh": "结婚",
+  "example": "They marry next year.",
+  "exampleZh": "他们明年结婚。"
+ },
+ "wedding": {
+  "phonetic": "/ˈwedɪŋ/",
+  "zh": "婚礼",
+  "example": "The wedding is in June.",
+  "exampleZh": "婚礼在六月举行。"
+ },
+ "born": {
+  "phonetic": "/bɔːn/",
+  "zh": "出生",
+  "example": "I was born in 2012.",
+  "exampleZh": "我出生于2012年。"
+ },
+ "grow": {
+  "phonetic": "/ɡrəʊ/",
+  "zh": "成长",
+  "example": "Children grow fast.",
+  "exampleZh": "孩子们长得很快。"
+ },
+ "face": {
+  "phonetic": "/feɪs/",
+  "zh": "脸",
+  "example": "Wash your face.",
+  "exampleZh": "洗脸。"
+ },
+ "hair": {
+  "phonetic": "/heə/",
+  "zh": "头发",
+  "example": "She has long hair.",
+  "exampleZh": "她有长头发。"
+ },
+ "eye": {
+  "phonetic": "/aɪ/",
+  "zh": "眼睛",
+  "example": "She has blue eyes.",
+  "exampleZh": "她有蓝眼睛。"
+ },
+ "nose": {
+  "phonetic": "/nəʊz/",
+  "zh": "鼻子",
+  "example": "The dog has a big nose.",
+  "exampleZh": "这只狗有个大鼻子。"
+ },
+ "smile": {
+  "phonetic": "/smaɪl/",
+  "zh": "微笑",
+  "example": "She smiles at me.",
+  "exampleZh": "她对我微笑。"
+ },
+ "apple": {
+  "phonetic": "/ˈæpl/",
+  "zh": "苹果",
+  "example": "I eat an apple every morning.",
+  "exampleZh": "我每天早上吃一个苹果。"
+ },
+ "banana": {
+  "phonetic": "/bəˈnɑːnə/",
+  "zh": "香蕉",
+  "example": "Monkeys love bananas.",
+  "exampleZh": "猴子喜欢香蕉。"
+ },
+ "bread": {
+  "phonetic": "/bred/",
+  "zh": "面包",
+  "example": "Could you buy some bread?",
+  "exampleZh": "你能买些面包吗？"
+ },
+ "cake": {
+  "phonetic": "/keɪk/",
+  "zh": "蛋糕",
+  "example": "We baked a cake for her birthday.",
+  "exampleZh": "我们为她的生日烤了一个蛋糕。"
+ },
+ "chicken": {
+  "phonetic": "/ˈʧɪkən/",
+  "zh": "鸡",
+  "example": "We eat chicken for dinner.",
+  "exampleZh": "我们晚餐吃鸡肉。"
+ },
+ "egg": {
+  "phonetic": "/ɛg/",
+  "zh": "鸡蛋",
+  "example": "I eat an egg for breakfast.",
+  "exampleZh": "我早餐吃一个鸡蛋。"
+ },
+ "fish": {
+  "phonetic": "/fɪʃ/",
+  "zh": "鱼",
+  "example": "Fish live in water.",
+  "exampleZh": "鱼生活在水里。"
+ },
+ "fruit": {
+  "phonetic": "/fruːt/",
+  "zh": "水果",
+  "example": "You should eat more fruit.",
+  "exampleZh": "你应该多吃水果。"
+ },
+ "juice": {
+  "phonetic": "/dʒuːs/",
+  "zh": "果汁",
+  "example": "Orange juice is nice.",
+  "exampleZh": "橙汁很好喝。"
+ },
+ "milk": {
+  "phonetic": "/mɪlk/",
+  "zh": "牛奶",
+  "example": "I drink milk every day.",
+  "exampleZh": "我每天喝牛奶。"
+ },
+ "pizza": {
+  "phonetic": "/ˈpiːtsə/",
+  "zh": "披萨",
+  "example": "Let us order a pizza tonight.",
+  "exampleZh": "我们今晚点个披萨吧。"
+ },
+ "rice": {
+  "phonetic": "/raɪs/",
+  "zh": "米饭",
+  "example": "Rice is my favourite food.",
+  "exampleZh": "米饭是我最喜欢的食物。"
+ },
+ "salad": {
+  "phonetic": "/ˈsæləd/",
+  "zh": "沙拉",
+  "example": "I have a salad for lunch.",
+  "exampleZh": "我午餐吃沙拉。"
+ },
+ "sandwich": {
+  "phonetic": "/ˈsænwɪtʃ/",
+  "zh": "三明治",
+  "example": "I make a sandwich.",
+  "exampleZh": "我做一个三明治。"
+ },
+ "soup": {
+  "phonetic": "/suːp/",
+  "zh": "汤",
+  "example": "The soup is hot.",
+  "exampleZh": "汤很烫。"
+ },
+ "tea": {
+  "phonetic": "/tiː/",
+  "zh": "茶",
+  "example": "I drink tea in the morning.",
+  "exampleZh": "我早上喝茶。"
+ },
+ "vegetable": {
+  "phonetic": "/ˈvedʒtəbl/",
+  "zh": "蔬菜",
+  "example": "Children should eat more vegetables.",
+  "exampleZh": "孩子们应该多吃蔬菜。"
+ },
+ "water": {
+  "phonetic": "/ˈwɔːtə/",
+  "zh": "水",
+  "example": "I drink water.",
+  "exampleZh": "我喝水。"
+ },
+ "coffee": {
+  "phonetic": "/ˈkɒfi/",
+  "zh": "咖啡",
+  "example": "I drink coffee.",
+  "exampleZh": "我喝咖啡。"
+ },
+ "ice cream": {
+  "phonetic": "/aɪs kriːm/",
+  "zh": "冰淇淋",
+  "example": "Ice cream is delicious in summer.",
+  "exampleZh": "夏天吃冰淇淋很美味。"
+ },
+ "meat": {
+  "phonetic": "/miːt/",
+  "zh": "肉",
+  "example": "I like meat.",
+  "exampleZh": "我喜欢吃肉。"
+ },
+ "beef": {
+  "phonetic": "/biːf/",
+  "zh": "牛肉",
+  "example": "I eat beef for dinner.",
+  "exampleZh": "我晚餐吃牛肉。"
+ },
+ "pork": {
+  "phonetic": "/pɔːk/",
+  "zh": "猪肉",
+  "example": "We eat pork.",
+  "exampleZh": "我们吃猪肉。"
+ },
+ "potato": {
+  "phonetic": "/pəˈteɪtəʊ/",
+  "zh": "土豆",
+  "example": "I like potatoes.",
+  "exampleZh": "我喜欢土豆。"
+ },
+ "tomato": {
+  "phonetic": "/təˈmɑːtəʊ/",
+  "zh": "西红柿",
+  "example": "Tomatoes are red.",
+  "exampleZh": "西红柿是红色的。"
+ },
+ "carrot": {
+  "phonetic": "/ˈkærət/",
+  "zh": "胡萝卜",
+  "example": "Carrots are orange.",
+  "exampleZh": "胡萝卜是橙色的。"
+ },
+ "cabbage": {
+  "phonetic": "/ˈkæbɪdʒ/",
+  "zh": "卷心菜",
+  "example": "I eat cabbage.",
+  "exampleZh": "我吃卷心菜。"
+ },
+ "noodles": {
+  "phonetic": "/ˈnuːdəlz/",
+  "zh": "面条",
+  "example": "I eat noodles.",
+  "exampleZh": "我吃面条。"
+ },
+ "salt": {
+  "phonetic": "/sɔːlt/",
+  "zh": "盐",
+  "example": "Add some salt.",
+  "exampleZh": "加一些盐。"
+ },
+ "pepper": {
+  "phonetic": "/ˈpepə/",
+  "zh": "胡椒",
+  "example": "Add pepper to the food.",
+  "exampleZh": "给食物加胡椒。"
+ },
+ "oil": {
+  "phonetic": "/ɔɪl/",
+  "zh": "油",
+  "example": "I cook with oil.",
+  "exampleZh": "我用油做饭。"
+ },
+ "butter": {
+  "phonetic": "/ˈbʌtə/",
+  "zh": "黄油",
+  "example": "I put butter on bread.",
+  "exampleZh": "我在面包上涂黄油。"
+ },
+ "cheese": {
+  "phonetic": "/tʃiːz/",
+  "zh": "奶酪",
+  "example": "I like cheese.",
+  "exampleZh": "我喜欢奶酪。"
+ },
+ "honey": {
+  "phonetic": "/ˈhʌni/",
+  "zh": "蜂蜜",
+  "example": "I put honey in tea.",
+  "exampleZh": "我在茶里加蜂蜜。"
+ },
+ "jam": {
+  "phonetic": "/dʒæm/",
+  "zh": "果酱",
+  "example": "I put jam on bread.",
+  "exampleZh": "我在面包上涂果酱。"
+ },
+ "lemonade": {
+  "phonetic": "/ˌleməˈneɪd/",
+  "zh": "柠檬水",
+  "example": "I drink lemonade.",
+  "exampleZh": "我喝柠檬水。"
+ },
+ "wine": {
+  "phonetic": "/waɪn/",
+  "zh": "葡萄酒",
+  "example": "My father drinks wine.",
+  "exampleZh": "我爸爸喝葡萄酒。"
+ },
+ "beer": {
+  "phonetic": "/bɪə/",
+  "zh": "啤酒",
+  "example": "He drinks beer.",
+  "exampleZh": "他喝啤酒。"
+ },
+ "fork": {
+  "phonetic": "/fɔːk/",
+  "zh": "叉子",
+  "example": "Use a fork to eat.",
+  "exampleZh": "用叉子吃饭。"
+ },
+ "knife": {
+  "phonetic": "/naɪf/",
+  "zh": "刀",
+  "example": "Be careful with the knife.",
+  "exampleZh": "小心刀。"
+ },
+ "spoon": {
+  "phonetic": "/spuːn/",
+  "zh": "勺子",
+  "example": "I need a spoon for soup.",
+  "exampleZh": "我喝汤需要勺子。"
+ },
+ "plate": {
+  "phonetic": "/pleɪt/",
+  "zh": "盘子",
+  "example": "Put the food on the plate.",
+  "exampleZh": "把食物放在盘子里。"
+ },
+ "bowl": {
+  "phonetic": "/bəʊl/",
+  "zh": "碗",
+  "example": "I eat rice from a bowl.",
+  "exampleZh": "我用碗吃饭。"
+ },
+ "cup": {
+  "phonetic": "/kʌp/",
+  "zh": "杯子",
+  "example": "I drink from a cup.",
+  "exampleZh": "我用杯子喝水。"
+ },
+ "glass": {
+  "phonetic": "/glæs/",
+  "zh": "玻璃",
+  "example": "The window is made of glass.",
+  "exampleZh": "窗户是玻璃做的。"
+ },
+ "bottle": {
+  "phonetic": "/ˈbɒtl/",
+  "zh": "瓶子",
+  "example": "I drink from a bottle.",
+  "exampleZh": "我用瓶子喝水。"
+ },
+ "hungry": {
+  "phonetic": "/ˈhʌŋɡri/",
+  "zh": "饿的",
+  "example": "I am very hungry.",
+  "exampleZh": "我很饿。"
+ },
+ "thirsty": {
+  "phonetic": "/ˈθɜːsti/",
+  "zh": "渴的",
+  "example": "I am thirsty. I need water.",
+  "exampleZh": "我渴了，需要水。"
+ },
+ "full": {
+  "phonetic": "/fʊl/",
+  "zh": "饱的",
+  "example": "I am full.",
+  "exampleZh": "我饱了。"
+ },
+ "delicious": {
+  "phonetic": "/dɪˈlɪʃəs/",
+  "zh": "美味的",
+  "example": "The food is delicious.",
+  "exampleZh": "食物很美味。"
+ },
+ "sweet": {
+  "phonetic": "/swiːt/",
+  "zh": "甜的",
+  "example": "I like sweet food.",
+  "exampleZh": "我喜欢甜食。"
+ },
+ "sour": {
+  "phonetic": "/ˈsaʊə/",
+  "zh": "酸的",
+  "example": "Lemons are sour.",
+  "exampleZh": "柠檬是酸的。"
+ },
+ "salty": {
+  "phonetic": "/ˈsɔːlti/",
+  "zh": "咸的",
+  "example": "The soup is salty.",
+  "exampleZh": "汤很咸。"
+ },
+ "hot": {
+  "phonetic": "/hɒt/",
+  "zh": "热的",
+  "example": "It is hot in summer.",
+  "exampleZh": "夏天很热。"
+ },
+ "cold": {
+  "phonetic": "/kəʊld/",
+  "zh": "感冒",
+  "example": "I have a cold so I stayed at home.",
+  "exampleZh": "我感冒了所以待在家里。"
+ },
+ "fresh": {
+  "phonetic": "/freʃ/",
+  "zh": "新鲜的",
+  "example": "The fruit is fresh.",
+  "exampleZh": "水果很新鲜。"
+ },
+ "breakfast": {
+  "phonetic": "/ˈbrekfəst/",
+  "zh": "早餐",
+  "example": "I eat breakfast at 7.",
+  "exampleZh": "我7点吃早餐。"
+ },
+ "lunch": {
+  "phonetic": "/lʌntʃ/",
+  "zh": "午餐",
+  "example": "We have lunch at school.",
+  "exampleZh": "我们在学校吃午餐。"
+ },
+ "dinner": {
+  "phonetic": "/ˈdɪnə/",
+  "zh": "晚餐",
+  "example": "What do you eat for dinner?",
+  "exampleZh": "你晚餐吃什么？"
+ },
+ "meal": {
+  "phonetic": "/miːl/",
+  "zh": "一餐",
+  "example": "We cook three meals a day.",
+  "exampleZh": "我们一天做三餐。"
+ },
+ "restaurant": {
+  "phonetic": "/ˈrestrɒnt/",
+  "zh": "餐厅",
+  "example": "We go to a restaurant.",
+  "exampleZh": "我们去餐厅。"
+ },
+ "school": {
+  "phonetic": "/skuːl/",
+  "zh": "学校",
+  "example": "I go to school by bus.",
+  "exampleZh": "我坐公交车去上学。"
+ },
+ "classroom": {
+  "phonetic": "/ˈklɑːsruːm/",
+  "zh": "教室",
+  "example": "Our classroom is very big.",
+  "exampleZh": "我们的教室很大。"
+ },
+ "book": {
+  "phonetic": "/bʊk/",
+  "zh": "书",
+  "example": "I read a book.",
+  "exampleZh": "我读一本书。"
+ },
+ "pen": {
+  "phonetic": "/pen/",
+  "zh": "钢笔",
+  "example": "I write with a pen.",
+  "exampleZh": "我用钢笔写字。"
+ },
+ "pencil": {
+  "phonetic": "/ˈpensl/",
+  "zh": "铅笔",
+  "example": "I need a pencil.",
+  "exampleZh": "我需要一支铅笔。"
+ },
+ "paper": {
+  "phonetic": "/ˈpeɪpər/",
+  "zh": "纸",
+  "example": "Please write on the paper.",
+  "exampleZh": "请在纸上写。"
+ },
+ "desk": {
+  "phonetic": "/desk/",
+  "zh": "书桌",
+  "example": "The desk is new.",
+  "exampleZh": "书桌是新的。"
+ },
+ "chair": {
+  "phonetic": "/tʃeə/",
+  "zh": "椅子",
+  "example": "Sit on the chair.",
+  "exampleZh": "坐在椅子上。"
+ },
+ "blackboard": {
+  "phonetic": "/ˈblækbɔːd/",
+  "zh": "黑板",
+  "example": "The teacher writes on the blackboard.",
+  "exampleZh": "老师在黑板上写字。"
+ },
+ "homework": {
+  "phonetic": "/ˈhəʊmwɜːk/",
+  "zh": "家庭作业",
+  "example": "I do my homework.",
+  "exampleZh": "我做家庭作业。"
+ },
+ "lesson": {
+  "phonetic": "/ˈlesn/",
+  "zh": "课",
+  "example": "The lesson is interesting.",
+  "exampleZh": "这节课很有趣。"
+ },
+ "subject": {
+  "phonetic": "/ˈsʌbdʒɪkt/",
+  "zh": "科目",
+  "example": "How many subjects do you study?",
+  "exampleZh": "你学多少门科目？"
+ },
+ "exam": {
+  "phonetic": "/ɪɡˈzæm/",
+  "zh": "考试",
+  "example": "When is your next exam?",
+  "exampleZh": "你下次考试是什么时候？"
+ },
+ "library": {
+  "phonetic": "/ˈlaɪbrəri/",
+  "zh": "图书馆",
+  "example": "The library is open until six.",
+  "exampleZh": "图书馆开放到六点。"
+ },
+ "playground": {
+  "phonetic": "/ˈpleɪɡraʊnd/",
+  "zh": "操场",
+  "example": "The children play on the playground.",
+  "exampleZh": "孩子们在操场上玩。"
+ },
+ "grade": {
+  "phonetic": "/ɡreɪd/",
+  "zh": "成绩/年级",
+  "example": "She got good grades this term.",
+  "exampleZh": "她这学期成绩很好。"
+ },
+ "uniform": {
+  "phonetic": "/ˈjuːnɪfɔːm/",
+  "zh": "制服",
+  "example": "Students wear school uniforms.",
+  "exampleZh": "学生穿校服。"
+ },
+ "dictionary": {
+  "phonetic": "/ˈdɪkʃənri/",
+  "zh": "字典",
+  "example": "Look up the word in your dictionary.",
+  "exampleZh": "在你的字典里查这个词。"
+ },
+ "class": {
+  "phonetic": "/klɑːs/",
+  "zh": "班级",
+  "example": "I am in Class 3.",
+  "exampleZh": "我在3班。"
+ },
+ "exercise": {
+  "phonetic": "/ˈeksəsaɪz/",
+  "zh": "锻炼",
+  "example": "I exercise every morning.",
+  "exampleZh": "我每天早上锻炼。"
+ },
+ "question": {
+  "phonetic": "/ˈkwestʃən/",
+  "zh": "问题",
+  "example": "The question is hard.",
+  "exampleZh": "这个问题很难。"
+ },
+ "answer": {
+  "phonetic": "/ˈɑːnsə/",
+  "zh": "答案",
+  "example": "Give me the answer.",
+  "exampleZh": "给我答案。"
+ },
+ "page": {
+  "phonetic": "/peɪdʒ/",
+  "zh": "页",
+  "example": "Turn to page 10.",
+  "exampleZh": "翻到第10页。"
+ },
+ "ruler": {
+  "phonetic": "/ˈruːlə/",
+  "zh": "尺子",
+  "example": "I need a ruler.",
+  "exampleZh": "我需要一把尺子。"
+ },
+ "bag": {
+  "phonetic": "/bæɡ/",
+  "zh": "书包",
+  "example": "My bag is heavy.",
+  "exampleZh": "我的书包很重。"
+ },
+ "board": {
+  "phonetic": "/bɔːd/",
+  "zh": "黑板",
+  "example": "Look at the board.",
+  "exampleZh": "看黑板。"
+ },
+ "computer": {
+  "phonetic": "/kəmˈpjuːtə/",
+  "zh": "电脑",
+  "example": "I use a computer.",
+  "exampleZh": "我使用电脑。"
+ },
+ "map": {
+  "phonetic": "/mæp/",
+  "zh": "地图",
+  "example": "I have a map.",
+  "exampleZh": "我有一张地图。"
+ },
+ "picture": {
+  "phonetic": "/ˈpɪktʃə/",
+  "zh": "图片",
+  "example": "Draw a picture.",
+  "exampleZh": "画一张图片。"
+ },
+ "story": {
+  "phonetic": "/ˈstɔːri/",
+  "zh": "故事",
+  "example": "I like this story.",
+  "exampleZh": "我喜欢这个故事。"
+ },
+ "poem": {
+  "phonetic": "/ˈpəʊɪm/",
+  "zh": "诗",
+  "example": "I read a poem.",
+  "exampleZh": "我读一首诗。"
+ },
+ "song": {
+  "phonetic": "/sɒŋ/",
+  "zh": "歌曲",
+  "example": "This song is popular.",
+  "exampleZh": "这首歌很流行。"
+ },
+ "game": {
+  "phonetic": "/ɡeɪm/",
+  "zh": "游戏",
+  "example": "I play a game.",
+  "exampleZh": "我玩一个游戏。"
+ },
+ "prize": {
+  "phonetic": "/praɪz/",
+  "zh": "奖品",
+  "example": "I win a prize.",
+  "exampleZh": "我赢得一个奖品。"
+ },
+ "race": {
+  "phonetic": "/reɪs/",
+  "zh": "比赛",
+  "example": "I win the race.",
+  "exampleZh": "我赢得比赛。"
+ },
+ "team": {
+  "phonetic": "/tiːm/",
+  "zh": "团队",
+  "example": "We are a good team.",
+  "exampleZh": "我们是一个好团队。"
+ },
+ "win": {
+  "phonetic": "/wɪn/",
+  "zh": "赢",
+  "example": "We want to win.",
+  "exampleZh": "我们想赢。"
+ },
+ "lose": {
+  "phonetic": "/luːz/",
+  "zh": "输",
+  "example": "We do not like to lose.",
+  "exampleZh": "我们不喜欢输。"
+ },
+ "practice": {
+  "phonetic": "/ˈpræktɪs/",
+  "zh": "练习",
+  "example": "Practice makes perfect.",
+  "exampleZh": "熟能生巧。"
+ },
+ "learn": {
+  "phonetic": "/lɜːn/",
+  "zh": "学习",
+  "example": "I learn English.",
+  "exampleZh": "我学习英语。"
+ },
+ "teach": {
+  "phonetic": "/tiːtʃ/",
+  "zh": "教",
+  "example": "My teacher teaches me.",
+  "exampleZh": "我的老师教我。"
+ },
+ "study": {
+  "phonetic": "/ˈstʌdi/",
+  "zh": "学习",
+  "example": "I study English.",
+  "exampleZh": "我学习英语。"
+ },
+ "read": {
+  "phonetic": "/riːd/",
+  "zh": "阅读",
+  "example": "I read every day.",
+  "exampleZh": "我每天都阅读。"
+ },
+ "write": {
+  "phonetic": "/raɪt/",
+  "zh": "写作",
+  "example": "I write stories.",
+  "exampleZh": "我写故事。"
+ },
+ "draw": {
+  "phonetic": "/drɔː/",
+  "zh": "画",
+  "example": "I draw a picture.",
+  "exampleZh": "我画一张图片。"
+ },
+ "listen": {
+  "phonetic": "/ˈlɪsn/",
+  "zh": "听",
+  "example": "I listen to music.",
+  "exampleZh": "我听音乐。"
+ },
+ "speak": {
+  "phonetic": "/spiːk/",
+  "zh": "说",
+  "example": "I speak English.",
+  "exampleZh": "我说英语。"
+ },
+ "spell": {
+  "phonetic": "/spel/",
+  "zh": "拼写",
+  "example": "Spell your name.",
+  "exampleZh": "拼写你的名字。"
+ },
+ "count": {
+  "phonetic": "/kaʊnt/",
+  "zh": "数数",
+  "example": "Count from 1 to 10.",
+  "exampleZh": "从1数到10。"
+ },
+ "think": {
+  "phonetic": "/θɪŋk/",
+  "zh": "思考",
+  "example": "I think hard.",
+  "exampleZh": "我努力思考。"
+ },
+ "know": {
+  "phonetic": "/nəʊ/",
+  "zh": "知道",
+  "example": "I know the answer.",
+  "exampleZh": "我知道答案。"
+ },
+ "understand": {
+  "phonetic": "/ˌʌndəˈstænd/",
+  "zh": "理解",
+  "example": "I understand.",
+  "exampleZh": "我理解了。"
+ },
+ "remember": {
+  "phonetic": "/rɪˈmembə/",
+  "zh": "记住",
+  "example": "Remember this word.",
+  "exampleZh": "记住这个词。"
+ },
+ "forget": {
+  "phonetic": "/fəˈɡet/",
+  "zh": "忘记",
+  "example": "I forget the word.",
+  "exampleZh": "我忘记这个词。"
+ },
+ "help": {
+  "phonetic": "/help/",
+  "zh": "帮助",
+  "example": "I help my mother.",
+  "exampleZh": "我帮助我的母亲。"
+ },
+ "try": {
+  "phonetic": "/traɪ/",
+  "zh": "尝试",
+  "example": "I try my best.",
+  "exampleZh": "我尽力。"
+ },
+ "start": {
+  "phonetic": "/stɑːt/",
+  "zh": "开始",
+  "example": "Start now.",
+  "exampleZh": "现在开始。"
+ },
+ "finish": {
+  "phonetic": "/ˈfɪnɪʃ/",
+  "zh": "完成",
+  "example": "Finish your work.",
+  "exampleZh": "完成你的工作。"
+ },
+ "check": {
+  "phonetic": "/tʃek/",
+  "zh": "检查",
+  "example": "Check your work.",
+  "exampleZh": "检查你的工作。"
+ },
+ "correct": {
+  "phonetic": "/kəˈrekt/",
+  "zh": "正确的",
+  "example": "Your answer is correct.",
+  "exampleZh": "你的答案是正确的。"
+ },
+ "wrong": {
+  "phonetic": "/rɒŋ/",
+  "zh": "错误的",
+  "example": "Your answer is wrong.",
+  "exampleZh": "你的答案是错误的。"
+ },
+ "difficult": {
+  "phonetic": "/ˈdɪfɪkəlt/",
+  "zh": "困难的",
+  "example": "The question is difficult.",
+  "exampleZh": "这个问题很困难。"
+ },
+ "easy": {
+  "phonetic": "/ˈiːzi/",
+  "zh": "容易的",
+  "example": "The question is easy.",
+  "exampleZh": "这个问题很容易。"
+ },
+ "important": {
+  "phonetic": "/ɪmˈpɔːtnt/",
+  "zh": "重要的",
+  "example": "This is important.",
+  "exampleZh": "这很重要。"
+ },
+ "interesting": {
+  "phonetic": "/ˈɪntrəstɪŋ/",
+  "zh": "有趣的",
+  "example": "The lesson is interesting.",
+  "exampleZh": "这节课很有趣。"
+ },
+ "bus": {
+  "phonetic": "/bʌs/",
+  "zh": "公交车",
+  "example": "I take the bus to school every day.",
+  "exampleZh": "我每天坐公交上学。"
+ },
+ "car": {
+  "phonetic": "/kɑː/",
+  "zh": "汽车",
+  "example": "My father drives a red car.",
+  "exampleZh": "我爸爸开一辆红色汽车。"
+ },
+ "plane": {
+  "phonetic": "/pleɪn/",
+  "zh": "飞机",
+  "example": "We went to Beijing by plane.",
+  "exampleZh": "我们坐飞机去了北京。"
+ },
+ "bike": {
+  "phonetic": "/baɪk/",
+  "zh": "自行车",
+  "example": "I ride my bike in the park.",
+  "exampleZh": "我在公园里骑自行车。"
+ },
+ "ticket": {
+  "phonetic": "/ˈtɪkɪt/",
+  "zh": "票",
+  "example": "I have a ticket.",
+  "exampleZh": "我有一张票。"
+ },
+ "station": {
+  "phonetic": "/ˈsteɪʃn/",
+  "zh": "车站",
+  "example": "The bus station is near my home.",
+  "exampleZh": "公交车站在我家附近。"
+ },
+ "airport": {
+  "phonetic": "/ˈeəpɔːt/",
+  "zh": "机场",
+  "example": "We met him at the airport.",
+  "exampleZh": "我们在机场接的他。"
+ },
+ "journey": {
+  "phonetic": "/ˈdʒɜːni/",
+  "zh": "旅程",
+  "example": "The journey is long.",
+  "exampleZh": "旅程很长。"
+ },
+ "driver": {
+  "phonetic": "/ˈdraɪvə/",
+  "zh": "司机",
+  "example": "My father is a driver.",
+  "exampleZh": "我爸爸是一名司机。"
+ },
+ "passenger": {
+  "phonetic": "/ˈpæsɪndʒə/",
+  "zh": "乘客",
+  "example": "All passengers must fasten seatbelts.",
+  "exampleZh": "所有乘客必须系好安全带。"
+ },
+ "bridge": {
+  "phonetic": "/brɪdʒ/",
+  "zh": "桥",
+  "example": "There is an old bridge over the river.",
+  "exampleZh": "河上有一座古老的桥。"
+ },
+ "road": {
+  "phonetic": "/rəʊd/",
+  "zh": "道路",
+  "example": "Be careful when you cross the road.",
+  "exampleZh": "过马路时要小心。"
+ },
+ "traffic": {
+  "phonetic": "/ˈtræfɪk/",
+  "zh": "交通",
+  "example": "There is a lot of traffic this morning.",
+  "exampleZh": "今天早上交通很拥堵。"
+ },
+ "boat": {
+  "phonetic": "/bəʊt/",
+  "zh": "船",
+  "example": "We took a boat trip on the lake.",
+  "exampleZh": "我们在湖上坐船游览。"
+ },
+ "helicopter": {
+  "phonetic": "/ˈhelɪkɒptə/",
+  "zh": "直升机",
+  "example": "A helicopter flew over our school.",
+  "exampleZh": "一架直升机从我们学校上方飞过。"
+ },
+ "motorbike": {
+  "phonetic": "/ˈməʊtəbaɪk/",
+  "zh": "摩托车",
+  "example": "He rides a motorbike to work.",
+  "exampleZh": "他骑摩托车上班。"
+ },
+ "luggage": {
+  "phonetic": "/ˈlʌɡɪdʒ/",
+  "zh": "行李",
+  "example": "Do you have any luggage?",
+  "exampleZh": "你有行李吗？"
+ },
+ "passport": {
+  "phonetic": "/ˈpɑːspɔːt/",
+  "zh": "护照",
+  "example": "I need my passport.",
+  "exampleZh": "我需要我的护照。"
+ },
+ "taxi": {
+  "phonetic": "/ˈtæksi/",
+  "zh": "出租车",
+  "example": "I take a taxi to the airport.",
+  "exampleZh": "我坐出租车去机场。"
+ },
+ "underground": {
+  "phonetic": "/ˌʌndəˈɡraʊnd/",
+  "zh": "地铁",
+  "example": "I go to work by underground.",
+  "exampleZh": "我坐地铁去上班。"
+ },
+ "metro": {
+  "phonetic": "/ˈmetrəʊ/",
+  "zh": "地铁（欧式）",
+  "example": "The metro is very convenient.",
+  "exampleZh": "地铁非常方便。"
+ },
+ "tram": {
+  "phonetic": "/træm/",
+  "zh": "电车",
+  "example": "The tram goes through the city.",
+  "exampleZh": "电车穿过城市。"
+ },
+ "ferry": {
+  "phonetic": "/ˈferi/",
+  "zh": "渡轮",
+  "example": "We take the ferry to the island.",
+  "exampleZh": "我们坐渡轮去岛上。"
+ },
+ "subway": {
+  "phonetic": "/ˈsʌbweɪ/",
+  "zh": "地铁（美式）",
+  "example": "The subway is crowded.",
+  "exampleZh": "地铁很拥挤。"
+ },
+ "terminal": {
+  "phonetic": "/ˈtɜːmɪnl/",
+  "zh": "航站楼",
+  "example": "Meet me at the terminal.",
+  "exampleZh": "在航站楼见我。"
+ },
+ "platform": {
+  "phonetic": "/ˈplætfɔːm/",
+  "zh": "站台",
+  "example": "Wait on platform 3.",
+  "exampleZh": "在3号站台等。"
+ },
+ "timetable": {
+  "phonetic": "/ˈtaɪmteɪbl/",
+  "zh": "时刻表",
+  "example": "Check the timetable.",
+  "exampleZh": "查看时刻表。"
+ },
+ "delay": {
+  "phonetic": "/dɪˈleɪ/",
+  "zh": "延误",
+  "example": "The flight is delayed.",
+  "exampleZh": "航班延误了。"
+ },
+ "arrive": {
+  "phonetic": "/əˈraɪv/",
+  "zh": "到达",
+  "example": "What time does the train arrive?",
+  "exampleZh": "火车几点到达？"
+ },
+ "depart": {
+  "phonetic": "/dɪˈpɑːt/",
+  "zh": "出发",
+  "example": "The bus departs at 8 a.m.",
+  "exampleZh": "公交车早上8点出发。"
+ },
+ "trip": {
+  "phonetic": "/trɪp/",
+  "zh": "旅行",
+  "example": "We went on a trip.",
+  "exampleZh": "我们去旅行了。"
+ },
+ "tour": {
+  "phonetic": "/tʊə/",
+  "zh": "游览",
+  "example": "We went on a guided tour.",
+  "exampleZh": "我们参加了有导游的游览。"
+ },
+ "travel": {
+  "phonetic": "/ˈtrævl/",
+  "zh": "旅行",
+  "example": "I love to travel.",
+  "exampleZh": "我喜欢旅行。"
+ },
+ "abroad": {
+  "phonetic": "/əˈbrɔːd/",
+  "zh": "在国外",
+  "example": "I want to study abroad.",
+  "exampleZh": "我想出国留学。"
+ },
+ "suitcase": {
+  "phonetic": "/ˈsuːtkeɪs/",
+  "zh": "行李箱",
+  "example": "I pack my suitcase.",
+  "exampleZh": "我收拾行李箱。"
+ },
+ "backpack": {
+  "phonetic": "/ˈbækpæk/",
+  "zh": "背包",
+  "example": "I carry a backpack.",
+  "exampleZh": "我背一个背包。"
+ },
+ "visa": {
+  "phonetic": "/ˈviːzə/",
+  "zh": "签证",
+  "example": "I need a visa to travel.",
+  "exampleZh": "我需要签证才能旅行。"
+ },
+ "customs": {
+  "phonetic": "/ˈkʌstəmz/",
+  "zh": "海关",
+  "example": "Go through customs.",
+  "exampleZh": "通过海关。"
+ },
+ "boarding pass": {
+  "phonetic": "/ˈbɔːdɪŋ pɑːs/",
+  "zh": "登机牌",
+  "example": "Show your boarding pass.",
+  "exampleZh": "出示你的登机牌。"
+ },
+ "gate": {
+  "phonetic": "/ɡeɪt/",
+  "zh": "登机口",
+  "example": "Go to gate 12.",
+  "exampleZh": "去12号登机口。"
+ },
+ "seat": {
+  "phonetic": "/siːt/",
+  "zh": "座位",
+  "example": "My seat is 14A.",
+  "exampleZh": "我的座位是14A。"
+ },
+ "aisle": {
+  "phonetic": "/aɪl/",
+  "zh": "过道",
+  "example": "I want an aisle seat.",
+  "exampleZh": "我想要靠过道的座位。"
+ },
+ "window seat": {
+  "phonetic": "/ˈwɪndəʊ siːt/",
+  "zh": "靠窗座位",
+  "example": "I prefer a window seat.",
+  "exampleZh": "我更喜欢靠窗的座位。"
+ },
+ "engine": {
+  "phonetic": "/ˈendʒɪn/",
+  "zh": "发动机",
+  "example": "The engine is very loud.",
+  "exampleZh": "发动机很吵。"
+ },
+ "pilot": {
+  "phonetic": "/ˈpaɪlət/",
+  "zh": "飞行员",
+  "example": "The pilot is very experienced.",
+  "exampleZh": "飞行员很有经验。"
+ },
+ "captain": {
+  "phonetic": "/ˈkæptɪn/",
+  "zh": "机长",
+  "example": "The captain speaks to the passengers.",
+  "exampleZh": "机长对乘客讲话。"
+ },
+ "crew": {
+  "phonetic": "/kruː/",
+  "zh": "机组人员",
+  "example": "The crew is very helpful.",
+  "exampleZh": "机组人员很有帮助。"
+ },
+ "flight": {
+  "phonetic": "/flaɪt/",
+  "zh": "航班",
+  "example": "The flight is at 3 p.m.",
+  "exampleZh": "航班在下午3点。"
+ },
+ "landing": {
+  "phonetic": "/ˈlændɪŋ/",
+  "zh": "降落",
+  "example": "The landing was smooth.",
+  "exampleZh": "降落很平稳。"
+ },
+ "take off": {
+  "phonetic": "/teɪk ɒf/",
+  "zh": "起飞",
+  "example": "The plane takes off at 3 p.m.",
+  "exampleZh": "飞机下午3点起飞。"
+ },
+ "baggage claim": {
+  "phonetic": "/ˈbæɡɪdʒ kleɪm/",
+  "zh": "行李提取处",
+  "example": "Wait at the baggage claim.",
+  "exampleZh": "在行李提取处等。"
+ },
+ "taxi rank": {
+  "phonetic": "/ˈtæksi ræŋk/",
+  "zh": "出租车排队处",
+  "example": "There is a taxi rank outside.",
+  "exampleZh": "外面有出租车排队处。"
+ },
+ "petrol station": {
+  "phonetic": "/ˈpetrəl steɪʃn/",
+  "zh": "加油站",
+  "example": "Fill up at the petrol station.",
+  "exampleZh": "在加油站加油。"
+ },
+ "parking": {
+  "phonetic": "/ˈpɑːkɪŋ/",
+  "zh": "停车",
+  "example": "Where is the parking?",
+  "exampleZh": "停车场在哪里？"
+ },
+ "garage": {
+  "phonetic": "/ˈɡærɑːʒ/",
+  "zh": "车库",
+  "example": "The car is in the garage.",
+  "exampleZh": "车在车库里。"
+ },
+ "traffic light": {
+  "phonetic": "/ˈtræfɪk laɪt/",
+  "zh": "交通灯",
+  "example": "Stop at the traffic light.",
+  "exampleZh": "在交通灯前停下。"
+ },
+ "crossing": {
+  "phonetic": "/ˈkrɒsɪŋ/",
+  "zh": "人行横道",
+  "example": "Use the crossing.",
+  "exampleZh": "使用人行横道。"
+ },
+ "roundabout": {
+  "phonetic": "/ˈraʊndəbaʊt/",
+  "zh": "环岛",
+  "example": "Turn left at the roundabout.",
+  "exampleZh": "在环岛左转。"
+ },
+ "speed limit": {
+  "phonetic": "/spiːd ˈlɪmɪt/",
+  "zh": "限速",
+  "example": "The speed limit is 60 km/h.",
+  "exampleZh": "限速是60公里/小时。"
+ },
+ "fine": {
+  "phonetic": "/faɪn/",
+  "zh": "罚款",
+  "example": "You have to pay a fine.",
+  "exampleZh": "你必须付罚款。"
+ },
+ "accident": {
+  "phonetic": "/ˈæksɪdənt/",
+  "zh": "事故",
+  "example": "There was a car accident.",
+  "exampleZh": "发生了一起车祸。"
+ },
+ "tank": {
+  "phonetic": "/tæŋk/",
+  "zh": "油箱",
+  "example": "Fill up the tank.",
+  "exampleZh": "加满油箱。"
+ },
+ "tyre": {
+  "phonetic": "/ˈtaɪə/",
+  "zh": "轮胎",
+  "example": "The tyre is flat.",
+  "exampleZh": "轮胎瘪了。"
+ },
+ "breakdown": {
+  "phonetic": "/ˈbreɪkdaʊn/",
+  "zh": "故障",
+  "example": "The car had a breakdown.",
+  "exampleZh": "车出故障了。"
+ },
+ "house": {
+  "phonetic": "/haʊs/",
+  "zh": "房子",
+  "example": "They live in a big house.",
+  "exampleZh": "他们住在一所大房子里。"
+ },
+ "kitchen": {
+  "phonetic": "/ˈkɪtʃɪn/",
+  "zh": "厨房",
+  "example": "My mother cooks in the kitchen.",
+  "exampleZh": "我妈妈在厨房做饭。"
+ },
+ "bedroom": {
+  "phonetic": "/ˈbedruːm/",
+  "zh": "卧室",
+  "example": "My bedroom is small.",
+  "exampleZh": "我的卧室很小。"
+ },
+ "bathroom": {
+  "phonetic": "/ˈbɑːθruːm/",
+  "zh": "浴室",
+  "example": "The bathroom is clean.",
+  "exampleZh": "浴室很干净。"
+ },
+ "living room": {
+  "phonetic": "/ˈlɪvɪŋ ruːm/",
+  "zh": "客厅",
+  "example": "We watch TV in the living room.",
+  "exampleZh": "我们在客厅看电视。"
+ },
+ "garden": {
+  "phonetic": "/ˈgɑrdən/",
+  "zh": "花园",
+  "example": "There are many flowers in the garden.",
+  "exampleZh": "花园里有许多花。"
+ },
+ "sofa": {
+  "phonetic": "/ˈsəʊfə/",
+  "zh": "沙发",
+  "example": "Sit on the sofa.",
+  "exampleZh": "坐在沙发上。"
+ },
+ "bed": {
+  "phonetic": "/bed/",
+  "zh": "床",
+  "example": "I sleep in my bed.",
+  "exampleZh": "我在床上睡觉。"
+ },
+ "lamp": {
+  "phonetic": "/læmp/",
+  "zh": "灯",
+  "example": "Turn on the lamp.",
+  "exampleZh": "开灯。"
+ },
+ "window": {
+  "phonetic": "/ˈwɪndəʊ/",
+  "zh": "窗户",
+  "example": "Close the window.",
+  "exampleZh": "关上窗户。"
+ },
+ "door": {
+  "phonetic": "/dɔː/",
+  "zh": "门",
+  "example": "Open the door.",
+  "exampleZh": "开门。"
+ },
+ "floor": {
+  "phonetic": "/flɔː/",
+  "zh": "地板",
+  "example": "The floor is clean.",
+  "exampleZh": "地板很干净。"
+ },
+ "wall": {
+  "phonetic": "/wɔːl/",
+  "zh": "墙",
+  "example": "The wall is white.",
+  "exampleZh": "墙是白色的。"
+ },
+ "fridge": {
+  "phonetic": "/frɪdʒ/",
+  "zh": "冰箱",
+  "example": "The milk is in the fridge.",
+  "exampleZh": "牛奶在冰箱里。"
+ },
+ "cupboard": {
+  "phonetic": "/ˈkʌbəd/",
+  "zh": "橱柜",
+  "example": "The plates are in the cupboard.",
+  "exampleZh": "盘子在橱柜里。"
+ },
+ "shower": {
+  "phonetic": "/ˈʃaʊə/",
+  "zh": "淋浴",
+  "example": "I take a shower every morning.",
+  "exampleZh": "我每天早上洗淋浴。"
+ },
+ "mirror": {
+  "phonetic": "/mɪrə/",
+  "zh": "镜子",
+  "example": "Look at yourself in the mirror.",
+  "exampleZh": "照照镜子。"
+ },
+ "key": {
+  "phonetic": "/kiː/",
+  "zh": "钥匙",
+  "example": "I lost my house key.",
+  "exampleZh": "我丢了房门钥匙。"
+ },
+ "address": {
+  "phonetic": "/əˈdres/",
+  "zh": "地址",
+  "example": "What is your address?",
+  "exampleZh": "你的地址是什么？"
+ },
+ "room": {
+  "phonetic": "/ruːm/",
+  "zh": "房间",
+  "example": "I have my own room.",
+  "exampleZh": "我有自己的房间。"
+ },
+ "balcony": {
+  "phonetic": "/ˈbælkəni/",
+  "zh": "阳台",
+  "example": "I read on the balcony.",
+  "exampleZh": "我在阳台上读书。"
+ },
+ "ceiling": {
+  "phonetic": "/ˈsiːlɪŋ/",
+  "zh": "天花板",
+  "example": "The ceiling is high.",
+  "exampleZh": "天花板很高。"
+ },
+ "stairs": {
+  "phonetic": "/steəz/",
+  "zh": "楼梯",
+  "example": "Go up the stairs.",
+  "exampleZh": "上楼梯。"
+ },
+ "lift": {
+  "phonetic": "/lɪft/",
+  "zh": "电梯",
+  "example": "Take the lift.",
+  "exampleZh": "坐电梯。"
+ },
+ "furniture": {
+  "phonetic": "/ˈfɜːnɪtʃə/",
+  "zh": "家具",
+  "example": "We need new furniture.",
+  "exampleZh": "我们需要新家具。"
+ },
+ "table": {
+  "phonetic": "/ˈteɪbl/",
+  "zh": "桌子",
+  "example": "Put it on the table.",
+  "exampleZh": "把它放在桌子上。"
+ },
+ "wardrobe": {
+  "phonetic": "/ˈwɔːdrəʊb/",
+  "zh": "衣柜",
+  "example": "Put your clothes in the wardrobe.",
+  "exampleZh": "把你的衣服放进衣柜。"
+ },
+ "bookshelf": {
+  "phonetic": "/ˈbʊkʃelf/",
+  "zh": "书架",
+  "example": "The bookshelf is full.",
+  "exampleZh": "书架满了。"
+ },
+ "oven": {
+  "phonetic": "/ˈʌvn/",
+  "zh": "烤箱",
+  "example": "Put the cake in the oven.",
+  "exampleZh": "把蛋糕放进烤箱。"
+ },
+ "washing machine": {
+  "phonetic": "/ˈwɒʃɪŋ məˈʃiːn/",
+  "zh": "洗衣机",
+  "example": "I wash clothes in the washing machine.",
+  "exampleZh": "我用洗衣机洗衣服。"
+ },
+ "heater": {
+  "phonetic": "/ˈhiːtə/",
+  "zh": "暖气",
+  "example": "Turn on the heater.",
+  "exampleZh": "开暖气。"
+ },
+ "air conditioner": {
+  "phonetic": "/eə kənˈdɪʃənə/",
+  "zh": "空调",
+  "example": "Turn on the air conditioner.",
+  "exampleZh": "开空调。"
+ },
+ "towel": {
+  "phonetic": "/ˈtaʊəl/",
+  "zh": "毛巾",
+  "example": "Use a clean towel.",
+  "exampleZh": "用干净的毛巾。"
+ },
+ "soap": {
+  "phonetic": "/səʊp/",
+  "zh": "肥皂",
+  "example": "Wash your hands with soap.",
+  "exampleZh": "用肥皂洗手。"
+ },
+ "shampoo": {
+  "phonetic": "/ʃæmˈpuː/",
+  "zh": "洗发水",
+  "example": "I use shampoo.",
+  "exampleZh": "我用洗发水。"
+ },
+ "toothbrush": {
+  "phonetic": "/ˈtuːθbrʌʃ/",
+  "zh": "牙刷",
+  "example": "I need a new toothbrush.",
+  "exampleZh": "我需要一把新牙刷。"
+ },
+ "toothpaste": {
+  "phonetic": "/ˈtuːθpeɪst/",
+  "zh": "牙膏",
+  "example": "I need toothpaste.",
+  "exampleZh": "我需要牙膏。"
+ },
+ "tissue": {
+  "phonetic": "/ˈtɪʃuː/",
+  "zh": "纸巾",
+  "example": "Pass me a tissue.",
+  "exampleZh": "递给我一张纸巾。"
+ },
+ "basket": {
+  "phonetic": "/ˈbɑːskɪt/",
+  "zh": "篮子",
+  "example": "Put the clothes in the basket.",
+  "exampleZh": "把衣服放进篮子里。"
+ },
+ "iron": {
+  "phonetic": "/ˈaɪən/",
+  "zh": "熨斗",
+  "example": "I iron my clothes.",
+  "exampleZh": "我熨衣服。"
+ },
+ "vacuum cleaner": {
+  "phonetic": "/ˈvækjuːm ˈkliːnə/",
+  "zh": "吸尘器",
+  "example": "I clean with a vacuum cleaner.",
+  "exampleZh": "我用吸尘器打扫。"
+ },
+ "clean": {
+  "phonetic": "/kliːn/",
+  "zh": "打扫",
+  "example": "I clean my room.",
+  "exampleZh": "我打扫我的房间。"
+ },
+ "dirty": {
+  "phonetic": "/ˈdɜːti/",
+  "zh": "脏的",
+  "example": "The floor is dirty.",
+  "exampleZh": "地板很脏。"
+ },
+ "tidy": {
+  "phonetic": "/ˈtaɪdi/",
+  "zh": "整洁的",
+  "example": "Your room is tidy.",
+  "exampleZh": "你的房间很整洁。"
+ },
+ "messy": {
+  "phonetic": "/ˈmesi/",
+  "zh": "凌乱的",
+  "example": "Your room is messy.",
+  "exampleZh": "你的房间很凌乱。"
+ },
+ "light": {
+  "phonetic": "/laɪt/",
+  "zh": "灯/光线",
+  "example": "Turn on the light.",
+  "exampleZh": "开灯。"
+ },
+ "dark": {
+  "phonetic": "/dɑːk/",
+  "zh": "黑暗的",
+  "example": "It is dark outside.",
+  "exampleZh": "外面很黑。"
+ },
+ "warm": {
+  "phonetic": "/wɔːm/",
+  "zh": "温暖的",
+  "example": "Spring is warm.",
+  "exampleZh": "春天很温暖。"
+ },
+ "safe": {
+  "phonetic": "/seɪf/",
+  "zh": "安全的",
+  "example": "This area is safe.",
+  "exampleZh": "这个区域很安全。"
+ },
+ "dangerous": {
+  "phonetic": "/ˈdeɪndʒərəs/",
+  "zh": "危险的",
+  "example": "Be careful, it is dangerous.",
+  "exampleZh": "小心，很危险。"
+ },
+ "comfortable": {
+  "phonetic": "/ˈkʌmftəbl/",
+  "zh": "舒适的",
+  "example": "The bed is comfortable.",
+  "exampleZh": "床很舒适。"
+ },
+ "sunny": {
+  "phonetic": "/ˈsʌni/",
+  "zh": "晴朗的",
+  "example": "It is sunny today.",
+  "exampleZh": "今天天气晴朗。"
+ },
+ "rainy": {
+  "phonetic": "/ˈreɪni/",
+  "zh": "下雨的",
+  "example": "It is rainy in London.",
+  "exampleZh": "伦敦经常下雨。"
+ },
+ "cloudy": {
+  "phonetic": "/ˈklaʊdi/",
+  "zh": "多云的",
+  "example": "The sky is cloudy.",
+  "exampleZh": "天空多云。"
+ },
+ "windy": {
+  "phonetic": "/ˈwɪndi/",
+  "zh": "刮风的",
+  "example": "It is windy outside.",
+  "exampleZh": "外面刮风。"
+ },
+ "snowy": {
+  "phonetic": "/ˈsnəʊi/",
+  "zh": "下雪的",
+  "example": "It is snowy in winter.",
+  "exampleZh": "冬天下雪。"
+ },
+ "cool": {
+  "phonetic": "/kuːl/",
+  "zh": "凉爽的",
+  "example": "Autumn is cool.",
+  "exampleZh": "秋天很凉爽。"
+ },
+ "weather": {
+  "phonetic": "/ˈweðə/",
+  "zh": "天气",
+  "example": "The weather is nice.",
+  "exampleZh": "天气很好。"
+ },
+ "spring": {
+  "phonetic": "/sprɪŋ/",
+  "zh": "春天",
+  "example": "Spring is warm.",
+  "exampleZh": "春天很温暖。"
+ },
+ "summer": {
+  "phonetic": "/ˈsʌmə/",
+  "zh": "夏天",
+  "example": "Summer is hot.",
+  "exampleZh": "夏天很热。"
+ },
+ "autumn": {
+  "phonetic": "/ˈɔːtəm/",
+  "zh": "秋天",
+  "example": "Autumn is cool.",
+  "exampleZh": "秋天很凉爽。"
+ },
+ "winter": {
+  "phonetic": "/ˈwɪntə/",
+  "zh": "冬天",
+  "example": "Winter is cold.",
+  "exampleZh": "冬天很冷。"
+ },
+ "season": {
+  "phonetic": "/ˈsiːzn/",
+  "zh": "季节",
+  "example": "There are four seasons.",
+  "exampleZh": "有四季。"
+ },
+ "temperature": {
+  "phonetic": "/ˈtemprətʃə/",
+  "zh": "体温",
+  "example": "Take your temperature first.",
+  "exampleZh": "先量一下体温。"
+ },
+ "degree": {
+  "phonetic": "/dɪˈɡriː/",
+  "zh": "度数",
+  "example": "It is 20 degrees.",
+  "exampleZh": "今天20度。"
+ },
+ "storm": {
+  "phonetic": "/stɔːm/",
+  "zh": "暴风雨",
+  "example": "There is a storm.",
+  "exampleZh": "有暴风雨。"
+ },
+ "fog": {
+  "phonetic": "/fɒɡ/",
+  "zh": "雾",
+  "example": "It is foggy.",
+  "exampleZh": "有雾。"
+ },
+ "ice": {
+  "phonetic": "/aɪs/",
+  "zh": "冰",
+  "example": "The ice is thick.",
+  "exampleZh": "冰很厚。"
+ },
+ "rain": {
+  "phonetic": "/reɪn/",
+  "zh": "雨",
+  "example": "The rain is heavy.",
+  "exampleZh": "雨很大。"
+ },
+ "snow": {
+  "phonetic": "/snoʊ/",
+  "zh": "雪",
+  "example": "It snows in winter.",
+  "exampleZh": "冬天下雪。"
+ },
+ "wind": {
+  "phonetic": "/wɪnd/",
+  "zh": "风",
+  "example": "The wind is strong.",
+  "exampleZh": "风很大。"
+ },
+ "cloud": {
+  "phonetic": "/klaʊd/",
+  "zh": "云",
+  "example": "There are many clouds.",
+  "exampleZh": "有很多云。"
+ },
+ "sun": {
+  "phonetic": "/sʌn/",
+  "zh": "太阳",
+  "example": "The sun rises in the east.",
+  "exampleZh": "太阳从东方升起。"
+ },
+ "moon": {
+  "phonetic": "/muːn/",
+  "zh": "月亮",
+  "example": "The moon is round.",
+  "exampleZh": "月亮是圆的。"
+ },
+ "star": {
+  "phonetic": "/stɑː/",
+  "zh": "星星",
+  "example": "Stars are bright.",
+  "exampleZh": "星星很亮。"
+ },
+ "sky": {
+  "phonetic": "/skaɪ/",
+  "zh": "天空",
+  "example": "The sky is blue.",
+  "exampleZh": "天空是蓝色的。"
+ },
+ "rainbow": {
+  "phonetic": "/ˈreɪnbəʊ/",
+  "zh": "彩虹",
+  "example": "There is a rainbow.",
+  "exampleZh": "有一道彩虹。"
+ },
+ "thunder": {
+  "phonetic": "/ˈθʌndə/",
+  "zh": "雷声",
+  "example": "I hear thunder.",
+  "exampleZh": "我听到雷声。"
+ },
+ "lightning": {
+  "phonetic": "/ˈlaɪtnɪŋ/",
+  "zh": "闪电",
+  "example": "I see lightning.",
+  "exampleZh": "我看到了闪电。"
+ },
+ "hail": {
+  "phonetic": "/heɪl/",
+  "zh": "冰雹",
+  "example": "The hail is big.",
+  "exampleZh": "冰雹很大。"
+ },
+ "sleet": {
+  "phonetic": "/sliːt/",
+  "zh": "雨夹雪",
+  "example": "It is sleeting.",
+  "exampleZh": "在下雨夹雪。"
+ },
+ "humid": {
+  "phonetic": "/ˈhjuːmɪd/",
+  "zh": "潮湿的",
+  "example": "It is humid.",
+  "exampleZh": "很潮湿。"
+ },
+ "dry": {
+  "phonetic": "/draɪ/",
+  "zh": "干燥的",
+  "example": "The weather is dry.",
+  "exampleZh": "天气很干燥。"
+ },
+ "wet": {
+  "phonetic": "/wɛt/",
+  "zh": "潮湿的",
+  "example": "My shoes are wet.",
+  "exampleZh": "我的鞋湿了。"
+ },
+ "forecast": {
+  "phonetic": "/ˈfɔːkɑːst/",
+  "zh": "预报",
+  "example": "The forecast is good.",
+  "exampleZh": "预报很好。"
+ },
+ "umbrella": {
+  "phonetic": "/ʌmˈbrelə/",
+  "zh": "雨伞",
+  "example": "Take an umbrella.",
+  "exampleZh": "带一把雨伞。"
+ },
+ "raincoat": {
+  "phonetic": "/ˈreɪnkəʊt/",
+  "zh": "雨衣",
+  "example": "Wear a raincoat when it rains.",
+  "exampleZh": "下雨时穿雨衣。"
+ },
+ "sunglasses": {
+  "phonetic": "/ˈsʌnɡlɑːsɪz/",
+  "zh": "太阳镜",
+  "example": "Wear sunglasses in the sun.",
+  "exampleZh": "在太阳下戴太阳镜。"
+ },
+ "suncream": {
+  "phonetic": "/ˈsʌnkriːm/",
+  "zh": "防晒霜",
+  "example": "Put on suncream.",
+  "exampleZh": "涂上防晒霜。"
+ },
+ "centigrade": {
+  "phonetic": "/ˈsentɪɡreɪd/",
+  "zh": "摄氏的",
+  "example": "It is 20 degrees centigrade.",
+  "exampleZh": "是20摄氏度。"
+ },
+ "fahrenheit": {
+  "phonetic": "/ˈfærənhaɪt/",
+  "zh": "华氏的",
+  "example": "It is 68 degrees Fahrenheit.",
+  "exampleZh": "是68华氏度。"
+ },
+ "climate": {
+  "phonetic": "/ˈklaɪmət/",
+  "zh": "气候",
+  "example": "The climate is mild.",
+  "exampleZh": "气候很温和。"
+ },
+ "environment": {
+  "phonetic": "/ɪnˈvaɪrənmənt/",
+  "zh": "环境",
+  "example": "We must protect the environment.",
+  "exampleZh": "我们必须保护环境。"
+ },
+ "pollution": {
+  "phonetic": "/pəˈluʃən/",
+  "zh": "污染",
+  "example": "Air pollution is bad for us.",
+  "exampleZh": "空气污染对我们有害。"
+ },
+ "global warming": {
+  "phonetic": "/ˈɡləʊbl ˈwɔːmɪŋ/",
+  "zh": "全球变暖",
+  "example": "Global warming is a big problem.",
+  "exampleZh": "全球变暖是个大问题。"
+ },
+ "natural disaster": {
+  "phonetic": "/ˈnætʃərəl dɪˈzɑːstə/",
+  "zh": "自然灾害",
+  "example": "A natural disaster happened.",
+  "exampleZh": "发生了一起自然灾害。"
+ },
+ "flood": {
+  "phonetic": "/flʌd/",
+  "zh": "洪水",
+  "example": "The flood destroyed the village.",
+  "exampleZh": "洪水摧毁了村庄。"
+ },
+ "drought": {
+  "phonetic": "/draʊt/",
+  "zh": "干旱",
+  "example": "The drought is bad.",
+  "exampleZh": "干旱很严重。"
+ },
+ "earthquake": {
+  "phonetic": "/ˈɜːθkweɪk/",
+  "zh": "地震",
+  "example": "There was an earthquake.",
+  "exampleZh": "发生了地震。"
+ },
+ "typhoon": {
+  "phonetic": "/taɪˈfuːn/",
+  "zh": "台风",
+  "example": "The typhoon is coming.",
+  "exampleZh": "台风要来了。"
+ },
+ "hurricane": {
+  "phonetic": "/ˈhʌrɪkən/",
+  "zh": "飓风",
+  "example": "The hurricane is strong.",
+  "exampleZh": "飓风很强。"
+ },
+ "tornado": {
+  "phonetic": "/tɔːˈneɪdəʊ/",
+  "zh": "龙卷风",
+  "example": "The tornado is dangerous.",
+  "exampleZh": "龙卷风很危险。"
+ },
+ "January": {
+  "phonetic": "/ˈdʒænjuəri/",
+  "zh": "一月",
+  "example": "January is the first month.",
+  "exampleZh": "一月是第一个月。"
+ },
+ "February": {
+  "phonetic": "/ˈfebruəri/",
+  "zh": "二月",
+  "example": "February is short.",
+  "exampleZh": "二月很短。"
+ },
+ "March": {
+  "phonetic": "/mɑːtʃ/",
+  "zh": "三月",
+  "example": "March is windy.",
+  "exampleZh": "三月很多风。"
+ },
+ "April": {
+  "phonetic": "/ˈeɪprəl/",
+  "zh": "四月",
+  "example": "April is rainy.",
+  "exampleZh": "四月很多雨。"
+ },
+ "May": {
+  "phonetic": "/meɪ/",
+  "zh": "五月",
+  "example": "May is warm.",
+  "exampleZh": "五月很温暖。"
+ },
+ "June": {
+  "phonetic": "/dʒuːn/",
+  "zh": "六月",
+  "example": "June is sunny.",
+  "exampleZh": "六月很多晴天。"
+ },
+ "July": {
+  "phonetic": "/dʒʊˈlaɪ/",
+  "zh": "七月",
+  "example": "July is hot.",
+  "exampleZh": "七月很热。"
+ },
+ "August": {
+  "phonetic": "/ˈɔːɡəst/",
+  "zh": "八月",
+  "example": "August is hot.",
+  "exampleZh": "八月很热。"
+ },
+ "September": {
+  "phonetic": "/sepˈtembə/",
+  "zh": "九月",
+  "example": "September is cool.",
+  "exampleZh": "九月很凉爽。"
+ },
+ "shirt": {
+  "phonetic": "/ʃɜːt/",
+  "zh": "衬衫",
+  "example": "He wears a white shirt.",
+  "exampleZh": "他穿一件白衬衫。"
+ },
+ "trousers": {
+  "phonetic": "/ˈtraʊzəz/",
+  "zh": "裤子",
+  "example": "These trousers are new.",
+  "exampleZh": "这条裤子是新的。"
+ },
+ "dress": {
+  "phonetic": "/dres/",
+  "zh": "连衣裙",
+  "example": "She has a beautiful dress.",
+  "exampleZh": "她有一条漂亮的连衣裙。"
+ },
+ "coat": {
+  "phonetic": "/kəʊt/",
+  "zh": "外套",
+  "example": "Put on your coat.",
+  "exampleZh": "穿上你的外套。"
+ },
+ "jacket": {
+  "phonetic": "/ˈdʒækɪt/",
+  "zh": "夹克",
+  "example": "This jacket is warm.",
+  "exampleZh": "这件夹克很暖和。"
+ },
+ "sweater": {
+  "phonetic": "/ˈswetə/",
+  "zh": "毛衣",
+  "example": "I wear a sweater in winter.",
+  "exampleZh": "我冬天穿毛衣。"
+ },
+ "skirt": {
+  "phonetic": "/skɜːt/",
+  "zh": "裙子",
+  "example": "She likes wearing skirts.",
+  "exampleZh": "她喜欢穿裙子。"
+ },
+ "shoes": {
+  "phonetic": "/ʃuːz/",
+  "zh": "鞋子",
+  "example": "These shoes are comfortable.",
+  "exampleZh": "这双鞋子很舒服。"
+ },
+ "boots": {
+  "phonetic": "/buːts/",
+  "zh": "靴子",
+  "example": "Wear boots in snow.",
+  "exampleZh": "下雪时穿靴子。"
+ },
+ "hat": {
+  "phonetic": "/hæt/",
+  "zh": "帽子",
+  "example": "He wears a hat.",
+  "exampleZh": "他戴着帽子。"
+ },
+ "scarf": {
+  "phonetic": "/skɑːf/",
+  "zh": "围巾",
+  "example": "It is a warm scarf.",
+  "exampleZh": "这是一条暖和的围巾。"
+ },
+ "gloves": {
+  "phonetic": "/ɡlʌvz/",
+  "zh": "手套",
+  "example": "Wear gloves in winter.",
+  "exampleZh": "冬天戴手套。"
+ },
+ "socks": {
+  "phonetic": "/sɒks/",
+  "zh": "袜子",
+  "example": "I need new socks.",
+  "exampleZh": "我需要新袜子。"
+ },
+ "pocket": {
+  "phonetic": "/ˈpɒkɪt/",
+  "zh": "口袋",
+  "example": "There is a hole in my pocket.",
+  "exampleZh": "我的口袋有个洞。"
+ },
+ "button": {
+  "phonetic": "/ˈbʌtn/",
+  "zh": "纽扣",
+  "example": "A button fell off.",
+  "exampleZh": "一颗纽扣掉了。"
+ },
+ "zip": {
+  "phonetic": "/zɪp/",
+  "zh": "拉链",
+  "example": "The zip is broken.",
+  "exampleZh": "拉链坏了。"
+ },
+ "size": {
+  "phonetic": "/saɪz/",
+  "zh": "尺码",
+  "example": "What size do you wear?",
+  "exampleZh": "你穿什么尺码？"
+ },
+ "fit": {
+  "phonetic": "/fɪt/",
+  "zh": "合身",
+  "example": "These shoes fit well.",
+  "exampleZh": "这双鞋很合身。"
+ },
+ "try on": {
+  "phonetic": "/traɪ ɒn/",
+  "zh": "试穿",
+  "example": "Can I try it on?",
+  "exampleZh": "我可以试穿吗？"
+ },
+ "fashion": {
+  "phonetic": "/ˈfæʃn/",
+  "zh": "时尚",
+  "example": "She likes fashion.",
+  "exampleZh": "她喜欢时尚。"
+ },
+ "t-shirt": {
+  "phonetic": "/ˈtiːʃɜːt/",
+  "zh": "T恤",
+  "example": "I wear a t-shirt today.",
+  "exampleZh": "我今天穿T恤。"
+ },
+ "jeans": {
+  "phonetic": "/dʒiːnz/",
+  "zh": "牛仔裤",
+  "example": "He wears blue jeans.",
+  "exampleZh": "他穿蓝色牛仔裤。"
+ },
+ "shorts": {
+  "phonetic": "/ʃɔːts/",
+  "zh": "短裤",
+  "example": "Wear shorts in summer.",
+  "exampleZh": "夏天穿短裤。"
+ },
+ "pants": {
+  "phonetic": "/pænts/",
+  "zh": "长裤",
+  "example": "These pants are comfortable.",
+  "exampleZh": "这条长裤很舒服。"
+ },
+ "belt": {
+  "phonetic": "/belt/",
+  "zh": "腰带",
+  "example": "He wears a leather belt.",
+  "exampleZh": "他系一条皮带腰带。"
+ },
+ "tie": {
+  "phonetic": "/taɪ/",
+  "zh": "领带",
+  "example": "He wears a tie to work.",
+  "exampleZh": "他上班打领带。"
+ },
+ "suit": {
+  "phonetic": "/sjuːt/",
+  "zh": "西装",
+  "example": "He wears a suit.",
+  "exampleZh": "他穿西装。"
+ },
+ "collar": {
+  "phonetic": "/ˈkɒlə/",
+  "zh": "衣领",
+  "example": "The collar is dirty.",
+  "exampleZh": "衣领脏了。"
+ },
+ "sleeve": {
+  "phonetic": "/sliːv/",
+  "zh": "袖子",
+  "example": "Roll up your sleeves.",
+  "exampleZh": "卷起你的袖子。"
+ },
+ "zipper": {
+  "phonetic": "/ˈzɪpə/",
+  "zh": "拉链",
+  "example": "The zipper is broken.",
+  "exampleZh": "拉链坏了。"
+ },
+ "tight": {
+  "phonetic": "/taɪt/",
+  "zh": "紧的",
+  "example": "These trousers are too tight.",
+  "exampleZh": "这条裤子太紧了。"
+ },
+ "loose": {
+  "phonetic": "/luːs/",
+  "zh": "松的",
+  "example": "This shirt is too loose.",
+  "exampleZh": "这件衬衫太松了。"
+ },
+ "cotton": {
+  "phonetic": "/ˈkɒtn/",
+  "zh": "棉花",
+  "example": "This shirt is made of cotton.",
+  "exampleZh": "这件衬衫是棉制的。"
+ },
+ "wool": {
+  "phonetic": "/wʊl/",
+  "zh": "羊毛",
+  "example": "Wool keeps you warm.",
+  "exampleZh": "羊毛让你保持暖和。"
+ },
+ "silk": {
+  "phonetic": "/sɪlk/",
+  "zh": "丝绸",
+  "example": "Silk feels smooth.",
+  "exampleZh": "丝绸摸起来很光滑。"
+ },
+ "leather": {
+  "phonetic": "/ˈleðə/",
+  "zh": "皮革",
+  "example": "Leather shoes are durable.",
+  "exampleZh": "皮鞋很耐用。"
+ },
+ "overcoat": {
+  "phonetic": "/ˈəʊvəkəʊt/",
+  "zh": "大衣",
+  "example": "He wears a long overcoat.",
+  "exampleZh": "他穿一件长长大衣。"
+ },
+ "sweatpants": {
+  "phonetic": "/ˈswetpænts/",
+  "zh": "运动裤",
+  "example": "Wear sweatpants for exercise.",
+  "exampleZh": "锻炼时穿运动裤。"
+ },
+ "sneakers": {
+  "phonetic": "/ˈsniːkəz/",
+  "zh": "运动鞋",
+  "example": "Sneakers are good for running.",
+  "exampleZh": "运动鞋适合跑步。"
+ },
+ "sandals": {
+  "phonetic": "/ˈsændlz/",
+  "zh": "凉鞋",
+  "example": "Wear sandals in summer.",
+  "exampleZh": "夏天穿凉鞋。"
+ },
+ "boot": {
+  "phonetic": "/buːt/",
+  "zh": "靴子",
+  "example": "Wear boots in winter.",
+  "exampleZh": "冬天穿靴子。"
+ },
+ "cap": {
+  "phonetic": "/kæp/",
+  "zh": "鸭舌帽",
+  "example": "He wears a baseball cap.",
+  "exampleZh": "他戴棒球帽。"
+ },
+ "underwear": {
+  "phonetic": "/ˈʌndəweə/",
+  "zh": "内衣",
+  "example": "Change your underwear daily.",
+  "exampleZh": "每天换内衣。"
+ },
+ "pajamas": {
+  "phonetic": "/pəˈdʒɑːməz/",
+  "zh": "睡衣",
+  "example": "Wear pajamas to sleep.",
+  "exampleZh": "穿睡衣睡觉。"
+ },
+ "swimsuit": {
+  "phonetic": "/ˈswɪmsuːt/",
+  "zh": "泳衣",
+  "example": "She wears a swimsuit.",
+  "exampleZh": "她穿泳衣。"
+ },
+ "cardigan": {
+  "phonetic": "/ˈkɑːdɪɡən/",
+  "zh": "开衫毛衣",
+  "example": "She wears a cardigan.",
+  "exampleZh": "她穿开衫毛衣。"
+ },
+ "blouse": {
+  "phonetic": "/blaʊz/",
+  "zh": "女衬衫",
+  "example": "She wears a silk blouse.",
+  "exampleZh": "她穿丝绸女衬衫。"
+ },
+ "vest": {
+  "phonetic": "/vest/",
+  "zh": "背心",
+  "example": "He wears a vest in winter.",
+  "exampleZh": "他冬天穿背心。"
+ },
+ "purse": {
+  "phonetic": "/pɜːs/",
+  "zh": "钱包",
+  "example": "She carries a small purse.",
+  "exampleZh": "她带一个小钱包。"
+ },
+ "handbag": {
+  "phonetic": "/ˈhændbæɡ/",
+  "zh": "手提包",
+  "example": "She carries a handbag.",
+  "exampleZh": "她带一个手提包。"
+ },
+ "wallet": {
+  "phonetic": "/ˈwɒlɪt/",
+  "zh": "钱包",
+  "example": "My wallet is in my bag.",
+  "exampleZh": "我的钱包在包里。"
+ },
+ "watch": {
+  "phonetic": "/wɒtʃ/",
+  "zh": "手表",
+  "example": "He wears a gold watch.",
+  "exampleZh": "他戴一块金手表。"
+ },
+ "ring": {
+  "phonetic": "/rɪŋ/",
+  "zh": "戒指",
+  "example": "She wears a diamond ring.",
+  "exampleZh": "她戴一枚钻石戒指。"
+ },
+ "necklace": {
+  "phonetic": "/ˈnekləs/",
+  "zh": "项链",
+  "example": "She has a beautiful necklace.",
+  "exampleZh": "她有一条漂亮的项链。"
+ },
+ "bracelet": {
+  "phonetic": "/ˈbreɪslət/",
+  "zh": "手镯",
+  "example": "She wears a gold bracelet.",
+  "exampleZh": "她戴一只金手镯。"
+ },
+ "earring": {
+  "phonetic": "/ˈɪərɪŋ/",
+  "zh": "耳环",
+  "example": "She wears pearl earrings.",
+  "exampleZh": "她戴珍珠耳环。"
+ },
+ "dog": {
+  "phonetic": "/dɒɡ/",
+  "zh": "狗",
+  "example": "I have a dog.",
+  "exampleZh": "我有一只狗。"
+ },
+ "cat": {
+  "phonetic": "/kæt/",
+  "zh": "猫",
+  "example": "The cat is sleeping.",
+  "exampleZh": "猫在睡觉。"
+ },
+ "bird": {
+  "phonetic": "/bɜːd/",
+  "zh": "鸟",
+  "example": "Birds can fly.",
+  "exampleZh": "鸟会飞。"
+ },
+ "horse": {
+  "phonetic": "/hɔːs/",
+  "zh": "马",
+  "example": "She rides a horse.",
+  "exampleZh": "她骑马。"
+ },
+ "rabbit": {
+  "phonetic": "/ˈræbɪt/",
+  "zh": "兔子",
+  "example": "Rabbits like carrots.",
+  "exampleZh": "兔子喜欢胡萝卜。"
+ },
+ "monkey": {
+  "phonetic": "/ˈmʌŋki/",
+  "zh": "猴子",
+  "example": "Monkeys climb trees.",
+  "exampleZh": "猴子爬树。"
+ },
+ "elephant": {
+  "phonetic": "/ˈelɪfənt/",
+  "zh": "大象",
+  "example": "Elephants are big.",
+  "exampleZh": "大象很大。"
+ },
+ "tiger": {
+  "phonetic": "/ˈtaɪɡə/",
+  "zh": "老虎",
+  "example": "Tigers are dangerous.",
+  "exampleZh": "老虎很危险。"
+ },
+ "lion": {
+  "phonetic": "/ˈlaɪən/",
+  "zh": "狮子",
+  "example": "The lion is strong.",
+  "exampleZh": "狮子很强壮。"
+ },
+ "tree": {
+  "phonetic": "/triː/",
+  "zh": "树",
+  "example": "There is a big tree.",
+  "exampleZh": "有一棵大树。"
+ },
+ "flower": {
+  "phonetic": "/ˈflaʊə/",
+  "zh": "花",
+  "example": "The flowers are beautiful.",
+  "exampleZh": "花很漂亮。"
+ },
+ "grass": {
+  "phonetic": "/ɡrɑːs/",
+  "zh": "草",
+  "example": "The grass is green.",
+  "exampleZh": "草是绿色的。"
+ },
+ "forest": {
+  "phonetic": "/ˈfɒrɪst/",
+  "zh": "森林",
+  "example": "They walk in the forest.",
+  "exampleZh": "他们在森林里散步。"
+ },
+ "river": {
+  "phonetic": "/ˈrɪvə/",
+  "zh": "河流",
+  "example": "The river is deep.",
+  "exampleZh": "这条河很深。"
+ },
+ "mountain": {
+  "phonetic": "/ˈmaʊntən/",
+  "zh": "山",
+  "example": "We climb the mountain.",
+  "exampleZh": "我们爬山。"
+ },
+ "beach": {
+  "phonetic": "/biːtʃ/",
+  "zh": "海滩",
+  "example": "We play on the beach.",
+  "exampleZh": "我们在海滩上玩。"
+ },
+ "branch": {
+  "phonetic": "/brænʧ/",
+  "zh": "树枝",
+  "example": "The bird is on the branch.",
+  "exampleZh": "鸟儿在树枝上。"
+ },
+ "cave": {
+  "phonetic": "/keɪv/",
+  "zh": "洞穴",
+  "example": "The bear lives in a cave.",
+  "exampleZh": "熊住在洞穴里。"
+ },
+ "coast": {
+  "phonetic": "/koʊst/",
+  "zh": "海岸",
+  "example": "We walked along the coast.",
+  "exampleZh": "我们沿着海岸散步。"
+ },
+ "earth": {
+  "phonetic": "/ɜːθ/",
+  "zh": "土；泥土",
+  "example": "The earth is wet after rain.",
+  "exampleZh": "雨后泥土是湿的。"
+ },
+ "farm": {
+  "phonetic": "/fɑrm/",
+  "zh": "农场",
+  "example": "My uncle works on a farm.",
+  "exampleZh": "我叔叔在农场工作。"
+ },
+ "farmer": {
+  "phonetic": "/ˈfɑːmə/",
+  "zh": "农民",
+  "example": "Farmers grow food.",
+  "exampleZh": "农民种植食物。"
+ },
+ "field": {
+  "phonetic": "/fild/",
+  "zh": "田地",
+  "example": "The farmers work in the field.",
+  "exampleZh": "农民在田里干活。"
+ },
+ "hill": {
+  "phonetic": "/hɪl/",
+  "zh": "小山",
+  "example": "We climbed the small hill.",
+  "exampleZh": "我们爬上了小山。"
+ },
+ "island": {
+  "phonetic": "/ˈaɪlənd/",
+  "zh": "岛",
+  "example": "We visit an island.",
+  "exampleZh": "我们参观一个岛。"
+ },
+ "lake": {
+  "phonetic": "/leɪk/",
+  "zh": "湖",
+  "example": "We went swimming in the lake.",
+  "exampleZh": "我们去湖里游泳。"
+ },
+ "leaf": {
+  "phonetic": "/liːf/",
+  "zh": "叶子",
+  "example": "The leaf is green.",
+  "exampleZh": "叶子是绿色的。"
+ },
+ "ocean": {
+  "phonetic": "/ˈoʊʃən/",
+  "zh": "海洋",
+  "example": "The ocean is very big.",
+  "exampleZh": "海洋非常大。"
+ },
+ "path": {
+  "phonetic": "/pæθ/",
+  "zh": "小路",
+  "example": "We walked along the path.",
+  "exampleZh": "我们沿着小路走。"
+ },
+ "pet": {
+  "phonetic": "/pɛt/",
+  "zh": "宠物",
+  "example": "My pet is a small dog.",
+  "exampleZh": "我的宠物是一只小狗。"
+ },
+ "plant": {
+  "phonetic": "/plænt/",
+  "zh": "植物",
+  "example": "This plant needs water.",
+  "exampleZh": "这株植物需要水。"
+ },
+ "rock": {
+  "phonetic": "/rɑk/",
+  "zh": "岩石",
+  "example": "He sat on a big rock.",
+  "exampleZh": "他坐在一块大岩石上。"
+ },
+ "rose": {
+  "phonetic": "/roʊz/",
+  "zh": "玫瑰",
+  "example": "She gave me a red rose.",
+  "exampleZh": "她给了我一朵红玫瑰。"
+ },
+ "sand": {
+  "phonetic": "/sænd/",
+  "zh": "沙子",
+  "example": "The sand is warm.",
+  "exampleZh": "沙子是温暖的。"
+ },
+ "sea": {
+  "phonetic": "/si/",
+  "zh": "海",
+  "example": "The sea is blue.",
+  "exampleZh": "大海是蓝色的。"
+ },
+ "seaside": {
+  "phonetic": "/ˈsiˌsaɪd/",
+  "zh": "海边",
+  "example": "We spent our holiday at the seaside.",
+  "exampleZh": "我们在海边度假。"
+ },
+ "space": {
+  "phonetic": "/speɪs/",
+  "zh": "空间；太空",
+  "example": "A rocket goes into space.",
+  "exampleZh": "火箭飞向太空。"
+ },
+ "village": {
+  "phonetic": "/ˈvɪlɪdʒ/",
+  "zh": "村庄",
+  "example": "My grandparents live in a village.",
+  "exampleZh": "我的祖父母住在一个村庄里。"
+ },
+ "wave": {
+  "phonetic": "/weɪv/",
+  "zh": "波浪",
+  "example": "The waves are big today.",
+  "exampleZh": "今天波浪很大。"
+ },
+ "wood": {
+  "phonetic": "/wʊd/",
+  "zh": "树林；木材",
+  "example": "The chair is made of wood.",
+  "exampleZh": "这把椅子是木头做的。"
+ },
+ "bark": {
+  "phonetic": "/bɑrk/",
+  "zh": "狗叫；狗叫声",
+  "example": "The dog barks at night.",
+  "exampleZh": "狗在夜里叫。"
+ },
+ "bat": {
+  "phonetic": "/bæt/",
+  "zh": "蝙蝠",
+  "example": "A bat can fly at night.",
+  "exampleZh": "蝙蝠能在夜间飞翔。"
+ },
+ "bear": {
+  "phonetic": "/beə/",
+  "zh": "熊",
+  "example": "The bear is brown.",
+  "exampleZh": "熊是棕色的。"
+ },
+ "bee": {
+  "phonetic": "/biː/",
+  "zh": "蜜蜂",
+  "example": "A bee makes honey.",
+  "exampleZh": "蜜蜂酿蜜。"
+ },
+ "bull": {
+  "phonetic": "/bʊl/",
+  "zh": "公牛",
+  "example": "The bull is very strong.",
+  "exampleZh": "公牛很强壮。"
+ },
+ "butterfly": {
+  "phonetic": "/ˈbʌtəflaɪ/",
+  "zh": "蝴蝶",
+  "example": "A butterfly is on the flower.",
+  "exampleZh": "一只蝴蝶停在花上。"
+ },
+ "camel": {
+  "phonetic": "/ˈkæməl/",
+  "zh": "骆驼",
+  "example": "A camel lives in the desert.",
+  "exampleZh": "骆驼生活在沙漠里。"
+ },
+ "cow": {
+  "phonetic": "/kaʊ/",
+  "zh": "奶牛；母牛",
+  "example": "The cow gives us milk.",
+  "exampleZh": "奶牛给我们牛奶。"
+ },
+ "dolphin": {
+  "phonetic": "/ˈdɑlfən/",
+  "zh": "海豚",
+  "example": "The dolphin is very smart.",
+  "exampleZh": "海豚很聪明。"
+ },
+ "duck": {
+  "phonetic": "/dʌk/",
+  "zh": "鸭子",
+  "example": "The duck swims in the river.",
+  "exampleZh": "鸭子在河里游泳。"
+ },
+ "fur": {
+  "phonetic": "/fɜː/",
+  "zh": "毛皮",
+  "example": "The cat has soft fur.",
+  "exampleZh": "猫有柔软的毛皮。"
+ },
+ "giraffe": {
+  "phonetic": "/dʒɪˈræf/",
+  "zh": "长颈鹿",
+  "example": "The giraffe has a long neck.",
+  "exampleZh": "长颈鹿有长长的脖子。"
+ },
+ "goat": {
+  "phonetic": "/goʊt/",
+  "zh": "山羊",
+  "example": "The goat eats grass.",
+  "exampleZh": "山羊吃草。"
+ },
+ "insect": {
+  "phonetic": "/ˈɪnˌsɛkt/",
+  "zh": "昆虫",
+  "example": "An insect is on the leaf.",
+  "exampleZh": "一只昆虫在叶子上。"
+ },
+ "kitten": {
+  "phonetic": "/ˈkɪtən/",
+  "zh": "小猫",
+  "example": "The kitten is very cute.",
+  "exampleZh": "小猫很可爱。"
+ },
+ "lamb": {
+  "phonetic": "/læm/",
+  "zh": "羔羊",
+  "example": "The lamb is white.",
+  "exampleZh": "小羊是白色的。"
+ },
+ "mouse": {
+  "phonetic": "/maʊs/",
+  "zh": "鼠标",
+  "example": "I use a mouse.",
+  "exampleZh": "我使用鼠标。"
+ },
+ "parrot": {
+  "phonetic": "/ˈpærət/",
+  "zh": "鹦鹉",
+  "example": "The parrot can speak.",
+  "exampleZh": "鹦鹉会说话。"
+ },
+ "pig": {
+  "phonetic": "/pɪg/",
+  "zh": "猪",
+  "example": "The pig is pink.",
+  "exampleZh": "猪是粉色的。"
+ },
+ "sea creature": {
+  "phonetic": "/siː ˈkriːtʃə/",
+  "zh": "海洋动物",
+  "example": "A whale is a sea creature.",
+  "exampleZh": "鲸是一种海洋动物。"
+ },
+ "sheep": {
+  "phonetic": "/ʃiːp/",
+  "zh": "绵羊",
+  "example": "The sheep are on the hill.",
+  "exampleZh": "绵羊在小山上。"
+ },
+ "snake": {
+  "phonetic": "/sneɪk/",
+  "zh": "蛇",
+  "example": "The snake is long.",
+  "exampleZh": "蛇很长。"
+ },
+ "turkey": {
+  "phonetic": "/ˈtɜːki/",
+  "zh": "火鸡",
+  "example": "We eat turkey at Christmas.",
+  "exampleZh": "我们圣诞节吃火鸡。"
+ },
+ "whale": {
+  "phonetic": "/weɪl/",
+  "zh": "鲸",
+  "example": "The whale is the biggest animal.",
+  "exampleZh": "鲸是最大的动物。"
+ },
+ "wild animals": {
+  "phonetic": "/waɪld ˈænɪmlz/",
+  "zh": "野生动物",
+  "example": "We saw wild animals in the zoo.",
+  "exampleZh": "我们在动物园里看到了野生动物。"
+ },
+ "wing": {
+  "phonetic": "/wɪŋ/",
+  "zh": "翅膀；翼",
+  "example": "The bird has two wings.",
+  "exampleZh": "鸟有两只翅膀。"
+ },
+ "zebra": {
+  "phonetic": "/ˈziːbrə/",
+  "zh": "斑马",
+  "example": "A zebra has black and white stripes.",
+  "exampleZh": "斑马有黑白条纹。"
+ },
+ "climate change": {
+  "phonetic": "/ˈklaɪmət tʃeɪndʒ/",
+  "zh": "气候变化",
+  "example": "We should care about climate change.",
+  "exampleZh": "我们应该关注气候变化。"
+ },
+ "coal": {
+  "phonetic": "/koʊl/",
+  "zh": "煤",
+  "example": "We burn coal for heat.",
+  "exampleZh": "我们烧煤取暖。"
+ },
+ "countryside": {
+  "phonetic": "/ˈkʌntrisaɪd/",
+  "zh": "乡村",
+  "example": "The countryside is beautiful.",
+  "exampleZh": "乡村很美。"
+ },
+ "fuel": {
+  "phonetic": "/fjuəl/",
+  "zh": "燃料",
+  "example": "Cars need fuel to run.",
+  "exampleZh": "汽车需要燃料才能行驶。"
+ },
+ "metal": {
+  "phonetic": "/ˈmɛtəl/",
+  "zh": "金属",
+  "example": "The box is made of metal.",
+  "exampleZh": "这个盒子是金属做的。"
+ },
+ "nature": {
+  "phonetic": "/ˈneɪʧər/",
+  "zh": "自然",
+  "example": "We enjoy the beauty of nature.",
+  "exampleZh": "我们享受自然之美。"
+ },
+ "petrol": {
+  "phonetic": "/ˈpɛtroʊl/",
+  "zh": "汽油",
+  "example": "The car needs petrol.",
+  "exampleZh": "汽车需要汽油。"
+ },
+ "rainforest": {
+  "phonetic": "/ˈreɪnfɒrɪst/",
+  "zh": "热带雨林",
+  "example": "Many animals live in the rainforest.",
+  "exampleZh": "许多动物生活在热带雨林里。"
+ },
+ "rubbish": {
+  "phonetic": "/ˈrʌbɪʃ/",
+  "zh": "垃圾",
+  "example": "Please throw the rubbish away.",
+  "exampleZh": "请把垃圾扔掉。"
+ },
+ "tin": {
+  "phonetic": "/tɪn/",
+  "zh": "罐头盒",
+  "example": "He opened a tin of beans.",
+  "exampleZh": "他打开了一罐豆子。"
+ },
+ "transport": {
+  "phonetic": "/ˈtrænspɔrt/",
+  "zh": "交通运输系统",
+  "example": "Public transport is cheap.",
+  "exampleZh": "公共交通很便宜。"
+ },
+ "wildlife": {
+  "phonetic": "/ˈwaɪlˌdlaɪf/",
+  "zh": "野生生物",
+  "example": "We should protect wildlife.",
+  "exampleZh": "我们应该保护野生生物。"
+ },
+ "bay": {
+  "phonetic": "/beɪ/",
+  "zh": "海湾",
+  "example": "The ship is in the bay.",
+  "exampleZh": "船停在海湾里。"
+ },
+ "capital": {
+  "phonetic": "/ˈkæpɪtəl/",
+  "zh": "首都；省会",
+  "example": "London is the capital of the UK.",
+  "exampleZh": "伦敦是英国的首都。"
+ },
+ "desert": {
+  "phonetic": "/ˈdɛzərt/",
+  "zh": "沙漠",
+  "example": "A camel lives in the desert.",
+  "exampleZh": "骆驼生活在沙漠里。"
+ },
+ "farmland": {
+  "phonetic": "/ˈfɑrmˌlænd/",
+  "zh": "农田",
+  "example": "The farmland is very large.",
+  "exampleZh": "农田很大。"
+ },
+ "sandy": {
+  "phonetic": "/ˈsændi/",
+  "zh": "沙的；多沙的",
+  "example": "The beach is sandy.",
+  "exampleZh": "海滩是多沙的。"
+ },
+ "soil": {
+  "phonetic": "/sɔɪl/",
+  "zh": "土地；土壤",
+  "example": "The soil is good for plants.",
+  "exampleZh": "土壤适合植物生长。"
+ },
+ "stream": {
+  "phonetic": "/striːm/",
+  "zh": "溪；小河",
+  "example": "We caught fish in the stream.",
+  "exampleZh": "我们在小溪里抓鱼。"
+ },
+ "thick": {
+  "phonetic": "/θɪk/",
+  "zh": "厚的",
+  "example": "The book is very thick.",
+  "exampleZh": "这本书很厚。"
+ },
+ "valley": {
+  "phonetic": "/ˈvæli/",
+  "zh": "山谷",
+  "example": "The river runs through the valley.",
+  "exampleZh": "河流穿过山谷。"
+ },
+ "waterfall": {
+  "phonetic": "/ˈwɔtərˌfɔl/",
+  "zh": "瀑布",
+  "example": "The waterfall is very loud.",
+  "exampleZh": "瀑布声音很大。"
+ },
+ "doctor": {
+  "phonetic": "/ˈdɒktə/",
+  "zh": "医生",
+  "example": "You should see a doctor.",
+  "exampleZh": "你应该去看医生。"
+ },
+ "cook": {
+  "phonetic": "/kʊk/",
+  "zh": "做饭",
+  "example": "My mother cooks dinner.",
+  "exampleZh": "我妈妈做晚餐。"
+ },
+ "nurse": {
+  "phonetic": "/nɜːs/",
+  "zh": "护士",
+  "example": "The nurse gave me some medicine.",
+  "exampleZh": "护士给了我一些药。"
+ },
+ "police": {
+  "phonetic": "/pəˈliːs/",
+  "zh": "警察",
+  "example": "The police officer is kind.",
+  "exampleZh": "这位警察很友善。"
+ },
+ "firefighter": {
+  "phonetic": "/ˈfaɪəfaɪtə/",
+  "zh": "消防员",
+  "example": "Firefighters are brave.",
+  "exampleZh": "消防员很勇敢。"
+ },
+ "artist": {
+  "phonetic": "/ˈɑːtɪst/",
+  "zh": "艺术家",
+  "example": "She is a famous artist.",
+  "exampleZh": "她是一位著名的艺术家。"
+ },
+ "musician": {
+  "phonetic": "/mjuːˈzɪʃn/",
+  "zh": "音乐家",
+  "example": "He is a talented musician.",
+  "exampleZh": "他是一位有天赋的音乐家。"
+ },
+ "engineer": {
+  "phonetic": "/ˌendʒɪˈnɪə/",
+  "zh": "工程师",
+  "example": "My brother is an engineer.",
+  "exampleZh": "我哥哥是一名工程师。"
+ },
+ "office": {
+  "phonetic": "/ˈɒfɪs/",
+  "zh": "办公室",
+  "example": "I work in an office.",
+  "exampleZh": "我在办公室工作。"
+ },
+ "company": {
+  "phonetic": "/ˈkʌmpəni/",
+  "zh": "公司",
+  "example": "She works for a company.",
+  "exampleZh": "她在一家公司工作。"
+ },
+ "boss": {
+  "phonetic": "/bɒs/",
+  "zh": "老板",
+  "example": "The boss is busy.",
+  "exampleZh": "老板很忙。"
+ },
+ "salary": {
+  "phonetic": "/ˈsæləri/",
+  "zh": "薪水",
+  "example": "The salary is good.",
+  "exampleZh": "薪水不错。"
+ },
+ "meeting": {
+  "phonetic": "/ˈmiːtɪŋ/",
+  "zh": "会议",
+  "example": "We have a meeting.",
+  "exampleZh": "我们有一个会议。"
+ },
+ "project": {
+  "phonetic": "/ˈprɒdʒekt/",
+  "zh": "项目",
+  "example": "This project is important.",
+  "exampleZh": "这个项目很重要。"
+ },
+ "customer": {
+  "phonetic": "/ˈkʌstəmə/",
+  "zh": "顾客",
+  "example": "The customer buys a shirt.",
+  "exampleZh": "顾客买了一件衬衫。"
+ },
+ "shop": {
+  "phonetic": "/ʃɒp/",
+  "zh": "购物",
+  "example": "I shop at the weekend.",
+  "exampleZh": "我周末购物。"
+ },
+ "market": {
+  "phonetic": "/ˈmɑːkɪt/",
+  "zh": "市场",
+  "example": "There is a market near my house.",
+  "exampleZh": "我家附近有一个市场。"
+ },
+ "football": {
+  "phonetic": "/ˈfʊtbɔːl/",
+  "zh": "足球",
+  "example": "I play football after school.",
+  "exampleZh": "我放学后踢足球。"
+ },
+ "basketball": {
+  "phonetic": "/ˈbɑːskɪtbɔːl/",
+  "zh": "篮球",
+  "example": "He likes basketball.",
+  "exampleZh": "他喜欢篮球。"
+ },
+ "swim": {
+  "phonetic": "/swɪm/",
+  "zh": "游泳",
+  "example": "I can swim.",
+  "exampleZh": "我会游泳。"
+ },
+ "run": {
+  "phonetic": "/rʌn/",
+  "zh": "跑步",
+  "example": "I run every morning.",
+  "exampleZh": "我每天早上跑步。"
+ },
+ "ride": {
+  "phonetic": "/raɪd/",
+  "zh": "骑",
+  "example": "I ride a bike.",
+  "exampleZh": "我骑自行车。"
+ },
+ "tennis": {
+  "phonetic": "/ˈtenɪs/",
+  "zh": "网球",
+  "example": "She plays tennis.",
+  "exampleZh": "她打网球。"
+ },
+ "music": {
+  "phonetic": "/ˈmjuːzɪk/",
+  "zh": "音乐",
+  "example": "I like music.",
+  "exampleZh": "我喜欢音乐。"
+ },
+ "dance": {
+  "phonetic": "/dɑːns/",
+  "zh": "跳舞",
+  "example": "She likes to dance.",
+  "exampleZh": "她喜欢跳舞。"
+ },
+ "paint": {
+  "phonetic": "/peɪnt/",
+  "zh": "绘画",
+  "example": "He paints pictures.",
+  "exampleZh": "他画图画。"
+ },
+ "match": {
+  "phonetic": "/mætʃ/",
+  "zh": "比赛",
+  "example": "The match is exciting.",
+  "exampleZh": "比赛很激动人心。"
+ },
+ "hobby": {
+  "phonetic": "/ˈhɒbi/",
+  "zh": "爱好",
+  "example": "My hobby is painting.",
+  "exampleZh": "我的爱好是绘画。"
+ },
+ "free time": {
+  "phonetic": "/friː taɪm/",
+  "zh": "空闲时间",
+  "example": "I relax in my free time.",
+  "exampleZh": "我在空闲时间放松。"
+ },
+ "head": {
+  "phonetic": "/hed/",
+  "zh": "头",
+  "example": "He has a pain in his head.",
+  "exampleZh": "他头疼。"
+ },
+ "ear": {
+  "phonetic": "/ɪə/",
+  "zh": "耳朵",
+  "example": "I can hear with my ears.",
+  "exampleZh": "我能用耳朵听到声音。"
+ },
+ "mouth": {
+  "phonetic": "/maʊθ/",
+  "zh": "嘴",
+  "example": "Open your mouth, please.",
+  "exampleZh": "请张开嘴。"
+ },
+ "hand": {
+  "phonetic": "/hænd/",
+  "zh": "手",
+  "example": "Raise your hand if you know the answer.",
+  "exampleZh": "知道答案请举手。"
+ },
+ "foot": {
+  "phonetic": "/fʊt/",
+  "zh": "脚",
+  "example": "My foot hurts after running.",
+  "exampleZh": "跑完后我的脚疼。"
+ },
+ "arm": {
+  "phonetic": "/ɑːm/",
+  "zh": "手臂",
+  "example": "She broke her arm playing tennis.",
+  "exampleZh": "她打网球时弄伤了手臂。"
+ },
+ "leg": {
+  "phonetic": "/leɡ/",
+  "zh": "腿",
+  "example": "He runs fast because he has strong legs.",
+  "exampleZh": "他跑得快因为腿很强壮。"
+ },
+ "stomach": {
+  "phonetic": "/stʌmək/",
+  "zh": "胃",
+  "example": "I have a stomach ache.",
+  "exampleZh": "我胃疼。"
+ },
+ "tooth": {
+  "phonetic": "/tuːθ/",
+  "zh": "牙齿",
+  "example": "Brush your teeth twice a day.",
+  "exampleZh": "每天刷两次牙。"
+ },
+ "fever": {
+  "phonetic": "/ˈfiːvə/",
+  "zh": "发烧",
+  "example": "She has a fever.",
+  "exampleZh": "她发烧了。"
+ },
+ "cough": {
+  "phonetic": "/kɒf/",
+  "zh": "咳嗽",
+  "example": "He coughs a lot.",
+  "exampleZh": "他经常咳嗽。"
+ },
+ "medicine": {
+  "phonetic": "/ˈmedsn/",
+  "zh": "药",
+  "example": "Take this medicine three times a day.",
+  "exampleZh": "这个药一天吃三次。"
+ },
+ "hospital": {
+  "phonetic": "/ˈhɒspɪtl/",
+  "zh": "医院",
+  "example": "Go to the hospital.",
+  "exampleZh": "去医院。"
+ },
+ "hurt": {
+  "phonetic": "/hɜːt/",
+  "zh": "疼痛",
+  "example": "Does it hurt?",
+  "exampleZh": "疼吗？"
+ },
+ "neck": {
+  "phonetic": "/nek/",
+  "zh": "脖子",
+  "example": "She wears a scarf on her neck.",
+  "exampleZh": "她脖子上围了围巾。"
+ },
+ "shoulder": {
+  "phonetic": "/ˈʃəʊldə/",
+  "zh": "肩膀",
+  "example": "My shoulder hurts.",
+  "exampleZh": "我的肩膀疼。"
+ },
+ "back": {
+  "phonetic": "/bæk/",
+  "zh": "背部",
+  "example": "I have a backache.",
+  "exampleZh": "我背痛。"
+ },
+ "finger": {
+  "phonetic": "/ˈfɪŋɡə/",
+  "zh": "手指",
+  "example": "I cut my finger.",
+  "exampleZh": "我割破了手指。"
+ },
+ "knee": {
+  "phonetic": "/niː/",
+  "zh": "膝盖",
+  "example": "He fell on his knee.",
+  "exampleZh": "他跪倒在地。"
+ },
+ "toe": {
+  "phonetic": "/təʊ/",
+  "zh": "脚趾",
+  "example": "I stubbed my toe.",
+  "exampleZh": "我撞到了脚趾。"
+ },
+ "skin": {
+  "phonetic": "/skɪn/",
+  "zh": "皮肤",
+  "example": "Her skin is smooth.",
+  "exampleZh": "她的皮肤很光滑。"
+ },
+ "bone": {
+  "phonetic": "/bəʊn/",
+  "zh": "骨头",
+  "example": "He broke a bone.",
+  "exampleZh": "他骨折了。"
+ },
+ "heart": {
+  "phonetic": "/hɑːt/",
+  "zh": "心脏",
+  "example": "The heart pumps blood.",
+  "exampleZh": "心脏泵送血液。"
+ },
+ "brain": {
+  "phonetic": "/breɪn/",
+  "zh": "大脑",
+  "example": "Use your brain.",
+  "exampleZh": "用你的大脑。"
+ },
+ "blood": {
+  "phonetic": "/blʌd/",
+  "zh": "血液",
+  "example": "Blood carries oxygen.",
+  "exampleZh": "血液携带氧气。"
+ },
+ "breath": {
+  "phonetic": "/breθ/",
+  "zh": "呼吸",
+  "example": "Take a deep breath.",
+  "exampleZh": "深呼吸。"
+ },
+ "headache": {
+  "phonetic": "/ˈhedeɪk/",
+  "zh": "头疼",
+  "example": "I have a headache.",
+  "exampleZh": "我头疼。"
+ },
+ "toothache": {
+  "phonetic": "/ˈtuːθeɪk/",
+  "zh": "牙疼",
+  "example": "I have a toothache.",
+  "exampleZh": "我牙疼。"
+ },
+ "stomachache": {
+  "phonetic": "/ˈstʌməkeɪk/",
+  "zh": "胃疼",
+  "example": "I have a stomachache.",
+  "exampleZh": "我胃疼。"
+ },
+ "pain": {
+  "phonetic": "/peɪn/",
+  "zh": "疼痛",
+  "example": "I feel pain in my leg.",
+  "exampleZh": "我的腿感到疼痛。"
+ },
+ "sick": {
+  "phonetic": "/sɪk/",
+  "zh": "生病的",
+  "example": "I feel sick.",
+  "exampleZh": "我感到恶心。"
+ },
+ "ill": {
+  "phonetic": "/ɪl/",
+  "zh": "有病的",
+  "example": "He is ill.",
+  "exampleZh": "他生病了。"
+ },
+ "health": {
+  "phonetic": "/helθ/",
+  "zh": "健康",
+  "example": "Health is important.",
+  "exampleZh": "健康很重要。"
+ },
+ "healthy": {
+  "phonetic": "/ˈhelθi/",
+  "zh": "健康的",
+  "example": "Eat healthy food.",
+  "exampleZh": "吃健康的食物。"
+ },
+ "diet": {
+  "phonetic": "/ˈdaɪət/",
+  "zh": "饮食",
+  "example": "A balanced diet is good.",
+  "exampleZh": "均衡的饮食很好。"
+ },
+ "vitamin": {
+  "phonetic": "/ˈvɪtəmɪn/",
+  "zh": "维生素",
+  "example": "Take your vitamins.",
+  "exampleZh": "吃你的维生素。"
+ },
+ "protein": {
+  "phonetic": "/ˈprəʊtiːn/",
+  "zh": "蛋白质",
+  "example": "Meat has protein.",
+  "exampleZh": "肉含有蛋白质。"
+ },
+ "clinic": {
+  "phonetic": "/ˈklɪnɪk/",
+  "zh": "诊所",
+  "example": "I went to the clinic.",
+  "exampleZh": "我去了诊所。"
+ },
+ "pharmacy": {
+  "phonetic": "/ˈfɑːməsi/",
+  "zh": "药店",
+  "example": "Buy medicine at the pharmacy.",
+  "exampleZh": "在药店买药。"
+ },
+ "ambulance": {
+  "phonetic": "/ˈæmbjələns/",
+  "zh": "救护车",
+  "example": "The ambulance is coming.",
+  "exampleZh": "救护车来了。"
+ },
+ "x-ray": {
+  "phonetic": "/ˈeksreɪ/",
+  "zh": "X光",
+  "example": "I need an x-ray.",
+  "exampleZh": "我需要拍X光。"
+ },
+ "operation": {
+  "phonetic": "/ˌɒpəˈreɪʃn/",
+  "zh": "手术",
+  "example": "He had an operation.",
+  "exampleZh": "他做了手术。"
+ },
+ "prescription": {
+  "phonetic": "/prɪˈskrɪpʃn/",
+  "zh": "处方",
+  "example": "I need a prescription.",
+  "exampleZh": "我需要处方。"
+ },
+ "tablet": {
+  "phonetic": "/ˈtæblət/",
+  "zh": "药片",
+  "example": "Take two tablets.",
+  "exampleZh": "吃两片药。"
+ },
+ "pill": {
+  "phonetic": "/pɪl/",
+  "zh": "药丸",
+  "example": "Swallow the pill.",
+  "exampleZh": "吞下药丸。"
+ },
+ "syrup": {
+  "phonetic": "/ˈsɪrəp/",
+  "zh": "糖浆",
+  "example": "Take the cough syrup.",
+  "exampleZh": "喝咳嗽糖浆。"
+ },
+ "injection": {
+  "phonetic": "/ɪnˈdʒekʃn/",
+  "zh": "注射",
+  "example": "I need an injection.",
+  "exampleZh": "我需要打针。"
+ },
+ "bandage": {
+  "phonetic": "/ˈbændɪdʒ/",
+  "zh": "绷带",
+  "example": "Wrap the bandage.",
+  "exampleZh": "包扎绷带。"
+ },
+ "wound": {
+  "phonetic": "/wuːnd/",
+  "zh": "伤口",
+  "example": "Clean the wound.",
+  "exampleZh": "清洗伤口。"
+ },
+ "injury": {
+  "phonetic": "/ˈɪndʒəri/",
+  "zh": "伤害",
+  "example": "He has a head injury.",
+  "exampleZh": "他头部受伤了。"
+ },
+ "emergency": {
+  "phonetic": "/ɪˈmɜːdʒənsi/",
+  "zh": "紧急情况",
+  "example": "This is an emergency.",
+  "exampleZh": "这是紧急情况。"
+ },
+ "fracture": {
+  "phonetic": "/ˈfræktʃə/",
+  "zh": "骨折",
+  "example": "He has a fracture.",
+  "exampleZh": "他骨折了。"
+ },
+ "sprain": {
+  "phonetic": "/spreɪn/",
+  "zh": "扭伤",
+  "example": "I sprained my ankle.",
+  "exampleZh": "我扭伤了脚踝。"
+ },
+ "burn": {
+  "phonetic": "/bɜːn/",
+  "zh": "烧伤",
+  "example": "I burned my hand.",
+  "exampleZh": "我烧伤了手。"
+ },
+ "allergy": {
+  "phonetic": "/ˈælədʒi/",
+  "zh": "过敏",
+  "example": "I have a food allergy.",
+  "exampleZh": "我有食物过敏。"
+ },
+ "dizzy": {
+  "phonetic": "/ˈdɪzi/",
+  "zh": "头晕的",
+  "example": "I feel dizzy.",
+  "exampleZh": "我感到头晕。"
+ },
+ "menu": {
+  "phonetic": "/ˈmenjuː/",
+  "zh": "菜单",
+  "example": "Can I see the menu?",
+  "exampleZh": "我可以看菜单吗？"
+ },
+ "dish": {
+  "phonetic": "/dɪʃ/",
+  "zh": "菜",
+  "example": "This dish is delicious.",
+  "exampleZh": "这道菜很好吃。"
+ },
+ "waiter": {
+  "phonetic": "/ˈweɪtə/",
+  "zh": "服务员",
+  "example": "The waiter brings the food.",
+  "exampleZh": "服务员把食物端来。"
+ },
+ "chopsticks": {
+  "phonetic": "/ˈtʃɒpstɪks/",
+  "zh": "筷子",
+  "example": "I eat with chopsticks.",
+  "exampleZh": "我用筷子吃饭。"
+ },
+ "bill": {
+  "phonetic": "/bɪl/",
+  "zh": "账单",
+  "example": "Can I have the bill?",
+  "exampleZh": "请给我账单。"
+ },
+ "careful": {
+  "phonetic": "/ˈkeəfl/",
+  "zh": "小心的",
+  "example": "Be careful when you cross the road.",
+  "exampleZh": "过马路时要小心。"
+ },
+ "lazy": {
+  "phonetic": "/ˈleɪzi/",
+  "zh": "懒惰的",
+  "example": "He is lazy. He does not work.",
+  "exampleZh": "他很懒，不工作。"
+ },
+ "serious": {
+  "phonetic": "/ˈsɪəriəs/",
+  "zh": "严肃的",
+  "example": "He is a serious teacher.",
+  "exampleZh": "他是一位严肃的老师。"
+ },
+ "worried": {
+  "phonetic": "/ˈwʌrid/",
+  "zh": "担心的",
+  "example": "I am worried about the exam.",
+  "exampleZh": "我担心考试。"
+ },
+ "north": {
+  "phonetic": "/nɔːθ/",
+  "zh": "北",
+  "example": "The north is cold.",
+  "exampleZh": "北方很冷。"
+ },
+ "south": {
+  "phonetic": "/saʊθ/",
+  "zh": "南",
+  "example": "The south is warm.",
+  "exampleZh": "南方很温暖。"
+ },
+ "east": {
+  "phonetic": "/iːst/",
+  "zh": "东",
+  "example": "The sun rises in the east.",
+  "exampleZh": "太阳从东方升起。"
+ },
+ "west": {
+  "phonetic": "/west/",
+  "zh": "西",
+  "example": "The sun sets in the west.",
+  "exampleZh": "太阳从西边落下。"
+ },
+ "left": {
+  "phonetic": "/left/",
+  "zh": "左边",
+  "example": "Turn left at the corner.",
+  "exampleZh": "在拐角处左转。"
+ },
+ "right": {
+  "phonetic": "/raɪt/",
+  "zh": "右边",
+  "example": "Turn right at the bank.",
+  "exampleZh": "在银行处右转。"
+ },
+ "straight": {
+  "phonetic": "/streɪt/",
+  "zh": "直走",
+  "example": "Go straight ahead.",
+  "exampleZh": "一直往前走。"
+ },
+ "behind": {
+  "phonetic": "/bɪˈhaɪnd/",
+  "zh": "在...后面",
+  "example": "The cat is behind the sofa.",
+  "exampleZh": "猫在沙发后面。"
+ },
+ "beside": {
+  "phonetic": "/bɪˈsaɪd/",
+  "zh": "在...旁边",
+  "example": "Sit beside me.",
+  "exampleZh": "坐在我旁边。"
+ },
+ "between": {
+  "phonetic": "/bɪˈtwiːn/",
+  "zh": "在...之间",
+  "example": "The shop is between the bank and the school.",
+  "exampleZh": "商店在银行和学校之间。"
+ },
+ "front": {
+  "phonetic": "/frʌnt/",
+  "zh": "前面",
+  "example": "There is a garden in front of the house.",
+  "exampleZh": "房子前面有一个花园。"
+ },
+ "inside": {
+  "phonetic": "/ˌɪnˈsaɪd/",
+  "zh": "在里面",
+  "example": "It is cold inside.",
+  "exampleZh": "里面很冷。"
+ },
+ "outside": {
+  "phonetic": "/ˌaʊtˈsaɪd/",
+  "zh": "在外面",
+  "example": "Let us play outside.",
+  "exampleZh": "我们出去玩吧。"
+ },
+ "near": {
+  "phonetic": "/nɪə/",
+  "zh": "在...附近",
+  "example": "I live near the school.",
+  "exampleZh": "我住在学校附近。"
+ },
+ "far": {
+  "phonetic": "/fɑː/",
+  "zh": "远的",
+  "example": "The station is far from here.",
+  "exampleZh": "车站离这里很远。"
+ },
+ "city": {
+  "phonetic": "/ˈsɪti/",
+  "zh": "城市",
+  "example": "London is a big city.",
+  "exampleZh": "伦敦是一个大城市。"
+ },
+ "town": {
+  "phonetic": "/taʊn/",
+  "zh": "镇",
+  "example": "I live in a small town.",
+  "exampleZh": "我住在一个小镇上。"
+ },
+ "centre": {
+  "phonetic": "/ˈsentə/",
+  "zh": "中心",
+  "example": "There is a park in the centre of the city.",
+  "exampleZh": "城市中心有一个公园。"
+ },
+ "corner": {
+  "phonetic": "/ˈkɔːnə/",
+  "zh": "角落",
+  "example": "The shop is on the corner.",
+  "exampleZh": "商店在拐角处。"
+ },
+ "morning": {
+  "phonetic": "/ˈmɔːnɪŋ/",
+  "zh": "早上",
+  "example": "I get up early in the morning.",
+  "exampleZh": "我早上早起。"
+ },
+ "afternoon": {
+  "phonetic": "/ˌɑːftəˈnuːn/",
+  "zh": "下午",
+  "example": "We play football in the afternoon.",
+  "exampleZh": "我们下午踢足球。"
+ },
+ "evening": {
+  "phonetic": "/ˈiːvnɪŋ/",
+  "zh": "晚上",
+  "example": "I do my homework in the evening.",
+  "exampleZh": "我晚上做作业。"
+ },
+ "night": {
+  "phonetic": "/naɪt/",
+  "zh": "夜晚",
+  "example": "I go to bed at night.",
+  "exampleZh": "我晚上上床睡觉。"
+ },
+ "today": {
+  "phonetic": "/təˈdeɪ/",
+  "zh": "今天",
+  "example": "Today is Monday.",
+  "exampleZh": "今天是星期一。"
+ },
+ "tomorrow": {
+  "phonetic": "/təˈmɒrəʊ/",
+  "zh": "明天",
+  "example": "I will go to the park tomorrow.",
+  "exampleZh": "我明天要去公园。"
+ },
+ "yesterday": {
+  "phonetic": "/ˈjestədeɪ/",
+  "zh": "昨天",
+  "example": "I was at home yesterday.",
+  "exampleZh": "我昨天在家。"
+ },
+ "week": {
+  "phonetic": "/wiːk/",
+  "zh": "周",
+  "example": "There are seven days in a week.",
+  "exampleZh": "一周有七天。"
+ },
+ "month": {
+  "phonetic": "/mʌnθ/",
+  "zh": "月",
+  "example": "This month is May.",
+  "exampleZh": "这个月是五月。"
+ },
+ "year": {
+  "phonetic": "/jɪə/",
+  "zh": "年",
+  "example": "Happy New Year!",
+  "exampleZh": "新年快乐！"
+ },
+ "Monday": {
+  "phonetic": "/ˈmʌndeɪ/",
+  "zh": "星期一",
+  "example": "I go to school on Monday.",
+  "exampleZh": "我星期一去上学。"
+ },
+ "hour": {
+  "phonetic": "/ˈaʊə/",
+  "zh": "小时",
+  "example": "The film is two hours long.",
+  "exampleZh": "这部电影有两个小时长。"
+ },
+ "minute": {
+  "phonetic": "/ˈmɪnɪt/",
+  "zh": "分钟",
+  "example": "Wait a minute, please.",
+  "exampleZh": "请等一分钟。"
+ },
+ "second": {
+  "phonetic": "/ˈsekənd/",
+  "zh": "秒",
+  "example": "Wait a few seconds.",
+  "exampleZh": "等几秒钟。"
+ },
+ "early": {
+  "phonetic": "/ˈɜːli/",
+  "zh": "早的",
+  "example": "I get up early every day.",
+  "exampleZh": "我每天早起。"
+ },
+ "late": {
+  "phonetic": "/leɪt/",
+  "zh": "晚的",
+  "example": "Sorry, I am late.",
+  "exampleZh": "对不起，我迟到了。"
+ },
+ "soon": {
+  "phonetic": "/suːn/",
+  "zh": "很快",
+  "example": "See you soon!",
+  "exampleZh": "很快见！"
+ },
+ "clock": {
+  "phonetic": "/klɒk/",
+  "zh": "时钟",
+  "example": "Look at the clock.",
+  "exampleZh": "看时钟。"
+ },
+ "calendar": {
+  "phonetic": "/ˈkælɪndə/",
+  "zh": "日历",
+  "example": "Xmas is on the calendar.",
+  "exampleZh": "圣诞节在日历上。"
+ },
+ "hello": {
+  "phonetic": "/həˈləʊ/",
+  "zh": "你好",
+  "example": "Hello! How are you?",
+  "exampleZh": "你好！你好吗？"
+ },
+ "goodbye": {
+  "phonetic": "/ɡʊdˈbaɪ/",
+  "zh": "再见",
+  "example": "Goodbye! See you tomorrow.",
+  "exampleZh": "再见！明天见。"
+ },
+ "thanks": {
+  "phonetic": "/θæŋks/",
+  "zh": "谢谢",
+  "example": "Thanks for your help.",
+  "exampleZh": "谢谢你的帮助。"
+ },
+ "please": {
+  "phonetic": "/pliːz/",
+  "zh": "请",
+  "example": "Please sit down.",
+  "exampleZh": "请坐。"
+ },
+ "sorry": {
+  "phonetic": "/ˈsɒri/",
+  "zh": "对不起",
+  "example": "Sorry, I made a mistake.",
+  "exampleZh": "对不起，我犯了一个错误。"
+ },
+ "excuse me": {
+  "phonetic": "/ɪkˈskjuːz miː/",
+  "zh": "打扰一下",
+  "example": "Excuse me, where is the toilet?",
+  "exampleZh": "打扰一下，厕所在哪里？"
+ },
+ "call": {
+  "phonetic": "/kɔːl/",
+  "zh": "打电话",
+  "example": "I will call you tonight.",
+  "exampleZh": "我今晚给你打电话。"
+ },
+ "email": {
+  "phonetic": "/ˈiːmeɪl/",
+  "zh": "电子邮件",
+  "example": "Send me an email.",
+  "exampleZh": "给我发一封电子邮件。"
+ },
+ "phone": {
+  "phonetic": "/fəʊn/",
+  "zh": "电话",
+  "example": "My phone is at home.",
+  "exampleZh": "我的电话在家里。"
+ },
+ "letter": {
+  "phonetic": "/ˈletə/",
+  "zh": "信",
+  "example": "I write a letter to my friend.",
+  "exampleZh": "我给朋友写了一封信。"
+ },
+ "postcard": {
+  "phonetic": "/ˈpəʊstkɑːd/",
+  "zh": "明信片",
+  "example": "I send a postcard to my family.",
+  "exampleZh": "我给家人寄了一张明信片。"
+ },
+ "money": {
+  "phonetic": "/ˈmʌni/",
+  "zh": "钱",
+  "example": "I need some money.",
+  "exampleZh": "我需要一些钱。"
+ },
+ "price": {
+  "phonetic": "/praɪs/",
+  "zh": "价格",
+  "example": "What is the price of this shirt?",
+  "exampleZh": "这件衬衫的价格是多少？"
+ },
+ "cheap": {
+  "phonetic": "/tʃiːp/",
+  "zh": "便宜的",
+  "example": "This shirt is cheap.",
+  "exampleZh": "这件衬衫很便宜。"
+ },
+ "expensive": {
+  "phonetic": "/ɪkˈspensɪv/",
+  "zh": "贵的",
+  "example": "The computer is expensive.",
+  "exampleZh": "这台电脑很贵。"
+ },
+ "shop assistant": {
+  "phonetic": "/ʃɒp əˈsɪstənt/",
+  "zh": "店员",
+  "example": "The shop assistant helps me.",
+  "exampleZh": "店员帮助我。"
+ },
+ "pay": {
+  "phonetic": "/peɪ/",
+  "zh": "付款",
+  "example": "I pay by card.",
+  "exampleZh": "我用卡付款。"
+ },
+ "buy": {
+  "phonetic": "/baɪ/",
+  "zh": "买",
+  "example": "I buy a book.",
+  "exampleZh": "我买了一本书。"
+ },
+ "sell": {
+  "phonetic": "/sel/",
+  "zh": "卖",
+  "example": "The shop sells food.",
+  "exampleZh": "这家商店卖食物。"
+ },
+ "quickly": {
+  "phonetic": "/ˈkwɪkli/",
+  "zh": "快速地",
+  "example": "He runs quickly.",
+  "exampleZh": "他跑得很快。"
+ },
+ "slowly": {
+  "phonetic": "/ˈsləʊli/",
+  "zh": "缓慢地",
+  "example": "She walks slowly.",
+  "exampleZh": "她走得很慢。"
+ },
+ "carefully": {
+  "phonetic": "/ˈkeəfəli/",
+  "zh": "小心地",
+  "example": "Drive carefully.",
+  "exampleZh": "小心驾驶。"
+ },
+ "loudly": {
+  "phonetic": "/ˈlaʊdli/",
+  "zh": "大声地",
+  "example": "She speaks loudly.",
+  "exampleZh": "她说话很大声。"
+ },
+ "quietly": {
+  "phonetic": "/ˈkwaɪətli/",
+  "zh": "安静地",
+  "example": "Please speak quietly.",
+  "exampleZh": "请安静地说话。"
+ },
+ "often": {
+  "phonetic": "/ˈɒfn/",
+  "zh": "经常",
+  "example": "I often play football.",
+  "exampleZh": "我经常踢足球。"
+ },
+ "always": {
+  "phonetic": "/ˈɔːlweɪz/",
+  "zh": "总是",
+  "example": "She always gets up early.",
+  "exampleZh": "她总是早起。"
+ },
+ "usually": {
+  "phonetic": "/ˈjuːʒuəli/",
+  "zh": "通常",
+  "example": "I usually go to school by bus.",
+  "exampleZh": "我通常乘公交去学校。"
+ },
+ "sometimes": {
+  "phonetic": "/ˈsʌmtaɪmz/",
+  "zh": "有时",
+  "example": "I sometimes watch TV.",
+  "exampleZh": "我有时看电视。"
+ },
+ "never": {
+  "phonetic": "/ˈnevə/",
+  "zh": "从不",
+  "example": "I never eat meat.",
+  "exampleZh": "我从不吃肉。"
+ },
+ "under": {
+  "phonetic": "/ˈʌndə/",
+  "zh": "在...下面",
+  "example": "The cat is under the table.",
+  "exampleZh": "猫在桌子下面。"
+ },
+ "above": {
+  "phonetic": "/əˈbʌv/",
+  "zh": "在...上面",
+  "example": "The bird is above the tree.",
+  "exampleZh": "鸟在树的上方。"
+ },
+ "along": {
+  "phonetic": "/əˈlɒŋ/",
+  "zh": "沿着",
+  "example": "Walk along the road.",
+  "exampleZh": "沿着路走。"
+ },
+ "across": {
+  "phonetic": "/əˈkrɒs/",
+  "zh": "穿过",
+  "example": "Go across the bridge.",
+  "exampleZh": "穿过桥。"
+ },
+ "around": {
+  "phonetic": "/əˈraʊnd/",
+  "zh": "在...周围",
+  "example": "We sit around the table.",
+  "exampleZh": "我们围坐在桌子旁。"
+ },
+ "during": {
+  "phonetic": "/ˈdjʊərɪŋ/",
+  "zh": "在...期间",
+  "example": "It rains during the night.",
+  "exampleZh": "夜间下雨了。"
+ },
+ "until": {
+  "phonetic": "/ənˈtɪl/",
+  "zh": "直到",
+  "example": "Wait here until I come back.",
+  "exampleZh": "在这里等到我回来。"
+ },
+ "since": {
+  "phonetic": "/sɪns/",
+  "zh": "自从",
+  "example": "I have lived here since 2020.",
+  "exampleZh": "我从2020年起就住在这里。"
+ },
+ "although": {
+  "phonetic": "/ɔːlˈðəʊ/",
+  "zh": "虽然",
+  "example": "Although it is raining, I will go out.",
+  "exampleZh": "虽然下雨，我还是要出去。"
+ },
+ "because": {
+  "phonetic": "/bɪˈkɒz/",
+  "zh": "因为",
+  "example": "I like it because it is fun.",
+  "exampleZh": "我喜欢它，因为它很有趣。"
+ },
+ "supermarket": {
+  "phonetic": "/ˈsuːpəmɑːkɪt/",
+  "zh": "超市",
+  "example": "I go to the supermarket.",
+  "exampleZh": "我去超市。"
+ },
+ "store": {
+  "phonetic": "/stɔː/",
+  "zh": "商店（美式）",
+  "example": "The store sells food.",
+  "exampleZh": "这家商店卖食物。"
+ },
+ "cent": {
+  "phonetic": "/sent/",
+  "zh": "分（货币）",
+  "example": "It costs fifty cents.",
+  "exampleZh": "它要50分。"
+ },
+ "pound": {
+  "phonetic": "/paʊnd/",
+  "zh": "英镑",
+  "example": "It costs five pounds.",
+  "exampleZh": "它要5英镑。"
+ },
+ "dollar": {
+  "phonetic": "/ˈdɒlə/",
+  "zh": "美元",
+  "example": "The book is ten dollars.",
+  "exampleZh": "这本书是10美元。"
+ },
+ "cost": {
+  "phonetic": "/kɒst/",
+  "zh": "花费",
+  "example": "How much does it cost?",
+  "exampleZh": "它要多少钱？"
+ },
+ "save": {
+  "phonetic": "/seɪv/",
+  "zh": "节省",
+  "example": "I save money for a bike.",
+  "exampleZh": "我存钱买自行车。"
+ },
+ "spend": {
+  "phonetic": "/spend/",
+  "zh": "花费（时间/金钱）",
+  "example": "I spend ten pounds.",
+  "exampleZh": "我花了10英镑。"
+ },
+ "change": {
+  "phonetic": "/tʃeɪndʒ/",
+  "zh": "零钱",
+  "example": "Here is your change.",
+  "exampleZh": "这是你的零钱。"
+ },
+ "colour": {
+  "phonetic": "/ˈkʌlə/",
+  "zh": "颜色",
+  "example": "What colour do you like?",
+  "exampleZh": "你喜欢什么颜色？"
+ },
+ "open": {
+  "phonetic": "/ˈəʊpən/",
+  "zh": "营业的",
+  "example": "The shop is open.",
+  "exampleZh": "商店营业中。"
+ },
+ "closed": {
+  "phonetic": "/kləʊzd/",
+  "zh": "关闭的",
+  "example": "The shop is closed.",
+  "exampleZh": "商店关门了。"
+ },
+ "shopper": {
+  "phonetic": "/ˈʃɒpə/",
+  "zh": "购物者",
+  "example": "There are many shoppers.",
+  "exampleZh": "有很多购物者。"
+ },
+ "discount": {
+  "phonetic": "/ˈdɪskaʊnt/",
+  "zh": "折扣",
+  "example": "There is a discount today.",
+  "exampleZh": "今天有折扣。"
+ },
+ "receipt": {
+  "phonetic": "/rɪˈsiːt/",
+  "zh": "收据",
+  "example": "Keep the receipt.",
+  "exampleZh": "保留收据。"
+ },
+ "holiday": {
+  "phonetic": "/ˈhɒlədeɪ/",
+  "zh": "假日",
+  "example": "We go on holiday in summer.",
+  "exampleZh": "我们夏天去度假。"
+ },
+ "vacation": {
+  "phonetic": "/vəˈkeɪʃn/",
+  "zh": "假期（美式）",
+  "example": "We have a long vacation.",
+  "exampleZh": "我们有一个长假期。"
+ },
+ "hotel": {
+  "phonetic": "/həʊˈtel/",
+  "zh": "酒店",
+  "example": "We stay at a hotel.",
+  "exampleZh": "我们住在一家酒店。"
+ },
+ "camping": {
+  "phonetic": "/ˈkæmpɪŋ/",
+  "zh": "露营",
+  "example": "We go camping in summer.",
+  "exampleZh": "我们夏天去露营。"
+ },
+ "guide": {
+  "phonetic": "/ɡaɪd/",
+  "zh": "导游",
+  "example": "The guide shows us the way.",
+  "exampleZh": "导游给我们带路。"
+ },
+ "tourist": {
+  "phonetic": "/ˈtʊərɪst/",
+  "zh": "游客",
+  "example": "There are many tourists.",
+  "exampleZh": "有很多游客。"
+ },
+ "tent": {
+  "phonetic": "/tent/",
+  "zh": "帐篷",
+  "example": "We sleep in a tent.",
+  "exampleZh": "我们睡在帐篷里。"
+ },
+ "sunscreen": {
+  "phonetic": "/ˈsʌnskriːn/",
+  "zh": "防晒霜",
+  "example": "Put on sunscreen.",
+  "exampleZh": "涂上防晒霜。"
+ },
+ "photos": {
+  "phonetic": "/ˈfəʊtəʊz/",
+  "zh": "照片（复数）",
+  "example": "I take photos.",
+  "exampleZh": "我拍照。"
+ },
+ "internet": {
+  "phonetic": "/ˈɪntənet/",
+  "zh": "互联网",
+  "example": "I use the internet.",
+  "exampleZh": "我使用互联网。"
+ },
+ "website": {
+  "phonetic": "/ˈwebsaɪt/",
+  "zh": "网站",
+  "example": "I visit a website.",
+  "exampleZh": "我访问一个网站。"
+ },
+ "online": {
+  "phonetic": "/ˌɒnˈlaɪn/",
+  "zh": "在线的",
+  "example": "I shop online.",
+  "exampleZh": "我在线购物。"
+ },
+ "password": {
+  "phonetic": "/ˈpɑːswɜːd/",
+  "zh": "密码",
+  "example": "I need a password.",
+  "exampleZh": "我需要密码。"
+ },
+ "screen": {
+  "phonetic": "/skriːn/",
+  "zh": "屏幕",
+  "example": "The screen is big.",
+  "exampleZh": "屏幕很大。"
+ },
+ "keyboard": {
+  "phonetic": "/ˈkiːbɔːd/",
+  "zh": "键盘",
+  "example": "I type on the keyboard.",
+  "exampleZh": "我在键盘上打字。"
+ },
+ "camera": {
+  "phonetic": "/ˈkæmərə/",
+  "zh": "相机",
+  "example": "I take photos with a camera.",
+  "exampleZh": "我用相机拍照。"
+ },
+ "video": {
+  "phonetic": "/ˈvɪdiəʊ/",
+  "zh": "视频",
+  "example": "I watch a video.",
+  "exampleZh": "我观看视频。"
+ },
+ "app": {
+  "phonetic": "/æp/",
+  "zh": "应用程序",
+  "example": "I download an app.",
+  "exampleZh": "我下载一个应用程序。"
+ },
+ "battery": {
+  "phonetic": "/ˈbætəri/",
+  "zh": "电池",
+  "example": "The battery is low.",
+  "exampleZh": "电池电量低。"
+ },
+ "charge": {
+  "phonetic": "/tʃɑːdʒ/",
+  "zh": "充电",
+  "example": "I need to charge my phone.",
+  "exampleZh": "我需要给手机充电。"
+ },
+ "digital": {
+  "phonetic": "/ˈdɪdʒɪtl/",
+  "zh": "数字的",
+  "example": "I have a digital camera.",
+  "exampleZh": "我有一台数码相机。"
+ },
+ "message": {
+  "phonetic": "/ˈmesɪdʒ/",
+  "zh": "消息",
+  "example": "I send a message.",
+  "exampleZh": "我发送一条消息。"
+ },
+ "social media": {
+  "phonetic": "/ˈsəʊʃl ˈmiːdiə/",
+  "zh": "社交媒体",
+  "example": "I use social media.",
+  "exampleZh": "我使用社交媒体。"
+ },
+ "wifi": {
+  "phonetic": "/ˈwaɪfaɪ/",
+  "zh": "无线网络",
+  "example": "The wifi is free.",
+  "exampleZh": "无线网络是免费的。"
+ },
+ "download": {
+  "phonetic": "/ˌdaʊnˈləʊd/",
+  "zh": "下载",
+  "example": "I download music.",
+  "exampleZh": "我下载音乐。"
+ },
+ "upload": {
+  "phonetic": "/ˌʌpˈləʊd/",
+  "zh": "上传",
+  "example": "I upload photos.",
+  "exampleZh": "我上传照片。"
+ },
+ "wake up": {
+  "phonetic": "/weɪk ʌp/",
+  "zh": "醒来",
+  "example": "I wake up at 7.",
+  "exampleZh": "我7点醒来。"
+ },
+ "get up": {
+  "phonetic": "/ɡet ʌp/",
+  "zh": "起床",
+  "example": "I get up at 7:10.",
+  "exampleZh": "我7点10分起床。"
+ },
+ "wash": {
+  "phonetic": "/wɒʃ/",
+  "zh": "洗",
+  "example": "I wash my face.",
+  "exampleZh": "我洗脸。"
+ },
+ "brush": {
+  "phonetic": "/brʌʃ/",
+  "zh": "刷",
+  "example": "I brush my teeth.",
+  "exampleZh": "我刷牙。"
+ },
+ "have breakfast": {
+  "phonetic": "/hæv ˈbrekfəst/",
+  "zh": "吃早餐",
+  "example": "I have breakfast at 7:30.",
+  "exampleZh": "我7点半吃早餐。"
+ },
+ "go to school": {
+  "phonetic": "/ɡəʊ tə skuːl/",
+  "zh": "去上学",
+  "example": "I go to school at 8.",
+  "exampleZh": "我8点去上学。"
+ },
+ "have lunch": {
+  "phonetic": "/hæv lʌntʃ/",
+  "zh": "吃午餐",
+  "example": "I have lunch at 12.",
+  "exampleZh": "我12点吃午餐。"
+ },
+ "do homework": {
+  "phonetic": "/duː ˈhəʊmwɜːk/",
+  "zh": "做作业",
+  "example": "I do homework after school.",
+  "exampleZh": "我放学后做作业。"
+ },
+ "watch TV": {
+  "phonetic": "/wɒtʃ tiː viː/",
+  "zh": "看电视",
+  "example": "I watch TV in the evening.",
+  "exampleZh": "我晚上看电视。"
+ },
+ "have dinner": {
+  "phonetic": "/hæv ˈdɪnə/",
+  "zh": "吃晚餐",
+  "example": "I have dinner at 7 p.m.",
+  "exampleZh": "我晚上7点吃晚餐。"
+ },
+ "go to bed": {
+  "phonetic": "/ɡəʊ tə bed/",
+  "zh": "上床睡觉",
+  "example": "I go to bed at 10.",
+  "exampleZh": "我10点上床睡觉。"
+ },
+ "sleep": {
+  "phonetic": "/sliːp/",
+  "zh": "睡觉",
+  "example": "I sleep for 8 hours.",
+  "exampleZh": "我睡8小时。"
+ },
+ "play": {
+  "phonetic": "/pleɪ/",
+  "zh": "玩",
+  "example": "I play with my friends.",
+  "exampleZh": "我和朋友一起玩。"
+ },
+ "relax": {
+  "phonetic": "/rɪˈlæks/",
+  "zh": "放松",
+  "example": "I relax at home.",
+  "exampleZh": "我在家放松。"
+ }
+}
