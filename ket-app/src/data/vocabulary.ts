@@ -121,6 +121,9 @@ export const themeFamily: VocabularyTheme = {
     { id: 'w3268', en: 'teenage', phonetic: '/ˈtiˌneɪʤ/', zh: '青少年的', example: 'This is a teenage.', exampleZh: '这是一个青少年的。' },
     { id: 'w3269', en: 'ugly', phonetic: '/ˈəgli/', zh: '丑陋的', example: 'This is an ugly.', exampleZh: '这是一个丑陋的。' },
     { id: 'w3270', en: 'youth', phonetic: '/juθ/', zh: '青春', example: 'This is a youth.', exampleZh: '这是一个青春。' },
+    { id: 'w3682', en: 'students', phonetic: '', zh: '学生们', example: 'The students are in the classroom.', exampleZh: '学生们在教室里。' },
+    { id: 'w3683', en: 'teenagers', phonetic: '', zh: '青少年', example: 'Teenagers love music.', exampleZh: '青少年热爱音乐。' },
+    { id: 'w3684', en: 'shorter', phonetic: '', zh: '更矮的', example: 'She is shorter than me.', exampleZh: '她比我矮。' },
 
   ],
 };
@@ -235,6 +238,12 @@ export const themeFood: VocabularyTheme = {
     { id: 'w3448', en: 'toast', phonetic: '/toʊst/', zh: '吐司', example: 'This is a toast.', exampleZh: '这是一个吐司。' },
     { id: 'w3449', en: 'turkey', phonetic: '/ˈtɜːki/', zh: '火鸡', example: 'We eat turkey at Christmas.', exampleZh: '我们圣诞节吃火鸡。' },
     { id: 'w3450', en: 'yogurt', phonetic: '/ˈjoʊgərt/', zh: '酸奶；酵母乳', example: 'This is a yogurt.', exampleZh: '这是一个酸奶；酵母乳。' },
+    { id: 'w3676', en: 'vegetables', phonetic: '', zh: '蔬菜', example: 'Children should eat more vegetables.', exampleZh: '孩子们应该多吃蔬菜。' },
+    { id: 'w3677', en: 'potatoes', phonetic: '', zh: '土豆', example: 'I like potatoes.', exampleZh: '我喜欢土豆。' },
+    { id: 'w3678', en: 'tomatoes', phonetic: '', zh: '西红柿', example: 'Tomatoes are red.', exampleZh: '西红柿是红色的。' },
+    { id: 'w3679', en: 'onions', phonetic: '', zh: '洋葱', example: 'I don\'t like onions.', exampleZh: '我不喜欢洋葱。' },
+    { id: 'w3680', en: 'carrots', phonetic: '', zh: '胡萝卜', example: 'Carrots are orange.', exampleZh: '胡萝卜是橙色的。' },
+    { id: 'w3681', en: 'eggs', phonetic: '', zh: '鸡蛋（复数）', example: 'I eat eggs for breakfast.', exampleZh: '我早餐吃鸡蛋。' },
 
   ],
 };
@@ -372,6 +381,8 @@ export const themeSchool: VocabularyTheme = {
     { id: 'w3164', en: 'textbook', phonetic: '/ˈtɛkstˌbʊk/', zh: '课本', example: 'This is a textbook.', exampleZh: '这是一个课本。' },
     { id: 'w3165', en: 'trainer', phonetic: '/ˈtreɪnər/', zh: '教练员', example: 'This is a trainer.', exampleZh: '这是一个教练员。' },
     { id: 'w3166', en: 'university', phonetic: '/ˌjunəˈvərsəti/', zh: '大学', example: 'This is an university.', exampleZh: '这是一个大学。' },
+    { id: 'w3685', en: '3', phonetic: '/θriː/', zh: '三', example: 'I am in Class 3.', exampleZh: '我在三班。' },
+    { id: 'w3686', en: 'teaches', phonetic: '', zh: '教（第三人称单数）', example: 'My teacher teaches me English.', exampleZh: '我的老师教我英语。' },
 
   ],
 };
@@ -486,6 +497,9 @@ export const themeTransport: VocabularyTheme = {
     { id: 'w3524', en: 'truck', phonetic: '/trək/', zh: '卡车', example: 'This is a truck.', exampleZh: '这是一个卡车。' },
     { id: 'w3525', en: 'wheel', phonetic: '/wil/', zh: '车轮；方向盘', example: 'This is a wheel.', exampleZh: '这是一个车轮；方向盘。' },
     { id: 'w3526', en: 'wing', phonetic: '/wɪŋ/', zh: '机翼', example: 'The bird has two wings.', exampleZh: '鸟有两只翅膀。' },
+    { id: 'w3687', en: 'delayed', phonetic: '', zh: '延误的', example: 'The flight is delayed.', exampleZh: '航班延误了。' },
+    { id: 'w3688', en: 'departs', phonetic: '', zh: '出发（第三人称单数）', example: 'The bus departs at 8 a.m.', exampleZh: '公交车早上8点出发。' },
+    { id: 'w3689', en: 'rank', phonetic: '', zh: '出租车站', example: 'There is a taxi rank outside.', exampleZh: '外面有一个出租车站。' },
 
   ],
 };
@@ -941,7 +955,9 @@ export const themeAnimals: VocabularyTheme = {
     { id: 'w2871', en: 'stream', phonetic: '/striːm/', zh: '溪；小河', example: 'We caught fish in the stream.', exampleZh: '我们在小溪里抓鱼。' },
     { id: 'w2872', en: 'thick', phonetic: '/θɪk/', zh: '厚的', example: 'The book is very thick.', exampleZh: '这本书很厚。' },
     { id: 'w2873', en: 'valley', phonetic: '/ˈvæli/', zh: '山谷', example: 'The river runs through the valley.', exampleZh: '河流穿过山谷。' },
-    { id: 'w2874', en: 'waterfall', phonetic: '/ˈwɔtərˌfɔl/', zh: '瀑布', example: 'The waterfall is very loud.', exampleZh: '瀑布声音很大。' },
+    { id: 'w2874', en: 'waterfall', phonetic: '/ˈwɔtərˌfɔl/', zh: '瀑布', example: 'The waterfall is very loud.', exampleZh: '瀑布声音很大。' },    { id: 'w3693', en: 'birds', phonetic: '', zh: '鸟', example: 'Birds can fly in the sky.', exampleZh: '鸟能在天上飞。' },
+    { id: 'w3694', en: 'flowers', phonetic: '', zh: '花', example: 'The flowers are beautiful.', exampleZh: '这些花很美。' },
+
   ],
 };
 
@@ -1017,6 +1033,7 @@ export const themeJobs: VocabularyTheme = {
     { id: 'w3314', en: 'waitress', phonetic: '/ˈweɪtrəs/', zh: '女服务员', example: 'This is a waitress.', exampleZh: '这是一个女服务员。' },
     { id: 'w3315', en: 'worker', phonetic: '/ˈwərkər/', zh: '工人', example: 'This is a worker.', exampleZh: '这是一个工人。' },
     { id: 'w3316', en: 'writer', phonetic: '/ˈraɪtər/', zh: '作家；作者', example: 'This is a writer.', exampleZh: '这是一个作家；作者。' },
+    { id: 'w3695', en: 'farmers', phonetic: '', zh: '农民', example: 'Farmers grow food for us.', exampleZh: '农民为我们种植粮食。' },
 
   ],
 };
@@ -1237,6 +1254,9 @@ export const themeHealth: VocabularyTheme = {
     { id: 'w3574', en: 'use', phonetic: '/juz/', zh: '使用', example: 'This is an use.', exampleZh: '这是一个使用。' },
     { id: 'w3575', en: 'walk', phonetic: '/wɔk/', zh: '步行', example: 'This is a walk.', exampleZh: '这是一个步行。' },
     { id: 'w3576', en: 'weight', phonetic: '/weɪt/', zh: '体重', example: 'This is a weight.', exampleZh: '这是一个体重。' },
+    { id: 'w3690', en: 'eyes', phonetic: '', zh: '眼睛', example: 'She has blue eyes.', exampleZh: '她有一双蓝眼睛。' },
+    { id: 'w3691', en: 'vitamins', phonetic: '', zh: '维生素', example: 'Take vitamins every day.', exampleZh: '每天服用维生素。' },
+    { id: 'w3692', en: 'tablets', phonetic: '', zh: '药片', example: 'Take two tablets after meals.', exampleZh: '饭后服两片药。' },
 
   ],
 };
@@ -1504,6 +1524,7 @@ export const themeTime: VocabularyTheme = {
     { id: 'w3407', en: 'Friday', phonetic: '/ˈfraɪˌdeɪ/', zh: '星期五', example: 'This is a Friday.', exampleZh: '这是一个星期五。' },
     { id: 'w3408', en: 'Saturday', phonetic: '/ˈsæˌtɪˌdeɪ/', zh: '星期六', example: 'This is a Saturday.', exampleZh: '这是一个星期六。' },
     { id: 'w3409', en: 'Sunday', phonetic: '/ˈsənˌdi/', zh: '星期日', example: 'This is a Sunday.', exampleZh: '这是一个星期日。' },
+    { id: 'w3696', en: 'time', phonetic: '', zh: '时间', example: 'The time is 8 o\'clock.', exampleZh: '时间是8点。' },
 
   ],
 };
@@ -1601,6 +1622,8 @@ export const themeSocialShopping: VocabularyTheme = {
     { id: 'w3104', en: 'oh dear!', phonetic: '/oʊ dɪr!/', zh: '天哪', example: 'This is an oh dear!.', exampleZh: '这是一个天哪。' },
     { id: 'w3105', en: 'wow', phonetic: '/waʊ/', zh: '呀；哇', example: 'This is a wow.', exampleZh: '这是一个呀；哇。' },
     { id: 'w3106', en: 'yeah', phonetic: '/jæ/', zh: '是的；没错', example: 'This is a yeah.', exampleZh: '这是一个是的；没错。' },
+    { id: 'w3697', en: 'excuse', phonetic: '', zh: '原谅；打扰', example: 'Excuse me, where is the station?', exampleZh: '打扰一下，车站在哪里？' },
+    { id: 'w3698', en: 'thank', phonetic: '', zh: '感谢', example: 'Thank you for your help.', exampleZh: '谢谢你的帮助。' },
 
   ],
 };
@@ -1693,6 +1716,7 @@ export const themeShoppingMoney: VocabularyTheme = {
     { id: 'w3621', en: 'salesman', phonetic: '/ˈseɪlzmən/', zh: '销售人员', example: 'This is a salesman.', exampleZh: '这是一个销售人员。' },
     { id: 'w3622', en: 'shop assistant', phonetic: '/ʃɒp əˈsɪstənt/', zh: '售货员', example: 'The shop assistant helps me.', exampleZh: '店员帮助我。' },
     { id: 'w3623', en: 'travel agent', phonetic: '/ˈtrævəl ˈeɪʤənt/', zh: '旅行社', example: 'This is a travel agent.', exampleZh: '这是一个旅行社。' },
+    { id: 'w3699', en: 'pounds', phonetic: '', zh: '英镑', example: 'It is five pounds.', exampleZh: '这是五英镑。' },
 
   ],
 };
@@ -1848,7 +1872,12 @@ export const themeDailyActivities: VocabularyTheme = {
     { id: 'w2117', en: 'cook', phonetic: '/kʊk/', zh: '做饭', example: 'My mother cooks dinner.', exampleZh: '我妈妈做晚餐。' },
     { id: 'w2118', en: 'shop', phonetic: '/ʃɒp/', zh: '购物', example: 'I shop at the weekend.', exampleZh: '我周末购物。' },
     { id: 'w2119', en: 'exercise', phonetic: '/ˈeksəsaɪz/', zh: '锻炼', example: 'I exercise every morning.', exampleZh: '我每天早上锻炼。' },
-    { id: 'w2120', en: 'relax', phonetic: '/rɪˈlæks/', zh: '放松', example: 'I relax at home.', exampleZh: '我在家放松。' },
+    { id: 'w2120', en: 'relax', phonetic: '/rɪˈlæks/', zh: '放松', example: 'I relax at home.', exampleZh: '我在家放松。' },    { id: 'w3700', en: 'wake', phonetic: '', zh: '醒来', example: 'I wake up at 7 o\'clock.', exampleZh: '我7点醒来。' },
+    { id: 'w3701', en: 'get', phonetic: '', zh: '变得；得到', example: 'I get up at 7:10.', exampleZh: '我7:10起床。' },
+    { id: 'w3702', en: 'have', phonetic: '', zh: '有；吃', example: 'I have breakfast at 7:30.', exampleZh: '我7:30吃早餐。' },
+    { id: 'w3703', en: 'go', phonetic: '', zh: '去', example: 'I go to school at 8.', exampleZh: '我8点去上学。' },
+    { id: 'w3704', en: 'do', phonetic: '', zh: '做', example: 'I do homework after school.', exampleZh: '放学后我做作业。' },
+
   ],
 };
 
@@ -2750,7 +2779,27 @@ export const themeExamCommon: VocabularyTheme = {
     { id: 'we237', en: 'sightseeing', phonetic: "/'saɪtsiːɪŋ/", zh: '观光', example: 'We went sightseeing in London.', exampleZh: '我们在伦敦观光游览。' },
     { id: 'we238', en: 'unfortunately', phonetic: "/ʌn'fɔːtʃənətli/", zh: '不幸地', example: 'Unfortunately, we lost the game.', exampleZh: '不幸的是，我们输了比赛。' },
     { id: 'we239', en: 'suggest', phonetic: "/sə'dʒest/", zh: '建议', example: 'I suggest we go by bus.', exampleZh: '我建议我们坐公交车去。' },
-    { id: 'we240', en: 'suddenly', phonetic: "/'sʌdnli/", zh: '突然', example: 'Suddenly, it started to rain.', exampleZh: '突然开始下雨了。' },
+    { id: 'we240', en: 'suddenly', phonetic: "/'sʌdnli/", zh: '突然', example: 'Suddenly, it started to rain.', exampleZh: '突然开始下雨了。' },    { id: 'w3656', en: 'choose', phonetic: '', zh: '选择', example: 'You can choose your favourite colour.', exampleZh: '你可以选择你最喜欢的颜色。' },
+    { id: 'w3657', en: 'complete', phonetic: '', zh: '完成；填写', example: 'Please complete the form.', exampleZh: '请填好这张表。' },
+    { id: 'w3658', en: 'join', phonetic: '', zh: '连接；参加', example: 'Join the two words with \'and\'.', exampleZh: '用 and 把两个词连起来。' },
+    { id: 'w3659', en: 'tick', phonetic: '', zh: '打勾', example: 'Tick the correct box.', exampleZh: '在正确的方框里打勾。' },
+    { id: 'w3660', en: 'circle', phonetic: '', zh: '圈出', example: 'Circle the odd word.', exampleZh: '圈出不同的那个词。' },
+    { id: 'w3661', en: 'underline', phonetic: '', zh: '在……下划线', example: 'Underline the key words.', exampleZh: '在关键词下划线。' },
+    { id: 'w3662', en: 'but', phonetic: '', zh: '但是', example: 'I like tea, but he likes coffee.', exampleZh: '我喜欢茶，但他喜欢咖啡。' },
+    { id: 'w3663', en: 'if', phonetic: '', zh: '如果', example: 'If it rains, we stay at home.', exampleZh: '如果下雨，我们就待在家。' },
+    { id: 'w3664', en: 'or', phonetic: '', zh: '或者', example: 'Tea or coffee?', exampleZh: '茶还是咖啡？' },
+    { id: 'w3665', en: 'when', phonetic: '', zh: '当……时候', example: 'Call me when you arrive.', exampleZh: '你到了就给我打电话。' },
+    { id: 'w3666', en: 'however', phonetic: '', zh: '然而', example: 'It rained; however, we went out.', exampleZh: '下雨了；然而我们还是出去了。' },
+    { id: 'w3667', en: 'therefore', phonetic: '', zh: '因此', example: 'It was late; therefore we left.', exampleZh: '天晚了，因此我们离开了。' },
+    { id: 'w3668', en: 'for example', phonetic: '/fər ɪɡˈzɑːmpl/', zh: '例如', example: 'Many sports are fun, for example football.', exampleZh: '很多运动很有趣，例如足球。' },
+    { id: 'w3669', en: 'especially', phonetic: '', zh: '尤其', example: 'I like fruit, especially apples.', exampleZh: '我喜欢水果，尤其是苹果。' },
+    { id: 'w3670', en: 'actually', phonetic: '', zh: '实际上', example: 'Actually, I disagree.', exampleZh: '实际上，我不同意。' },
+    { id: 'w3671', en: 'possible', phonetic: '', zh: '可能的', example: 'Is it possible to win?', exampleZh: '有可能赢吗？' },
+    { id: 'w3672', en: 'necessary', phonetic: '', zh: '必要的', example: 'Sleep is necessary for health.', exampleZh: '睡眠对健康是必要的。' },
+    { id: 'w3673', en: 'enough', phonetic: '', zh: '足够的', example: 'Do you have enough time?', exampleZh: '你有足够的时间吗？' },
+    { id: 'w3674', en: 'different', phonetic: '', zh: '不同的', example: 'They are different from each other.', exampleZh: '它们彼此不同。' },
+    { id: 'w3675', en: 'about', phonetic: '', zh: '关于；大约', example: 'Write a story about a cat.', exampleZh: '写一个关于猫的故事。' },
+
   ],
 };
 
@@ -4213,7 +4262,7 @@ export const fillBlankQuestions: FillBlankQuestion[] = [
   { id: 'fq045', themeId: 'T05', sentence: 'We watch TV in the living ____.', answer: 'room', hint: '房间' },
   { id: 'fq046', themeId: 'T05', sentence: 'The children play in the ____.', answer: 'garden', hint: '花园' },
   { id: 'fq047', themeId: 'T05', sentence: 'Sit down on the ____, please.', answer: 'sofa', hint: '沙发' },
-  { id: 'fq048', themeId: 'T05', sentence: '____ the window. It is hot here.', answer: 'Open', hint: '打开' },
+  { id: 'fq048', themeId: 'T05', sentence: '____ the window. It is hot here.', answer: 'open', hint: '打开' },
   { id: 'fq049', themeId: 'T05', sentence: 'Put the milk in the ____.', answer: 'fridge', hint: '冰箱' },
   { id: 'fq050', themeId: 'T05', sentence: 'I lost my house ____.', answer: 'key', hint: '钥匙' },
   // T06
@@ -4339,7 +4388,7 @@ export const fillBlankQuestions: FillBlankQuestion[] = [
   { id: 'fq160', themeId: 'T16', sentence: 'I ____ by card.', answer: 'pay', hint: '付款' },
   // T17 副词与介词
   { id: 'fq161', themeId: 'T17', sentence: 'He runs ____. He is fast.', answer: 'quickly', hint: '快速地' },
-  { id: 'fq162', themeId: 'T17', sentence: 'She ____ walks slowly.', answer: 'usualy', hint: '通常' },
+  { id: 'fq162', themeId: 'T17', sentence: 'She ____ walks slowly.', answer: 'usually', hint: '通常' },
   { id: 'fq163', themeId: 'T17', sentence: 'I ____ eat meat. Never.', answer: 'never', hint: '从不' },
   { id: 'fq164', themeId: 'T17', sentence: 'The cat is ____ the table.', answer: 'under', hint: '在...下面' },
   { id: 'fq165', themeId: 'T17', sentence: 'The bird flies ____ the tree.', answer: 'above', hint: '在...上面' },
@@ -4564,7 +4613,7 @@ export const fillBlankQuestions: FillBlankQuestion[] = [
   { id: 'fq375', themeId: 'T05', sentence: 'We watch TV in the living ____.', answer: 'room', hint: '房间' },
   { id: 'fq376', themeId: 'T05', sentence: 'The children play in the ____.', answer: 'garden', hint: '花园' },
   { id: 'fq377', themeId: 'T05', sentence: 'Sit down on the ____, please.', answer: 'sofa', hint: '沙发' },
-  { id: 'fq378', themeId: 'T05', sentence: '____ the window. It is hot here.', answer: 'Open', hint: '打开' },
+  { id: 'fq378', themeId: 'T05', sentence: '____ the window. It is hot here.', answer: 'open', hint: '打开' },
   { id: 'fq379', themeId: 'T05', sentence: 'Put the milk in the ____.', answer: 'fridge', hint: '冰箱' },
   { id: 'fq380', themeId: 'T05', sentence: 'I lost my house ____.', answer: 'key', hint: '钥匙' },
   { id: 'fq381', themeId: 'T05', sentence: 'I have my own ____.', answer: 'room', hint: '房间' },
@@ -4620,7 +4669,7 @@ export const fillBlankQuestions: FillBlankQuestion[] = [
   { id: 'fq430', themeId: 'T06', sentence: 'I feel ____. My stomach hurts.', answer: 'pain', hint: '疼痛' },
   { id: 'fq431', themeId: 'T06', sentence: 'I feel ____. I need to lie down.', answer: 'sick', hint: '生病的' },
   { id: 'fq432', themeId: 'T06', sentence: 'He is ____. He stays in bed.', answer: 'ill', hint: '有病的' },
-  { id: 'fq433', themeId: 'T06', sentence: '____ is very important.', answer: 'Health', hint: '健康' },
+  { id: 'fq433', themeId: 'T06', sentence: '____ is very important.', answer: 'health', hint: '健康' },
   { id: 'fq434', themeId: 'T06', sentence: 'Eat ____ food.', answer: 'healthy', hint: '健康的' },
   { id: 'fq435', themeId: 'T06', sentence: 'I ____ every morning.', answer: 'exercise', hint: '锻炼' },
   { id: 'fq436', themeId: 'T06', sentence: 'A balanced ____ is good for you.', answer: 'diet', hint: '饮食' },
@@ -4640,21 +4689,21 @@ export const fillBlankQuestions: FillBlankQuestion[] = [
   { id: 'fq450', themeId: 'T06', sentence: 'Wrap the ____ around the wound.', answer: 'bandage', hint: '绷带' },
   // === T22 考试常用词汇 填空题 ===
   { id: 'fq451', themeId: 'T22', sentence: 'Please ____ the correct answer, A, B or C.', answer: 'choose', hint: '选择' },
-  { id: 'fq452', themeId: 'T22', sentence: '____ the sentences with words from the box.', answer: 'Complete', hint: '完成；填好' },
-  { id: 'fq453', themeId: 'T22', sentence: '____ A for the correct picture and B for the wrong one.', answer: 'Tick', hint: '打勾' },
-  { id: 'fq454', themeId: 'T22', sentence: '____ the word that does not belong in each group.', answer: 'Circle', hint: '圈出' },
-  { id: 'fq455', themeId: 'T22', sentence: '____ the mistakes in the letter and write the corrections.', answer: 'Underline', hint: '划线' },
+  { id: 'fq452', themeId: 'T22', sentence: '____ the sentences with words from the box.', answer: 'complete', hint: '完成；填好' },
+  { id: 'fq453', themeId: 'T22', sentence: '____ A for the correct picture and B for the wrong one.', answer: 'tick', hint: '打勾' },
+  { id: 'fq454', themeId: 'T22', sentence: '____ the word that does not belong in each group.', answer: 'circle', hint: '圈出' },
+  { id: 'fq455', themeId: 'T22', sentence: '____ the mistakes in the letter and write the corrections.', answer: 'underline', hint: '划线' },
   { id: 'fq456', themeId: 'T22', sentence: 'I cannot come to your party ____ I have to study for my exam.', answer: 'because', hint: '因为' },
   { id: 'fq457', themeId: 'T22', sentence: 'I like tea ____ my brother prefers coffee.', answer: 'but', hint: '但是' },
-  { id: 'fq458', themeId: 'T22', sentence: '____ it rains tomorrow, we will stay at home.', answer: 'If', hint: '如果' },
+  { id: 'fq458', themeId: 'T22', sentence: '____ it rains tomorrow, we will stay at home.', answer: 'if', hint: '如果' },
   { id: 'fq459', themeId: 'T22', sentence: 'Would you like coffee ____ tea?', answer: 'or', hint: '或者' },
   { id: 'fq460', themeId: 'T22', sentence: 'I will call you ____ I arrive at the station.', answer: 'when', hint: '当...时候' },
-  { id: 'fq462', themeId: 'T22', sentence: 'It was raining. ____, we went out for a walk.', answer: 'However', hint: '然而' },
-  { id: 'fq463', themeId: 'T22', sentence: 'The weather was bad. ____, we decided to cancel the match.', answer: 'Therefore', hint: '因此' },
+  { id: 'fq462', themeId: 'T22', sentence: 'It was raining. ____, we went out for a walk.', answer: 'however', hint: '然而' },
+  { id: 'fq463', themeId: 'T22', sentence: 'The weather was bad. ____, we decided to cancel the match.', answer: 'therefore', hint: '因此' },
   { id: 'fq464', themeId: 'T22', sentence: 'Many sports are popular, ____, football and swimming.', answer: 'for example', hint: '例如' },
   { id: 'fq465', themeId: 'T22', sentence: 'I ____ go to school by bus at 7:30.', answer: 'usually', hint: '通常' },
   { id: 'fq466', themeId: 'T22', sentence: 'I like all subjects, ____ English and maths.', answer: 'especially', hint: '尤其' },
-  { id: 'fq467', themeId: 'T22', sentence: '____, I do not think that is a good idea.', answer: 'Actually', hint: '实际上' },
+  { id: 'fq467', themeId: 'T22', sentence: '____, I do not think that is a good idea.', answer: 'actually', hint: '实际上' },
   { id: 'fq468', themeId: 'T22', sentence: 'Check your answers carefully. Make sure they are ____. ', answer: 'correct', hint: '正确的' },
   { id: 'fq469', themeId: 'T22', sentence: 'Is it ____ to finish this test in 30 minutes?', answer: 'possible', hint: '可能的' },
   { id: 'fq470', themeId: 'T22', sentence: 'It is ____ to bring your pen and ruler to every exam.', answer: 'necessary', hint: '必要的' },

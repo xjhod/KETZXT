@@ -1,0 +1,67 @@
+[
+  {"en": "choose", "zh": "选择", "example": "You can choose your favourite colour.", "exampleZh": "你可以选择你最喜欢的颜色。", "theme": "T22"},
+  {"en": "complete", "zh": "完成；填写", "example": "Please complete the form.", "exampleZh": "请填好这张表。", "theme": "T22"},
+  {"en": "join", "zh": "连接；参加", "example": "Join the two words with 'and'.", "exampleZh": "用 and 把两个词连起来。", "theme": "T22"},
+  {"en": "tick", "zh": "打勾", "example": "Tick the correct box.", "exampleZh": "在正确的方框里打勾。", "theme": "T22"},
+  {"en": "circle", "zh": "圈出", "example": "Circle the odd word.", "exampleZh": "圈出不同的那个词。", "theme": "T22"},
+  {"en": "underline", "zh": "在……下划线", "example": "Underline the key words.", "exampleZh": "在关键词下划线。", "theme": "T22"},
+  {"en": "but", "zh": "但是", "example": "I like tea, but he likes coffee.", "exampleZh": "我喜欢茶，但他喜欢咖啡。", "theme": "T22"},
+  {"en": "if", "zh": "如果", "example": "If it rains, we stay at home.", "exampleZh": "如果下雨，我们就待在家。", "theme": "T22"},
+  {"en": "or", "zh": "或者", "example": "Tea or coffee?", "exampleZh": "茶还是咖啡？", "theme": "T22"},
+  {"en": "when", "zh": "当……时候", "example": "Call me when you arrive.", "exampleZh": "你到了就给我打电话。", "theme": "T22"},
+  {"en": "however", "zh": "然而", "example": "It rained; however, we went out.", "exampleZh": "下雨了；然而我们还是出去了。", "theme": "T22"},
+  {"en": "therefore", "zh": "因此", "example": "It was late; therefore we left.", "exampleZh": "天晚了，因此我们离开了。", "theme": "T22"},
+  {"en": "for example", "zh": "例如", "example": "Many sports are fun, for example football.", "exampleZh": "很多运动很有趣，例如足球。", "theme": "T22", "phonetic": "/fər ɪɡˈzɑːmpl/"},
+  {"en": "especially", "zh": "尤其", "example": "I like fruit, especially apples.", "exampleZh": "我喜欢水果，尤其是苹果。", "theme": "T22"},
+  {"en": "actually", "zh": "实际上", "example": "Actually, I disagree.", "exampleZh": "实际上，我不同意。", "theme": "T22"},
+  {"en": "possible", "zh": "可能的", "example": "Is it possible to win?", "exampleZh": "有可能赢吗？", "theme": "T22"},
+  {"en": "necessary", "zh": "必要的", "example": "Sleep is necessary for health.", "exampleZh": "睡眠对健康是必要的。", "theme": "T22"},
+  {"en": "enough", "zh": "足够的", "example": "Do you have enough time?", "exampleZh": "你有足够的时间吗？", "theme": "T22"},
+  {"en": "different", "zh": "不同的", "example": "They are different from each other.", "exampleZh": "它们彼此不同。", "theme": "T22"},
+  {"en": "about", "zh": "关于；大约", "example": "Write a story about a cat.", "exampleZh": "写一个关于猫的故事。", "theme": "T22"},
+
+  {"en": "vegetables", "zh": "蔬菜", "example": "Children should eat more vegetables.", "exampleZh": "孩子们应该多吃蔬菜。", "theme": "T02"},
+  {"en": "potatoes", "zh": "土豆", "example": "I like potatoes.", "exampleZh": "我喜欢土豆。", "theme": "T02"},
+  {"en": "tomatoes", "zh": "西红柿", "example": "Tomatoes are red.", "exampleZh": "西红柿是红色的。", "theme": "T02"},
+  {"en": "onions", "zh": "洋葱", "example": "I don't like onions.", "exampleZh": "我不喜欢洋葱。", "theme": "T02"},
+  {"en": "carrots", "zh": "胡萝卜", "example": "Carrots are orange.", "exampleZh": "胡萝卜是橙色的。", "theme": "T02"},
+  {"en": "eggs", "zh": "鸡蛋（复数）", "example": "I eat eggs for breakfast.", "exampleZh": "我早餐吃鸡蛋。", "theme": "T02"},
+
+  {"en": "students", "zh": "学生们", "example": "The students are in the classroom.", "exampleZh": "学生们在教室里。", "theme": "T01"},
+  {"en": "teenagers", "zh": "青少年", "example": "Teenagers love music.", "exampleZh": "青少年热爱音乐。", "theme": "T01"},
+  {"en": "shorter", "zh": "更矮的", "example": "She is shorter than me.", "exampleZh": "她比我矮。", "theme": "T01"},
+
+  {"en": "3", "zh": "三", "example": "I am in Class 3.", "exampleZh": "我在三班。", "theme": "T03", "phonetic": "/θriː/"},
+  {"en": "teaches", "zh": "教（第三人称单数）", "example": "My teacher teaches me English.", "exampleZh": "我的老师教我英语。", "theme": "T03"},
+
+  {"en": "delayed", "zh": "延误的", "example": "The flight is delayed.", "exampleZh": "航班延误了。", "theme": "T04"},
+  {"en": "departs", "zh": "出发（第三人称单数）", "example": "The bus departs at 8 a.m.", "exampleZh": "公交车早上8点出发。", "theme": "T04"},
+  {"en": "rank", "zh": "出租车站", "example": "There is a taxi rank outside.", "exampleZh": "外面有一个出租车站。", "theme": "T04"},
+
+  {"en": "open", "zh": "打开", "example": "Open the window, please.", "exampleZh": "请打开窗户。", "theme": "T05"},
+
+  {"en": "eyes", "zh": "眼睛", "example": "She has blue eyes.", "exampleZh": "她有一双蓝眼睛。", "theme": "T06"},
+  {"en": "health", "zh": "健康", "example": "Health is very important.", "exampleZh": "健康非常重要。", "theme": "T06"},
+  {"en": "vitamins", "zh": "维生素", "example": "Take vitamins every day.", "exampleZh": "每天服用维生素。", "theme": "T06"},
+  {"en": "tablets", "zh": "药片", "example": "Take two tablets after meals.", "exampleZh": "饭后服两片药。", "theme": "T06"},
+
+  {"en": "birds", "zh": "鸟", "example": "Birds can fly in the sky.", "exampleZh": "鸟能在天上飞。", "theme": "T09"},
+  {"en": "flowers", "zh": "花", "example": "The flowers are beautiful.", "exampleZh": "这些花很美。", "theme": "T09"},
+
+  {"en": "farmers", "zh": "农民", "example": "Farmers grow food for us.", "exampleZh": "农民为我们种植粮食。", "theme": "T10"},
+
+  {"en": "time", "zh": "时间", "example": "The time is 8 o'clock.", "exampleZh": "时间是8点。", "theme": "T15"},
+
+  {"en": "excuse", "zh": "原谅；打扰", "example": "Excuse me, where is the station?", "exampleZh": "打扰一下，车站在哪里？", "theme": "T16"},
+  {"en": "thank", "zh": "感谢", "example": "Thank you for your help.", "exampleZh": "谢谢你的帮助。", "theme": "T16"},
+
+  {"en": "usually", "zh": "通常", "example": "She usually walks slowly.", "exampleZh": "她通常走得很慢。", "theme": "T17"},
+
+  {"en": "pounds", "zh": "英镑", "example": "It is five pounds.", "exampleZh": "这是五英镑。", "theme": "T18"},
+
+  {"en": "wake", "zh": "醒来", "example": "I wake up at 7 o'clock.", "exampleZh": "我7点醒来。", "theme": "T21"},
+  {"en": "get", "zh": "变得；得到", "example": "I get up at 7:10.", "exampleZh": "我7:10起床。", "theme": "T21"},
+  {"en": "have", "zh": "有；吃", "example": "I have breakfast at 7:30.", "exampleZh": "我7:30吃早餐。", "theme": "T21"},
+  {"en": "go", "zh": "去", "example": "I go to school at 8.", "exampleZh": "我8点去上学。", "theme": "T21"},
+  {"en": "do", "zh": "做", "example": "I do homework after school.", "exampleZh": "放学后我做作业。", "theme": "T21"}
+]
