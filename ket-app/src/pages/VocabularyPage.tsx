@@ -389,7 +389,7 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   const checkAnswer = () => {
     const answer = (transcript || manualInput).trim().toLowerCase().replace(/[.\s]/g, '');
     if (!answer) return;
-    const ok = answer === q.en.toLowerCase();
+    const ok = answer === q.en.toLowerCase().replace(/[.\s]/g, '');
     setResult(ok ? 'correct' : 'wrong');
     if (ok) setCorrectCount(correctCount + 1);
     recordAnswer({
