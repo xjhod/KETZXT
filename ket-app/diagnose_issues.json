@@ -1,0 +1,2007 @@
+{
+  "dupEnCount": 66,
+  "dupEnThemes": {
+    "T01": 8,
+    "T02": 12,
+    "T03": 8,
+    "T04": 4,
+    "T05": 13,
+    "T06": 4,
+    "T07": 7,
+    "T08": 10
+  },
+  "dupEn": [
+    {
+      "theme": "T01",
+      "en": "friend",
+      "count": 2,
+      "words": [
+        {
+          "id": "w013",
+          "en": "friend",
+          "phonetic": "/frend/",
+          "zh": "朋友"
+        },
+        {
+          "id": "w030",
+          "en": "friend",
+          "phonetic": "/frend/",
+          "zh": "朋友"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "teacher",
+      "count": 2,
+      "words": [
+        {
+          "id": "w014",
+          "en": "teacher",
+          "phonetic": "/ˈtiːtʃə/",
+          "zh": "老师"
+        },
+        {
+          "id": "w033",
+          "en": "teacher",
+          "phonetic": "/ˈtiːtʃə/",
+          "zh": "老师"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "student",
+      "count": 2,
+      "words": [
+        {
+          "id": "w015",
+          "en": "student",
+          "phonetic": "/ˈstjuːdənt/",
+          "zh": "学生"
+        },
+        {
+          "id": "w034",
+          "en": "student",
+          "phonetic": "/ˈstjuːdənt/",
+          "zh": "学生"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "child",
+      "count": 2,
+      "words": [
+        {
+          "id": "w016",
+          "en": "child",
+          "phonetic": "/tʃaɪld/",
+          "zh": "孩子"
+        },
+        {
+          "id": "w024",
+          "en": "child",
+          "phonetic": "/tʃaɪld/",
+          "zh": "孩子"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "baby",
+      "count": 3,
+      "words": [
+        {
+          "id": "w017",
+          "en": "baby",
+          "phonetic": "/ˈbeɪbi/",
+          "zh": "婴儿"
+        },
+        {
+          "id": "w023",
+          "en": "baby",
+          "phonetic": "/ˈbeɪbi/",
+          "zh": "婴儿"
+        },
+        {
+          "id": "w062",
+          "en": "baby",
+          "phonetic": "/ˈbeɪbi/",
+          "zh": "婴儿"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "people",
+      "count": 2,
+      "words": [
+        {
+          "id": "w018",
+          "en": "people",
+          "phonetic": "/ˈpiːpl/",
+          "zh": "人们"
+        },
+        {
+          "id": "w029",
+          "en": "people",
+          "phonetic": "/ˈpiːpl/",
+          "zh": "人们"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "man",
+      "count": 2,
+      "words": [
+        {
+          "id": "w019",
+          "en": "man",
+          "phonetic": "/mæn/",
+          "zh": "男人"
+        },
+        {
+          "id": "w027",
+          "en": "man",
+          "phonetic": "/mæn/",
+          "zh": "男人"
+        }
+      ]
+    },
+    {
+      "theme": "T01",
+      "en": "woman",
+      "count": 2,
+      "words": [
+        {
+          "id": "w020",
+          "en": "woman",
+          "phonetic": "/ˈwʊmən/",
+          "zh": "女人"
+        },
+        {
+          "id": "w028",
+          "en": "woman",
+          "phonetic": "/ˈwʊmən/",
+          "zh": "女人"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "chicken",
+      "count": 2,
+      "words": [
+        {
+          "id": "w105",
+          "en": "chicken",
+          "phonetic": "/ˈtʃɪkɪn/",
+          "zh": "鸡肉"
+        },
+        {
+          "id": "w123",
+          "en": "chicken",
+          "phonetic": "/ˈtʃɪkɪn/",
+          "zh": "鸡肉"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "egg",
+      "count": 2,
+      "words": [
+        {
+          "id": "w106",
+          "en": "egg",
+          "phonetic": "/eɡ/",
+          "zh": "鸡蛋"
+        },
+        {
+          "id": "w142",
+          "en": "egg",
+          "phonetic": "/eɡ/",
+          "zh": "鸡蛋"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "fish",
+      "count": 2,
+      "words": [
+        {
+          "id": "w107",
+          "en": "fish",
+          "phonetic": "/fɪʃ/",
+          "zh": "鱼"
+        },
+        {
+          "id": "w124",
+          "en": "fish",
+          "phonetic": "/fɪʃ/",
+          "zh": "鱼"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "juice",
+      "count": 2,
+      "words": [
+        {
+          "id": "w109",
+          "en": "juice",
+          "phonetic": "/dʒuːs/",
+          "zh": "果汁"
+        },
+        {
+          "id": "w145",
+          "en": "juice",
+          "phonetic": "/dʒuːs/",
+          "zh": "果汁"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "milk",
+      "count": 2,
+      "words": [
+        {
+          "id": "w110",
+          "en": "milk",
+          "phonetic": "/mɪlk/",
+          "zh": "牛奶"
+        },
+        {
+          "id": "w147",
+          "en": "milk",
+          "phonetic": "/mɪlk/",
+          "zh": "牛奶"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "rice",
+      "count": 2,
+      "words": [
+        {
+          "id": "w112",
+          "en": "rice",
+          "phonetic": "/raɪs/",
+          "zh": "米饭"
+        },
+        {
+          "id": "w131",
+          "en": "rice",
+          "phonetic": "/raɪs/",
+          "zh": "米饭"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "salad",
+      "count": 2,
+      "words": [
+        {
+          "id": "w113",
+          "en": "salad",
+          "phonetic": "/ˈsæləd/",
+          "zh": "沙拉"
+        },
+        {
+          "id": "w138",
+          "en": "salad",
+          "phonetic": "/ˈsæləd/",
+          "zh": "沙拉"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "sandwich",
+      "count": 2,
+      "words": [
+        {
+          "id": "w114",
+          "en": "sandwich",
+          "phonetic": "/ˈsænwɪtʃ/",
+          "zh": "三明治"
+        },
+        {
+          "id": "w139",
+          "en": "sandwich",
+          "phonetic": "/ˈsænwɪtʃ/",
+          "zh": "三明治"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "soup",
+      "count": 2,
+      "words": [
+        {
+          "id": "w115",
+          "en": "soup",
+          "phonetic": "/suːp/",
+          "zh": "汤"
+        },
+        {
+          "id": "w137",
+          "en": "soup",
+          "phonetic": "/suːp/",
+          "zh": "汤"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "tea",
+      "count": 2,
+      "words": [
+        {
+          "id": "w116",
+          "en": "tea",
+          "phonetic": "/tiː/",
+          "zh": "茶"
+        },
+        {
+          "id": "w148",
+          "en": "tea",
+          "phonetic": "/tiː/",
+          "zh": "茶"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "water",
+      "count": 2,
+      "words": [
+        {
+          "id": "w118",
+          "en": "water",
+          "phonetic": "/ˈwɔːtə/",
+          "zh": "水"
+        },
+        {
+          "id": "w149",
+          "en": "water",
+          "phonetic": "/ˈwɔːtə/",
+          "zh": "水"
+        }
+      ]
+    },
+    {
+      "theme": "T02",
+      "en": "coffee",
+      "count": 2,
+      "words": [
+        {
+          "id": "w119",
+          "en": "coffee",
+          "phonetic": "/ˈkɒfi/",
+          "zh": "咖啡"
+        },
+        {
+          "id": "w152",
+          "en": "coffee",
+          "phonetic": "/ˈkɒfi/",
+          "zh": "咖啡"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "book",
+      "count": 2,
+      "words": [
+        {
+          "id": "w205",
+          "en": "book",
+          "phonetic": "/bʊk/",
+          "zh": "书"
+        },
+        {
+          "id": "w227",
+          "en": "book",
+          "phonetic": "/bʊk/",
+          "zh": "书"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "pen",
+      "count": 2,
+      "words": [
+        {
+          "id": "w206",
+          "en": "pen",
+          "phonetic": "/pen/",
+          "zh": "钢笔"
+        },
+        {
+          "id": "w229",
+          "en": "pen",
+          "phonetic": "/pen/",
+          "zh": "钢笔"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "pencil",
+      "count": 2,
+      "words": [
+        {
+          "id": "w207",
+          "en": "pencil",
+          "phonetic": "/ˈpensl/",
+          "zh": "铅笔"
+        },
+        {
+          "id": "w230",
+          "en": "pencil",
+          "phonetic": "/ˈpensl/",
+          "zh": "铅笔"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "paper",
+      "count": 2,
+      "words": [
+        {
+          "id": "w208",
+          "en": "paper",
+          "phonetic": "/ˈpeɪpə/",
+          "zh": "纸"
+        },
+        {
+          "id": "w231",
+          "en": "paper",
+          "phonetic": "/ˈpeɪpə/",
+          "zh": "纸"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "desk",
+      "count": 2,
+      "words": [
+        {
+          "id": "w209",
+          "en": "desk",
+          "phonetic": "/desk/",
+          "zh": "书桌"
+        },
+        {
+          "id": "w234",
+          "en": "desk",
+          "phonetic": "/desk/",
+          "zh": "书桌"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "chair",
+      "count": 2,
+      "words": [
+        {
+          "id": "w210",
+          "en": "chair",
+          "phonetic": "/tʃeə/",
+          "zh": "椅子"
+        },
+        {
+          "id": "w235",
+          "en": "chair",
+          "phonetic": "/tʃeə/",
+          "zh": "椅子"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "homework",
+      "count": 2,
+      "words": [
+        {
+          "id": "w212",
+          "en": "homework",
+          "phonetic": "/ˈhəʊmwɜːk/",
+          "zh": "家庭作业"
+        },
+        {
+          "id": "w223",
+          "en": "homework",
+          "phonetic": "/ˈhəʊmwɜːk/",
+          "zh": "家庭作业"
+        }
+      ]
+    },
+    {
+      "theme": "T03",
+      "en": "lesson",
+      "count": 2,
+      "words": [
+        {
+          "id": "w213",
+          "en": "lesson",
+          "phonetic": "/ˈlesn/",
+          "zh": "课"
+        },
+        {
+          "id": "w222",
+          "en": "lesson",
+          "phonetic": "/ˈlesn/",
+          "zh": "课"
+        }
+      ]
+    },
+    {
+      "theme": "T04",
+      "en": "map",
+      "count": 2,
+      "words": [
+        {
+          "id": "w309",
+          "en": "map",
+          "phonetic": "/mæp/",
+          "zh": "地图"
+        },
+        {
+          "id": "w370",
+          "en": "map",
+          "phonetic": "/mæp/",
+          "zh": "地图"
+        }
+      ]
+    },
+    {
+      "theme": "T04",
+      "en": "journey",
+      "count": 2,
+      "words": [
+        {
+          "id": "w310",
+          "en": "journey",
+          "phonetic": "/ˈdʒɜːni/",
+          "zh": "旅程"
+        },
+        {
+          "id": "w333",
+          "en": "journey",
+          "phonetic": "/ˈdʒɜːni/",
+          "zh": "旅程"
+        }
+      ]
+    },
+    {
+      "theme": "T04",
+      "en": "passenger",
+      "count": 2,
+      "words": [
+        {
+          "id": "w312",
+          "en": "passenger",
+          "phonetic": "/ˈpæsɪndʒə/",
+          "zh": "乘客"
+        },
+        {
+          "id": "w351",
+          "en": "passenger",
+          "phonetic": "/ˈpæsɪndʒə/",
+          "zh": "乘客"
+        }
+      ]
+    },
+    {
+      "theme": "T04",
+      "en": "luggage",
+      "count": 2,
+      "words": [
+        {
+          "id": "w319",
+          "en": "luggage",
+          "phonetic": "/ˈlʌɡɪdʒ/",
+          "zh": "行李"
+        },
+        {
+          "id": "w340",
+          "en": "luggage",
+          "phonetic": "/ˈlʌɡɪdʒ/",
+          "zh": "行李"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "kitchen",
+      "count": 2,
+      "words": [
+        {
+          "id": "w403",
+          "en": "kitchen",
+          "phonetic": "/ˈkɪtʃɪn/",
+          "zh": "厨房"
+        },
+        {
+          "id": "w424",
+          "en": "kitchen",
+          "phonetic": "/ˈkɪtʃɪn/",
+          "zh": "厨房"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "bedroom",
+      "count": 2,
+      "words": [
+        {
+          "id": "w404",
+          "en": "bedroom",
+          "phonetic": "/ˈbedruːm/",
+          "zh": "卧室"
+        },
+        {
+          "id": "w422",
+          "en": "bedroom",
+          "phonetic": "/ˈbedruːm/",
+          "zh": "卧室"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "bathroom",
+      "count": 2,
+      "words": [
+        {
+          "id": "w405",
+          "en": "bathroom",
+          "phonetic": "/bɑːθruːm/",
+          "zh": "浴室"
+        },
+        {
+          "id": "w425",
+          "en": "bathroom",
+          "phonetic": "/ˈbɑːθruːm/",
+          "zh": "浴室"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "living room",
+      "count": 2,
+      "words": [
+        {
+          "id": "w406",
+          "en": "living room",
+          "phonetic": "/ˈlɪvɪŋ ruːm/",
+          "zh": "客厅"
+        },
+        {
+          "id": "w423",
+          "en": "living room",
+          "phonetic": "/ˈlɪvɪŋ ruːm/",
+          "zh": "客厅"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "garden",
+      "count": 2,
+      "words": [
+        {
+          "id": "w407",
+          "en": "garden",
+          "phonetic": "/ˈɡɑːdn/",
+          "zh": "花园"
+        },
+        {
+          "id": "w426",
+          "en": "garden",
+          "phonetic": "/ˈɡɑːdn/",
+          "zh": "花园"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "sofa",
+      "count": 2,
+      "words": [
+        {
+          "id": "w408",
+          "en": "sofa",
+          "phonetic": "/ˈsəʊfə/",
+          "zh": "沙发"
+        },
+        {
+          "id": "w437",
+          "en": "sofa",
+          "phonetic": "/ˈsəʊfə/",
+          "zh": "沙发"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "bed",
+      "count": 2,
+      "words": [
+        {
+          "id": "w409",
+          "en": "bed",
+          "phonetic": "/bed/",
+          "zh": "床"
+        },
+        {
+          "id": "w439",
+          "en": "bed",
+          "phonetic": "/bed/",
+          "zh": "床"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "lamp",
+      "count": 2,
+      "words": [
+        {
+          "id": "w410",
+          "en": "lamp",
+          "phonetic": "/læmp/",
+          "zh": "灯"
+        },
+        {
+          "id": "w442",
+          "en": "lamp",
+          "phonetic": "/læmp/",
+          "zh": "灯"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "window",
+      "count": 2,
+      "words": [
+        {
+          "id": "w411",
+          "en": "window",
+          "phonetic": "/wɪndəʊ/",
+          "zh": "窗户"
+        },
+        {
+          "id": "w431",
+          "en": "window",
+          "phonetic": "/ˈwɪndəʊ/",
+          "zh": "窗户"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "door",
+      "count": 2,
+      "words": [
+        {
+          "id": "w412",
+          "en": "door",
+          "phonetic": "/dɔː/",
+          "zh": "门"
+        },
+        {
+          "id": "w430",
+          "en": "door",
+          "phonetic": "/dɔː/",
+          "zh": "门"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "floor",
+      "count": 2,
+      "words": [
+        {
+          "id": "w413",
+          "en": "floor",
+          "phonetic": "/flɔː/",
+          "zh": "地板"
+        },
+        {
+          "id": "w432",
+          "en": "floor",
+          "phonetic": "/flɔː/",
+          "zh": "地板"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "wall",
+      "count": 2,
+      "words": [
+        {
+          "id": "w414",
+          "en": "wall",
+          "phonetic": "/wɔːl/",
+          "zh": "墙"
+        },
+        {
+          "id": "w429",
+          "en": "wall",
+          "phonetic": "/wɔːl/",
+          "zh": "墙"
+        }
+      ]
+    },
+    {
+      "theme": "T05",
+      "en": "fridge",
+      "count": 2,
+      "words": [
+        {
+          "id": "w415",
+          "en": "fridge",
+          "phonetic": "/frɪdʒ/",
+          "zh": "冰箱"
+        },
+        {
+          "id": "w443",
+          "en": "fridge",
+          "phonetic": "/frɪdʒ/",
+          "zh": "冰箱"
+        }
+      ]
+    },
+    {
+      "theme": "T06",
+      "en": "fever",
+      "count": 2,
+      "words": [
+        {
+          "id": "w512",
+          "en": "fever",
+          "phonetic": "/ˈfiːvə/",
+          "zh": "发烧"
+        },
+        {
+          "id": "w539",
+          "en": "fever",
+          "phonetic": "/ˈfiːvə/",
+          "zh": "发烧"
+        }
+      ]
+    },
+    {
+      "theme": "T06",
+      "en": "cough",
+      "count": 2,
+      "words": [
+        {
+          "id": "w513",
+          "en": "cough",
+          "phonetic": "/kɒf/",
+          "zh": "咳嗽"
+        },
+        {
+          "id": "w535",
+          "en": "cough",
+          "phonetic": "/kɒf/",
+          "zh": "咳嗽"
+        }
+      ]
+    },
+    {
+      "theme": "T06",
+      "en": "hospital",
+      "count": 2,
+      "words": [
+        {
+          "id": "w517",
+          "en": "hospital",
+          "phonetic": "/ˈhɒspɪtl/",
+          "zh": "医院"
+        },
+        {
+          "id": "w549",
+          "en": "hospital",
+          "phonetic": "/ˈhɒspɪtl/",
+          "zh": "医院"
+        }
+      ]
+    },
+    {
+      "theme": "T06",
+      "en": "ambulance",
+      "count": 2,
+      "words": [
+        {
+          "id": "w552",
+          "en": "ambulance",
+          "phonetic": "/ˈæmbjələns/",
+          "zh": "救护车"
+        },
+        {
+          "id": "w565",
+          "en": "ambulance",
+          "phonetic": "/ˈæmbjələns/",
+          "zh": "救护车"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "spring",
+      "count": 2,
+      "words": [
+        {
+          "id": "w611",
+          "en": "spring",
+          "phonetic": "/sprɪŋ/",
+          "zh": "春天"
+        },
+        {
+          "id": "w658",
+          "en": "spring",
+          "phonetic": "/sprɪŋ/",
+          "zh": "春天"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "summer",
+      "count": 2,
+      "words": [
+        {
+          "id": "w612",
+          "en": "summer",
+          "phonetic": "/ˈsʌmə/",
+          "zh": "夏天"
+        },
+        {
+          "id": "w659",
+          "en": "summer",
+          "phonetic": "/ˈsʌmə/",
+          "zh": "夏天"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "autumn",
+      "count": 2,
+      "words": [
+        {
+          "id": "w613",
+          "en": "autumn",
+          "phonetic": "/ˈɔːtəm/",
+          "zh": "秋天"
+        },
+        {
+          "id": "w660",
+          "en": "autumn",
+          "phonetic": "/ˈɔːtəm/",
+          "zh": "秋天"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "winter",
+      "count": 2,
+      "words": [
+        {
+          "id": "w614",
+          "en": "winter",
+          "phonetic": "/ˈwɪntə/",
+          "zh": "冬天"
+        },
+        {
+          "id": "w661",
+          "en": "winter",
+          "phonetic": "/ˈwɪntə/",
+          "zh": "冬天"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "season",
+      "count": 2,
+      "words": [
+        {
+          "id": "w615",
+          "en": "season",
+          "phonetic": "/ˈsiːzn/",
+          "zh": "季节"
+        },
+        {
+          "id": "w657",
+          "en": "season",
+          "phonetic": "/ˈsiːzn/",
+          "zh": "季节"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "temperature",
+      "count": 2,
+      "words": [
+        {
+          "id": "w616",
+          "en": "temperature",
+          "phonetic": "/ˈtemprətʃə/",
+          "zh": "温度"
+        },
+        {
+          "id": "w643",
+          "en": "temperature",
+          "phonetic": "/ˈtemprətʃə/",
+          "zh": "温度"
+        }
+      ]
+    },
+    {
+      "theme": "T07",
+      "en": "fog",
+      "count": 2,
+      "words": [
+        {
+          "id": "w619",
+          "en": "fog",
+          "phonetic": "/fɒɡ/",
+          "zh": "雾"
+        },
+        {
+          "id": "w632",
+          "en": "fog",
+          "phonetic": "/fɒɡ/",
+          "zh": "雾"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "hat",
+      "count": 2,
+      "words": [
+        {
+          "id": "w710",
+          "en": "hat",
+          "phonetic": "/hæt/",
+          "zh": "帽子"
+        },
+        {
+          "id": "w748",
+          "en": "hat",
+          "phonetic": "/hæt/",
+          "zh": "帽子"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "scarf",
+      "count": 2,
+      "words": [
+        {
+          "id": "w711",
+          "en": "scarf",
+          "phonetic": "/skɑːf/",
+          "zh": "围巾"
+        },
+        {
+          "id": "w750",
+          "en": "scarf",
+          "phonetic": "/skɑːf/",
+          "zh": "围巾"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "gloves",
+      "count": 2,
+      "words": [
+        {
+          "id": "w712",
+          "en": "gloves",
+          "phonetic": "/ɡlʌvz/",
+          "zh": "手套"
+        },
+        {
+          "id": "w751",
+          "en": "gloves",
+          "phonetic": "/ɡlʌvz/",
+          "zh": "手套"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "socks",
+      "count": 2,
+      "words": [
+        {
+          "id": "w713",
+          "en": "socks",
+          "phonetic": "/sɒks/",
+          "zh": "袜子"
+        },
+        {
+          "id": "w752",
+          "en": "socks",
+          "phonetic": "/sɒks/",
+          "zh": "袜子"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "pocket",
+      "count": 2,
+      "words": [
+        {
+          "id": "w714",
+          "en": "pocket",
+          "phonetic": "/ˈpɒkɪt/",
+          "zh": "口袋"
+        },
+        {
+          "id": "w729",
+          "en": "pocket",
+          "phonetic": "/ˈpɒkɪt/",
+          "zh": "口袋"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "button",
+      "count": 2,
+      "words": [
+        {
+          "id": "w715",
+          "en": "button",
+          "phonetic": "/ˈbʌtn/",
+          "zh": "扣子"
+        },
+        {
+          "id": "w732",
+          "en": "button",
+          "phonetic": "/ˈbʌtn/",
+          "zh": "纽扣"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "size",
+      "count": 2,
+      "words": [
+        {
+          "id": "w717",
+          "en": "size",
+          "phonetic": "/saɪz/",
+          "zh": "尺码"
+        },
+        {
+          "id": "w734",
+          "en": "size",
+          "phonetic": "/saɪz/",
+          "zh": "尺码"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "fit",
+      "count": 2,
+      "words": [
+        {
+          "id": "w718",
+          "en": "fit",
+          "phonetic": "/fɪt/",
+          "zh": "合身"
+        },
+        {
+          "id": "w735",
+          "en": "fit",
+          "phonetic": "/fɪt/",
+          "zh": "合身"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "tie",
+      "count": 2,
+      "words": [
+        {
+          "id": "w726",
+          "en": "tie",
+          "phonetic": "/taɪ/",
+          "zh": "领带"
+        },
+        {
+          "id": "w770",
+          "en": "tie",
+          "phonetic": "/taɪ/",
+          "zh": "领带"
+        }
+      ]
+    },
+    {
+      "theme": "T08",
+      "en": "sweatpants",
+      "count": 2,
+      "words": [
+        {
+          "id": "w744",
+          "en": "sweatpants",
+          "phonetic": "/ˈswetpænts/",
+          "zh": "运动裤"
+        },
+        {
+          "id": "w759",
+          "en": "sweatpants",
+          "phonetic": "/ˈswetpænts/",
+          "zh": "运动裤"
+        }
+      ]
+    }
+  ],
+  "missPoolCount": 72,
+  "missPoolByType": {
+    "matching": 19,
+    "fillBlank": 53
+  },
+  "missPoolThemes": {
+    "T22": 38,
+    "T02": 6,
+    "T05": 2,
+    "T06": 4,
+    "T09": 2,
+    "T10": 1,
+    "T15": 1,
+    "T16": 2,
+    "T17": 1,
+    "T18": 1,
+    "T21": 6,
+    "T01": 3,
+    "T03": 2,
+    "T04": 3
+  },
+  "missPool": [
+    {
+      "type": "matching",
+      "id": "mq451",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "choose",
+      "prompt": "选择",
+      "options": [
+        "choose",
+        "check",
+        "change",
+        "catch"
+      ],
+      "answer": "choose"
+    },
+    {
+      "type": "matching",
+      "id": "mq452",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "complete",
+      "prompt": "完成；填好",
+      "options": [
+        "complete",
+        "correct",
+        "collect",
+        "connect"
+      ],
+      "answer": "complete"
+    },
+    {
+      "type": "matching",
+      "id": "mq453",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "join",
+      "prompt": "连接",
+      "options": [
+        "join",
+        "jump",
+        "joke",
+        "judge"
+      ],
+      "answer": "join"
+    },
+    {
+      "type": "matching",
+      "id": "mq455",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "tick",
+      "prompt": "打勾",
+      "options": [
+        "tick",
+        "task",
+        "take",
+        "talk"
+      ],
+      "answer": "tick"
+    },
+    {
+      "type": "matching",
+      "id": "mq456",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "circle",
+      "prompt": "圈出",
+      "options": [
+        "circle",
+        "cycle",
+        "centre",
+        "count"
+      ],
+      "answer": "circle"
+    },
+    {
+      "type": "matching",
+      "id": "mq457",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "underline",
+      "prompt": "划线",
+      "options": [
+        "underline",
+        "understand",
+        "university",
+        "uniform"
+      ],
+      "answer": "underline"
+    },
+    {
+      "type": "matching",
+      "id": "mq459",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "but",
+      "prompt": "但是",
+      "options": [
+        "but",
+        "both",
+        "best",
+        "bought"
+      ],
+      "answer": "but"
+    },
+    {
+      "type": "matching",
+      "id": "mq460",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "if",
+      "prompt": "如果",
+      "options": [
+        "if",
+        "in",
+        "is",
+        "it"
+      ],
+      "answer": "if"
+    },
+    {
+      "type": "matching",
+      "id": "mq461",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "or",
+      "prompt": "或者",
+      "options": [
+        "or",
+        "of",
+        "on",
+        "over"
+      ],
+      "answer": "or"
+    },
+    {
+      "type": "matching",
+      "id": "mq462",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "when",
+      "prompt": "当...时候",
+      "options": [
+        "when",
+        "where",
+        "what",
+        "which"
+      ],
+      "answer": "when"
+    },
+    {
+      "type": "matching",
+      "id": "mq464",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "however",
+      "prompt": "然而",
+      "options": [
+        "however",
+        "how",
+        "here",
+        "house"
+      ],
+      "answer": "however"
+    },
+    {
+      "type": "matching",
+      "id": "mq465",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "therefore",
+      "prompt": "因此",
+      "options": [
+        "therefore",
+        "together",
+        "tomorrow",
+        "tonight"
+      ],
+      "answer": "therefore"
+    },
+    {
+      "type": "matching",
+      "id": "mq466",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "for example",
+      "prompt": "例如",
+      "options": [
+        "for example",
+        "everyone",
+        "everything",
+        "elsewhere"
+      ],
+      "answer": "for example"
+    },
+    {
+      "type": "matching",
+      "id": "mq468",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "especially",
+      "prompt": "尤其",
+      "options": [
+        "especially",
+        "exactly",
+        "even",
+        "ever"
+      ],
+      "answer": "especially"
+    },
+    {
+      "type": "matching",
+      "id": "mq469",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "actually",
+      "prompt": "实际上",
+      "options": [
+        "actually",
+        "accident",
+        "across",
+        "active"
+      ],
+      "answer": "actually"
+    },
+    {
+      "type": "matching",
+      "id": "mq471",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "possible",
+      "prompt": "可能的",
+      "options": [
+        "possible",
+        "popular",
+        "patient",
+        "perfect"
+      ],
+      "answer": "possible"
+    },
+    {
+      "type": "matching",
+      "id": "mq472",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "necessary",
+      "prompt": "必要的",
+      "options": [
+        "necessary",
+        "national",
+        "natural",
+        "nearby"
+      ],
+      "answer": "necessary"
+    },
+    {
+      "type": "matching",
+      "id": "mq473",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "enough",
+      "prompt": "足够的",
+      "options": [
+        "enough",
+        "enter",
+        "enjoy",
+        "energy"
+      ],
+      "answer": "enough"
+    },
+    {
+      "type": "matching",
+      "id": "mq474",
+      "themeId": "T22",
+      "promptLang": "zh",
+      "testedEn": "different",
+      "prompt": "不同的",
+      "options": [
+        "different",
+        "difficult",
+        "dangerous",
+        "delicious"
+      ],
+      "answer": "different"
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq019",
+      "themeId": "T02",
+      "testedEn": "vegetables",
+      "answer": "vegetables",
+      "sentence": "Children should eat more ____. It is healthy."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq048",
+      "themeId": "T05",
+      "testedEn": "Open",
+      "answer": "Open",
+      "sentence": "____ the window. It is hot here."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq052",
+      "themeId": "T06",
+      "testedEn": "eyes",
+      "answer": "eyes",
+      "sentence": "She has blue ____. They are beautiful."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq083",
+      "themeId": "T09",
+      "testedEn": "birds",
+      "answer": "birds",
+      "sentence": "____ can fly in the sky."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq085",
+      "themeId": "T09",
+      "testedEn": "flowers",
+      "answer": "flowers",
+      "sentence": "The ____ are beautiful. They are red."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq094",
+      "themeId": "T10",
+      "testedEn": "farmers",
+      "answer": "farmers",
+      "sentence": "____ grow food for us."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq150",
+      "themeId": "T15",
+      "testedEn": "time",
+      "answer": "time",
+      "sentence": "The ____ is 8 o'clock."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq152",
+      "themeId": "T16",
+      "testedEn": "excuse",
+      "answer": "excuse",
+      "sentence": "____ me, where is the station?"
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq153",
+      "themeId": "T16",
+      "testedEn": "thank",
+      "answer": "thank",
+      "sentence": "____ you for your help."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq162",
+      "themeId": "T17",
+      "testedEn": "usualy",
+      "answer": "usualy",
+      "sentence": "She ____ walks slowly."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq173",
+      "themeId": "T18",
+      "testedEn": "pounds",
+      "answer": "pounds",
+      "sentence": "It is five ____."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq201",
+      "themeId": "T21",
+      "testedEn": "wake",
+      "answer": "wake",
+      "sentence": "I ____ up at 7 o'clock."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq202",
+      "themeId": "T21",
+      "testedEn": "get",
+      "answer": "get",
+      "sentence": "I ____ up at 7:10."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq205",
+      "themeId": "T21",
+      "testedEn": "have",
+      "answer": "have",
+      "sentence": "I ____ breakfast at 7:30."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq206",
+      "themeId": "T21",
+      "testedEn": "go",
+      "answer": "go",
+      "sentence": "I ____ to school at 8."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq207",
+      "themeId": "T21",
+      "testedEn": "do",
+      "answer": "do",
+      "sentence": "I ____ homework after school."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq209",
+      "themeId": "T21",
+      "testedEn": "go",
+      "answer": "go",
+      "sentence": "I ____ to bed at 10."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq225",
+      "themeId": "T01",
+      "testedEn": "students",
+      "answer": "students",
+      "sentence": "The ____ are in the classroom."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq233",
+      "themeId": "T01",
+      "testedEn": "teenagers",
+      "answer": "teenagers",
+      "sentence": "____ love music."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq241",
+      "themeId": "T01",
+      "testedEn": "shorter",
+      "answer": "shorter",
+      "sentence": "She is ____ than me."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq256",
+      "themeId": "T02",
+      "testedEn": "potatoes",
+      "answer": "potatoes",
+      "sentence": "I like ____."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq257",
+      "themeId": "T02",
+      "testedEn": "tomatoes",
+      "answer": "tomatoes",
+      "sentence": "____ are red."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq258",
+      "themeId": "T02",
+      "testedEn": "onions",
+      "answer": "onions",
+      "sentence": "I don't like ____."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq259",
+      "themeId": "T02",
+      "testedEn": "carrots",
+      "answer": "carrots",
+      "sentence": "____ are orange."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq272",
+      "themeId": "T02",
+      "testedEn": "eggs",
+      "answer": "eggs",
+      "sentence": "I eat ____ for breakfast."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq291",
+      "themeId": "T03",
+      "testedEn": "3",
+      "answer": "3",
+      "sentence": "I am in Class ____."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq321",
+      "themeId": "T03",
+      "testedEn": "teaches",
+      "answer": "teaches",
+      "sentence": "My teacher ____ me."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq360",
+      "themeId": "T04",
+      "testedEn": "delayed",
+      "answer": "delayed",
+      "sentence": "The flight is ____."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq362",
+      "themeId": "T04",
+      "testedEn": "departs",
+      "answer": "departs",
+      "sentence": "The bus ____ at 8 a.m."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq370",
+      "themeId": "T04",
+      "testedEn": "rank",
+      "answer": "rank",
+      "sentence": "There is a taxi ____ outside."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq378",
+      "themeId": "T05",
+      "testedEn": "Open",
+      "answer": "Open",
+      "sentence": "____ the window. It is hot here."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq433",
+      "themeId": "T06",
+      "testedEn": "Health",
+      "answer": "Health",
+      "sentence": "____ is very important."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq437",
+      "themeId": "T06",
+      "testedEn": "vitamins",
+      "answer": "vitamins",
+      "sentence": "Take ____ every day."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq446",
+      "themeId": "T06",
+      "testedEn": "tablets",
+      "answer": "tablets",
+      "sentence": "Take two ____ after meals."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq451",
+      "themeId": "T22",
+      "testedEn": "choose",
+      "answer": "choose",
+      "sentence": "Please ____ the correct answer, A, B or C."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq452",
+      "themeId": "T22",
+      "testedEn": "Complete",
+      "answer": "Complete",
+      "sentence": "____ the sentences with words from the box."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq453",
+      "themeId": "T22",
+      "testedEn": "Tick",
+      "answer": "Tick",
+      "sentence": "____ A for the correct picture and B for the wrong one."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq454",
+      "themeId": "T22",
+      "testedEn": "Circle",
+      "answer": "Circle",
+      "sentence": "____ the word that does not belong in each group."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq455",
+      "themeId": "T22",
+      "testedEn": "Underline",
+      "answer": "Underline",
+      "sentence": "____ the mistakes in the letter and write the corrections."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq457",
+      "themeId": "T22",
+      "testedEn": "but",
+      "answer": "but",
+      "sentence": "I like tea ____ my brother prefers coffee."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq458",
+      "themeId": "T22",
+      "testedEn": "If",
+      "answer": "If",
+      "sentence": "____ it rains tomorrow, we will stay at home."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq459",
+      "themeId": "T22",
+      "testedEn": "or",
+      "answer": "or",
+      "sentence": "Would you like coffee ____ tea?"
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq460",
+      "themeId": "T22",
+      "testedEn": "when",
+      "answer": "when",
+      "sentence": "I will call you ____ I arrive at the station."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq462",
+      "themeId": "T22",
+      "testedEn": "However",
+      "answer": "However",
+      "sentence": "It was raining. ____, we went out for a walk."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq463",
+      "themeId": "T22",
+      "testedEn": "Therefore",
+      "answer": "Therefore",
+      "sentence": "The weather was bad. ____, we decided to cancel the match."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq464",
+      "themeId": "T22",
+      "testedEn": "for example",
+      "answer": "for example",
+      "sentence": "Many sports are popular, ____, football and swimming."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq466",
+      "themeId": "T22",
+      "testedEn": "especially",
+      "answer": "especially",
+      "sentence": "I like all subjects, ____ English and maths."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq467",
+      "themeId": "T22",
+      "testedEn": "Actually",
+      "answer": "Actually",
+      "sentence": "____, I do not think that is a good idea."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq469",
+      "themeId": "T22",
+      "testedEn": "possible",
+      "answer": "possible",
+      "sentence": "Is it ____ to finish this test in 30 minutes?"
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq470",
+      "themeId": "T22",
+      "testedEn": "necessary",
+      "answer": "necessary",
+      "sentence": "It is ____ to bring your pen and ruler to every exam."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq471",
+      "themeId": "T22",
+      "testedEn": "enough",
+      "answer": "enough",
+      "sentence": "Have you slept ____? You look tired today."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq472",
+      "themeId": "T22",
+      "testedEn": "different",
+      "answer": "different",
+      "sentence": "These three books are very ____ from each other."
+    },
+    {
+      "type": "fillBlank",
+      "id": "fq473",
+      "themeId": "T22",
+      "testedEn": "about",
+      "answer": "about",
+      "sentence": "Please write a short story of ____ 50 words."
+    }
+  ]
+}
