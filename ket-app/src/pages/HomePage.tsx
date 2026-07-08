@@ -59,10 +59,22 @@ export default function HomePage() {
   const vocabStats = getModuleStats('vocabulary');
   const grammarStats = getModuleStats('grammar');
   const readingStats = getModuleStats('reading');
+  const listeningStats = getModuleStats('listening');
+  const speakingStats = getModuleStats('speaking');
 
   const totalSessions = sessionRecords.length;
-  const totalAnswered = vocabStats.totalQuestions + grammarStats.totalQuestions + readingStats.totalQuestions;
-  const totalCorrect = vocabStats.correctQuestions + grammarStats.correctQuestions + readingStats.correctQuestions;
+  const totalAnswered =
+    vocabStats.totalQuestions +
+    grammarStats.totalQuestions +
+    readingStats.totalQuestions +
+    listeningStats.totalQuestions +
+    speakingStats.totalQuestions;
+  const totalCorrect =
+    vocabStats.correctQuestions +
+    grammarStats.correctQuestions +
+    readingStats.correctQuestions +
+    listeningStats.correctQuestions +
+    speakingStats.correctQuestions;
   const overallAcc = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : null;
   const wrongCount = getWrongAnswers().length;
 
@@ -133,11 +145,13 @@ export default function HomePage() {
 
       {/* 各模块进度小卡片 */}
       {totalAnswered > 0 && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {[
             { label: '词汇', stats: vocabStats, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
             { label: '语法', stats: grammarStats, color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-100' },
             { label: '阅读', stats: readingStats, color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-100' },
+            { label: '听力', stats: listeningStats, color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-100' },
+            { label: '口语', stats: speakingStats, color: 'text-pink-600', bg: 'bg-pink-50', border: 'border-pink-100' },
           ].map(item => {
             const acc = item.stats.totalQuestions > 0
               ? Math.round((item.stats.correctQuestions / item.stats.totalQuestions) * 100)

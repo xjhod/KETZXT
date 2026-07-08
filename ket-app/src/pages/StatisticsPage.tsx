@@ -99,7 +99,7 @@ export default function StatisticsPage() {
         day: 'numeric',
       });
       if (!map.has(date)) {
-        map.set(date, { vocabulary: 0, grammar: 0, reading: 0, listening: 0 });
+        map.set(date, { vocabulary: 0, grammar: 0, reading: 0, listening: 0, speaking: 0 });
       }
       const entry = map.get(date)!;
       const key = r.module as string;
@@ -396,6 +396,7 @@ export default function StatisticsPage() {
             <Bar dataKey="grammar" name="语法" fill="#10b981" />
             <Bar dataKey="reading" name="阅读" fill="#f59e0b" />
             <Bar dataKey="listening" name="听力" fill="#ef4444" />
+            <Bar dataKey="speaking" name="口语" fill="#ec4899" />
           </BarChart>
         </ResponsiveContainer>
       </div>
