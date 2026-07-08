@@ -1,0 +1,803 @@
+[
+ {
+  "en": "ball",
+  "zh": "球",
+  "phonetic": "/bɔl/",
+  "example": "This is a ball.",
+  "exampleZh": "这是一个球。",
+  "source": "template+generated",
+  "word_id": "w2875"
+ },
+ {
+  "en": "badminton",
+  "zh": "羽毛球",
+  "phonetic": "/ˈbædˌmɪntən/",
+  "example": "This is a badminton.",
+  "exampleZh": "这是一个羽毛球。",
+  "source": "template+generated",
+  "word_id": "w2876"
+ },
+ {
+  "en": "baseball",
+  "zh": "棒球",
+  "phonetic": "/ˈbeɪsˈbɔl/",
+  "example": "This is a baseball.",
+  "exampleZh": "这是一个棒球。",
+  "source": "template+generated",
+  "word_id": "w2877"
+ },
+ {
+  "en": "bat",
+  "zh": "球拍；球棒",
+  "phonetic": "/bæt/",
+  "example": "A bat can fly at night.",
+  "exampleZh": "蝙蝠能在夜间飞翔。",
+  "source": "reused",
+  "word_id": "w2878"
+ },
+ {
+  "en": "boxing",
+  "zh": "拳击",
+  "phonetic": "/ˈbɑksɪŋ/",
+  "example": "This is a boxing.",
+  "exampleZh": "这是一个拳击。",
+  "source": "template+generated",
+  "word_id": "w2879"
+ },
+ {
+  "en": "cricket",
+  "zh": "板球（运动）",
+  "phonetic": "/ˈkrɪkɪt/",
+  "example": "This is a cricket.",
+  "exampleZh": "这是一个板球（运动）。",
+  "source": "template+generated",
+  "word_id": "w2880"
+ },
+ {
+  "en": "cycling",
+  "zh": "骑自行车",
+  "phonetic": "/ˈsaɪklɪŋ/",
+  "example": "This is a cycling.",
+  "exampleZh": "这是一个骑自行车。",
+  "source": "template+corrected",
+  "word_id": "w2881"
+ },
+ {
+  "en": "diving",
+  "zh": "潜水",
+  "phonetic": "/ˈdaɪvɪŋ/",
+  "example": "This is a diving.",
+  "exampleZh": "这是一个潜水。",
+  "source": "template+corrected",
+  "word_id": "w2882"
+ },
+ {
+  "en": "fishing",
+  "zh": "钓鱼",
+  "phonetic": "/ˈfɪʃɪŋ/",
+  "example": "This is a fishing.",
+  "exampleZh": "这是一个钓鱼。",
+  "source": "template+generated",
+  "word_id": "w2883"
+ },
+ {
+  "en": "fishing rod",
+  "zh": "钓鱼竿",
+  "phonetic": "/ˈfɪʃɪŋ rɑd/",
+  "example": "This is a fishing rod.",
+  "exampleZh": "这是一个钓鱼竿。",
+  "source": "template+generated",
+  "word_id": "w2884"
+ },
+ {
+  "en": "glove",
+  "zh": "手套",
+  "phonetic": "/ɡlʌv/",
+  "example": "This is a glove.",
+  "exampleZh": "这是一个手套。",
+  "source": "template+corrected",
+  "word_id": "w2885"
+ },
+ {
+  "en": "goal",
+  "zh": "球门；得分",
+  "phonetic": "/ɡoʊl/",
+  "example": "This is a goal.",
+  "exampleZh": "这是一个球门；得分。",
+  "source": "template+corrected",
+  "word_id": "w2886"
+ },
+ {
+  "en": "golf",
+  "zh": "高尔夫球运动",
+  "phonetic": "/ɡɒlf/",
+  "example": "This is a golf.",
+  "exampleZh": "这是一个高尔夫球运动。",
+  "source": "template+corrected",
+  "word_id": "w2887"
+ },
+ {
+  "en": "helmet",
+  "zh": "头盔",
+  "phonetic": "/ˈhɛlmət/",
+  "example": "This is a helmet.",
+  "exampleZh": "这是一个头盔。",
+  "source": "template+generated",
+  "word_id": "w2888"
+ },
+ {
+  "en": "hockey",
+  "zh": "曲棍球",
+  "phonetic": "/ˈhɑki/",
+  "example": "This is a hockey.",
+  "exampleZh": "这是一个曲棍球。",
+  "source": "template+generated",
+  "word_id": "w2889"
+ },
+ {
+  "en": "jogging",
+  "zh": "慢跑",
+  "phonetic": "/ˈʤɔgɪŋ/",
+  "example": "This is a jogging.",
+  "exampleZh": "这是一个慢跑。",
+  "source": "template+generated",
+  "word_id": "w2890"
+ },
+ {
+  "en": "marathon",
+  "zh": "马拉松赛跑",
+  "phonetic": "/ˈmɛrəˌθɑn/",
+  "example": "This is a marathon.",
+  "exampleZh": "这是一个马拉松赛跑。",
+  "source": "template+generated",
+  "word_id": "w2891"
+ },
+ {
+  "en": "net",
+  "zh": "网",
+  "phonetic": "/net/",
+  "example": "This is a net.",
+  "exampleZh": "这是一个网。",
+  "source": "template+corrected",
+  "word_id": "w2892"
+ },
+ {
+  "en": "play",
+  "zh": "比赛",
+  "phonetic": "/pleɪ/",
+  "example": "I play with my friends.",
+  "exampleZh": "我和朋友一起玩。",
+  "source": "reused",
+  "word_id": "w2893"
+ },
+ {
+  "en": "player",
+  "zh": "运动员",
+  "phonetic": "/pleɪər/",
+  "example": "This is a player.",
+  "exampleZh": "这是一个运动员。",
+  "source": "template+generated",
+  "word_id": "w2894"
+ },
+ {
+  "en": "pool",
+  "zh": "游泳池",
+  "phonetic": "/puːl/",
+  "example": "This is a pool.",
+  "exampleZh": "这是一个游泳池。",
+  "source": "template+corrected",
+  "word_id": "w2895"
+ },
+ {
+  "en": "race",
+  "zh": "比赛；竞赛",
+  "phonetic": "/reɪs/",
+  "example": "I win the race.",
+  "exampleZh": "我赢得比赛。",
+  "source": "reused",
+  "word_id": "w2896"
+ },
+ {
+  "en": "rugby",
+  "zh": "英式橄榄球",
+  "phonetic": "/ˈrʌgbi/",
+  "example": "This is a rugby.",
+  "exampleZh": "这是一个英式橄榄球。",
+  "source": "template+corrected",
+  "word_id": "w2897"
+ },
+ {
+  "en": "running",
+  "zh": "跑步",
+  "phonetic": "/ˈrʌnɪŋ/",
+  "example": "This is a running.",
+  "exampleZh": "这是一个跑步。",
+  "source": "template+corrected",
+  "word_id": "w2898"
+ },
+ {
+  "en": "sailing",
+  "zh": "帆船运动",
+  "phonetic": "/ˈseɪlɪŋ/",
+  "example": "This is a sailing.",
+  "exampleZh": "这是一个帆船运动。",
+  "source": "template+generated",
+  "word_id": "w2899"
+ },
+ {
+  "en": "skate",
+  "zh": "滑冰",
+  "phonetic": "/skeɪt/",
+  "example": "This is a skate.",
+  "exampleZh": "这是一个滑冰。",
+  "source": "template+generated",
+  "word_id": "w2900"
+ },
+ {
+  "en": "skateboard",
+  "zh": "滑板",
+  "phonetic": "/ˈskeɪtbɔːrd/",
+  "example": "This is a skateboard.",
+  "exampleZh": "这是一个滑板。",
+  "source": "template+corrected",
+  "word_id": "w2901"
+ },
+ {
+  "en": "ski",
+  "zh": "滑雪",
+  "phonetic": "/ski/",
+  "example": "This is a ski.",
+  "exampleZh": "这是一个滑雪。",
+  "source": "template+generated",
+  "word_id": "w2902"
+ },
+ {
+  "en": "skiing",
+  "zh": "滑雪",
+  "phonetic": "/skiɪŋ/",
+  "example": "This is a skiing.",
+  "exampleZh": "这是一个滑雪。",
+  "source": "template+generated",
+  "word_id": "w2903"
+ },
+ {
+  "en": "snowboard",
+  "zh": "滑雪板",
+  "phonetic": "/ˈsnoʊbɔːrd/",
+  "example": "This is a snowboard.",
+  "exampleZh": "这是一个滑雪板。",
+  "source": "template+corrected",
+  "word_id": "w2904"
+ },
+ {
+  "en": "snowboarding",
+  "zh": "单板滑雪运动",
+  "phonetic": "/ˈsnoʊbɔːrdɪŋ/",
+  "example": "This is a snowboarding.",
+  "exampleZh": "这是一个单板滑雪运动。",
+  "source": "template+corrected",
+  "word_id": "w2905"
+ },
+ {
+  "en": "stadium",
+  "zh": "体育场",
+  "phonetic": "/ˈsteɪdiəm/",
+  "example": "This is a stadium.",
+  "exampleZh": "这是一个体育场。",
+  "source": "template+generated",
+  "word_id": "w2906"
+ },
+ {
+  "en": "surf",
+  "zh": "冲浪",
+  "phonetic": "/sɜːf/",
+  "example": "This is a surf.",
+  "exampleZh": "这是一个冲浪。",
+  "source": "template+corrected",
+  "word_id": "w2907"
+ },
+ {
+  "en": "surfboard",
+  "zh": "冲浪板",
+  "phonetic": "/ˈsɜːrfbɔːrd/",
+  "example": "This is a surfboard.",
+  "exampleZh": "这是一个冲浪板。",
+  "source": "template+corrected",
+  "word_id": "w2908"
+ },
+ {
+  "en": "swimming",
+  "zh": "游泳",
+  "phonetic": "/ˈswɪmɪŋ/",
+  "example": "This is a swimming.",
+  "exampleZh": "这是一个游泳。",
+  "source": "template+corrected",
+  "word_id": "w2909"
+ },
+ {
+  "en": "swimming pool",
+  "zh": "游泳池",
+  "phonetic": "/sˈwɪmɪŋ pul/",
+  "example": "This is a swimming pool.",
+  "exampleZh": "这是一个游泳池。",
+  "source": "template+generated",
+  "word_id": "w2910"
+ },
+ {
+  "en": "swimsuit",
+  "zh": "泳衣",
+  "phonetic": "/ˈswɪmsuːt/",
+  "example": "She wears a swimsuit.",
+  "exampleZh": "她穿泳衣。",
+  "source": "reused",
+  "word_id": "w2911"
+ },
+ {
+  "en": "table tennis",
+  "zh": "乒乓球",
+  "phonetic": "/ˈteɪbəl ˈtɛnɪs/",
+  "example": "This is a table tennis.",
+  "exampleZh": "这是一个乒乓球。",
+  "source": "template+generated",
+  "word_id": "w2912"
+ },
+ {
+  "en": "throw",
+  "zh": "投；扔；摔",
+  "phonetic": "/θroʊ/",
+  "example": "This is a throw.",
+  "exampleZh": "这是一个投；扔；摔。",
+  "source": "template+generated",
+  "word_id": "w2913"
+ },
+ {
+  "en": "track",
+  "zh": "跑道",
+  "phonetic": "/træk/",
+  "example": "This is a track.",
+  "exampleZh": "这是一个跑道。",
+  "source": "template+generated",
+  "word_id": "w2914"
+ },
+ {
+  "en": "volleyball",
+  "zh": "排球",
+  "phonetic": "/ˈvɑliˌbɔl/",
+  "example": "This is a volleyball.",
+  "exampleZh": "这是一个排球。",
+  "source": "template+generated",
+  "word_id": "w2915"
+ },
+ {
+  "en": "windsurfing",
+  "zh": "帆板运动",
+  "phonetic": "/ˈwɪndsɜːrfɪŋ/",
+  "example": "This is a windsurfing.",
+  "exampleZh": "这是一个帆板运动。",
+  "source": "template+corrected",
+  "word_id": "w2916"
+ },
+ {
+  "en": "winner",
+  "zh": "胜利者",
+  "phonetic": "/ˈwɪnər/",
+  "example": "This is a winner.",
+  "exampleZh": "这是一个胜利者。",
+  "source": "template+generated",
+  "word_id": "w2917"
+ },
+ {
+  "en": "build",
+  "zh": "建造",
+  "phonetic": "/bɪld/",
+  "example": "This is a build.",
+  "exampleZh": "这是一个建造。",
+  "source": "template+generated",
+  "word_id": "w2918"
+ },
+ {
+  "en": "buy",
+  "zh": "购买",
+  "phonetic": "/baɪ/",
+  "example": "I buy a book.",
+  "exampleZh": "我买了一本书。",
+  "source": "reused",
+  "word_id": "w2919"
+ },
+ {
+  "en": "collect",
+  "zh": "收集",
+  "phonetic": "/kəˈlɛkt/",
+  "example": "This is a collect.",
+  "exampleZh": "这是一个收集。",
+  "source": "template+generated",
+  "word_id": "w2920"
+ },
+ {
+  "en": "cooking",
+  "zh": "烹饪",
+  "phonetic": "/ˈkʊkɪŋ/",
+  "example": "This is a cooking.",
+  "exampleZh": "这是一个烹饪。",
+  "source": "template+generated",
+  "word_id": "w2921"
+ },
+ {
+  "en": "exchange",
+  "zh": "交换；交流",
+  "phonetic": "/ɪksˈʧeɪnʤ/",
+  "example": "This is an exchange.",
+  "exampleZh": "这是一个交换；交流。",
+  "source": "template+generated",
+  "word_id": "w2922"
+ },
+ {
+  "en": "horse-riding",
+  "zh": "骑马",
+  "phonetic": "/ˈhɔːs ˌraɪdɪŋ/",
+  "example": "This is a horse-riding.",
+  "exampleZh": "这是一个骑马。",
+  "source": "template+corrected",
+  "word_id": "w2923"
+ },
+ {
+  "en": "increase",
+  "zh": "增加",
+  "phonetic": "/ˌɪnˈkris/",
+  "example": "This is an increase.",
+  "exampleZh": "这是一个增加。",
+  "source": "template+generated",
+  "word_id": "w2924"
+ },
+ {
+  "en": "keep fit",
+  "zh": "保持健康",
+  "phonetic": "/kip fɪt/",
+  "example": "This is a keep fit.",
+  "exampleZh": "这是一个保持健康。",
+  "source": "template+generated",
+  "word_id": "w2925"
+ },
+ {
+  "en": "painting",
+  "zh": "画画",
+  "phonetic": "/ˈpeɪnɪŋ/",
+  "example": "This is a painting.",
+  "exampleZh": "这是一个画画。",
+  "source": "template+generated",
+  "word_id": "w2926"
+ },
+ {
+  "en": "perform",
+  "zh": "表演",
+  "phonetic": "/pərˈfɔrm/",
+  "example": "This is a perform.",
+  "exampleZh": "这是一个表演。",
+  "source": "template+generated",
+  "word_id": "w2927"
+ },
+ {
+  "en": "photography",
+  "zh": "摄影",
+  "phonetic": "/fəˈtɑgrəfi/",
+  "example": "This is a photography.",
+  "exampleZh": "这是一个摄影。",
+  "source": "template+generated",
+  "word_id": "w2928"
+ },
+ {
+  "en": "act",
+  "zh": "表演",
+  "phonetic": "/ækt/",
+  "example": "This is an act.",
+  "exampleZh": "这是一个表演。",
+  "source": "template+generated",
+  "word_id": "w2929"
+ },
+ {
+  "en": "actor",
+  "zh": "演员",
+  "phonetic": "/ˈæktər/",
+  "example": "This is an actor.",
+  "exampleZh": "这是一个演员。",
+  "source": "template+generated",
+  "word_id": "w2930"
+ },
+ {
+  "en": "actress",
+  "zh": "女演员",
+  "phonetic": "/ˈæktrəs/",
+  "example": "This is an actress.",
+  "exampleZh": "这是一个女演员。",
+  "source": "template+generated",
+  "word_id": "w2931"
+ },
+ {
+  "en": "ballet",
+  "zh": "芭蕾舞",
+  "phonetic": "/bæˈleɪ/",
+  "example": "This is a ballet.",
+  "exampleZh": "这是一个芭蕾舞。",
+  "source": "template+generated",
+  "word_id": "w2932"
+ },
+ {
+  "en": "box office",
+  "zh": "票房",
+  "phonetic": "/bɑks ˈɔfəs/",
+  "example": "This is a box office.",
+  "exampleZh": "这是一个票房。",
+  "source": "template+generated",
+  "word_id": "w2933"
+ },
+ {
+  "en": "cartoon",
+  "zh": "卡通片",
+  "phonetic": "/kɑːˈtuːn/",
+  "example": "This is a cartoon.",
+  "exampleZh": "这是一个卡通片。",
+  "source": "template+corrected",
+  "word_id": "w2934"
+ },
+ {
+  "en": "character",
+  "zh": "性格；角色",
+  "phonetic": "/ˈkærəktər/",
+  "example": "This is a character.",
+  "exampleZh": "这是一个性格；角色。",
+  "source": "template+corrected",
+  "word_id": "w2935"
+ },
+ {
+  "en": "clap",
+  "zh": "拍手，鼓掌",
+  "phonetic": "/klæp/",
+  "example": "This is a clap.",
+  "exampleZh": "这是一个拍手，鼓掌。",
+  "source": "template+generated",
+  "word_id": "w2936"
+ },
+ {
+  "en": "comedy",
+  "zh": "喜剧",
+  "phonetic": "/ˈkɑmədi/",
+  "example": "This is a comedy.",
+  "exampleZh": "这是一个喜剧。",
+  "source": "template+generated",
+  "word_id": "w2937"
+ },
+ {
+  "en": "concert",
+  "zh": "演唱会",
+  "phonetic": "/ˈkɒnsət/",
+  "example": "This is a concert.",
+  "exampleZh": "这是一个演唱会。",
+  "source": "template+corrected",
+  "word_id": "w2938"
+ },
+ {
+  "en": "drama",
+  "zh": "戏剧",
+  "phonetic": "/ˈdrɑmə/",
+  "example": "This is a drama.",
+  "exampleZh": "这是一个戏剧。",
+  "source": "template+generated",
+  "word_id": "w2939"
+ },
+ {
+  "en": "drum",
+  "zh": "鼓",
+  "phonetic": "/drəm/",
+  "example": "This is a drum.",
+  "exampleZh": "这是一个鼓。",
+  "source": "template+generated",
+  "word_id": "w2940"
+ },
+ {
+  "en": "exhibition",
+  "zh": "展览",
+  "phonetic": "/ˌeksəˈbɪʃən/",
+  "example": "This is an exhibition.",
+  "exampleZh": "这是一个展览。",
+  "source": "template+corrected",
+  "word_id": "w2941"
+ },
+ {
+  "en": "film",
+  "zh": "电影",
+  "phonetic": "/fɪlm/",
+  "example": "This is a film.",
+  "exampleZh": "这是一个电影。",
+  "source": "template+generated",
+  "word_id": "w2942"
+ },
+ {
+  "en": "guitar",
+  "zh": "吉他",
+  "phonetic": "/ɡɪˈtɑː/",
+  "example": "This is a guitar.",
+  "exampleZh": "这是一个吉他。",
+  "source": "template+corrected",
+  "word_id": "w2943"
+ },
+ {
+  "en": "instrument",
+  "zh": "乐器",
+  "phonetic": "/ˈɪnstrəmənt/",
+  "example": "This is an instrument.",
+  "exampleZh": "这是一个乐器。",
+  "source": "template+generated",
+  "word_id": "w2944"
+ },
+ {
+  "en": "jazz",
+  "zh": "爵士乐",
+  "phonetic": "/ʤæz/",
+  "example": "This is a jazz.",
+  "exampleZh": "这是一个爵士乐。",
+  "source": "template+generated",
+  "word_id": "w2945"
+ },
+ {
+  "en": "make-up",
+  "zh": "化妆品",
+  "phonetic": "/ˈmeɪˌkəp/",
+  "example": "This is a make-up.",
+  "exampleZh": "这是一个化妆品。",
+  "source": "template+generated",
+  "word_id": "w2946"
+ },
+ {
+  "en": "musician",
+  "zh": "音乐家",
+  "phonetic": "/mjuːˈzɪʃn/",
+  "example": "He is a talented musician.",
+  "exampleZh": "他是一位有天赋的音乐家。",
+  "source": "reused",
+  "word_id": "w2947"
+ },
+ {
+  "en": "mystery",
+  "zh": "神秘；谜",
+  "phonetic": "/ˈmɪstəri/",
+  "example": "This is a mystery.",
+  "exampleZh": "这是一个神秘；谜。",
+  "source": "template+generated",
+  "word_id": "w2948"
+ },
+ {
+  "en": "novel",
+  "zh": "长篇）小说",
+  "phonetic": "/ˈnɑvəl/",
+  "example": "This is a novel.",
+  "exampleZh": "这是一个长篇）小说。",
+  "source": "template+generated",
+  "word_id": "w2949"
+ },
+ {
+  "en": "performance",
+  "zh": "表演",
+  "phonetic": "/pəˈfɔːməns/",
+  "example": "This is a performance.",
+  "exampleZh": "这是一个表演。",
+  "source": "template+corrected",
+  "word_id": "w2950"
+ },
+ {
+  "en": "piano",
+  "zh": "钢琴",
+  "phonetic": "/piˈænə/",
+  "example": "This is a piano.",
+  "exampleZh": "这是一个钢琴。",
+  "source": "template+generated",
+  "word_id": "w2951"
+ },
+ {
+  "en": "poem",
+  "zh": "诗",
+  "phonetic": "/ˈpəʊɪm/",
+  "example": "I read a poem.",
+  "exampleZh": "我读一首诗。",
+  "source": "reused",
+  "word_id": "w2952"
+ },
+ {
+  "en": "produce",
+  "zh": "创作，制造",
+  "phonetic": "/ˈproʊdus/",
+  "example": "This is a produce.",
+  "exampleZh": "这是一个创作，制造。",
+  "source": "template+generated",
+  "word_id": "w2953"
+ },
+ {
+  "en": "role",
+  "zh": "角色",
+  "phonetic": "/roʊl/",
+  "example": "This is a role.",
+  "exampleZh": "这是一个角色。",
+  "source": "template+generated",
+  "word_id": "w2954"
+ },
+ {
+  "en": "romantic",
+  "zh": "浪漫的",
+  "phonetic": "/roʊˈmæntɪk/",
+  "example": "This is a romantic.",
+  "exampleZh": "这是一个浪漫的。",
+  "source": "template+generated",
+  "word_id": "w2955"
+ },
+ {
+  "en": "scene",
+  "zh": "戏剧的）一场",
+  "phonetic": "/sin/",
+  "example": "This is a scene.",
+  "exampleZh": "这是一个戏剧的）一场。",
+  "source": "template+generated",
+  "word_id": "w2956"
+ },
+ {
+  "en": "scenery",
+  "zh": "舞台布景",
+  "phonetic": "/ˈsinəri/",
+  "example": "This is a scenery.",
+  "exampleZh": "这是一个舞台布景。",
+  "source": "template+generated",
+  "word_id": "w2957"
+ },
+ {
+  "en": "science fiction",
+  "zh": "科幻小说",
+  "phonetic": "/saɪəns ˈfɪkʃən/",
+  "example": "This is a science fiction.",
+  "exampleZh": "这是一个科幻小说。",
+  "source": "template+generated",
+  "word_id": "w2958"
+ },
+ {
+  "en": "show",
+  "zh": "演出",
+  "phonetic": "/ʃoʊ/",
+  "example": "This is a show.",
+  "exampleZh": "这是一个演出。",
+  "source": "template+generated",
+  "word_id": "w2959"
+ },
+ {
+  "en": "sound",
+  "zh": "声音",
+  "phonetic": "/saʊnd/",
+  "example": "This is a sound.",
+  "exampleZh": "这是一个声音。",
+  "source": "template+generated",
+  "word_id": "w2960"
+ },
+ {
+  "en": "stage",
+  "zh": "舞台",
+  "phonetic": "/steɪʤ/",
+  "example": "This is a stage.",
+  "exampleZh": "这是一个舞台。",
+  "source": "template+generated",
+  "word_id": "w2961"
+ },
+ {
+  "en": "ticket",
+  "zh": "票",
+  "phonetic": "/ˈtɪkɪt/",
+  "example": "I have a ticket.",
+  "exampleZh": "我有一张票。",
+  "source": "reused",
+  "word_id": "w2962"
+ },
+ {
+  "en": "violin",
+  "zh": "小提琴",
+  "phonetic": "/vaɪəˈlɪn/",
+  "example": "This is a violin.",
+  "exampleZh": "这是一个小提琴。",
+  "source": "template+generated",
+  "word_id": "w2963"
+ }
+]
