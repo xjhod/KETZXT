@@ -1,0 +1,209 @@
+[
+ {
+  "en": "bag",
+  "zh": "袋子",
+  "phonetic": "/bæɡ/",
+  "example": "My bag is heavy.",
+  "exampleZh": "我的书包很重。",
+  "source": "reused",
+  "word_id": "w2964"
+ },
+ {
+  "en": "clothes",
+  "zh": "衣服",
+  "phonetic": "/kloʊðz/",
+  "example": "This is a clothes.",
+  "exampleZh": "这是一个衣服。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "comfortable",
+  "zh": "舒服的",
+  "phonetic": "/ˈkʌmftəbl/",
+  "example": "The bed is comfortable.",
+  "exampleZh": "床很舒适。",
+  "source": "reused",
+  "word_id": "w2966"
+ },
+ {
+  "en": "costume",
+  "zh": "服装；戏服",
+  "phonetic": "/ˈkɑstum/",
+  "example": "This is a costume.",
+  "exampleZh": "这是一个服装；戏服。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "fashionable",
+  "zh": "时尚的",
+  "phonetic": "/ˈfæʃənəbəl/",
+  "example": "This is a fashionable.",
+  "exampleZh": "这是一个时尚的。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "get dressed",
+  "zh": "穿上衣服",
+  "phonetic": "/gɪt drɛst/",
+  "example": "This is a get dressed.",
+  "exampleZh": "这是一个穿上衣服。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "glove",
+  "zh": "手套",
+  "phonetic": "/ɡlʌv/",
+  "example": "This is a glove.",
+  "exampleZh": "这是一个手套。",
+  "source": "template+corrected",
+  "word_id": "w2970"
+ },
+ {
+  "en": "handkerchief",
+  "zh": "手帕",
+  "phonetic": "/ˈhæŋkərʧɪf/",
+  "example": "This is a handkerchief.",
+  "exampleZh": "这是一个手帕。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "jewellery",
+  "zh": "珠宝；首饰",
+  "phonetic": "/ˈdʒuːəlri/",
+  "example": "This is a jewellery.",
+  "exampleZh": "这是一个珠宝；首饰。",
+  "source": "template+corrected",
+  "word_id": "w2972"
+ },
+ {
+  "en": "jumper",
+  "zh": "针织套衫",
+  "phonetic": "/ˈʤəmpər/",
+  "example": "This is a jumper.",
+  "exampleZh": "这是一个针织套衫。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "kit",
+  "zh": "全套衣服和装备",
+  "phonetic": "/kɪt/",
+  "example": "This is a kit.",
+  "exampleZh": "这是一个全套衣服和装备。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "lipstick",
+  "zh": "唇膏；口红",
+  "phonetic": "/ˈlɪpˌstɪk/",
+  "example": "This is a lipstick.",
+  "exampleZh": "这是一个唇膏；口红。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "match",
+  "zh": "匹配",
+  "phonetic": "/mætʃ/",
+  "example": "The match is exciting.",
+  "exampleZh": "比赛很激动人心。",
+  "source": "reused",
+  "word_id": "w2976"
+ },
+ {
+  "en": "old-fashioned",
+  "zh": "过时的",
+  "phonetic": "/ˌoʊldˈfæʃənd/",
+  "example": "This is an old-fashioned.",
+  "exampleZh": "这是一个过时的。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "pullover",
+  "zh": "套头衫",
+  "phonetic": "/ˈpʊləʊvə/",
+  "example": "This is a pullover.",
+  "exampleZh": "这是一个套头衫。",
+  "source": "template+corrected",
+  "word_id": "w2978"
+ },
+ {
+  "en": "put on",
+  "zh": "穿上",
+  "phonetic": "/pʊt ɔn/",
+  "example": "This is a put on.",
+  "exampleZh": "这是一个穿上。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "sock",
+  "zh": "短袜",
+  "phonetic": "/sɑk/",
+  "example": "This is a sock.",
+  "exampleZh": "这是一个短袜。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "take off",
+  "zh": "脱下",
+  "phonetic": "/teɪk ɒf/",
+  "example": "The plane takes off at 3 p.m.",
+  "exampleZh": "飞机下午3点起飞。",
+  "source": "reused",
+  "word_id": "w2981"
+ },
+ {
+  "en": "trainer",
+  "zh": "运动鞋",
+  "phonetic": "/ˈtreɪnər/",
+  "example": "This is a trainer.",
+  "exampleZh": "这是一个运动鞋。",
+  "source": "template+generated",
+  "word_id": "w2982"
+ },
+ {
+  "en": "T-shirt T",
+  "zh": "恤衫",
+  "phonetic": "/ˈtiˌsərt ti/",
+  "example": "This is a T-shirt T.",
+  "exampleZh": "这是一个恤衫。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "valuable",
+  "zh": "贵重的；值钱的",
+  "phonetic": "/ˈvæljəbəl/",
+  "example": "This is a valuable.",
+  "exampleZh": "这是一个贵重的；值钱的。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "wear out",
+  "zh": "穿破",
+  "phonetic": "/wɛr aʊt/",
+  "example": "This is a wear out.",
+  "exampleZh": "这是一个穿破。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "woolen",
+  "zh": "羊毛的",
+  "phonetic": "/ˈwʊlən/",
+  "example": "This is a woolen.",
+  "exampleZh": "这是一个羊毛的。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ }
+]

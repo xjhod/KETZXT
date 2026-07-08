@@ -1,0 +1,416 @@
+[
+ {
+  "en": "actor",
+  "zh": "演员",
+  "phonetic": "/ˈæktər/",
+  "example": "This is an actor.",
+  "exampleZh": "这是一个演员。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "actress",
+  "zh": "女演员",
+  "phonetic": "/ˈæktrəs/",
+  "example": "This is an actress.",
+  "exampleZh": "这是一个女演员。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "architect",
+  "zh": "建筑师",
+  "phonetic": "/ˈɑrkəˌtɛkt/",
+  "example": "This is an architect.",
+  "exampleZh": "这是一个建筑师。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "businessman",
+  "zh": "商人",
+  "phonetic": "/ˈbɪznɪsˌmæn/",
+  "example": "This is a businessman.",
+  "exampleZh": "这是一个商人。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "businesswoman",
+  "zh": "女商人",
+  "phonetic": "/ˈbɪznɪsˌwʊmən/",
+  "example": "This is a businesswoman.",
+  "exampleZh": "这是一个女商人。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "carpenter",
+  "zh": "木匠",
+  "phonetic": "/ˈkɑrpəntər/",
+  "example": "This is a carpenter.",
+  "exampleZh": "这是一个木匠。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "career",
+  "zh": "职业；生涯",
+  "phonetic": "/kərɪr/",
+  "example": "This is a career.",
+  "exampleZh": "这是一个职业；生涯。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "chef",
+  "zh": "厨师；厨师长",
+  "phonetic": "/ʃɛf/",
+  "example": "This is a chef.",
+  "exampleZh": "这是一个厨师；厨师长。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "chemist",
+  "zh": "药剂师",
+  "phonetic": "/ˈkɛmɪst/",
+  "example": "This is a chemist.",
+  "exampleZh": "这是一个药剂师。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "cleaner",
+  "zh": "清洁工",
+  "phonetic": "/ˈklinər/",
+  "example": "This is a cleaner.",
+  "exampleZh": "这是一个清洁工。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "dancer",
+  "zh": "舞蹈家",
+  "phonetic": "/ˈdænsər/",
+  "example": "This is a dancer.",
+  "exampleZh": "这是一个舞蹈家。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "dentist",
+  "zh": "牙医",
+  "phonetic": "/ˈdɛntɪst/",
+  "example": "This is a dentist.",
+  "exampleZh": "这是一个牙医。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "designer",
+  "zh": "设计师",
+  "phonetic": "/dɪˈzaɪnər/",
+  "example": "This is a designer.",
+  "exampleZh": "这是一个设计师。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "detective",
+  "zh": "侦探",
+  "phonetic": "/dɪˈtɛktɪv/",
+  "example": "This is a detective.",
+  "exampleZh": "这是一个侦探。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "employment",
+  "zh": "雇佣；就业",
+  "phonetic": "/ɪmˈplɔɪmənt/",
+  "example": "This is an employment.",
+  "exampleZh": "这是一个雇佣；就业。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "film star",
+  "zh": "电影明星",
+  "phonetic": "/fɪlm stɑr/",
+  "example": "This is a film star.",
+  "exampleZh": "这是一个电影明星。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "fire fighter",
+  "zh": "救火队员",
+  "phonetic": "/faɪər ˈfaɪtər/",
+  "example": "This is a fire fighter.",
+  "exampleZh": "这是一个救火队员。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "football player",
+  "zh": "足球运动员",
+  "phonetic": "/ˈfʊtˌbɔl pleɪər/",
+  "example": "This is a football player.",
+  "exampleZh": "这是一个足球运动员。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "hairdresser",
+  "zh": "美发师",
+  "phonetic": "/ˈhɛrˌdrɛsər/",
+  "example": "This is a hairdresser.",
+  "exampleZh": "这是一个美发师。",
+  "source": "template+generated",
+  "word_id": "w2982"
+ },
+ {
+  "en": "income",
+  "zh": "收入",
+  "phonetic": "/ˈɪnˌkəm/",
+  "example": "This is an income.",
+  "exampleZh": "这是一个收入。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "journalist",
+  "zh": "记者",
+  "phonetic": "/ˈʤərnəlɪst/",
+  "example": "This is a journalist.",
+  "exampleZh": "这是一个记者。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "judge",
+  "zh": "裁判；法官",
+  "phonetic": "/ʤəʤ/",
+  "example": "This is a judge.",
+  "exampleZh": "这是一个裁判；法官。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "lawyer",
+  "zh": "律师",
+  "phonetic": "/ˈlɔjər/",
+  "example": "This is a lawyer.",
+  "exampleZh": "这是一个律师。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "librarian",
+  "zh": "图书管理员",
+  "phonetic": "/laɪˈbrɛˌriən/",
+  "example": "This is a librarian.",
+  "exampleZh": "这是一个图书管理员。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ },
+ {
+  "en": "mechanic",
+  "zh": "技工",
+  "phonetic": "/mɪˈkænɪk/",
+  "example": "This is a mechanic.",
+  "exampleZh": "这是一个技工。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "novelist",
+  "zh": "小说家",
+  "phonetic": "/ˈnɑvələst/",
+  "example": "This is a novelist.",
+  "exampleZh": "这是一个小说家。",
+  "source": "template+generated",
+  "word_id": "w2989"
+ },
+ {
+  "en": "occupation",
+  "zh": "职业；工作",
+  "phonetic": "/ˌɑkjəˈpeɪʃən/",
+  "example": "This is an occupation.",
+  "exampleZh": "这是一个职业；工作。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "painter",
+  "zh": "画家",
+  "phonetic": "/ˈpeɪnər/",
+  "example": "This is a painter.",
+  "exampleZh": "这是一个画家。",
+  "source": "template+generated",
+  "word_id": "w2991"
+ },
+ {
+  "en": "pay",
+  "zh": "工资",
+  "phonetic": "/peɪ/",
+  "example": "I pay by card.",
+  "exampleZh": "我用卡付款。",
+  "source": "reused",
+  "word_id": "w2992"
+ },
+ {
+  "en": "photographer",
+  "zh": "摄影师",
+  "phonetic": "/fəˈtɑgrəfər/",
+  "example": "This is a photographer.",
+  "exampleZh": "这是一个摄影师。",
+  "source": "template+generated",
+  "word_id": "w2993"
+ },
+ {
+  "en": "physician",
+  "zh": "医师；内科医生",
+  "phonetic": "/fəˈzɪʃən/",
+  "example": "This is a physician.",
+  "exampleZh": "这是一个医师；内科医生。",
+  "source": "template+generated",
+  "word_id": "w2994"
+ },
+ {
+  "en": "poet",
+  "zh": "诗人",
+  "phonetic": "/poʊət/",
+  "example": "This is a poet.",
+  "exampleZh": "这是一个诗人。",
+  "source": "template+generated",
+  "word_id": "w2995"
+ },
+ {
+  "en": "police officer",
+  "zh": "警官；警员",
+  "phonetic": "/pəˈlis ˈɔfɪsər/",
+  "example": "This is a police officer.",
+  "exampleZh": "这是一个警官；警员。",
+  "source": "template+generated",
+  "word_id": "w2996"
+ },
+ {
+  "en": "porter",
+  "zh": "搬运工人",
+  "phonetic": "/ˈpɔrtər/",
+  "example": "This is a porter.",
+  "exampleZh": "这是一个搬运工人。",
+  "source": "template+generated",
+  "word_id": "w2997"
+ },
+ {
+  "en": "publisher",
+  "zh": "出版人",
+  "phonetic": "/ˈpəblɪʃər/",
+  "example": "This is a publisher.",
+  "exampleZh": "这是一个出版人。",
+  "source": "template+generated",
+  "word_id": "w2998"
+ },
+ {
+  "en": "receptionist",
+  "zh": "接待员",
+  "phonetic": "/rɪˈsɛpʃənɪst/",
+  "example": "This is a receptionist.",
+  "exampleZh": "这是一个接待员。",
+  "source": "template+generated",
+  "word_id": "w2999"
+ },
+ {
+  "en": "sales assistant",
+  "zh": "销售助理",
+  "phonetic": "/seɪlz əˈsɪstənt/",
+  "example": "This is a sales assistant.",
+  "exampleZh": "这是一个销售助理。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "secretary",
+  "zh": "秘书",
+  "phonetic": "/ˈsɛkrəˌtɛri/",
+  "example": "This is a secretary.",
+  "exampleZh": "这是一个秘书。",
+  "source": "template+generated",
+  "word_id": "w3001"
+ },
+ {
+  "en": "security guard",
+  "zh": "保安人员",
+  "phonetic": "/sɪˈkjʊrəti gɑrd/",
+  "example": "This is a security guard.",
+  "exampleZh": "这是一个保安人员。",
+  "source": "template+generated",
+  "word_id": "w3002"
+ },
+ {
+  "en": "singer",
+  "zh": "歌手",
+  "phonetic": "/ˈsɪŋər/",
+  "example": "This is a singer.",
+  "exampleZh": "这是一个歌手。",
+  "source": "template+generated",
+  "word_id": "w3003"
+ },
+ {
+  "en": "trade",
+  "zh": "贸易",
+  "phonetic": "/treɪd/",
+  "example": "This is a trade.",
+  "exampleZh": "这是一个贸易。",
+  "source": "template+generated",
+  "word_id": "w3004"
+ },
+ {
+  "en": "tour guide",
+  "zh": "导游",
+  "phonetic": "/tʊr gaɪd/",
+  "example": "This is a tour guide.",
+  "exampleZh": "这是一个导游。",
+  "source": "template+generated",
+  "word_id": "w3005"
+ },
+ {
+  "en": "waiter",
+  "zh": "服务员",
+  "phonetic": "/ˈweɪtə/",
+  "example": "The waiter brings the food.",
+  "exampleZh": "服务员把食物端来。",
+  "source": "reused",
+  "word_id": "w3006"
+ },
+ {
+  "en": "waitress",
+  "zh": "女服务员",
+  "phonetic": "/ˈweɪtrəs/",
+  "example": "This is a waitress.",
+  "exampleZh": "这是一个女服务员。",
+  "source": "template+generated",
+  "word_id": "w3007"
+ },
+ {
+  "en": "worker",
+  "zh": "工人",
+  "phonetic": "/ˈwərkər/",
+  "example": "This is a worker.",
+  "exampleZh": "这是一个工人。",
+  "source": "template+generated",
+  "word_id": "w3008"
+ },
+ {
+  "en": "writer",
+  "zh": "作家；作者",
+  "phonetic": "/ˈraɪtər/",
+  "example": "This is a writer.",
+  "exampleZh": "这是一个作家；作者。",
+  "source": "template+generated",
+  "word_id": "w3009"
+ }
+]

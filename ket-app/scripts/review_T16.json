@@ -1,0 +1,605 @@
+[
+ {
+  "en": "advertisement",
+  "zh": "广告",
+  "phonetic": "/ˌædvərˈtaɪzmənt/",
+  "example": "This is an advertisement.",
+  "exampleZh": "这是一个广告。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "ad",
+  "zh": "广告",
+  "phonetic": "/æd/",
+  "example": "This is an ad.",
+  "exampleZh": "这是一个广告。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "article",
+  "zh": "文章",
+  "phonetic": "/ˈɑrtɪkəl/",
+  "example": "This is an article.",
+  "exampleZh": "这是一个文章。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "card",
+  "zh": "卡片",
+  "phonetic": "/kɑrd/",
+  "example": "This is a card.",
+  "exampleZh": "这是一个卡片。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "comic",
+  "zh": "连环漫画",
+  "phonetic": "/ˈkɑmɪk/",
+  "example": "This is a comic.",
+  "exampleZh": "这是一个连环漫画。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "diary",
+  "zh": "日记",
+  "phonetic": "/ˈdaɪəri/",
+  "example": "This is a diary.",
+  "exampleZh": "这是一个日记。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "diploma",
+  "zh": "毕业文凭",
+  "phonetic": "/dɪˈploʊmɑ/",
+  "example": "This is a diploma.",
+  "exampleZh": "这是一个毕业文凭。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "form",
+  "zh": "表格",
+  "phonetic": "/fɔrm/",
+  "example": "This is a form.",
+  "exampleZh": "这是一个表格。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "licence",
+  "zh": "许可证；执照",
+  "phonetic": "/ˈlaɪsəns/",
+  "example": "This is a licence.",
+  "exampleZh": "这是一个许可证；执照。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "menu",
+  "zh": "菜单",
+  "phonetic": "/ˈmenjuː/",
+  "example": "Can I see the menu?",
+  "exampleZh": "我可以看菜单吗？",
+  "source": "reused",
+  "word_id": "w2973"
+ },
+ {
+  "en": "message",
+  "zh": "信息",
+  "phonetic": "/ˈmesɪdʒ/",
+  "example": "I send a message.",
+  "exampleZh": "我发送一条消息。",
+  "source": "reused",
+  "word_id": "w2974"
+ },
+ {
+  "en": "passport",
+  "zh": "护照",
+  "phonetic": "/ˈpɑːspɔːt/",
+  "example": "I need my passport.",
+  "exampleZh": "我需要我的护照。",
+  "source": "reused",
+  "word_id": "w2975"
+ },
+ {
+  "en": "text",
+  "zh": "文本；课文",
+  "phonetic": "/tɛkst/",
+  "example": "This is a text.",
+  "exampleZh": "这是一个文本；课文。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "anniversary",
+  "zh": "周年纪念日",
+  "phonetic": "/ˌænəˈvərsəri/",
+  "example": "This is an anniversary.",
+  "exampleZh": "这是一个周年纪念日。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "band",
+  "zh": "乐队",
+  "phonetic": "/bænd/",
+  "example": "This is a band.",
+  "exampleZh": "这是一个乐队。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "bride",
+  "zh": "新娘",
+  "phonetic": "/braɪd/",
+  "example": "This is a bride.",
+  "exampleZh": "这是一个新娘。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "cake",
+  "zh": "蛋糕",
+  "phonetic": "/keɪk/",
+  "example": "We baked a cake for her birthday.",
+  "exampleZh": "我们为她的生日烤了一个蛋糕。",
+  "source": "reused",
+  "word_id": "w2980"
+ },
+ {
+  "en": "disco",
+  "zh": "迪斯科舞厅",
+  "phonetic": "/ˈdɪskoʊ/",
+  "example": "This is a disco.",
+  "exampleZh": "这是一个迪斯科舞厅。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "guest",
+  "zh": "客人",
+  "phonetic": "/ɡest/",
+  "example": "We have guests today.",
+  "exampleZh": "今天我们家有客人。",
+  "source": "reused",
+  "word_id": "w2982"
+ },
+ {
+  "en": "invitation",
+  "zh": "邀请",
+  "phonetic": "/ˌɪnvɪˈteɪʃən/",
+  "example": "This is an invitation.",
+  "exampleZh": "这是一个邀请。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "neighbour",
+  "zh": "邻居",
+  "phonetic": "/ˈneɪbə/",
+  "example": "My neighbour is very kind.",
+  "exampleZh": "我的邻居很善良。",
+  "source": "reused",
+  "word_id": "w2984"
+ },
+ {
+  "en": "party",
+  "zh": "派对",
+  "phonetic": "/ˈpɑrti/",
+  "example": "This is a party.",
+  "exampleZh": "这是一个派对。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "reception",
+  "zh": "招待会",
+  "phonetic": "/rɪˈsɛpʃən/",
+  "example": "This is a reception.",
+  "exampleZh": "这是一个招待会。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "ring",
+  "zh": "戒指",
+  "phonetic": "/rɪŋ/",
+  "example": "She wears a diamond ring.",
+  "exampleZh": "她戴一枚钻石戒指。",
+  "source": "reused",
+  "word_id": "w2987"
+ },
+ {
+  "en": "speech",
+  "zh": "演讲；发言",
+  "phonetic": "/spiʧ/",
+  "example": "This is a speech.",
+  "exampleZh": "这是一个演讲；发言。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "wedding",
+  "zh": "婚礼",
+  "phonetic": "/ˈwedɪŋ/",
+  "example": "The wedding is in June.",
+  "exampleZh": "婚礼在六月举行。",
+  "source": "reused",
+  "word_id": "w2989"
+ },
+ {
+  "en": "assistant",
+  "zh": "助手",
+  "phonetic": "/əˈsɪstənt/",
+  "example": "This is an assistant.",
+  "exampleZh": "这是一个助手。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "bill",
+  "zh": "账单",
+  "phonetic": "/bɪl/",
+  "example": "Can I have the bill?",
+  "exampleZh": "请给我账单。",
+  "source": "reused",
+  "word_id": "w2991"
+ },
+ {
+  "en": "cash",
+  "zh": "现金",
+  "phonetic": "/kæʃ/",
+  "example": "This is a cash.",
+  "exampleZh": "这是一个现金。",
+  "source": "template+generated",
+  "word_id": "w2992"
+ },
+ {
+  "en": "cent",
+  "zh": "分；美分",
+  "phonetic": "/sent/",
+  "example": "It costs fifty cents.",
+  "exampleZh": "它要50分。",
+  "source": "reused",
+  "word_id": "w2993"
+ },
+ {
+  "en": "change",
+  "zh": "零钱",
+  "phonetic": "/tʃeɪndʒ/",
+  "example": "Here is your change.",
+  "exampleZh": "这是你的零钱。",
+  "source": "reused",
+  "word_id": "w2994"
+ },
+ {
+  "en": "charge",
+  "zh": "费用",
+  "phonetic": "/tʃɑːdʒ/",
+  "example": "I need to charge my phone.",
+  "exampleZh": "我需要给手机充电。",
+  "source": "reused",
+  "word_id": "w2995"
+ },
+ {
+  "en": "close",
+  "zh": "关闭；结束",
+  "phonetic": "/kloʊz/",
+  "example": "This is a close.",
+  "exampleZh": "这是一个关闭；结束。",
+  "source": "template+generated",
+  "word_id": "w2996"
+ },
+ {
+  "en": "cost",
+  "zh": "花费；费用",
+  "phonetic": "/kɒst/",
+  "example": "How much does it cost?",
+  "exampleZh": "它要多少钱？",
+  "source": "reused",
+  "word_id": "w2997"
+ },
+ {
+  "en": "credit card",
+  "zh": "信用卡",
+  "phonetic": "/ˈkrɛdɪt kɑrd/",
+  "example": "This is a credit card.",
+  "exampleZh": "这是一个信用卡。",
+  "source": "template+generated",
+  "word_id": "w2998"
+ },
+ {
+  "en": "customer",
+  "zh": "顾客",
+  "phonetic": "/ˈkʌstəmə/",
+  "example": "The customer buys a shirt.",
+  "exampleZh": "顾客买了一件衬衫。",
+  "source": "reused",
+  "word_id": "w2999"
+ },
+ {
+  "en": "dollar",
+  "zh": "美元",
+  "phonetic": "/ˈdɒlə/",
+  "example": "The book is ten dollars.",
+  "exampleZh": "这本书是10美元。",
+  "source": "reused",
+  "word_id": "w3000"
+ },
+ {
+  "en": "discount",
+  "zh": "打折；折扣",
+  "phonetic": "/ˈdɪskaʊnt/",
+  "example": "There is a discount today.",
+  "exampleZh": "今天有折扣。",
+  "source": "reused",
+  "word_id": "w3001"
+ },
+ {
+  "en": "dry-cleaner's",
+  "zh": "干洗店",
+  "phonetic": "/ˈdraɪ kliːnəz/",
+  "example": "This is a dry-cleaner's.",
+  "exampleZh": "这是一个干洗店。",
+  "source": "template+corrected",
+  "word_id": "w3002"
+ },
+ {
+  "en": "euro",
+  "zh": "欧元",
+  "phonetic": "/ˈjʊrə/",
+  "example": "This is an euro.",
+  "exampleZh": "这是一个欧元。",
+  "source": "template+generated",
+  "word_id": "w3003"
+ },
+ {
+  "en": "for sale",
+  "zh": "待售",
+  "phonetic": "/fər seɪl/",
+  "example": "This is a for sale.",
+  "exampleZh": "这是一个待售。",
+  "source": "template+generated",
+  "word_id": "w3004"
+ },
+ {
+  "en": "go shopping",
+  "zh": "去购物",
+  "phonetic": "/goʊ ˈʃɑpɪŋ/",
+  "example": "This is a go shopping.",
+  "exampleZh": "这是一个去购物。",
+  "source": "template+generated",
+  "word_id": "w3005"
+ },
+ {
+  "en": "grocery store",
+  "zh": "杂货店",
+  "phonetic": "/ˈgroʊsəri stɔr/",
+  "example": "This is a grocery store.",
+  "exampleZh": "这是一个杂货店。",
+  "source": "template+generated",
+  "word_id": "w3006"
+ },
+ {
+  "en": "hairdresser",
+  "zh": "美发师",
+  "phonetic": "/ˈhɛrˌdrɛsər/",
+  "example": "This is a hairdresser.",
+  "exampleZh": "这是一个美发师。",
+  "source": "template+generated",
+  "word_id": "w3007"
+ },
+ {
+  "en": "jeweller",
+  "zh": "珠宝商；珠宝店",
+  "phonetic": "/ˈdʒuːələ/",
+  "example": "This is a jeweller.",
+  "exampleZh": "这是一个珠宝商；珠宝店。",
+  "source": "template+corrected",
+  "word_id": "w3008"
+ },
+ {
+  "en": "mall",
+  "zh": "大规模购物中心",
+  "phonetic": "/mɔl/",
+  "example": "This is a mall.",
+  "exampleZh": "这是一个大规模购物中心。",
+  "source": "template+generated",
+  "word_id": "w3009"
+ },
+ {
+  "en": "manager",
+  "zh": "经理",
+  "phonetic": "/ˈmænɪʤər/",
+  "example": "This is a manager.",
+  "exampleZh": "这是一个经理。",
+  "source": "template+generated",
+  "word_id": "w3010"
+ },
+ {
+  "en": "penny",
+  "zh": "便士",
+  "phonetic": "/ˈpɛni/",
+  "example": "This is a penny.",
+  "exampleZh": "这是一个便士。",
+  "source": "template+generated",
+  "word_id": "w3011"
+ },
+ {
+  "en": "pound",
+  "zh": "英镑",
+  "phonetic": "/paʊnd/",
+  "example": "It costs five pounds.",
+  "exampleZh": "它要5英镑。",
+  "source": "reused",
+  "word_id": "w3012"
+ },
+ {
+  "en": "receipt",
+  "zh": "发票",
+  "phonetic": "/rɪˈsiːt/",
+  "example": "Keep the receipt.",
+  "exampleZh": "保留收据。",
+  "source": "reused",
+  "word_id": "w3013"
+ },
+ {
+  "en": "salesman",
+  "zh": "销售人员",
+  "phonetic": "/ˈseɪlzmən/",
+  "example": "This is a salesman.",
+  "exampleZh": "这是一个销售人员。",
+  "source": "template+generated",
+  "word_id": "w3014"
+ },
+ {
+  "en": "spend",
+  "zh": "花费",
+  "phonetic": "/spend/",
+  "example": "I spend ten pounds.",
+  "exampleZh": "我花了10英镑。",
+  "source": "reused",
+  "word_id": "w3015"
+ },
+ {
+  "en": "travel agent",
+  "zh": "旅行社",
+  "phonetic": "/ˈtrævəl ˈeɪʤənt/",
+  "example": "This is a travel agent.",
+  "exampleZh": "这是一个旅行社。",
+  "source": "template+generated",
+  "word_id": "w3016"
+ },
+ {
+  "en": "chat",
+  "zh": "聊天；闲谈",
+  "phonetic": "/ʧæt/",
+  "example": "This is a chat.",
+  "exampleZh": "这是一个聊天；闲谈。",
+  "source": "template+generated",
+  "word_id": "w3017"
+ },
+ {
+  "en": "conversation",
+  "zh": "会话",
+  "phonetic": "/ˌkɑnvərˈseɪʃən/",
+  "example": "This is a conversation.",
+  "exampleZh": "这是一个会话。",
+  "source": "template+generated",
+  "word_id": "w3018"
+ },
+ {
+  "en": "note",
+  "zh": "便条",
+  "phonetic": "/noʊt/",
+  "example": "This is a note.",
+  "exampleZh": "这是一个便条。",
+  "source": "template+generated",
+  "word_id": "w3019"
+ },
+ {
+  "en": "speak",
+  "zh": "讲话",
+  "phonetic": "/spiːk/",
+  "example": "I speak English.",
+  "exampleZh": "我说英语。",
+  "source": "reused",
+  "word_id": "w3020"
+ },
+ {
+  "en": "telephone",
+  "zh": "电话",
+  "phonetic": "/ˈtɛləˌfoʊn/",
+  "example": "This is a telephone.",
+  "exampleZh": "这是一个电话。",
+  "source": "template+generated",
+  "word_id": "w3021"
+ },
+ {
+  "en": "text message",
+  "zh": "短信",
+  "phonetic": "/tɛkst ˈmɛsɪʤ/",
+  "example": "This is a text message.",
+  "exampleZh": "这是一个短信。",
+  "source": "template+generated",
+  "word_id": "w3022"
+ },
+ {
+  "en": "write",
+  "zh": "写",
+  "phonetic": "/raɪt/",
+  "example": "I write stories.",
+  "exampleZh": "我写故事。",
+  "source": "reused",
+  "word_id": "w3023"
+ },
+ {
+  "en": "good night",
+  "zh": "晚安",
+  "phonetic": "/gʊd naɪt/",
+  "example": "This is a good night.",
+  "exampleZh": "这是一个晚安。",
+  "source": "template+generated",
+  "word_id": "w3024"
+ },
+ {
+  "en": "hey",
+  "zh": "嘿；喂",
+  "phonetic": "/heɪ/",
+  "example": "This is a hey.",
+  "exampleZh": "这是一个嘿；喂。",
+  "source": "template+generated",
+  "word_id": "w3025"
+ },
+ {
+  "en": "hi",
+  "zh": "嘿；喂；你好",
+  "phonetic": "/haɪ/",
+  "example": "This is a hi.",
+  "exampleZh": "这是一个嘿；喂；你好。",
+  "source": "template+generated",
+  "word_id": "w3026"
+ },
+ {
+  "en": "oh",
+  "zh": "噢；哎；啊",
+  "phonetic": "/oʊ/",
+  "example": "This is an oh.",
+  "exampleZh": "这是一个噢；哎；啊。",
+  "source": "template+generated",
+  "word_id": "w3027"
+ },
+ {
+  "en": "oh dear!",
+  "zh": "天哪",
+  "phonetic": "/oʊ dɪr!/",
+  "example": "This is an oh dear!.",
+  "exampleZh": "这是一个天哪。",
+  "source": "template+generated",
+  "word_id": "w3028"
+ },
+ {
+  "en": "wow",
+  "zh": "呀；哇",
+  "phonetic": "/waʊ/",
+  "example": "This is a wow.",
+  "exampleZh": "这是一个呀；哇。",
+  "source": "template+generated",
+  "word_id": "w3029"
+ },
+ {
+  "en": "yeah",
+  "zh": "是的；没错",
+  "phonetic": "/jæ/",
+  "example": "This is a yeah.",
+  "exampleZh": "这是一个是的；没错。",
+  "source": "template+generated",
+  "word_id": "w3030"
+ }
+]

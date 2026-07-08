@@ -1,0 +1,218 @@
+[
+ {
+  "en": "assistant",
+  "zh": "助手",
+  "phonetic": "/əˈsɪstənt/",
+  "example": "This is an assistant.",
+  "exampleZh": "这是一个助手。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "bill",
+  "zh": "账单",
+  "phonetic": "/bɪl/",
+  "example": "Can I have the bill?",
+  "exampleZh": "请给我账单。",
+  "source": "reused",
+  "word_id": "w2965"
+ },
+ {
+  "en": "buy",
+  "zh": "购买",
+  "phonetic": "/baɪ/",
+  "example": "I buy a book.",
+  "exampleZh": "我买了一本书。",
+  "source": "reused",
+  "word_id": "w2966"
+ },
+ {
+  "en": "cash",
+  "zh": "现金",
+  "phonetic": "/kæʃ/",
+  "example": "This is a cash.",
+  "exampleZh": "这是一个现金。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "charge",
+  "zh": "费用",
+  "phonetic": "/tʃɑːdʒ/",
+  "example": "I need to charge my phone.",
+  "exampleZh": "我需要给手机充电。",
+  "source": "reused",
+  "word_id": "w2968"
+ },
+ {
+  "en": "cheap",
+  "zh": "便宜的",
+  "phonetic": "/tʃiːp/",
+  "example": "This shirt is cheap.",
+  "exampleZh": "这件衬衫很便宜。",
+  "source": "reused",
+  "word_id": "w2969"
+ },
+ {
+  "en": "close",
+  "zh": "关闭；结束",
+  "phonetic": "/kloʊz/",
+  "example": "This is a close.",
+  "exampleZh": "这是一个关闭；结束。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "credit card",
+  "zh": "信用卡",
+  "phonetic": "/ˈkrɛdɪt kɑrd/",
+  "example": "This is a credit card.",
+  "exampleZh": "这是一个信用卡。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "dry-cleaner's",
+  "zh": "干洗店",
+  "phonetic": "/ˈdraɪ kliːnəz/",
+  "example": "This is a dry-cleaner's.",
+  "exampleZh": "这是一个干洗店。",
+  "source": "template+corrected",
+  "word_id": "w2972"
+ },
+ {
+  "en": "euro",
+  "zh": "欧元",
+  "phonetic": "/ˈjʊrə/",
+  "example": "This is an euro.",
+  "exampleZh": "这是一个欧元。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "expensive",
+  "zh": "昂贵的",
+  "phonetic": "/ɪkˈspensɪv/",
+  "example": "The computer is expensive.",
+  "exampleZh": "这台电脑很贵。",
+  "source": "reused",
+  "word_id": "w2974"
+ },
+ {
+  "en": "for sale",
+  "zh": "待售",
+  "phonetic": "/fər seɪl/",
+  "example": "This is a for sale.",
+  "exampleZh": "这是一个待售。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "go shopping",
+  "zh": "去购物",
+  "phonetic": "/goʊ ˈʃɑpɪŋ/",
+  "example": "This is a go shopping.",
+  "exampleZh": "这是一个去购物。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "grocery store",
+  "zh": "杂货店",
+  "phonetic": "/ˈgroʊsəri stɔr/",
+  "example": "This is a grocery store.",
+  "exampleZh": "这是一个杂货店。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "hairdresser",
+  "zh": "美发师",
+  "phonetic": "/ˈhɛrˌdrɛsər/",
+  "example": "This is a hairdresser.",
+  "exampleZh": "这是一个美发师。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "jeweller",
+  "zh": "珠宝商；珠宝店",
+  "phonetic": "/ˈdʒuːələ/",
+  "example": "This is a jeweller.",
+  "exampleZh": "这是一个珠宝商；珠宝店。",
+  "source": "template+corrected",
+  "word_id": "w2979"
+ },
+ {
+  "en": "mall",
+  "zh": "大规模购物中心",
+  "phonetic": "/mɔl/",
+  "example": "This is a mall.",
+  "exampleZh": "这是一个大规模购物中心。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "manager",
+  "zh": "经理",
+  "phonetic": "/ˈmænɪʤər/",
+  "example": "This is a manager.",
+  "exampleZh": "这是一个经理。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "pay",
+  "zh": "支付；给以报酬",
+  "phonetic": "/peɪ/",
+  "example": "I pay by card.",
+  "exampleZh": "我用卡付款。",
+  "source": "reused",
+  "word_id": "w2982"
+ },
+ {
+  "en": "penny",
+  "zh": "便士",
+  "phonetic": "/ˈpɛni/",
+  "example": "This is a penny.",
+  "exampleZh": "这是一个便士。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "price",
+  "zh": "价格",
+  "phonetic": "/praɪs/",
+  "example": "What is the price of this shirt?",
+  "exampleZh": "这件衬衫的价格是多少？",
+  "source": "reused",
+  "word_id": "w2984"
+ },
+ {
+  "en": "salesman",
+  "zh": "销售人员",
+  "phonetic": "/ˈseɪlzmən/",
+  "example": "This is a salesman.",
+  "exampleZh": "这是一个销售人员。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "shop assistant",
+  "zh": "售货员",
+  "phonetic": "/ʃɒp əˈsɪstənt/",
+  "example": "The shop assistant helps me.",
+  "exampleZh": "店员帮助我。",
+  "source": "reused",
+  "word_id": "w2986"
+ },
+ {
+  "en": "travel agent",
+  "zh": "旅行社",
+  "phonetic": "/ˈtrævəl ˈeɪʤənt/",
+  "example": "This is a travel agent.",
+  "exampleZh": "这是一个旅行社。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ }
+]

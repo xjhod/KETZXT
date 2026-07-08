@@ -1,0 +1,236 @@
+[
+ {
+  "en": "bright",
+  "zh": "明亮的",
+  "phonetic": "/braɪt/",
+  "example": "This is a bright.",
+  "exampleZh": "这是一个明亮的。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "clear",
+  "zh": "晴朗的",
+  "phonetic": "/klɪr/",
+  "example": "This is a clear.",
+  "exampleZh": "这是一个晴朗的。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "foggy",
+  "zh": "有雾的",
+  "phonetic": "/ˈfɑgi/",
+  "example": "This is a foggy.",
+  "exampleZh": "这是一个有雾的。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "heat",
+  "zh": "热",
+  "phonetic": "/hit/",
+  "example": "This is a heat.",
+  "exampleZh": "这是一个热。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "heavy",
+  "zh": "大量的；猛烈的",
+  "phonetic": "/ˈhɛvi/",
+  "example": "This is a heavy.",
+  "exampleZh": "这是一个大量的；猛烈的。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "high",
+  "zh": "高的",
+  "phonetic": "/haɪ/",
+  "example": "This is a high.",
+  "exampleZh": "这是一个高的。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "icy",
+  "zh": "冰冷的",
+  "phonetic": "/ˈaɪsi/",
+  "example": "This is an icy.",
+  "exampleZh": "这是一个冰冷的。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "light",
+  "zh": "明亮的；光线",
+  "phonetic": "/laɪt/",
+  "example": "Turn on the light.",
+  "exampleZh": "开灯。",
+  "source": "reused",
+  "word_id": "w2971"
+ },
+ {
+  "en": "low",
+  "zh": "低的",
+  "phonetic": "/loʊ/",
+  "example": "This is a low.",
+  "exampleZh": "这是一个低的。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "mild",
+  "zh": "温和的",
+  "phonetic": "/maɪld/",
+  "example": "This is a mild.",
+  "exampleZh": "这是一个温和的。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "stormy",
+  "zh": "暴风雨的",
+  "phonetic": "/ˈstɔrmi/",
+  "example": "This is a stormy.",
+  "exampleZh": "这是一个暴风雨的。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "strong",
+  "zh": "自然力 ) 强的",
+  "phonetic": "/strɒŋ/",
+  "example": "He is strong.",
+  "exampleZh": "他很强壮。",
+  "source": "reused",
+  "word_id": "w2975"
+ },
+ {
+  "en": "sunshine",
+  "zh": "阳光",
+  "phonetic": "/ˈsənˌʃaɪn/",
+  "example": "This is a sunshine.",
+  "exampleZh": "这是一个阳光。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "thunderstorm",
+  "zh": "雷暴",
+  "phonetic": "/ˈθəndərˌstɔrm/",
+  "example": "This is a thunderstorm.",
+  "exampleZh": "这是一个雷暴。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "December",
+  "zh": "十二月",
+  "phonetic": "/dɪˈsɛmbər/",
+  "example": "This is a December.",
+  "exampleZh": "这是一个十二月。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "east",
+  "zh": "东方",
+  "phonetic": "/iːst/",
+  "example": "The sun rises in the east.",
+  "exampleZh": "太阳从东方升起。",
+  "source": "reused",
+  "word_id": "w2979"
+ },
+ {
+  "en": "fall",
+  "zh": "秋天",
+  "phonetic": "/fɔl/",
+  "example": "This is a fall.",
+  "exampleZh": "这是一个秋天。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "north",
+  "zh": "北方",
+  "phonetic": "/nɔːθ/",
+  "example": "The north is cold.",
+  "exampleZh": "北方很冷。",
+  "source": "reused",
+  "word_id": "w2981"
+ },
+ {
+  "en": "northeast",
+  "zh": "东北",
+  "phonetic": "/ˌnɔrˈθist/",
+  "example": "This is a northeast.",
+  "exampleZh": "这是一个东北。",
+  "source": "template+generated",
+  "word_id": "w2982"
+ },
+ {
+  "en": "northwest",
+  "zh": "西北",
+  "phonetic": "/ˌnɔrθˈwɛst/",
+  "example": "This is a northwest.",
+  "exampleZh": "这是一个西北。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "November",
+  "zh": "十一月",
+  "phonetic": "/noʊˈvɛmbər/",
+  "example": "This is a November.",
+  "exampleZh": "这是一个十一月。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "October",
+  "zh": "十月",
+  "phonetic": "/ɑkˈtoʊbər/",
+  "example": "This is an October.",
+  "exampleZh": "这是一个十月。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "south",
+  "zh": "南方",
+  "phonetic": "/saʊθ/",
+  "example": "The south is warm.",
+  "exampleZh": "南方很温暖。",
+  "source": "reused",
+  "word_id": "w2986"
+ },
+ {
+  "en": "southeast",
+  "zh": "东南",
+  "phonetic": "/ˌsaʊˈθist/",
+  "example": "This is a southeast.",
+  "exampleZh": "这是一个东南。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ },
+ {
+  "en": "southwest",
+  "zh": "西南",
+  "phonetic": "/ˌsaʊθˈwɛst/",
+  "example": "This is a southwest.",
+  "exampleZh": "这是一个西南。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "west",
+  "zh": "西方",
+  "phonetic": "/west/",
+  "example": "The sun sets in the west.",
+  "exampleZh": "太阳从西边落下。",
+  "source": "reused",
+  "word_id": "w2989"
+ }
+]

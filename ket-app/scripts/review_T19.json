@@ -1,0 +1,497 @@
+[
+ {
+  "en": "airport",
+  "zh": "机场",
+  "phonetic": "/ˈeəpɔːt/",
+  "example": "We met him at the airport.",
+  "exampleZh": "我们在机场接的他。",
+  "source": "reused",
+  "word_id": "w2964"
+ },
+ {
+  "en": "arrival",
+  "zh": "到达",
+  "phonetic": "/ərˈaɪvəl/",
+  "example": "This is an arrival.",
+  "exampleZh": "这是一个到达。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "backpack",
+  "zh": "背包；背包旅行",
+  "phonetic": "/ˈbækpæk/",
+  "example": "I carry a backpack.",
+  "exampleZh": "我背一个背包。",
+  "source": "reused",
+  "word_id": "w2966"
+ },
+ {
+  "en": "boarding pass",
+  "zh": "登机牌",
+  "phonetic": "/ˈbɔːdɪŋ pɑːs/",
+  "example": "Show your boarding pass.",
+  "exampleZh": "出示你的登机牌。",
+  "source": "reused",
+  "word_id": "w2967"
+ },
+ {
+  "en": "by air",
+  "zh": "乘飞机",
+  "phonetic": "/baɪ ɛr/",
+  "example": "This is a by air.",
+  "exampleZh": "这是一个乘飞机。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "by land",
+  "zh": "由陆路",
+  "phonetic": "/baɪ lænd/",
+  "example": "This is a by land.",
+  "exampleZh": "这是一个由陆路。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "by rail",
+  "zh": "乘火车；由铁路",
+  "phonetic": "/baɪ reɪl/",
+  "example": "This is a by rail.",
+  "exampleZh": "这是一个乘火车；由铁路。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "by road",
+  "zh": "由公路",
+  "phonetic": "/baɪ roʊd/",
+  "example": "This is a by road.",
+  "exampleZh": "这是一个由公路。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "by sea",
+  "zh": "乘船；走水路",
+  "phonetic": "/baɪ si/",
+  "example": "This is a by sea.",
+  "exampleZh": "这是一个乘船；走水路。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "check-in",
+  "zh": "登记；登记处",
+  "phonetic": "/ˈtʃek ɪn/",
+  "example": "This is a check-in.",
+  "exampleZh": "这是一个登记；登记处。",
+  "source": "template+corrected",
+  "word_id": "w2973"
+ },
+ {
+  "en": "comfortable",
+  "zh": "舒服的",
+  "phonetic": "/ˈkʌmftəbl/",
+  "example": "The bed is comfortable.",
+  "exampleZh": "床很舒适。",
+  "source": "reused",
+  "word_id": "w2974"
+ },
+ {
+  "en": "convenient",
+  "zh": "方便的，便利的",
+  "phonetic": "/kənˈvinjənt/",
+  "example": "This is a convenient.",
+  "exampleZh": "这是一个方便的，便利的。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "crowded",
+  "zh": "拥挤的",
+  "phonetic": "/ˈkraʊdɪd/",
+  "example": "This is a crowded.",
+  "exampleZh": "这是一个拥挤的。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "dangerous",
+  "zh": "危险的",
+  "phonetic": "/ˈdeɪndʒərəs/",
+  "example": "Be careful, it is dangerous.",
+  "exampleZh": "小心，很危险。",
+  "source": "reused",
+  "word_id": "w2977"
+ },
+ {
+  "en": "delay",
+  "zh": "延期；耽搁",
+  "phonetic": "/dɪˈleɪ/",
+  "example": "The flight is delayed.",
+  "exampleZh": "航班延误了。",
+  "source": "reused",
+  "word_id": "w2978"
+ },
+ {
+  "en": "driver",
+  "zh": "司机",
+  "phonetic": "/ˈdraɪvə/",
+  "example": "My father is a driver.",
+  "exampleZh": "我爸爸是一名司机。",
+  "source": "reused",
+  "word_id": "w2979"
+ },
+ {
+  "en": "empty",
+  "zh": "空的；空闲的",
+  "phonetic": "/ˈɛmti/",
+  "example": "This is an empty.",
+  "exampleZh": "这是一个空的；空闲的。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "fare",
+  "zh": "票价",
+  "phonetic": "/fɛr/",
+  "example": "This is a fare.",
+  "exampleZh": "这是一个票价。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "gate",
+  "zh": "登机门",
+  "phonetic": "/ɡeɪt/",
+  "example": "Go to gate 12.",
+  "exampleZh": "去12号登机口。",
+  "source": "reused",
+  "word_id": "w2982"
+ },
+ {
+  "en": "land",
+  "zh": "着陆",
+  "phonetic": "/lænd/",
+  "example": "This is a land.",
+  "exampleZh": "这是一个着陆。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "leave",
+  "zh": "离开",
+  "phonetic": "/liv/",
+  "example": "This is a leave.",
+  "exampleZh": "这是一个离开。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "lounge",
+  "zh": "休息室",
+  "phonetic": "/laʊnʤ/",
+  "example": "This is a lounge.",
+  "exampleZh": "这是一个休息室。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "luggage",
+  "zh": "行李",
+  "phonetic": "/ˈlʌɡɪdʒ/",
+  "example": "Do you have any luggage?",
+  "exampleZh": "你有行李吗？",
+  "source": "reused",
+  "word_id": "w2986"
+ },
+ {
+  "en": "noisy",
+  "zh": "吵闹的",
+  "phonetic": "/ˈnɔɪzi/",
+  "example": "The classroom is noisy.",
+  "exampleZh": "教室很吵闹。",
+  "source": "reused",
+  "word_id": "w2987"
+ },
+ {
+  "en": "passenger",
+  "zh": "乘客",
+  "phonetic": "/ˈpæsɪndʒə/",
+  "example": "All passengers must fasten seatbelts.",
+  "exampleZh": "所有乘客必须系好安全带。",
+  "source": "reused",
+  "word_id": "w2988"
+ },
+ {
+  "en": "pilot",
+  "zh": "飞行员",
+  "phonetic": "/ˈpaɪlət/",
+  "example": "The pilot is very experienced.",
+  "exampleZh": "飞行员很有经验。",
+  "source": "reused",
+  "word_id": "w2989"
+ },
+ {
+  "en": "platform",
+  "zh": "站台",
+  "phonetic": "/ˈplætfɔːm/",
+  "example": "Wait on platform 3.",
+  "exampleZh": "在3号站台等。",
+  "source": "reused",
+  "word_id": "w2990"
+ },
+ {
+  "en": "quiet",
+  "zh": "安静的",
+  "phonetic": "/ˈkwaɪət/",
+  "example": "The library is quiet.",
+  "exampleZh": "图书馆很安静。",
+  "source": "reused",
+  "word_id": "w2991"
+ },
+ {
+  "en": "safe",
+  "zh": "安全的",
+  "phonetic": "/seɪf/",
+  "example": "This area is safe.",
+  "exampleZh": "这个区域很安全。",
+  "source": "reused",
+  "word_id": "w2992"
+ },
+ {
+  "en": "safety",
+  "zh": "安全",
+  "phonetic": "/ˈseɪfti/",
+  "example": "This is a safety.",
+  "exampleZh": "这是一个安全。",
+  "source": "template+generated",
+  "word_id": "w2993"
+ },
+ {
+  "en": "seat",
+  "zh": "座位",
+  "phonetic": "/siːt/",
+  "example": "My seat is 14A.",
+  "exampleZh": "我的座位是14A。",
+  "source": "reused",
+  "word_id": "w2994"
+ },
+ {
+  "en": "station",
+  "zh": "车站",
+  "phonetic": "/ˈsteɪʃn/",
+  "example": "The bus station is near my home.",
+  "exampleZh": "公交车站在我家附近。",
+  "source": "reused",
+  "word_id": "w2995"
+ },
+ {
+  "en": "take off",
+  "zh": "起飞",
+  "phonetic": "/teɪk ɒf/",
+  "example": "The plane takes off at 3 p.m.",
+  "exampleZh": "飞机下午3点起飞。",
+  "source": "reused",
+  "word_id": "w2996"
+ },
+ {
+  "en": "terminal",
+  "zh": "终点站；枢纽站",
+  "phonetic": "/ˈtɜːmɪnl/",
+  "example": "Meet me at the terminal.",
+  "exampleZh": "在航站楼见我。",
+  "source": "reused",
+  "word_id": "w2997"
+ },
+ {
+  "en": "timetable",
+  "zh": "时刻表",
+  "phonetic": "/ˈtaɪmteɪbl/",
+  "example": "Check the timetable.",
+  "exampleZh": "查看时刻表。",
+  "source": "reused",
+  "word_id": "w2998"
+ },
+ {
+  "en": "traffic",
+  "zh": "交通",
+  "phonetic": "/ˈtræfɪk/",
+  "example": "There is a lot of traffic this morning.",
+  "exampleZh": "今天早上交通很拥堵。",
+  "source": "reused",
+  "word_id": "w2999"
+ },
+ {
+  "en": "traffic lights",
+  "zh": "交通信号灯",
+  "phonetic": "/ˈtræfɪk laɪts/",
+  "example": "This is a traffic lights.",
+  "exampleZh": "这是一个交通信号灯。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "trip",
+  "zh": "旅行",
+  "phonetic": "/trɪp/",
+  "example": "We went on a trip.",
+  "exampleZh": "我们去旅行了。",
+  "source": "reused",
+  "word_id": "w3001"
+ },
+ {
+  "en": "visit",
+  "zh": "访问；参观",
+  "phonetic": "/ˈvɪzɪt/",
+  "example": "This is a visit.",
+  "exampleZh": "这是一个访问；参观。",
+  "source": "template+generated",
+  "word_id": "w3002"
+ },
+ {
+  "en": "visitor",
+  "zh": "来访者；参观者",
+  "phonetic": "/ˈvɪzɪtər/",
+  "example": "This is a visitor.",
+  "exampleZh": "这是一个来访者；参观者。",
+  "source": "template+generated",
+  "word_id": "w3003"
+ },
+ {
+  "en": "uncomfortable",
+  "zh": "不舒服的",
+  "phonetic": "/ənˈkəmfərtəbəl/",
+  "example": "This is an uncomfortable.",
+  "exampleZh": "这是一个不舒服的。",
+  "source": "template+generated",
+  "word_id": "w3004"
+ },
+ {
+  "en": "waiting room",
+  "zh": "候车室",
+  "phonetic": "/ˈweɪtɪŋ rum/",
+  "example": "This is a waiting room.",
+  "exampleZh": "这是一个候车室。",
+  "source": "template+generated",
+  "word_id": "w3005"
+ },
+ {
+  "en": "upset",
+  "zh": "心烦意乱的",
+  "phonetic": "/ˈəpˌsɛt/",
+  "example": "This is an upset.",
+  "exampleZh": "这是一个心烦意乱的。",
+  "source": "template+generated",
+  "word_id": "w3006"
+ },
+ {
+  "en": "worried",
+  "zh": "担心的",
+  "phonetic": "/ˈwʌrid/",
+  "example": "I am worried about the exam.",
+  "exampleZh": "我担心考试。",
+  "source": "reused",
+  "word_id": "w3007"
+ },
+ {
+  "en": "campsite",
+  "zh": "野营地",
+  "phonetic": "/ˈkæmpˌsaɪt/",
+  "example": "This is a campsite.",
+  "exampleZh": "这是一个野营地。",
+  "source": "template+generated",
+  "word_id": "w3008"
+ },
+ {
+  "en": "climbing",
+  "zh": "爬山",
+  "phonetic": "/ˈklaɪmɪŋ/",
+  "example": "This is a climbing.",
+  "exampleZh": "这是一个爬山。",
+  "source": "template+generated",
+  "word_id": "w3009"
+ },
+ {
+  "en": "club",
+  "zh": "社团，俱乐部",
+  "phonetic": "/kləb/",
+  "example": "This is a club.",
+  "exampleZh": "这是一个社团，俱乐部。",
+  "source": "template+generated",
+  "word_id": "w3010"
+ },
+ {
+  "en": "dancing",
+  "zh": "跳舞",
+  "phonetic": "/ˈdænsɪŋ/",
+  "example": "This is a dancing.",
+  "exampleZh": "这是一个跳舞。",
+  "source": "template+generated",
+  "word_id": "w3011"
+ },
+ {
+  "en": "equipment",
+  "zh": "设备",
+  "phonetic": "/ɪkˈwɪpmənt/",
+  "example": "This is an equipment.",
+  "exampleZh": "这是一个设备。",
+  "source": "template+generated",
+  "word_id": "w3012"
+ },
+ {
+  "en": "fee",
+  "zh": "费用",
+  "phonetic": "/fi/",
+  "example": "This is a fee.",
+  "exampleZh": "这是一个费用。",
+  "source": "template+generated",
+  "word_id": "w3013"
+ },
+ {
+  "en": "life jacket",
+  "zh": "救生衣",
+  "phonetic": "/laɪf ˈʤækɪt/",
+  "example": "This is a life jacket.",
+  "exampleZh": "这是一个救生衣。",
+  "source": "template+generated",
+  "word_id": "w3014"
+ },
+ {
+  "en": "member",
+  "zh": "会员",
+  "phonetic": "/ˈmɛmbər/",
+  "example": "This is a member.",
+  "exampleZh": "这是一个会员。",
+  "source": "template+generated",
+  "word_id": "w3015"
+ },
+ {
+  "en": "membership",
+  "zh": "会员身份",
+  "phonetic": "/ˈmɛmbərˌʃɪp/",
+  "example": "This is a membership.",
+  "exampleZh": "这是一个会员身份。",
+  "source": "template+generated",
+  "word_id": "w3016"
+ },
+ {
+  "en": "sailing",
+  "zh": "帆船运动",
+  "phonetic": "/ˈseɪlɪŋ/",
+  "example": "This is a sailing.",
+  "exampleZh": "这是一个帆船运动。",
+  "source": "template+generated",
+  "word_id": "w3017"
+ },
+ {
+  "en": "society",
+  "zh": "社团",
+  "phonetic": "/soʊˈsaɪɪti/",
+  "example": "This is a society.",
+  "exampleZh": "这是一个社团。",
+  "source": "template+generated",
+  "word_id": "w3018"
+ }
+]

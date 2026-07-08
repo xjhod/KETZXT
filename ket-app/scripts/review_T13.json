@@ -1,0 +1,362 @@
+[
+ {
+  "en": "afraid",
+  "zh": "害怕的",
+  "phonetic": "/əˈfreɪd/",
+  "example": "This is an afraid.",
+  "exampleZh": "这是一个害怕的。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "alone",
+  "zh": "独自地；独自的",
+  "phonetic": "/əˈloʊn/",
+  "example": "This is an alone.",
+  "exampleZh": "这是一个独自地；独自的。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "amazed",
+  "zh": "吃惊的，惊奇的",
+  "phonetic": "/əˈmeɪzd/",
+  "example": "This is an amazed.",
+  "exampleZh": "这是一个吃惊的，惊奇的。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "annoyed",
+  "zh": "烦恼的，恼怒的",
+  "phonetic": "/əˈnɔɪd/",
+  "example": "This is an annoyed.",
+  "exampleZh": "这是一个烦恼的，恼怒的。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "anxious",
+  "zh": "焦虑的",
+  "phonetic": "/ˈæŋʃəs/",
+  "example": "This is an anxious.",
+  "exampleZh": "这是一个焦虑的。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "ashamed",
+  "zh": "羞愧的",
+  "phonetic": "/əˈʃeɪmd/",
+  "example": "This is an ashamed.",
+  "exampleZh": "这是一个羞愧的。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "be fond of",
+  "zh": "喜爱",
+  "phonetic": "/bi fɑnd əv/",
+  "example": "This is a be fond of.",
+  "exampleZh": "这是一个喜爱。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "be keen on",
+  "zh": "喜爱",
+  "phonetic": "/bi kin ɔn/",
+  "example": "This is a be keen on.",
+  "exampleZh": "这是一个喜爱。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "bored",
+  "zh": "无聊的，烦厌的",
+  "phonetic": "/bɔrd/",
+  "example": "This is a bored.",
+  "exampleZh": "这是一个无聊的，烦厌的。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "calm",
+  "zh": "平静的，镇定的",
+  "phonetic": "/kɑm/",
+  "example": "This is a calm.",
+  "exampleZh": "这是一个平静的，镇定的。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "cool",
+  "zh": "酷的",
+  "phonetic": "/kuːl/",
+  "example": "Autumn is cool.",
+  "exampleZh": "秋天很凉爽。",
+  "source": "reused",
+  "word_id": "w2974"
+ },
+ {
+  "en": "depressed",
+  "zh": "沮丧的",
+  "phonetic": "/dɪˈprɛst/",
+  "example": "This is a depressed.",
+  "exampleZh": "这是一个沮丧的。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "difficult",
+  "zh": "困难的",
+  "phonetic": "/ˈdɪfɪkəlt/",
+  "example": "The question is difficult.",
+  "exampleZh": "这个问题很困难。",
+  "source": "reused",
+  "word_id": "w2976"
+ },
+ {
+  "en": "disappointed",
+  "zh": "失望的",
+  "phonetic": "/ˌdɪsəˈpɔɪnɪd/",
+  "example": "This is a disappointed.",
+  "exampleZh": "这是一个失望的。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "dislike",
+  "zh": "讨厌",
+  "phonetic": "/dɪsˈlaɪk/",
+  "example": "This is a dislike.",
+  "exampleZh": "这是一个讨厌。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "embarrassed",
+  "zh": "尴尬的",
+  "phonetic": "/ɪmˈbɛrəst/",
+  "example": "This is an embarrassed.",
+  "exampleZh": "这是一个尴尬的。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "favourite",
+  "zh": "特别喜爱的",
+  "phonetic": "/ˈfeɪvərɪt/",
+  "example": "This is a favourite.",
+  "exampleZh": "这是一个特别喜爱的。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "frightened",
+  "zh": "害怕的",
+  "phonetic": "/ˈfraɪtənd/",
+  "example": "This is a frightened.",
+  "exampleZh": "这是一个害怕的。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "great",
+  "zh": "伟大的；美好的",
+  "phonetic": "/greɪt/",
+  "example": "This is a great.",
+  "exampleZh": "这是一个伟大的；美好的。",
+  "source": "template+generated",
+  "word_id": "w2982"
+ },
+ {
+  "en": "hate",
+  "zh": "厌恶，讨厌",
+  "phonetic": "/heɪt/",
+  "example": "This is a hate.",
+  "exampleZh": "这是一个厌恶，讨厌。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "look forward to",
+  "zh": "期待",
+  "phonetic": "/lʊk ˈfɔrwərd tɪ/",
+  "example": "This is a look forward to.",
+  "exampleZh": "这是一个期待。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "love",
+  "zh": "喜爱；热爱",
+  "phonetic": "/ləv/",
+  "example": "This is a love.",
+  "exampleZh": "这是一个喜爱；热爱。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "lucky",
+  "zh": "幸运的",
+  "phonetic": "/ˈləki/",
+  "example": "This is a lucky.",
+  "exampleZh": "这是一个幸运的。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "miserable",
+  "zh": "痛苦的",
+  "phonetic": "/ˈmɪzərəbəl/",
+  "example": "This is a miserable.",
+  "exampleZh": "这是一个痛苦的。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ },
+ {
+  "en": "pleased",
+  "zh": "高兴的，满意的",
+  "phonetic": "/plizd/",
+  "example": "This is a pleased.",
+  "exampleZh": "这是一个高兴的，满意的。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "relaxed",
+  "zh": "放松的",
+  "phonetic": "/rɪˈlækst/",
+  "example": "This is a relaxed.",
+  "exampleZh": "这是一个放松的。",
+  "source": "template+generated",
+  "word_id": "w2989"
+ },
+ {
+  "en": "satisfied",
+  "zh": "感到满意的",
+  "phonetic": "/ˈsætɪsˌfaɪd/",
+  "example": "This is a satisfied.",
+  "exampleZh": "这是一个感到满意的。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "sure",
+  "zh": "确信；必定",
+  "phonetic": "/ʃʊr/",
+  "example": "This is a sure.",
+  "exampleZh": "这是一个确信；必定。",
+  "source": "template+generated",
+  "word_id": "w2991"
+ },
+ {
+  "en": "surprised",
+  "zh": "惊讶的",
+  "phonetic": "/səˈpraɪzd/",
+  "example": "This is a surprised.",
+  "exampleZh": "这是一个惊讶的。",
+  "source": "template+generated",
+  "word_id": "w2992"
+ },
+ {
+  "en": "terrible",
+  "zh": "可怕的；糟糕的",
+  "phonetic": "/ˈtɛrəbəl/",
+  "example": "This is a terrible.",
+  "exampleZh": "这是一个可怕的；糟糕的。",
+  "source": "template+generated",
+  "word_id": "w2993"
+ },
+ {
+  "en": "cheerful",
+  "zh": "高兴的",
+  "phonetic": "/ˈʧɪrfəl/",
+  "example": "This is a cheerful.",
+  "exampleZh": "这是一个高兴的。",
+  "source": "template+generated",
+  "word_id": "w2994"
+ },
+ {
+  "en": "dull",
+  "zh": "迟钝的；呆笨的",
+  "phonetic": "/dəl/",
+  "example": "This is a dull.",
+  "exampleZh": "这是一个迟钝的；呆笨的。",
+  "source": "template+generated",
+  "word_id": "w2995"
+ },
+ {
+  "en": "exciting",
+  "zh": "令人兴奋的",
+  "phonetic": "/ɪkˈsaɪtɪŋ/",
+  "example": "This is an exciting.",
+  "exampleZh": "这是一个令人兴奋的。",
+  "source": "template+generated",
+  "word_id": "w2996"
+ },
+ {
+  "en": "fashionable",
+  "zh": "时髦的",
+  "phonetic": "/ˈfæʃənəbəl/",
+  "example": "This is a fashionable.",
+  "exampleZh": "这是一个时髦的。",
+  "source": "template+generated",
+  "word_id": "w2997"
+ },
+ {
+  "en": "interested",
+  "zh": "感兴趣的",
+  "phonetic": "/ˈɪntəˌrɛstɪd/",
+  "example": "This is an interested.",
+  "exampleZh": "这是一个感兴趣的。",
+  "source": "template+generated",
+  "word_id": "w2998"
+ },
+ {
+  "en": "interesting",
+  "zh": "有趣的",
+  "phonetic": "/ˈɪntrəstɪŋ/",
+  "example": "The lesson is interesting.",
+  "exampleZh": "这节课很有趣。",
+  "source": "reused",
+  "word_id": "w2999"
+ },
+ {
+  "en": "silly",
+  "zh": "愚蠢的",
+  "phonetic": "/ˈsɪli/",
+  "example": "This is a silly.",
+  "exampleZh": "这是一个愚蠢的。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "stupid",
+  "zh": "愚蠢的",
+  "phonetic": "/ˈstupɪd/",
+  "example": "This is a stupid.",
+  "exampleZh": "这是一个愚蠢的。",
+  "source": "template+generated",
+  "word_id": "w3001"
+ },
+ {
+  "en": "tiring",
+  "zh": "令人感到疲倦的",
+  "phonetic": "/ˈtaɪrɪŋ/",
+  "example": "This is a tiring.",
+  "exampleZh": "这是一个令人感到疲倦的。",
+  "source": "template+generated",
+  "word_id": "w3002"
+ },
+ {
+  "en": "upset",
+  "zh": "心烦意乱的",
+  "phonetic": "/ˈəpˌsɛt/",
+  "example": "This is an upset.",
+  "exampleZh": "这是一个心烦意乱的。",
+  "source": "template+generated",
+  "word_id": "w3003"
+ }
+]

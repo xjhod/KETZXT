@@ -1,0 +1,371 @@
+[
+ {
+  "en": "bean",
+  "zh": "豆",
+  "phonetic": "/bin/",
+  "example": "This is a bean.",
+  "exampleZh": "这是一个豆。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "biscuit",
+  "zh": "饼干",
+  "phonetic": "/ˈbɪskət/",
+  "example": "This is a biscuit.",
+  "exampleZh": "这是一个饼干。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "burger",
+  "zh": "汉堡",
+  "phonetic": "/ˈbərgər/",
+  "example": "This is a burger.",
+  "exampleZh": "这是一个汉堡。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "can",
+  "zh": "罐头；罐",
+  "phonetic": "/kən/",
+  "example": "This is a can.",
+  "exampleZh": "这是一个罐头；罐。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "candy",
+  "zh": "糖果",
+  "phonetic": "/ˈkændi/",
+  "example": "This is a candy.",
+  "exampleZh": "这是一个糖果。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "cereal",
+  "zh": "谷类食物",
+  "phonetic": "/ˈsɪriəl/",
+  "example": "This is a cereal.",
+  "exampleZh": "这是一个谷类食物。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "chilli",
+  "zh": "辣椒",
+  "phonetic": "/ˈtʃɪli/",
+  "example": "This is a chilli.",
+  "exampleZh": "这是一个辣椒。",
+  "source": "template+corrected",
+  "word_id": "w2970"
+ },
+ {
+  "en": "chips",
+  "zh": "薯条",
+  "phonetic": "/ʧɪps/",
+  "example": "This is a chips.",
+  "exampleZh": "这是一个薯条。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "chocolate",
+  "zh": "巧克力",
+  "phonetic": "/ˈʧɔklət/",
+  "example": "This is a chocolate.",
+  "exampleZh": "这是一个巧克力。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "coconut",
+  "zh": "椰子",
+  "phonetic": "/ˈkoʊkəˌnət/",
+  "example": "This is a coconut.",
+  "exampleZh": "这是一个椰子。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "Coke",
+  "zh": "可口可乐",
+  "phonetic": "/koʊk/",
+  "example": "This is a Coke.",
+  "exampleZh": "这是一个可口可乐。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "cola",
+  "zh": "可乐",
+  "phonetic": "/ˈkoʊlə/",
+  "example": "This is a cola.",
+  "exampleZh": "这是一个可乐。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "cookie",
+  "zh": "曲奇饼干",
+  "phonetic": "/ˈkʊki/",
+  "example": "This is a cookie.",
+  "exampleZh": "这是一个曲奇饼干。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "cream",
+  "zh": "奶油",
+  "phonetic": "/krim/",
+  "example": "This is a cream.",
+  "exampleZh": "这是一个奶油。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "cucumber",
+  "zh": "黄瓜",
+  "phonetic": "/ˈkjukəmbər/",
+  "example": "This is a cucumber.",
+  "exampleZh": "这是一个黄瓜。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "curry",
+  "zh": "咖喱",
+  "phonetic": "/ˈkəri/",
+  "example": "This is a curry.",
+  "exampleZh": "这是一个咖喱。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "dessert",
+  "zh": "甜品",
+  "phonetic": "/dɪˈzərt/",
+  "example": "This is a dessert.",
+  "exampleZh": "这是一个甜品。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "dish",
+  "zh": "盘；一盘食物",
+  "phonetic": "/dɪʃ/",
+  "example": "This dish is delicious.",
+  "exampleZh": "这道菜很好吃。",
+  "source": "reused",
+  "word_id": "w2981"
+ },
+ {
+  "en": "duck",
+  "zh": "鸭肉",
+  "phonetic": "/dʌk/",
+  "example": "The duck swims in the river.",
+  "exampleZh": "鸭子在河里游泳。",
+  "source": "reused",
+  "word_id": "w2982"
+ },
+ {
+  "en": "flour",
+  "zh": "面粉",
+  "phonetic": "/flaʊər/",
+  "example": "This is a flour.",
+  "exampleZh": "这是一个面粉。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "food",
+  "zh": "食物",
+  "phonetic": "/fud/",
+  "example": "This is a food.",
+  "exampleZh": "这是一个食物。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "garlic",
+  "zh": "大蒜",
+  "phonetic": "/ˈgɑrlɪk/",
+  "example": "This is a garlic.",
+  "exampleZh": "这是一个大蒜。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "grape",
+  "zh": "葡萄",
+  "phonetic": "/greɪp/",
+  "example": "This is a grape.",
+  "exampleZh": "这是一个葡萄。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "ham",
+  "zh": "火腿",
+  "phonetic": "/hæm/",
+  "example": "This is a ham.",
+  "exampleZh": "这是一个火腿。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ },
+ {
+  "en": "lamb",
+  "zh": "羊肉",
+  "phonetic": "/læm/",
+  "example": "The lamb is white.",
+  "exampleZh": "小羊是白色的。",
+  "source": "reused",
+  "word_id": "w2988"
+ },
+ {
+  "en": "lemon",
+  "zh": "柠檬",
+  "phonetic": "/ˈlɛmən/",
+  "example": "This is a lemon.",
+  "exampleZh": "这是一个柠檬。",
+  "source": "template+generated",
+  "word_id": "w2989"
+ },
+ {
+  "en": "mango",
+  "zh": "芒果",
+  "phonetic": "/ˈmæŋgoʊ/",
+  "example": "This is a mango.",
+  "exampleZh": "这是一个芒果。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "melon",
+  "zh": "甜瓜",
+  "phonetic": "/ˈmɛlən/",
+  "example": "This is a melon.",
+  "exampleZh": "这是一个甜瓜。",
+  "source": "template+generated",
+  "word_id": "w2991"
+ },
+ {
+  "en": "mushroom",
+  "zh": "蘑菇",
+  "phonetic": "/ˈməʃrum/",
+  "example": "This is a mushroom.",
+  "exampleZh": "这是一个蘑菇。",
+  "source": "template+generated",
+  "word_id": "w2992"
+ },
+ {
+  "en": "omelette",
+  "zh": "煎蛋卷",
+  "phonetic": "/ˈɒmlət/",
+  "example": "This is an omelette.",
+  "exampleZh": "这是一个煎蛋卷。",
+  "source": "template+corrected",
+  "word_id": "w2993"
+ },
+ {
+  "en": "orange",
+  "zh": "橙",
+  "phonetic": "/ˈɔrɪnʤ/",
+  "example": "This is an orange.",
+  "exampleZh": "这是一个橙。",
+  "source": "template+generated",
+  "word_id": "w2994"
+ },
+ {
+  "en": "pasta",
+  "zh": "意大利面食",
+  "phonetic": "/ˈpɑstə/",
+  "example": "This is a pasta.",
+  "exampleZh": "这是一个意大利面食。",
+  "source": "template+generated",
+  "word_id": "w2995"
+ },
+ {
+  "en": "pear",
+  "zh": "梨",
+  "phonetic": "/pɛr/",
+  "example": "This is a pear.",
+  "exampleZh": "这是一个梨。",
+  "source": "template+generated",
+  "word_id": "w2996"
+ },
+ {
+  "en": "pie",
+  "zh": "派",
+  "phonetic": "/paɪ/",
+  "example": "This is a pie.",
+  "exampleZh": "这是一个派。",
+  "source": "template+generated",
+  "word_id": "w2997"
+ },
+ {
+  "en": "roll",
+  "zh": "面包卷",
+  "phonetic": "/roʊl/",
+  "example": "This is a roll.",
+  "exampleZh": "这是一个面包卷。",
+  "source": "template+generated",
+  "word_id": "w2998"
+ },
+ {
+  "en": "sausage",
+  "zh": "香肠",
+  "phonetic": "/ˈsɔsɪʤ/",
+  "example": "This is a sausage.",
+  "exampleZh": "这是一个香肠。",
+  "source": "template+generated",
+  "word_id": "w2999"
+ },
+ {
+  "en": "steak",
+  "zh": "牛排",
+  "phonetic": "/steɪk/",
+  "example": "This is a steak.",
+  "exampleZh": "这是一个牛排。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "strawberry",
+  "zh": "草莓",
+  "phonetic": "/ˈstrɔˌbɛri/",
+  "example": "This is a strawberry.",
+  "exampleZh": "这是一个草莓。",
+  "source": "template+generated",
+  "word_id": "w3001"
+ },
+ {
+  "en": "toast",
+  "zh": "吐司",
+  "phonetic": "/toʊst/",
+  "example": "This is a toast.",
+  "exampleZh": "这是一个吐司。",
+  "source": "template+generated",
+  "word_id": "w3002"
+ },
+ {
+  "en": "turkey",
+  "zh": "火鸡",
+  "phonetic": "/ˈtɜːki/",
+  "example": "We eat turkey at Christmas.",
+  "exampleZh": "我们圣诞节吃火鸡。",
+  "source": "reused",
+  "word_id": "w3003"
+ },
+ {
+  "en": "yogurt",
+  "zh": "酸奶；酵母乳",
+  "phonetic": "/ˈjoʊgərt/",
+  "example": "This is a yogurt.",
+  "exampleZh": "这是一个酸奶；酵母乳。",
+  "source": "template+generated",
+  "word_id": "w3004"
+ }
+]

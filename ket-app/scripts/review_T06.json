@@ -1,0 +1,218 @@
+[
+ {
+  "en": "ache",
+  "zh": "疼痛",
+  "phonetic": "/eɪk/",
+  "example": "This is an ache.",
+  "exampleZh": "这是一个疼痛。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "appointment",
+  "zh": "预约",
+  "phonetic": "/əˈpɔɪntmənt/",
+  "example": "This is an appointment.",
+  "exampleZh": "这是一个预约。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "be injured",
+  "zh": "受伤",
+  "phonetic": "/bi ˈɪnʤərd/",
+  "example": "This is a be injured.",
+  "exampleZh": "这是一个受伤。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "break",
+  "zh": "折断（鼻子）",
+  "phonetic": "/breɪk/",
+  "example": "This is a break.",
+  "exampleZh": "这是一个折断（鼻子）。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "check",
+  "zh": "检查；核查",
+  "phonetic": "/tʃek/",
+  "example": "Check your work.",
+  "exampleZh": "检查你的工作。",
+  "source": "reused",
+  "word_id": "w2968"
+ },
+ {
+  "en": "dentist",
+  "zh": "牙医",
+  "phonetic": "/ˈdɛntɪst/",
+  "example": "This is a dentist.",
+  "exampleZh": "这是一个牙医。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "feel",
+  "zh": "感觉",
+  "phonetic": "/fil/",
+  "example": "This is a feel.",
+  "exampleZh": "这是一个感觉。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "glasses",
+  "zh": "眼镜",
+  "phonetic": "/ˈglæsɪz/",
+  "example": "This is a glasses.",
+  "exampleZh": "这是一个眼镜。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "patient",
+  "zh": "病人",
+  "phonetic": "/ˈpeɪʃənt/",
+  "example": "This is a patient.",
+  "exampleZh": "这是一个病人。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "put on weight",
+  "zh": "增肥",
+  "phonetic": "/pʊt ɔn weɪt/",
+  "example": "This is a put on weight.",
+  "exampleZh": "这是一个增肥。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "active",
+  "zh": "活跃的；积极的",
+  "phonetic": "/ˈæktɪv/",
+  "example": "This is an active.",
+  "exampleZh": "这是一个活跃的；积极的。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "cycle",
+  "zh": "骑自行车",
+  "phonetic": "/ˈsaɪkəl/",
+  "example": "This is a cycle.",
+  "exampleZh": "这是一个骑自行车。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "fat",
+  "zh": "脂肪",
+  "phonetic": "/fæt/",
+  "example": "This is a fat.",
+  "exampleZh": "这是一个脂肪。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "fit",
+  "zh": "健康的；健壮的",
+  "phonetic": "/fɪt/",
+  "example": "These shoes fit well.",
+  "exampleZh": "这双鞋很合身。",
+  "source": "reused",
+  "word_id": "w2977"
+ },
+ {
+  "en": "gym",
+  "zh": "体育馆；健身房",
+  "phonetic": "/ʤɪm/",
+  "example": "This is a gym.",
+  "exampleZh": "这是一个体育馆；健身房。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "inactive",
+  "zh": "不活跃的",
+  "phonetic": "/ˌɪˈnæktɪv/",
+  "example": "This is an inactive.",
+  "exampleZh": "这是一个不活跃的。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "get keep fit",
+  "zh": "变得 / 保持健康",
+  "phonetic": "/ɡet kiːp fɪt/",
+  "example": "This is a get keep fit.",
+  "exampleZh": "这是一个变得 / 保持健康。",
+  "source": "template+corrected",
+  "word_id": "w2980"
+ },
+ {
+  "en": "park",
+  "zh": "公园",
+  "phonetic": "/pɑrk/",
+  "example": "This is a park.",
+  "exampleZh": "这是一个公园。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "run",
+  "zh": "跑；奔跑",
+  "phonetic": "/rʌn/",
+  "example": "I run every morning.",
+  "exampleZh": "我每天早上跑步。",
+  "source": "reused",
+  "word_id": "w2982"
+ },
+ {
+  "en": "swim",
+  "zh": "游泳",
+  "phonetic": "/swɪm/",
+  "example": "I can swim.",
+  "exampleZh": "我会游泳。",
+  "source": "reused",
+  "word_id": "w2983"
+ },
+ {
+  "en": "thirsty",
+  "zh": "口渴的",
+  "phonetic": "/ˈθɜːsti/",
+  "example": "I am thirsty. I need water.",
+  "exampleZh": "我渴了，需要水。",
+  "source": "reused",
+  "word_id": "w2984"
+ },
+ {
+  "en": "use",
+  "zh": "使用",
+  "phonetic": "/juz/",
+  "example": "This is an use.",
+  "exampleZh": "这是一个使用。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "walk",
+  "zh": "步行",
+  "phonetic": "/wɔk/",
+  "example": "This is a walk.",
+  "exampleZh": "这是一个步行。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "weight",
+  "zh": "体重",
+  "phonetic": "/weɪt/",
+  "example": "This is a weight.",
+  "exampleZh": "这是一个体重。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ }
+]

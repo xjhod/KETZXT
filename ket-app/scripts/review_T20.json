@@ -1,0 +1,92 @@
+[
+ {
+  "en": "blog",
+  "zh": "博客",
+  "phonetic": "/blɔg/",
+  "example": "This is a blog.",
+  "exampleZh": "这是一个博客。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "click",
+  "zh": "用鼠标 ) 点击",
+  "phonetic": "/klɪk/",
+  "example": "This is a click.",
+  "exampleZh": "这是一个用鼠标 ) 点击。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "laptop",
+  "zh": "笔记本电脑",
+  "phonetic": "/ˈlæpˌtɑp/",
+  "example": "This is a laptop.",
+  "exampleZh": "这是一个笔记本电脑。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "net",
+  "zh": "互联网",
+  "phonetic": "/net/",
+  "example": "This is a net.",
+  "exampleZh": "这是一个互联网。",
+  "source": "template+corrected",
+  "word_id": "w2967"
+ },
+ {
+  "en": "program",
+  "zh": "程序",
+  "phonetic": "/ˈproʊˌgræm/",
+  "example": "This is a program.",
+  "exampleZh": "这是一个程序。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "save",
+  "zh": "保存",
+  "phonetic": "/seɪv/",
+  "example": "I save money for a bike.",
+  "exampleZh": "我存钱买自行车。",
+  "source": "reused",
+  "word_id": "w2969"
+ },
+ {
+  "en": "software",
+  "zh": "软件",
+  "phonetic": "/ˈsɔfˌwɛr/",
+  "example": "This is a software.",
+  "exampleZh": "这是一个软件。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "surf",
+  "zh": "上网冲浪",
+  "phonetic": "/sɜːf/",
+  "example": "This is a surf.",
+  "exampleZh": "这是一个上网冲浪。",
+  "source": "template+corrected",
+  "word_id": "w2971"
+ },
+ {
+  "en": "web",
+  "zh": "网络",
+  "phonetic": "/wɛb/",
+  "example": "This is a web.",
+  "exampleZh": "这是一个网络。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "web page",
+  "zh": "网页",
+  "phonetic": "/wɛb peɪʤ/",
+  "example": "This is a web page.",
+  "exampleZh": "这是一个网页。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ }
+]

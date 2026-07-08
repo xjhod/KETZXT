@@ -1,0 +1,416 @@
+[
+ {
+  "en": "April",
+  "zh": "四月",
+  "phonetic": "/ˈeɪprəl/",
+  "example": "April is rainy.",
+  "exampleZh": "四月很多雨。",
+  "source": "reused",
+  "word_id": "w2964"
+ },
+ {
+  "en": "August",
+  "zh": "八月",
+  "phonetic": "/ˈɔːɡəst/",
+  "example": "August is hot.",
+  "exampleZh": "八月很热。",
+  "source": "reused",
+  "word_id": "w2965"
+ },
+ {
+  "en": "autumn",
+  "zh": "秋天",
+  "phonetic": "/ˈɔːtəm/",
+  "example": "Autumn is cool.",
+  "exampleZh": "秋天很凉爽。",
+  "source": "reused",
+  "word_id": "w2966"
+ },
+ {
+  "en": "December",
+  "zh": "十二月",
+  "phonetic": "/dɪˈsɛmbər/",
+  "example": "This is a December.",
+  "exampleZh": "这是一个十二月。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "east",
+  "zh": "东方",
+  "phonetic": "/iːst/",
+  "example": "The sun rises in the east.",
+  "exampleZh": "太阳从东方升起。",
+  "source": "reused",
+  "word_id": "w2968"
+ },
+ {
+  "en": "fall",
+  "zh": "秋天",
+  "phonetic": "/fɔl/",
+  "example": "This is a fall.",
+  "exampleZh": "这是一个秋天。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "February",
+  "zh": "二月",
+  "phonetic": "/ˈfebruəri/",
+  "example": "February is short.",
+  "exampleZh": "二月很短。",
+  "source": "reused",
+  "word_id": "w2970"
+ },
+ {
+  "en": "July",
+  "zh": "七月",
+  "phonetic": "/dʒʊˈlaɪ/",
+  "example": "July is hot.",
+  "exampleZh": "七月很热。",
+  "source": "reused",
+  "word_id": "w2971"
+ },
+ {
+  "en": "June",
+  "zh": "六月",
+  "phonetic": "/dʒuːn/",
+  "example": "June is sunny.",
+  "exampleZh": "六月很多晴天。",
+  "source": "reused",
+  "word_id": "w2972"
+ },
+ {
+  "en": "March",
+  "zh": "三月",
+  "phonetic": "/mɑːtʃ/",
+  "example": "March is windy.",
+  "exampleZh": "三月很多风。",
+  "source": "reused",
+  "word_id": "w2973"
+ },
+ {
+  "en": "May",
+  "zh": "五月",
+  "phonetic": "/meɪ/",
+  "example": "May is warm.",
+  "exampleZh": "五月很温暖。",
+  "source": "reused",
+  "word_id": "w2974"
+ },
+ {
+  "en": "north",
+  "zh": "北方",
+  "phonetic": "/nɔːθ/",
+  "example": "The north is cold.",
+  "exampleZh": "北方很冷。",
+  "source": "reused",
+  "word_id": "w2975"
+ },
+ {
+  "en": "northeast",
+  "zh": "东北",
+  "phonetic": "/ˌnɔrˈθist/",
+  "example": "This is a northeast.",
+  "exampleZh": "这是一个东北。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "northwest",
+  "zh": "西北",
+  "phonetic": "/ˌnɔrθˈwɛst/",
+  "example": "This is a northwest.",
+  "exampleZh": "这是一个西北。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "November",
+  "zh": "十一月",
+  "phonetic": "/noʊˈvɛmbər/",
+  "example": "This is a November.",
+  "exampleZh": "这是一个十一月。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "October",
+  "zh": "十月",
+  "phonetic": "/ɑkˈtoʊbər/",
+  "example": "This is an October.",
+  "exampleZh": "这是一个十月。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "September",
+  "zh": "九月",
+  "phonetic": "/sepˈtembə/",
+  "example": "September is cool.",
+  "exampleZh": "九月很凉爽。",
+  "source": "reused",
+  "word_id": "w2980"
+ },
+ {
+  "en": "south",
+  "zh": "南方",
+  "phonetic": "/saʊθ/",
+  "example": "The south is warm.",
+  "exampleZh": "南方很温暖。",
+  "source": "reused",
+  "word_id": "w2981"
+ },
+ {
+  "en": "southeast",
+  "zh": "东南",
+  "phonetic": "/ˌsaʊˈθist/",
+  "example": "This is a southeast.",
+  "exampleZh": "这是一个东南。",
+  "source": "template+generated",
+  "word_id": "w2982"
+ },
+ {
+  "en": "southwest",
+  "zh": "西南",
+  "phonetic": "/ˌsaʊθˈwɛst/",
+  "example": "This is a southwest.",
+  "exampleZh": "这是一个西南。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "spring",
+  "zh": "春天",
+  "phonetic": "/sprɪŋ/",
+  "example": "Spring is warm.",
+  "exampleZh": "春天很温暖。",
+  "source": "reused",
+  "word_id": "w2984"
+ },
+ {
+  "en": "summer",
+  "zh": "夏天",
+  "phonetic": "/ˈsʌmə/",
+  "example": "Summer is hot.",
+  "exampleZh": "夏天很热。",
+  "source": "reused",
+  "word_id": "w2985"
+ },
+ {
+  "en": "west",
+  "zh": "西方",
+  "phonetic": "/west/",
+  "example": "The sun sets in the west.",
+  "exampleZh": "太阳从西边落下。",
+  "source": "reused",
+  "word_id": "w2986"
+ },
+ {
+  "en": "winter",
+  "zh": "冬天",
+  "phonetic": "/ˈwɪntə/",
+  "example": "Winter is cold.",
+  "exampleZh": "冬天很冷。",
+  "source": "reused",
+  "word_id": "w2987"
+ },
+ {
+  "en": "after",
+  "zh": "在…之后；以后",
+  "phonetic": "/ˈæftər/",
+  "example": "This is an after.",
+  "exampleZh": "这是一个在…之后；以后。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "a.m.",
+  "zh": "上午",
+  "phonetic": "/ˌeɪ ˈem/",
+  "example": "This is an a.m..",
+  "exampleZh": "这是一个上午。",
+  "source": "template+corrected",
+  "word_id": "w2989"
+ },
+ {
+  "en": "before",
+  "zh": "在 .. 之前；以前",
+  "phonetic": "/ˌbiˈfɔr/",
+  "example": "This is a before.",
+  "exampleZh": "这是一个在 .. 之前；以前。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "century",
+  "zh": "世纪",
+  "phonetic": "/ˈsɛnʧəri/",
+  "example": "This is a century.",
+  "exampleZh": "这是一个世纪。",
+  "source": "template+generated",
+  "word_id": "w2991"
+ },
+ {
+  "en": "date",
+  "zh": "日期",
+  "phonetic": "/deɪt/",
+  "example": "This is a date.",
+  "exampleZh": "这是一个日期。",
+  "source": "template+generated",
+  "word_id": "w2992"
+ },
+ {
+  "en": "day",
+  "zh": "一天",
+  "phonetic": "/deɪ/",
+  "example": "This is a day.",
+  "exampleZh": "这是一个一天。",
+  "source": "template+generated",
+  "word_id": "w2993"
+ },
+ {
+  "en": "half",
+  "zh": "一半；一般的",
+  "phonetic": "/hæf/",
+  "example": "This is a half.",
+  "exampleZh": "这是一个一半；一般的。",
+  "source": "template+generated",
+  "word_id": "w2994"
+ },
+ {
+  "en": "midnight",
+  "zh": "午夜",
+  "phonetic": "/ˈmɪdˌnaɪt/",
+  "example": "This is a midnight.",
+  "exampleZh": "这是一个午夜。",
+  "source": "template+generated",
+  "word_id": "w2995"
+ },
+ {
+  "en": "moment",
+  "zh": "时刻；片刻",
+  "phonetic": "/ˈmoʊmənt/",
+  "example": "This is a moment.",
+  "exampleZh": "这是一个时刻；片刻。",
+  "source": "template+generated",
+  "word_id": "w2996"
+ },
+ {
+  "en": "noon",
+  "zh": "中午",
+  "phonetic": "/nun/",
+  "example": "This is a noon.",
+  "exampleZh": "这是一个中午。",
+  "source": "template+generated",
+  "word_id": "w2997"
+ },
+ {
+  "en": "now",
+  "zh": "现在；此刻",
+  "phonetic": "/naʊ/",
+  "example": "This is a now.",
+  "exampleZh": "这是一个现在；此刻。",
+  "source": "template+generated",
+  "word_id": "w2998"
+ },
+ {
+  "en": "p.m.",
+  "zh": "下午",
+  "phonetic": "/ˌpiː ˈem/",
+  "example": "This is a p.m..",
+  "exampleZh": "这是一个下午。",
+  "source": "template+corrected",
+  "word_id": "w2999"
+ },
+ {
+  "en": "tonight",
+  "zh": "今晚",
+  "phonetic": "/təˈnaɪt/",
+  "example": "This is a tonight.",
+  "exampleZh": "这是一个今晚。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "weekday",
+  "zh": "工作日",
+  "phonetic": "/ˈwikˌdeɪ/",
+  "example": "This is a weekday.",
+  "exampleZh": "这是一个工作日。",
+  "source": "template+generated",
+  "word_id": "w3001"
+ },
+ {
+  "en": "weekend",
+  "zh": "周末；周末的",
+  "phonetic": "/ˈwiˌkɪnd/",
+  "example": "This is a weekend.",
+  "exampleZh": "这是一个周末；周末的。",
+  "source": "template+generated",
+  "word_id": "w3002"
+ },
+ {
+  "en": "working hours",
+  "zh": "工作时间",
+  "phonetic": "/ˈwərkɪŋ aʊərz/",
+  "example": "This is a working hours.",
+  "exampleZh": "这是一个工作时间。",
+  "source": "template+generated",
+  "word_id": "w3003"
+ },
+ {
+  "en": "Tuesday",
+  "zh": "星期二",
+  "phonetic": "/ˈtuzˌdeɪ/",
+  "example": "This is a Tuesday.",
+  "exampleZh": "这是一个星期二。",
+  "source": "template+generated",
+  "word_id": "w3004"
+ },
+ {
+  "en": "Wednesday",
+  "zh": "星期三",
+  "phonetic": "/ˈwɛnzˌdeɪ/",
+  "example": "This is a Wednesday.",
+  "exampleZh": "这是一个星期三。",
+  "source": "template+generated",
+  "word_id": "w3005"
+ },
+ {
+  "en": "Thursday",
+  "zh": "星期四",
+  "phonetic": "/ˈθərzˌdeɪ/",
+  "example": "This is a Thursday.",
+  "exampleZh": "这是一个星期四。",
+  "source": "template+generated",
+  "word_id": "w3006"
+ },
+ {
+  "en": "Friday",
+  "zh": "星期五",
+  "phonetic": "/ˈfraɪˌdeɪ/",
+  "example": "This is a Friday.",
+  "exampleZh": "这是一个星期五。",
+  "source": "template+generated",
+  "word_id": "w3007"
+ },
+ {
+  "en": "Saturday",
+  "zh": "星期六",
+  "phonetic": "/ˈsæˌtɪˌdeɪ/",
+  "example": "This is a Saturday.",
+  "exampleZh": "这是一个星期六。",
+  "source": "template+generated",
+  "word_id": "w3008"
+ },
+ {
+  "en": "Sunday",
+  "zh": "星期日",
+  "phonetic": "/ˈsənˌdi/",
+  "example": "This is a Sunday.",
+  "exampleZh": "这是一个星期日。",
+  "source": "template+generated",
+  "word_id": "w3009"
+ }
+]

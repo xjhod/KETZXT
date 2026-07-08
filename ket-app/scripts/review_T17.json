@@ -1,0 +1,74 @@
+[
+ {
+  "en": "advise",
+  "zh": "建议",
+  "phonetic": "/ədˈvaɪz/",
+  "example": "This is an advise.",
+  "exampleZh": "这是一个建议。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "agree",
+  "zh": "同意",
+  "phonetic": "/əˈgri/",
+  "example": "This is an agree.",
+  "exampleZh": "这是一个同意。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "decide",
+  "zh": "决定",
+  "phonetic": "/ˌdɪˈsaɪd/",
+  "example": "This is a decide.",
+  "exampleZh": "这是一个决定。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "describe",
+  "zh": "描述",
+  "phonetic": "/dɪˈskraɪb/",
+  "example": "This is a describe.",
+  "exampleZh": "这是一个描述。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "explain",
+  "zh": "解释；说明",
+  "phonetic": "/ɪkˈspleɪn/",
+  "example": "This is an explain.",
+  "exampleZh": "这是一个解释；说明。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "review",
+  "zh": "评论",
+  "phonetic": "/ˌrivˈju/",
+  "example": "This is a review.",
+  "exampleZh": "这是一个评论。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "suggest",
+  "zh": "建议",
+  "phonetic": "/səˈʤɛst/",
+  "example": "This is a suggest.",
+  "exampleZh": "这是一个建议。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "warn",
+  "zh": "警告",
+  "phonetic": "/wɔrn/",
+  "example": "This is a warn.",
+  "exampleZh": "这是一个警告。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ }
+]

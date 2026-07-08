@@ -1,0 +1,128 @@
+[
+ {
+  "en": "add",
+  "zh": "增加",
+  "phonetic": "/æd/",
+  "example": "This is an add.",
+  "exampleZh": "这是一个增加。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "bake",
+  "zh": "烘培；烤",
+  "phonetic": "/beɪk/",
+  "example": "This is a bake.",
+  "exampleZh": "这是一个烘培；烤。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "barbecue",
+  "zh": "户外烧烤",
+  "phonetic": "/ˈbɑrbɪˌkju/",
+  "example": "This is a barbecue.",
+  "exampleZh": "这是一个户外烧烤。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "boil",
+  "zh": "煮沸；烧开",
+  "phonetic": "/bɔɪl/",
+  "example": "This is a boil.",
+  "exampleZh": "这是一个煮沸；烧开。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "burn",
+  "zh": "燃烧",
+  "phonetic": "/bɜːn/",
+  "example": "I burned my hand.",
+  "exampleZh": "我烧伤了手。",
+  "source": "reused",
+  "word_id": "w2968"
+ },
+ {
+  "en": "cook",
+  "zh": "烹调",
+  "phonetic": "/kʊk/",
+  "example": "My mother cooks dinner.",
+  "exampleZh": "我妈妈做晚餐。",
+  "source": "reused",
+  "word_id": "w2969"
+ },
+ {
+  "en": "cut",
+  "zh": "切",
+  "phonetic": "/kət/",
+  "example": "This is a cut.",
+  "exampleZh": "这是一个切。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "fry",
+  "zh": "油炸；油煎",
+  "phonetic": "/fraɪ/",
+  "example": "This is a fry.",
+  "exampleZh": "这是一个油炸；油煎。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "mix",
+  "zh": "混合",
+  "phonetic": "/mɪks/",
+  "example": "This is a mix.",
+  "exampleZh": "这是一个混合。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "pour",
+  "zh": "灌；倒",
+  "phonetic": "/pɔr/",
+  "example": "This is a pour.",
+  "exampleZh": "这是一个灌；倒。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "recipe",
+  "zh": "烹饪法；食谱",
+  "phonetic": "/ˈrɛsəpi/",
+  "example": "This is a recipe.",
+  "exampleZh": "这是一个烹饪法；食谱。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "roast",
+  "zh": "烘；烤",
+  "phonetic": "/roʊst/",
+  "example": "This is a roast.",
+  "exampleZh": "这是一个烘；烤。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "stir",
+  "zh": "搅拌",
+  "phonetic": "/stər/",
+  "example": "This is a stir.",
+  "exampleZh": "这是一个搅拌。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "taste",
+  "zh": "尝",
+  "phonetic": "/teɪst/",
+  "example": "This is a taste.",
+  "exampleZh": "这是一个尝。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ }
+]

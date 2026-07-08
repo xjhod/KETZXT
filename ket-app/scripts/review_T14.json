@@ -1,0 +1,425 @@
+[
+ {
+  "en": "April",
+  "zh": "四月",
+  "phonetic": "/ˈeɪprəl/",
+  "example": "April is rainy.",
+  "exampleZh": "四月很多雨。",
+  "source": "reused",
+  "word_id": "w2964"
+ },
+ {
+  "en": "August",
+  "zh": "八月",
+  "phonetic": "/ˈɔːɡəst/",
+  "example": "August is hot.",
+  "exampleZh": "八月很热。",
+  "source": "reused",
+  "word_id": "w2965"
+ },
+ {
+  "en": "autumn",
+  "zh": "秋天",
+  "phonetic": "/ˈɔːtəm/",
+  "example": "Autumn is cool.",
+  "exampleZh": "秋天很凉爽。",
+  "source": "reused",
+  "word_id": "w2966"
+ },
+ {
+  "en": "December",
+  "zh": "十二月",
+  "phonetic": "/dɪˈsɛmbər/",
+  "example": "This is a December.",
+  "exampleZh": "这是一个十二月。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "fall",
+  "zh": "秋天",
+  "phonetic": "/fɔl/",
+  "example": "This is a fall.",
+  "exampleZh": "这是一个秋天。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "February",
+  "zh": "二月",
+  "phonetic": "/ˈfebruəri/",
+  "example": "February is short.",
+  "exampleZh": "二月很短。",
+  "source": "reused",
+  "word_id": "w2969"
+ },
+ {
+  "en": "January",
+  "zh": "一月",
+  "phonetic": "/ˈdʒænjuəri/",
+  "example": "January is the first month.",
+  "exampleZh": "一月是第一个月。",
+  "source": "reused",
+  "word_id": "w2970"
+ },
+ {
+  "en": "July",
+  "zh": "七月",
+  "phonetic": "/dʒʊˈlaɪ/",
+  "example": "July is hot.",
+  "exampleZh": "七月很热。",
+  "source": "reused",
+  "word_id": "w2971"
+ },
+ {
+  "en": "June",
+  "zh": "六月",
+  "phonetic": "/dʒuːn/",
+  "example": "June is sunny.",
+  "exampleZh": "六月很多晴天。",
+  "source": "reused",
+  "word_id": "w2972"
+ },
+ {
+  "en": "March",
+  "zh": "三月",
+  "phonetic": "/mɑːtʃ/",
+  "example": "March is windy.",
+  "exampleZh": "三月很多风。",
+  "source": "reused",
+  "word_id": "w2973"
+ },
+ {
+  "en": "May",
+  "zh": "五月",
+  "phonetic": "/meɪ/",
+  "example": "May is warm.",
+  "exampleZh": "五月很温暖。",
+  "source": "reused",
+  "word_id": "w2974"
+ },
+ {
+  "en": "northeast",
+  "zh": "东北",
+  "phonetic": "/ˌnɔrˈθist/",
+  "example": "This is a northeast.",
+  "exampleZh": "这是一个东北。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "northwest",
+  "zh": "西北",
+  "phonetic": "/ˌnɔrθˈwɛst/",
+  "example": "This is a northwest.",
+  "exampleZh": "这是一个西北。",
+  "source": "template+generated",
+  "word_id": "w2976"
+ },
+ {
+  "en": "November",
+  "zh": "十一月",
+  "phonetic": "/noʊˈvɛmbər/",
+  "example": "This is a November.",
+  "exampleZh": "这是一个十一月。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "October",
+  "zh": "十月",
+  "phonetic": "/ɑkˈtoʊbər/",
+  "example": "This is an October.",
+  "exampleZh": "这是一个十月。",
+  "source": "template+generated",
+  "word_id": "w2978"
+ },
+ {
+  "en": "September",
+  "zh": "九月",
+  "phonetic": "/sepˈtembə/",
+  "example": "September is cool.",
+  "exampleZh": "九月很凉爽。",
+  "source": "reused",
+  "word_id": "w2979"
+ },
+ {
+  "en": "southeast",
+  "zh": "东南",
+  "phonetic": "/ˌsaʊˈθist/",
+  "example": "This is a southeast.",
+  "exampleZh": "这是一个东南。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "southwest",
+  "zh": "西南",
+  "phonetic": "/ˌsaʊθˈwɛst/",
+  "example": "This is a southwest.",
+  "exampleZh": "这是一个西南。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "spring",
+  "zh": "春天",
+  "phonetic": "/sprɪŋ/",
+  "example": "Spring is warm.",
+  "exampleZh": "春天很温暖。",
+  "source": "reused",
+  "word_id": "w2982"
+ },
+ {
+  "en": "summer",
+  "zh": "夏天",
+  "phonetic": "/ˈsʌmə/",
+  "example": "Summer is hot.",
+  "exampleZh": "夏天很热。",
+  "source": "reused",
+  "word_id": "w2983"
+ },
+ {
+  "en": "winter",
+  "zh": "冬天",
+  "phonetic": "/ˈwɪntə/",
+  "example": "Winter is cold.",
+  "exampleZh": "冬天很冷。",
+  "source": "reused",
+  "word_id": "w2984"
+ },
+ {
+  "en": "bar",
+  "zh": "酒吧",
+  "phonetic": "/bɑr/",
+  "example": "This is a bar.",
+  "exampleZh": "这是一个酒吧。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "beautiful",
+  "zh": "美丽的",
+  "phonetic": "/ˈbjutəfəl/",
+  "example": "This is a beautiful.",
+  "exampleZh": "这是一个美丽的。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "bookshop",
+  "zh": "书店",
+  "phonetic": "/ˈbʊkˌʃɑp/",
+  "example": "This is a bookshop.",
+  "exampleZh": "这是一个书店。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ },
+ {
+  "en": "boring",
+  "zh": "无聊的",
+  "phonetic": "/ˈbɔrɪŋ/",
+  "example": "This is a boring.",
+  "exampleZh": "这是一个无聊的。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "bus station",
+  "zh": "公交车站",
+  "phonetic": "/bəs ˈsteɪʃən/",
+  "example": "This is a bus station.",
+  "exampleZh": "这是一个公交车站。",
+  "source": "template+generated",
+  "word_id": "w2989"
+ },
+ {
+  "en": "busy",
+  "zh": "忙碌的",
+  "phonetic": "/ˈbɪzi/",
+  "example": "This is a busy.",
+  "exampleZh": "这是一个忙碌的。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "city centre",
+  "zh": "市中心",
+  "phonetic": "/ˈsɪti ˈsɛntər/",
+  "example": "This is a city centre.",
+  "exampleZh": "这是一个市中心。",
+  "source": "template+generated",
+  "word_id": "w2991"
+ },
+ {
+  "en": "clean",
+  "zh": "干净的",
+  "phonetic": "/kliːn/",
+  "example": "I clean my room.",
+  "exampleZh": "我打扫我的房间。",
+  "source": "reused",
+  "word_id": "w2992"
+ },
+ {
+  "en": "coffee shop",
+  "zh": "咖啡店",
+  "phonetic": "/ˈkɔfi ʃɑp/",
+  "example": "This is a coffee shop.",
+  "exampleZh": "这是一个咖啡店。",
+  "source": "template+generated",
+  "word_id": "w2993"
+ },
+ {
+  "en": "crowded",
+  "zh": "拥挤的",
+  "phonetic": "/ˈkraʊdɪd/",
+  "example": "This is a crowded.",
+  "exampleZh": "这是一个拥挤的。",
+  "source": "template+generated",
+  "word_id": "w2994"
+ },
+ {
+  "en": "dangerous",
+  "zh": "危险的",
+  "phonetic": "/ˈdeɪndʒərəs/",
+  "example": "Be careful, it is dangerous.",
+  "exampleZh": "小心，很危险。",
+  "source": "reused",
+  "word_id": "w2995"
+ },
+ {
+  "en": "dirty",
+  "zh": "肮脏的",
+  "phonetic": "/ˈdɜːti/",
+  "example": "The floor is dirty.",
+  "exampleZh": "地板很脏。",
+  "source": "reused",
+  "word_id": "w2996"
+ },
+ {
+  "en": "disco",
+  "zh": "迪斯科舞厅",
+  "phonetic": "/ˈdɪskoʊ/",
+  "example": "This is a disco.",
+  "exampleZh": "这是一个迪斯科舞厅。",
+  "source": "template+generated",
+  "word_id": "w2997"
+ },
+ {
+  "en": "motorway",
+  "zh": "高速公路",
+  "phonetic": "/ˈməʊtəweɪ/",
+  "example": "This is a motorway.",
+  "exampleZh": "这是一个高速公路。",
+  "source": "template+corrected",
+  "word_id": "w2998"
+ },
+ {
+  "en": "noise",
+  "zh": "噪音",
+  "phonetic": "/nɔɪz/",
+  "example": "This is a noise.",
+  "exampleZh": "这是一个噪音。",
+  "source": "template+generated",
+  "word_id": "w2999"
+ },
+ {
+  "en": "palace",
+  "zh": "宫殿",
+  "phonetic": "/ˈpæləs/",
+  "example": "This is a palace.",
+  "exampleZh": "这是一个宫殿。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "park",
+  "zh": "公园",
+  "phonetic": "/pɑrk/",
+  "example": "This is a park.",
+  "exampleZh": "这是一个公园。",
+  "source": "template+generated",
+  "word_id": "w3001"
+ },
+ {
+  "en": "quiet",
+  "zh": "安静的",
+  "phonetic": "/ˈkwaɪət/",
+  "example": "The library is quiet.",
+  "exampleZh": "图书馆很安静。",
+  "source": "reused",
+  "word_id": "w3002"
+ },
+ {
+  "en": "railway station",
+  "zh": "火车站",
+  "phonetic": "/ˈreɪlˌweɪ ˈsteɪʃən/",
+  "example": "This is a railway station.",
+  "exampleZh": "这是一个火车站。",
+  "source": "template+generated",
+  "word_id": "w3003"
+ },
+ {
+  "en": "roundabout",
+  "zh": "环岛",
+  "phonetic": "/ˈraʊndəbaʊt/",
+  "example": "Turn left at the roundabout.",
+  "exampleZh": "在环岛左转。",
+  "source": "reused",
+  "word_id": "w3004"
+ },
+ {
+  "en": "safe",
+  "zh": "安全的",
+  "phonetic": "/seɪf/",
+  "example": "This area is safe.",
+  "exampleZh": "这个区域很安全。",
+  "source": "reused",
+  "word_id": "w3005"
+ },
+ {
+  "en": "square",
+  "zh": "广场",
+  "phonetic": "/skwɛr/",
+  "example": "This is a square.",
+  "exampleZh": "这是一个广场。",
+  "source": "template+generated",
+  "word_id": "w3006"
+ },
+ {
+  "en": "street",
+  "zh": "街道",
+  "phonetic": "/strit/",
+  "example": "This is a street.",
+  "exampleZh": "这是一个街道。",
+  "source": "template+generated",
+  "word_id": "w3007"
+ },
+ {
+  "en": "supermarket",
+  "zh": "超市",
+  "phonetic": "/ˈsuːpəmɑːkɪt/",
+  "example": "I go to the supermarket.",
+  "exampleZh": "我去超市。",
+  "source": "reused",
+  "word_id": "w3008"
+ },
+ {
+  "en": "traffic lights",
+  "zh": "交通信号灯",
+  "phonetic": "/ˈtræfɪk laɪts/",
+  "example": "This is a traffic lights.",
+  "exampleZh": "这是一个交通信号灯。",
+  "source": "template+generated",
+  "word_id": "w3009"
+ },
+ {
+  "en": "turning",
+  "zh": "转弯处；岔路口",
+  "phonetic": "/ˈtərnɪŋ/",
+  "example": "This is a turning.",
+  "exampleZh": "这是一个转弯处；岔路口。",
+  "source": "template+generated",
+  "word_id": "w3010"
+ }
+]

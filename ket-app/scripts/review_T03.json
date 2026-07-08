@@ -1,0 +1,542 @@
+[
+ {
+  "en": "art",
+  "zh": "艺术",
+  "phonetic": "/ɑrt/",
+  "example": "This is an art.",
+  "exampleZh": "这是一个艺术。",
+  "source": "template+generated",
+  "word_id": "w2964"
+ },
+ {
+  "en": "biology",
+  "zh": "生物学",
+  "phonetic": "/baɪˈɑləʤi/",
+  "example": "This is a biology.",
+  "exampleZh": "这是一个生物学。",
+  "source": "template+generated",
+  "word_id": "w2965"
+ },
+ {
+  "en": "boring",
+  "zh": "无聊的",
+  "phonetic": "/ˈbɔrɪŋ/",
+  "example": "This is a boring.",
+  "exampleZh": "这是一个无聊的。",
+  "source": "template+generated",
+  "word_id": "w2966"
+ },
+ {
+  "en": "chemistry",
+  "zh": "化学",
+  "phonetic": "/ˈkɛmɪstri/",
+  "example": "This is a chemistry.",
+  "exampleZh": "这是一个化学。",
+  "source": "template+generated",
+  "word_id": "w2967"
+ },
+ {
+  "en": "dull",
+  "zh": "无趣的，乏味的",
+  "phonetic": "/dəl/",
+  "example": "This is a dull.",
+  "exampleZh": "这是一个无趣的，乏味的。",
+  "source": "template+generated",
+  "word_id": "w2968"
+ },
+ {
+  "en": "English",
+  "zh": "英语",
+  "phonetic": "/ˈɪŋlɪʃ/",
+  "example": "This is an English.",
+  "exampleZh": "这是一个英语。",
+  "source": "template+generated",
+  "word_id": "w2969"
+ },
+ {
+  "en": "enjoyable",
+  "zh": "愉快的",
+  "phonetic": "/ˌɛnˈʤɔɪəbəl/",
+  "example": "This is an enjoyable.",
+  "exampleZh": "这是一个愉快的。",
+  "source": "template+generated",
+  "word_id": "w2970"
+ },
+ {
+  "en": "geography",
+  "zh": "地理",
+  "phonetic": "/ʤiˈɑgrəfi/",
+  "example": "This is a geography.",
+  "exampleZh": "这是一个地理。",
+  "source": "template+generated",
+  "word_id": "w2971"
+ },
+ {
+  "en": "hard",
+  "zh": "困难的",
+  "phonetic": "/hɑrd/",
+  "example": "This is a hard.",
+  "exampleZh": "这是一个困难的。",
+  "source": "template+generated",
+  "word_id": "w2972"
+ },
+ {
+  "en": "history",
+  "zh": "历史",
+  "phonetic": "/ˈhɪstəri/",
+  "example": "This is a history.",
+  "exampleZh": "这是一个历史。",
+  "source": "template+generated",
+  "word_id": "w2973"
+ },
+ {
+  "en": "language",
+  "zh": "语言",
+  "phonetic": "/ˈlæŋgwɪʤ/",
+  "example": "This is a language.",
+  "exampleZh": "这是一个语言。",
+  "source": "template+generated",
+  "word_id": "w2974"
+ },
+ {
+  "en": "literature",
+  "zh": "文学",
+  "phonetic": "/ˈlɪtərəʧər/",
+  "example": "This is a literature.",
+  "exampleZh": "这是一个文学。",
+  "source": "template+generated",
+  "word_id": "w2975"
+ },
+ {
+  "en": "maths",
+  "zh": "数学",
+  "phonetic": "/mæθs/",
+  "example": "This is a maths.",
+  "exampleZh": "这是一个数学。",
+  "source": "template+corrected",
+  "word_id": "w2976"
+ },
+ {
+  "en": "mathematics",
+  "zh": "数学",
+  "phonetic": "/ˌmæθəˈmætɪks/",
+  "example": "This is a mathematics.",
+  "exampleZh": "这是一个数学。",
+  "source": "template+generated",
+  "word_id": "w2977"
+ },
+ {
+  "en": "music",
+  "zh": "音乐",
+  "phonetic": "/ˈmjuːzɪk/",
+  "example": "I like music.",
+  "exampleZh": "我喜欢音乐。",
+  "source": "reused",
+  "word_id": "w2978"
+ },
+ {
+  "en": "physics",
+  "zh": "物理学",
+  "phonetic": "/ˈfɪzɪks/",
+  "example": "This is a physics.",
+  "exampleZh": "这是一个物理学。",
+  "source": "template+generated",
+  "word_id": "w2979"
+ },
+ {
+  "en": "science",
+  "zh": "科学",
+  "phonetic": "/saɪəns/",
+  "example": "This is a science.",
+  "exampleZh": "这是一个科学。",
+  "source": "template+generated",
+  "word_id": "w2980"
+ },
+ {
+  "en": "sport",
+  "zh": "体育运动",
+  "phonetic": "/spɔrt/",
+  "example": "This is a sport.",
+  "exampleZh": "这是一个体育运动。",
+  "source": "template+generated",
+  "word_id": "w2981"
+ },
+ {
+  "en": "useful",
+  "zh": "有用的",
+  "phonetic": "/ˈjusfəl/",
+  "example": "This is an useful.",
+  "exampleZh": "这是一个有用的。",
+  "source": "template+generated",
+  "word_id": "w2982"
+ },
+ {
+  "en": "useless",
+  "zh": "无用的",
+  "phonetic": "/ˈjusləs/",
+  "example": "This is an useless.",
+  "exampleZh": "这是一个无用的。",
+  "source": "template+generated",
+  "word_id": "w2983"
+ },
+ {
+  "en": "reading",
+  "zh": "阅读；阅读材料",
+  "phonetic": "/ˈrɛdɪŋ/",
+  "example": "This is a reading.",
+  "exampleZh": "这是一个阅读；阅读材料。",
+  "source": "template+generated",
+  "word_id": "w2984"
+ },
+ {
+  "en": "say",
+  "zh": "说",
+  "phonetic": "/seɪ/",
+  "example": "This is a say.",
+  "exampleZh": "这是一个说。",
+  "source": "template+generated",
+  "word_id": "w2985"
+ },
+ {
+  "en": "speaking",
+  "zh": "说话；谈话",
+  "phonetic": "/ˈspikɪŋ/",
+  "example": "This is a speaking.",
+  "exampleZh": "这是一个说话；谈话。",
+  "source": "template+generated",
+  "word_id": "w2986"
+ },
+ {
+  "en": "spelling",
+  "zh": "拼写",
+  "phonetic": "/ˈspɛlɪŋ/",
+  "example": "This is a spelling.",
+  "exampleZh": "这是一个拼写。",
+  "source": "template+generated",
+  "word_id": "w2987"
+ },
+ {
+  "en": "vocabulary",
+  "zh": "词汇",
+  "phonetic": "/voʊˈkæbjəˌlɛri/",
+  "example": "This is a vocabulary.",
+  "exampleZh": "这是一个词汇。",
+  "source": "template+generated",
+  "word_id": "w2988"
+ },
+ {
+  "en": "writing",
+  "zh": "写作",
+  "phonetic": "/ˈraɪtɪŋ/",
+  "example": "This is a writing.",
+  "exampleZh": "这是一个写作。",
+  "source": "template+generated",
+  "word_id": "w2989"
+ },
+ {
+  "en": "advanced",
+  "zh": "高级的",
+  "phonetic": "/ədˈvænst/",
+  "example": "This is an advanced.",
+  "exampleZh": "这是一个高级的。",
+  "source": "template+generated",
+  "word_id": "w2990"
+ },
+ {
+  "en": "beginner",
+  "zh": "初学者",
+  "phonetic": "/bɪˈgɪnər/",
+  "example": "This is a beginner.",
+  "exampleZh": "这是一个初学者。",
+  "source": "template+generated",
+  "word_id": "w2991"
+ },
+ {
+  "en": "bell",
+  "zh": "铃；钟",
+  "phonetic": "/bɛl/",
+  "example": "This is a bell.",
+  "exampleZh": "这是一个铃；钟。",
+  "source": "template+generated",
+  "word_id": "w2992"
+ },
+ {
+  "en": "bookshelf",
+  "zh": "书架",
+  "phonetic": "/ˈbʊkʃelf/",
+  "example": "The bookshelf is full.",
+  "exampleZh": "书架满了。",
+  "source": "reused",
+  "word_id": "w2993"
+ },
+ {
+  "en": "break",
+  "zh": "间歇",
+  "phonetic": "/breɪk/",
+  "example": "This is a break.",
+  "exampleZh": "这是一个间歇。",
+  "source": "template+generated",
+  "word_id": "w2994"
+ },
+ {
+  "en": "classmate",
+  "zh": "同班同学",
+  "phonetic": "/ˈklɑːsmeɪt/",
+  "example": "My classmate sits next to me.",
+  "exampleZh": "我同学坐在我旁边。",
+  "source": "reused",
+  "word_id": "w2995"
+ },
+ {
+  "en": "fair",
+  "zh": "公平的",
+  "phonetic": "/fɛr/",
+  "example": "This is a fair.",
+  "exampleZh": "这是一个公平的。",
+  "source": "template+generated",
+  "word_id": "w2996"
+ },
+ {
+  "en": "clever",
+  "zh": "聪明的",
+  "phonetic": "/ˈklɛvər/",
+  "example": "This is a clever.",
+  "exampleZh": "这是一个聪明的。",
+  "source": "template+generated",
+  "word_id": "w2997"
+ },
+ {
+  "en": "college",
+  "zh": "学院；大学",
+  "phonetic": "/ˈkɑlɪʤ/",
+  "example": "This is a college.",
+  "exampleZh": "这是一个学院；大学。",
+  "source": "template+generated",
+  "word_id": "w2998"
+ },
+ {
+  "en": "course",
+  "zh": "课程；科目",
+  "phonetic": "/kɔrs/",
+  "example": "This is a course.",
+  "exampleZh": "这是一个课程；科目。",
+  "source": "template+generated",
+  "word_id": "w2999"
+ },
+ {
+  "en": "fail an exam",
+  "zh": "考试不及格",
+  "phonetic": "/feɪl ən ɪgˈzæm/",
+  "example": "This is a fail an exam.",
+  "exampleZh": "这是一个考试不及格。",
+  "source": "template+generated",
+  "word_id": "w3000"
+ },
+ {
+  "en": "failure",
+  "zh": "失败",
+  "phonetic": "/ˈfeɪljər/",
+  "example": "This is a failure.",
+  "exampleZh": "这是一个失败。",
+  "source": "template+generated",
+  "word_id": "w3001"
+ },
+ {
+  "en": "intelligent",
+  "zh": "聪明的",
+  "phonetic": "/ˌɪnˈtɛləʤənt/",
+  "example": "This is an intelligent.",
+  "exampleZh": "这是一个聪明的。",
+  "source": "template+generated",
+  "word_id": "w3002"
+ },
+ {
+  "en": "kind",
+  "zh": "和蔼的",
+  "phonetic": "/kaɪnd/",
+  "example": "She is a kind person.",
+  "exampleZh": "她是一个善良的人。",
+  "source": "reused",
+  "word_id": "w3003"
+ },
+ {
+  "en": "laboratory",
+  "zh": "实验室",
+  "phonetic": "/ˈlæbrəˌtɔri/",
+  "example": "This is a laboratory.",
+  "exampleZh": "这是一个实验室。",
+  "source": "template+generated",
+  "word_id": "w3004"
+ },
+ {
+  "en": "make progress",
+  "zh": "取得进步",
+  "phonetic": "/meɪk ˈprɑˌgrɛs/",
+  "example": "This is a make progress.",
+  "exampleZh": "这是一个取得进步。",
+  "source": "template+generated",
+  "word_id": "w3005"
+ },
+ {
+  "en": "mark",
+  "zh": "分数",
+  "phonetic": "/mɑrk/",
+  "example": "This is a mark.",
+  "exampleZh": "这是一个分数。",
+  "source": "template+generated",
+  "word_id": "w3006"
+ },
+ {
+  "en": "method",
+  "zh": "方法",
+  "phonetic": "/ˈmɛθəd/",
+  "example": "This is a method.",
+  "exampleZh": "这是一个方法。",
+  "source": "template+generated",
+  "word_id": "w3007"
+ },
+ {
+  "en": "note",
+  "zh": "笔记",
+  "phonetic": "/noʊt/",
+  "example": "This is a note.",
+  "exampleZh": "这是一个笔记。",
+  "source": "template+generated",
+  "word_id": "w3008"
+ },
+ {
+  "en": "notebook",
+  "zh": "笔记本",
+  "phonetic": "/ˈnoʊtˌbʊk/",
+  "example": "This is a notebook.",
+  "exampleZh": "这是一个笔记本。",
+  "source": "template+generated",
+  "word_id": "w3009"
+ },
+ {
+  "en": "pass an exam",
+  "zh": "考试及格",
+  "phonetic": "/pæs ən ɪgˈzæm/",
+  "example": "This is a pass an exam.",
+  "exampleZh": "这是一个考试及格。",
+  "source": "template+generated",
+  "word_id": "w3010"
+ },
+ {
+  "en": "pupil",
+  "zh": "小学生",
+  "phonetic": "/ˈpjupəl/",
+  "example": "This is a pupil.",
+  "exampleZh": "这是一个小学生。",
+  "source": "template+generated",
+  "word_id": "w3011"
+ },
+ {
+  "en": "report",
+  "zh": "报告",
+  "phonetic": "/rɪˈpɔrt/",
+  "example": "This is a report.",
+  "exampleZh": "这是一个报告。",
+  "source": "template+generated",
+  "word_id": "w3012"
+ },
+ {
+  "en": "result",
+  "zh": "结果",
+  "phonetic": "/rɪˈzəlt/",
+  "example": "This is a result.",
+  "exampleZh": "这是一个结果。",
+  "source": "template+generated",
+  "word_id": "w3013"
+ },
+ {
+  "en": "revise",
+  "zh": "复习",
+  "phonetic": "/rɪˈvaɪz/",
+  "example": "This is a revise.",
+  "exampleZh": "这是一个复习。",
+  "source": "template+generated",
+  "word_id": "w3014"
+ },
+ {
+  "en": "rubber",
+  "zh": "橡皮；黑板擦",
+  "phonetic": "/ˈrəbər/",
+  "example": "This is a rubber.",
+  "exampleZh": "这是一个橡皮；黑板擦。",
+  "source": "template+generated",
+  "word_id": "w3015"
+ },
+ {
+  "en": "serious",
+  "zh": "严肃的；认真的",
+  "phonetic": "/ˈsɪəriəs/",
+  "example": "He is a serious teacher.",
+  "exampleZh": "他是一位严肃的老师。",
+  "source": "reused",
+  "word_id": "w3016"
+ },
+ {
+  "en": "strict",
+  "zh": "严格的；严厉的",
+  "phonetic": "/strɪkt/",
+  "example": "This is a strict.",
+  "exampleZh": "这是一个严格的；严厉的。",
+  "source": "template+generated",
+  "word_id": "w3017"
+ },
+ {
+  "en": "take an exam",
+  "zh": "参加考试",
+  "phonetic": "/teɪk ən ɪgˈzæm/",
+  "example": "This is a take an exam.",
+  "exampleZh": "这是一个参加考试。",
+  "source": "template+generated",
+  "word_id": "w3018"
+ },
+ {
+  "en": "term",
+  "zh": "学期",
+  "phonetic": "/tərm/",
+  "example": "This is a term.",
+  "exampleZh": "这是一个学期。",
+  "source": "template+generated",
+  "word_id": "w3019"
+ },
+ {
+  "en": "test",
+  "zh": "测试；试验",
+  "phonetic": "/tɛst/",
+  "example": "This is a test.",
+  "exampleZh": "这是一个测试；试验。",
+  "source": "template+generated",
+  "word_id": "w3020"
+ },
+ {
+  "en": "textbook",
+  "zh": "课本",
+  "phonetic": "/ˈtɛkstˌbʊk/",
+  "example": "This is a textbook.",
+  "exampleZh": "这是一个课本。",
+  "source": "template+generated",
+  "word_id": "w3021"
+ },
+ {
+  "en": "trainer",
+  "zh": "教练员",
+  "phonetic": "/ˈtreɪnər/",
+  "example": "This is a trainer.",
+  "exampleZh": "这是一个教练员。",
+  "source": "template+generated",
+  "word_id": "w3022"
+ },
+ {
+  "en": "university",
+  "zh": "大学",
+  "phonetic": "/ˌjunəˈvərsəti/",
+  "example": "This is an university.",
+  "exampleZh": "这是一个大学。",
+  "source": "template+generated",
+  "word_id": "w3023"
+ }
+]
