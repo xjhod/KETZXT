@@ -47,6 +47,13 @@ def clean_entry(en):
     en = re.sub(r"[（(][^）)]*$", "", en).strip()            # 残留左括号
     en = re.sub(r"\s+(v\.|n\.|adj\.|adv\.|sb\.|sth\.|prep\.|conj\.|pron\.|int\.|phr\.|pl\.|num\.)$", "", en, flags=re.I).strip()
     en = en.replace("*", "").replace("  ", " ").strip()
+    # 处理 "a/b" 备选写法 -> 空格(保留两种说法); 处理 "MP3 player MP3" 尾词重复
+    en = en.replace("/", " ")
+    parts = en.split()
+    if len(parts) > 1 and parts[0].lower() == parts[-1].lower():
+        parts = parts[:-1]
+        en = " ".join(parts)
+    en = " ".join(en.split())
     if not en:
         return None
     e = en.lower().rstrip(".")
@@ -58,7 +65,8 @@ def gen_ipa(en):
     """返回 (phonetic, source) 。source: corrected/generated/broken/empty"""
     corr = load_json("ipa_corrections.json")
     if en in corr:
-        return "/" + corr[en] + "/", "corrected"
+        ph = corr[en].strip().strip("/")
+        return "/" + ph + "/", "corrected"
     ph = None
     if HAVE_G2P:
         try:
