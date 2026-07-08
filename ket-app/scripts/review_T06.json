@@ -6,7 +6,7 @@
   "example": "This is an ache.",
   "exampleZh": "这是一个疼痛。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3553"
  },
  {
   "en": "appointment",
@@ -15,7 +15,7 @@
   "example": "This is an appointment.",
   "exampleZh": "这是一个预约。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3554"
  },
  {
   "en": "be injured",
@@ -24,7 +24,7 @@
   "example": "This is a be injured.",
   "exampleZh": "这是一个受伤。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3555"
  },
  {
   "en": "break",
@@ -33,7 +33,7 @@
   "example": "This is a break.",
   "exampleZh": "这是一个折断（鼻子）。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3556"
  },
  {
   "en": "check",
@@ -42,7 +42,7 @@
   "example": "Check your work.",
   "exampleZh": "检查你的工作。",
   "source": "reused",
-  "word_id": "w2968"
+  "word_id": "w3557"
  },
  {
   "en": "dentist",
@@ -51,7 +51,7 @@
   "example": "This is a dentist.",
   "exampleZh": "这是一个牙医。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3558"
  },
  {
   "en": "feel",
@@ -60,7 +60,7 @@
   "example": "This is a feel.",
   "exampleZh": "这是一个感觉。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3559"
  },
  {
   "en": "glasses",
@@ -69,7 +69,7 @@
   "example": "This is a glasses.",
   "exampleZh": "这是一个眼镜。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3560"
  },
  {
   "en": "patient",
@@ -78,7 +78,7 @@
   "example": "This is a patient.",
   "exampleZh": "这是一个病人。",
   "source": "template+generated",
-  "word_id": "w2972"
+  "word_id": "w3561"
  },
  {
   "en": "put on weight",
@@ -87,7 +87,7 @@
   "example": "This is a put on weight.",
   "exampleZh": "这是一个增肥。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3562"
  },
  {
   "en": "active",
@@ -96,7 +96,7 @@
   "example": "This is an active.",
   "exampleZh": "这是一个活跃的；积极的。",
   "source": "template+generated",
-  "word_id": "w2974"
+  "word_id": "w3563"
  },
  {
   "en": "cycle",
@@ -105,7 +105,7 @@
   "example": "This is a cycle.",
   "exampleZh": "这是一个骑自行车。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3564"
  },
  {
   "en": "fat",
@@ -114,7 +114,7 @@
   "example": "This is a fat.",
   "exampleZh": "这是一个脂肪。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3565"
  },
  {
   "en": "fit",
@@ -123,7 +123,7 @@
   "example": "These shoes fit well.",
   "exampleZh": "这双鞋很合身。",
   "source": "reused",
-  "word_id": "w2977"
+  "word_id": "w3566"
  },
  {
   "en": "gym",
@@ -132,7 +132,7 @@
   "example": "This is a gym.",
   "exampleZh": "这是一个体育馆；健身房。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3567"
  },
  {
   "en": "inactive",
@@ -141,7 +141,7 @@
   "example": "This is an inactive.",
   "exampleZh": "这是一个不活跃的。",
   "source": "template+generated",
-  "word_id": "w2979"
+  "word_id": "w3568"
  },
  {
   "en": "get keep fit",
@@ -150,7 +150,7 @@
   "example": "This is a get keep fit.",
   "exampleZh": "这是一个变得 / 保持健康。",
   "source": "template+corrected",
-  "word_id": "w2980"
+  "word_id": "w3569"
  },
  {
   "en": "park",
@@ -159,7 +159,7 @@
   "example": "This is a park.",
   "exampleZh": "这是一个公园。",
   "source": "template+generated",
-  "word_id": "w2981"
+  "word_id": "w3570"
  },
  {
   "en": "run",
@@ -168,7 +168,7 @@
   "example": "I run every morning.",
   "exampleZh": "我每天早上跑步。",
   "source": "reused",
-  "word_id": "w2982"
+  "word_id": "w3571"
  },
  {
   "en": "swim",
@@ -177,7 +177,7 @@
   "example": "I can swim.",
   "exampleZh": "我会游泳。",
   "source": "reused",
-  "word_id": "w2983"
+  "word_id": "w3572"
  },
  {
   "en": "thirsty",
@@ -186,7 +186,7 @@
   "example": "I am thirsty. I need water.",
   "exampleZh": "我渴了，需要水。",
   "source": "reused",
-  "word_id": "w2984"
+  "word_id": "w3573"
  },
  {
   "en": "use",
@@ -195,7 +195,7 @@
   "example": "This is an use.",
   "exampleZh": "这是一个使用。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3574"
  },
  {
   "en": "walk",
@@ -204,7 +204,7 @@
   "example": "This is a walk.",
   "exampleZh": "这是一个步行。",
   "source": "template+generated",
-  "word_id": "w2986"
+  "word_id": "w3575"
  },
  {
   "en": "weight",
@@ -213,6 +213,6 @@
   "example": "This is a weight.",
   "exampleZh": "这是一个体重。",
   "source": "template+generated",
-  "word_id": "w2987"
+  "word_id": "w3576"
  }
 ]

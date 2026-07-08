@@ -6,7 +6,7 @@
   "example": "We met him at the airport.",
   "exampleZh": "我们在机场接的他。",
   "source": "reused",
-  "word_id": "w2964"
+  "word_id": "w3167"
  },
  {
   "en": "arrival",
@@ -15,7 +15,7 @@
   "example": "This is an arrival.",
   "exampleZh": "这是一个到达。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3168"
  },
  {
   "en": "backpack",
@@ -24,7 +24,7 @@
   "example": "I carry a backpack.",
   "exampleZh": "我背一个背包。",
   "source": "reused",
-  "word_id": "w2966"
+  "word_id": "w3169"
  },
  {
   "en": "boarding pass",
@@ -33,7 +33,7 @@
   "example": "Show your boarding pass.",
   "exampleZh": "出示你的登机牌。",
   "source": "reused",
-  "word_id": "w2967"
+  "word_id": "w3170"
  },
  {
   "en": "by air",
@@ -42,7 +42,7 @@
   "example": "This is a by air.",
   "exampleZh": "这是一个乘飞机。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3171"
  },
  {
   "en": "by land",
@@ -51,7 +51,7 @@
   "example": "This is a by land.",
   "exampleZh": "这是一个由陆路。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3172"
  },
  {
   "en": "by rail",
@@ -60,7 +60,7 @@
   "example": "This is a by rail.",
   "exampleZh": "这是一个乘火车；由铁路。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3173"
  },
  {
   "en": "by road",
@@ -69,7 +69,7 @@
   "example": "This is a by road.",
   "exampleZh": "这是一个由公路。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3174"
  },
  {
   "en": "by sea",
@@ -78,7 +78,7 @@
   "example": "This is a by sea.",
   "exampleZh": "这是一个乘船；走水路。",
   "source": "template+generated",
-  "word_id": "w2972"
+  "word_id": "w3175"
  },
  {
   "en": "check-in",
@@ -87,7 +87,7 @@
   "example": "This is a check-in.",
   "exampleZh": "这是一个登记；登记处。",
   "source": "template+corrected",
-  "word_id": "w2973"
+  "word_id": "w3176"
  },
  {
   "en": "comfortable",
@@ -96,7 +96,7 @@
   "example": "The bed is comfortable.",
   "exampleZh": "床很舒适。",
   "source": "reused",
-  "word_id": "w2974"
+  "word_id": "w3177"
  },
  {
   "en": "convenient",
@@ -105,7 +105,7 @@
   "example": "This is a convenient.",
   "exampleZh": "这是一个方便的，便利的。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3178"
  },
  {
   "en": "crowded",
@@ -114,7 +114,7 @@
   "example": "This is a crowded.",
   "exampleZh": "这是一个拥挤的。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3179"
  },
  {
   "en": "dangerous",
@@ -123,7 +123,7 @@
   "example": "Be careful, it is dangerous.",
   "exampleZh": "小心，很危险。",
   "source": "reused",
-  "word_id": "w2977"
+  "word_id": "w3180"
  },
  {
   "en": "delay",
@@ -132,7 +132,7 @@
   "example": "The flight is delayed.",
   "exampleZh": "航班延误了。",
   "source": "reused",
-  "word_id": "w2978"
+  "word_id": "w3181"
  },
  {
   "en": "driver",
@@ -141,7 +141,7 @@
   "example": "My father is a driver.",
   "exampleZh": "我爸爸是一名司机。",
   "source": "reused",
-  "word_id": "w2979"
+  "word_id": "w3182"
  },
  {
   "en": "empty",
@@ -150,7 +150,7 @@
   "example": "This is an empty.",
   "exampleZh": "这是一个空的；空闲的。",
   "source": "template+generated",
-  "word_id": "w2980"
+  "word_id": "w3183"
  },
  {
   "en": "fare",
@@ -159,7 +159,7 @@
   "example": "This is a fare.",
   "exampleZh": "这是一个票价。",
   "source": "template+generated",
-  "word_id": "w2981"
+  "word_id": "w3184"
  },
  {
   "en": "gate",
@@ -168,7 +168,7 @@
   "example": "Go to gate 12.",
   "exampleZh": "去12号登机口。",
   "source": "reused",
-  "word_id": "w2982"
+  "word_id": "w3185"
  },
  {
   "en": "land",
@@ -177,7 +177,7 @@
   "example": "This is a land.",
   "exampleZh": "这是一个着陆。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3186"
  },
  {
   "en": "leave",
@@ -186,7 +186,7 @@
   "example": "This is a leave.",
   "exampleZh": "这是一个离开。",
   "source": "template+generated",
-  "word_id": "w2984"
+  "word_id": "w3187"
  },
  {
   "en": "lounge",
@@ -195,7 +195,7 @@
   "example": "This is a lounge.",
   "exampleZh": "这是一个休息室。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3188"
  },
  {
   "en": "luggage",
@@ -204,7 +204,7 @@
   "example": "Do you have any luggage?",
   "exampleZh": "你有行李吗？",
   "source": "reused",
-  "word_id": "w2986"
+  "word_id": "w3189"
  },
  {
   "en": "noisy",
@@ -213,7 +213,7 @@
   "example": "The classroom is noisy.",
   "exampleZh": "教室很吵闹。",
   "source": "reused",
-  "word_id": "w2987"
+  "word_id": "w3190"
  },
  {
   "en": "passenger",
@@ -222,7 +222,7 @@
   "example": "All passengers must fasten seatbelts.",
   "exampleZh": "所有乘客必须系好安全带。",
   "source": "reused",
-  "word_id": "w2988"
+  "word_id": "w3191"
  },
  {
   "en": "pilot",
@@ -231,7 +231,7 @@
   "example": "The pilot is very experienced.",
   "exampleZh": "飞行员很有经验。",
   "source": "reused",
-  "word_id": "w2989"
+  "word_id": "w3192"
  },
  {
   "en": "platform",
@@ -240,7 +240,7 @@
   "example": "Wait on platform 3.",
   "exampleZh": "在3号站台等。",
   "source": "reused",
-  "word_id": "w2990"
+  "word_id": "w3193"
  },
  {
   "en": "quiet",
@@ -249,7 +249,7 @@
   "example": "The library is quiet.",
   "exampleZh": "图书馆很安静。",
   "source": "reused",
-  "word_id": "w2991"
+  "word_id": "w3194"
  },
  {
   "en": "safe",
@@ -258,7 +258,7 @@
   "example": "This area is safe.",
   "exampleZh": "这个区域很安全。",
   "source": "reused",
-  "word_id": "w2992"
+  "word_id": "w3195"
  },
  {
   "en": "safety",
@@ -267,7 +267,7 @@
   "example": "This is a safety.",
   "exampleZh": "这是一个安全。",
   "source": "template+generated",
-  "word_id": "w2993"
+  "word_id": "w3196"
  },
  {
   "en": "seat",
@@ -276,7 +276,7 @@
   "example": "My seat is 14A.",
   "exampleZh": "我的座位是14A。",
   "source": "reused",
-  "word_id": "w2994"
+  "word_id": "w3197"
  },
  {
   "en": "station",
@@ -285,7 +285,7 @@
   "example": "The bus station is near my home.",
   "exampleZh": "公交车站在我家附近。",
   "source": "reused",
-  "word_id": "w2995"
+  "word_id": "w3198"
  },
  {
   "en": "take off",
@@ -294,7 +294,7 @@
   "example": "The plane takes off at 3 p.m.",
   "exampleZh": "飞机下午3点起飞。",
   "source": "reused",
-  "word_id": "w2996"
+  "word_id": "w3199"
  },
  {
   "en": "terminal",
@@ -303,7 +303,7 @@
   "example": "Meet me at the terminal.",
   "exampleZh": "在航站楼见我。",
   "source": "reused",
-  "word_id": "w2997"
+  "word_id": "w3200"
  },
  {
   "en": "timetable",
@@ -312,7 +312,7 @@
   "example": "Check the timetable.",
   "exampleZh": "查看时刻表。",
   "source": "reused",
-  "word_id": "w2998"
+  "word_id": "w3201"
  },
  {
   "en": "traffic",
@@ -321,7 +321,7 @@
   "example": "There is a lot of traffic this morning.",
   "exampleZh": "今天早上交通很拥堵。",
   "source": "reused",
-  "word_id": "w2999"
+  "word_id": "w3202"
  },
  {
   "en": "traffic lights",
@@ -330,7 +330,7 @@
   "example": "This is a traffic lights.",
   "exampleZh": "这是一个交通信号灯。",
   "source": "template+generated",
-  "word_id": "w3000"
+  "word_id": "w3203"
  },
  {
   "en": "trip",
@@ -339,7 +339,7 @@
   "example": "We went on a trip.",
   "exampleZh": "我们去旅行了。",
   "source": "reused",
-  "word_id": "w3001"
+  "word_id": "w3204"
  },
  {
   "en": "visit",
@@ -348,7 +348,7 @@
   "example": "This is a visit.",
   "exampleZh": "这是一个访问；参观。",
   "source": "template+generated",
-  "word_id": "w3002"
+  "word_id": "w3205"
  },
  {
   "en": "visitor",
@@ -357,7 +357,7 @@
   "example": "This is a visitor.",
   "exampleZh": "这是一个来访者；参观者。",
   "source": "template+generated",
-  "word_id": "w3003"
+  "word_id": "w3206"
  },
  {
   "en": "uncomfortable",
@@ -366,7 +366,7 @@
   "example": "This is an uncomfortable.",
   "exampleZh": "这是一个不舒服的。",
   "source": "template+generated",
-  "word_id": "w3004"
+  "word_id": "w3207"
  },
  {
   "en": "waiting room",
@@ -375,7 +375,7 @@
   "example": "This is a waiting room.",
   "exampleZh": "这是一个候车室。",
   "source": "template+generated",
-  "word_id": "w3005"
+  "word_id": "w3208"
  },
  {
   "en": "upset",
@@ -384,7 +384,7 @@
   "example": "This is an upset.",
   "exampleZh": "这是一个心烦意乱的。",
   "source": "template+generated",
-  "word_id": "w3006"
+  "word_id": "w3209"
  },
  {
   "en": "worried",
@@ -393,7 +393,7 @@
   "example": "I am worried about the exam.",
   "exampleZh": "我担心考试。",
   "source": "reused",
-  "word_id": "w3007"
+  "word_id": "w3210"
  },
  {
   "en": "campsite",
@@ -402,7 +402,7 @@
   "example": "This is a campsite.",
   "exampleZh": "这是一个野营地。",
   "source": "template+generated",
-  "word_id": "w3008"
+  "word_id": "w3211"
  },
  {
   "en": "climbing",
@@ -411,7 +411,7 @@
   "example": "This is a climbing.",
   "exampleZh": "这是一个爬山。",
   "source": "template+generated",
-  "word_id": "w3009"
+  "word_id": "w3212"
  },
  {
   "en": "club",
@@ -420,7 +420,7 @@
   "example": "This is a club.",
   "exampleZh": "这是一个社团，俱乐部。",
   "source": "template+generated",
-  "word_id": "w3010"
+  "word_id": "w3213"
  },
  {
   "en": "dancing",
@@ -429,7 +429,7 @@
   "example": "This is a dancing.",
   "exampleZh": "这是一个跳舞。",
   "source": "template+generated",
-  "word_id": "w3011"
+  "word_id": "w3214"
  },
  {
   "en": "equipment",
@@ -438,7 +438,7 @@
   "example": "This is an equipment.",
   "exampleZh": "这是一个设备。",
   "source": "template+generated",
-  "word_id": "w3012"
+  "word_id": "w3215"
  },
  {
   "en": "fee",
@@ -447,7 +447,7 @@
   "example": "This is a fee.",
   "exampleZh": "这是一个费用。",
   "source": "template+generated",
-  "word_id": "w3013"
+  "word_id": "w3216"
  },
  {
   "en": "life jacket",
@@ -456,7 +456,7 @@
   "example": "This is a life jacket.",
   "exampleZh": "这是一个救生衣。",
   "source": "template+generated",
-  "word_id": "w3014"
+  "word_id": "w3217"
  },
  {
   "en": "member",
@@ -465,7 +465,7 @@
   "example": "This is a member.",
   "exampleZh": "这是一个会员。",
   "source": "template+generated",
-  "word_id": "w3015"
+  "word_id": "w3218"
  },
  {
   "en": "membership",
@@ -474,7 +474,7 @@
   "example": "This is a membership.",
   "exampleZh": "这是一个会员身份。",
   "source": "template+generated",
-  "word_id": "w3016"
+  "word_id": "w3219"
  },
  {
   "en": "sailing",
@@ -483,7 +483,7 @@
   "example": "This is a sailing.",
   "exampleZh": "这是一个帆船运动。",
   "source": "template+generated",
-  "word_id": "w3017"
+  "word_id": "w3220"
  },
  {
   "en": "society",
@@ -492,6 +492,6 @@
   "example": "This is a society.",
   "exampleZh": "这是一个社团。",
   "source": "template+generated",
-  "word_id": "w3018"
+  "word_id": "w3221"
  }
 ]

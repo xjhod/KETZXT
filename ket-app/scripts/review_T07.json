@@ -6,7 +6,7 @@
   "example": "This is a bright.",
   "exampleZh": "这是一个明亮的。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3527"
  },
  {
   "en": "clear",
@@ -15,7 +15,7 @@
   "example": "This is a clear.",
   "exampleZh": "这是一个晴朗的。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3528"
  },
  {
   "en": "foggy",
@@ -24,7 +24,7 @@
   "example": "This is a foggy.",
   "exampleZh": "这是一个有雾的。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3529"
  },
  {
   "en": "heat",
@@ -33,7 +33,7 @@
   "example": "This is a heat.",
   "exampleZh": "这是一个热。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3530"
  },
  {
   "en": "heavy",
@@ -42,7 +42,7 @@
   "example": "This is a heavy.",
   "exampleZh": "这是一个大量的；猛烈的。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3531"
  },
  {
   "en": "high",
@@ -51,7 +51,7 @@
   "example": "This is a high.",
   "exampleZh": "这是一个高的。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3532"
  },
  {
   "en": "icy",
@@ -60,7 +60,7 @@
   "example": "This is an icy.",
   "exampleZh": "这是一个冰冷的。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3533"
  },
  {
   "en": "light",
@@ -69,7 +69,7 @@
   "example": "Turn on the light.",
   "exampleZh": "开灯。",
   "source": "reused",
-  "word_id": "w2971"
+  "word_id": "w3534"
  },
  {
   "en": "low",
@@ -78,7 +78,7 @@
   "example": "This is a low.",
   "exampleZh": "这是一个低的。",
   "source": "template+generated",
-  "word_id": "w2972"
+  "word_id": "w3535"
  },
  {
   "en": "mild",
@@ -87,7 +87,7 @@
   "example": "This is a mild.",
   "exampleZh": "这是一个温和的。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3536"
  },
  {
   "en": "stormy",
@@ -96,7 +96,7 @@
   "example": "This is a stormy.",
   "exampleZh": "这是一个暴风雨的。",
   "source": "template+generated",
-  "word_id": "w2974"
+  "word_id": "w3537"
  },
  {
   "en": "strong",
@@ -105,7 +105,7 @@
   "example": "He is strong.",
   "exampleZh": "他很强壮。",
   "source": "reused",
-  "word_id": "w2975"
+  "word_id": "w3538"
  },
  {
   "en": "sunshine",
@@ -114,7 +114,7 @@
   "example": "This is a sunshine.",
   "exampleZh": "这是一个阳光。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3539"
  },
  {
   "en": "thunderstorm",
@@ -123,7 +123,7 @@
   "example": "This is a thunderstorm.",
   "exampleZh": "这是一个雷暴。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3540"
  },
  {
   "en": "December",
@@ -132,7 +132,7 @@
   "example": "This is a December.",
   "exampleZh": "这是一个十二月。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3541"
  },
  {
   "en": "east",
@@ -141,7 +141,7 @@
   "example": "The sun rises in the east.",
   "exampleZh": "太阳从东方升起。",
   "source": "reused",
-  "word_id": "w2979"
+  "word_id": "w3542"
  },
  {
   "en": "fall",
@@ -150,7 +150,7 @@
   "example": "This is a fall.",
   "exampleZh": "这是一个秋天。",
   "source": "template+generated",
-  "word_id": "w2980"
+  "word_id": "w3543"
  },
  {
   "en": "north",
@@ -159,7 +159,7 @@
   "example": "The north is cold.",
   "exampleZh": "北方很冷。",
   "source": "reused",
-  "word_id": "w2981"
+  "word_id": "w3544"
  },
  {
   "en": "northeast",
@@ -168,7 +168,7 @@
   "example": "This is a northeast.",
   "exampleZh": "这是一个东北。",
   "source": "template+generated",
-  "word_id": "w2982"
+  "word_id": "w3545"
  },
  {
   "en": "northwest",
@@ -177,7 +177,7 @@
   "example": "This is a northwest.",
   "exampleZh": "这是一个西北。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3546"
  },
  {
   "en": "November",
@@ -186,7 +186,7 @@
   "example": "This is a November.",
   "exampleZh": "这是一个十一月。",
   "source": "template+generated",
-  "word_id": "w2984"
+  "word_id": "w3547"
  },
  {
   "en": "October",
@@ -195,7 +195,7 @@
   "example": "This is an October.",
   "exampleZh": "这是一个十月。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3548"
  },
  {
   "en": "south",
@@ -204,7 +204,7 @@
   "example": "The south is warm.",
   "exampleZh": "南方很温暖。",
   "source": "reused",
-  "word_id": "w2986"
+  "word_id": "w3549"
  },
  {
   "en": "southeast",
@@ -213,7 +213,7 @@
   "example": "This is a southeast.",
   "exampleZh": "这是一个东南。",
   "source": "template+generated",
-  "word_id": "w2987"
+  "word_id": "w3550"
  },
  {
   "en": "southwest",
@@ -222,7 +222,7 @@
   "example": "This is a southwest.",
   "exampleZh": "这是一个西南。",
   "source": "template+generated",
-  "word_id": "w2988"
+  "word_id": "w3551"
  },
  {
   "en": "west",
@@ -231,6 +231,6 @@
   "example": "The sun sets in the west.",
   "exampleZh": "太阳从西边落下。",
   "source": "reused",
-  "word_id": "w2989"
+  "word_id": "w3552"
  }
 ]

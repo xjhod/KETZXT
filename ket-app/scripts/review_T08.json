@@ -6,7 +6,7 @@
   "example": "My bag is heavy.",
   "exampleZh": "我的书包很重。",
   "source": "reused",
-  "word_id": "w2964"
+  "word_id": "w3577"
  },
  {
   "en": "clothes",
@@ -15,7 +15,7 @@
   "example": "This is a clothes.",
   "exampleZh": "这是一个衣服。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3578"
  },
  {
   "en": "comfortable",
@@ -24,7 +24,7 @@
   "example": "The bed is comfortable.",
   "exampleZh": "床很舒适。",
   "source": "reused",
-  "word_id": "w2966"
+  "word_id": "w3579"
  },
  {
   "en": "costume",
@@ -33,7 +33,7 @@
   "example": "This is a costume.",
   "exampleZh": "这是一个服装；戏服。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3580"
  },
  {
   "en": "fashionable",
@@ -42,7 +42,7 @@
   "example": "This is a fashionable.",
   "exampleZh": "这是一个时尚的。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3581"
  },
  {
   "en": "get dressed",
@@ -51,7 +51,7 @@
   "example": "This is a get dressed.",
   "exampleZh": "这是一个穿上衣服。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3582"
  },
  {
   "en": "glove",
@@ -60,7 +60,7 @@
   "example": "This is a glove.",
   "exampleZh": "这是一个手套。",
   "source": "template+corrected",
-  "word_id": "w2970"
+  "word_id": "w3583"
  },
  {
   "en": "handkerchief",
@@ -69,7 +69,7 @@
   "example": "This is a handkerchief.",
   "exampleZh": "这是一个手帕。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3584"
  },
  {
   "en": "jewellery",
@@ -78,7 +78,7 @@
   "example": "This is a jewellery.",
   "exampleZh": "这是一个珠宝；首饰。",
   "source": "template+corrected",
-  "word_id": "w2972"
+  "word_id": "w3585"
  },
  {
   "en": "jumper",
@@ -87,7 +87,7 @@
   "example": "This is a jumper.",
   "exampleZh": "这是一个针织套衫。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3586"
  },
  {
   "en": "kit",
@@ -96,7 +96,7 @@
   "example": "This is a kit.",
   "exampleZh": "这是一个全套衣服和装备。",
   "source": "template+generated",
-  "word_id": "w2974"
+  "word_id": "w3587"
  },
  {
   "en": "lipstick",
@@ -105,7 +105,7 @@
   "example": "This is a lipstick.",
   "exampleZh": "这是一个唇膏；口红。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3588"
  },
  {
   "en": "match",
@@ -114,7 +114,7 @@
   "example": "The match is exciting.",
   "exampleZh": "比赛很激动人心。",
   "source": "reused",
-  "word_id": "w2976"
+  "word_id": "w3589"
  },
  {
   "en": "old-fashioned",
@@ -123,7 +123,7 @@
   "example": "This is an old-fashioned.",
   "exampleZh": "这是一个过时的。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3590"
  },
  {
   "en": "pullover",
@@ -132,7 +132,7 @@
   "example": "This is a pullover.",
   "exampleZh": "这是一个套头衫。",
   "source": "template+corrected",
-  "word_id": "w2978"
+  "word_id": "w3591"
  },
  {
   "en": "put on",
@@ -141,7 +141,7 @@
   "example": "This is a put on.",
   "exampleZh": "这是一个穿上。",
   "source": "template+generated",
-  "word_id": "w2979"
+  "word_id": "w3592"
  },
  {
   "en": "sock",
@@ -150,7 +150,7 @@
   "example": "This is a sock.",
   "exampleZh": "这是一个短袜。",
   "source": "template+generated",
-  "word_id": "w2980"
+  "word_id": "w3593"
  },
  {
   "en": "take off",
@@ -159,7 +159,7 @@
   "example": "The plane takes off at 3 p.m.",
   "exampleZh": "飞机下午3点起飞。",
   "source": "reused",
-  "word_id": "w2981"
+  "word_id": "w3594"
  },
  {
   "en": "trainer",
@@ -168,7 +168,7 @@
   "example": "This is a trainer.",
   "exampleZh": "这是一个运动鞋。",
   "source": "template+generated",
-  "word_id": "w2982"
+  "word_id": "w3595"
  },
  {
   "en": "T-shirt T",
@@ -177,7 +177,7 @@
   "example": "This is a T-shirt T.",
   "exampleZh": "这是一个恤衫。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3596"
  },
  {
   "en": "valuable",
@@ -186,7 +186,7 @@
   "example": "This is a valuable.",
   "exampleZh": "这是一个贵重的；值钱的。",
   "source": "template+generated",
-  "word_id": "w2984"
+  "word_id": "w3597"
  },
  {
   "en": "wear out",
@@ -195,7 +195,7 @@
   "example": "This is a wear out.",
   "exampleZh": "这是一个穿破。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3598"
  },
  {
   "en": "woolen",
@@ -204,6 +204,6 @@
   "example": "This is a woolen.",
   "exampleZh": "这是一个羊毛的。",
   "source": "template+generated",
-  "word_id": "w2986"
+  "word_id": "w3599"
  }
 ]

@@ -6,7 +6,7 @@
   "example": "This is an advertisement.",
   "exampleZh": "这是一个广告。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3040"
  },
  {
   "en": "ad",
@@ -15,7 +15,7 @@
   "example": "This is an ad.",
   "exampleZh": "这是一个广告。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3041"
  },
  {
   "en": "article",
@@ -24,7 +24,7 @@
   "example": "This is an article.",
   "exampleZh": "这是一个文章。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3042"
  },
  {
   "en": "card",
@@ -33,7 +33,7 @@
   "example": "This is a card.",
   "exampleZh": "这是一个卡片。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3043"
  },
  {
   "en": "comic",
@@ -42,7 +42,7 @@
   "example": "This is a comic.",
   "exampleZh": "这是一个连环漫画。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3044"
  },
  {
   "en": "diary",
@@ -51,7 +51,7 @@
   "example": "This is a diary.",
   "exampleZh": "这是一个日记。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3045"
  },
  {
   "en": "diploma",
@@ -60,7 +60,7 @@
   "example": "This is a diploma.",
   "exampleZh": "这是一个毕业文凭。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3046"
  },
  {
   "en": "form",
@@ -69,7 +69,7 @@
   "example": "This is a form.",
   "exampleZh": "这是一个表格。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3047"
  },
  {
   "en": "licence",
@@ -78,7 +78,7 @@
   "example": "This is a licence.",
   "exampleZh": "这是一个许可证；执照。",
   "source": "template+generated",
-  "word_id": "w2972"
+  "word_id": "w3048"
  },
  {
   "en": "menu",
@@ -87,7 +87,7 @@
   "example": "Can I see the menu?",
   "exampleZh": "我可以看菜单吗？",
   "source": "reused",
-  "word_id": "w2973"
+  "word_id": "w3049"
  },
  {
   "en": "message",
@@ -96,7 +96,7 @@
   "example": "I send a message.",
   "exampleZh": "我发送一条消息。",
   "source": "reused",
-  "word_id": "w2974"
+  "word_id": "w3050"
  },
  {
   "en": "passport",
@@ -105,7 +105,7 @@
   "example": "I need my passport.",
   "exampleZh": "我需要我的护照。",
   "source": "reused",
-  "word_id": "w2975"
+  "word_id": "w3051"
  },
  {
   "en": "text",
@@ -114,7 +114,7 @@
   "example": "This is a text.",
   "exampleZh": "这是一个文本；课文。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3052"
  },
  {
   "en": "anniversary",
@@ -123,7 +123,7 @@
   "example": "This is an anniversary.",
   "exampleZh": "这是一个周年纪念日。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3053"
  },
  {
   "en": "band",
@@ -132,7 +132,7 @@
   "example": "This is a band.",
   "exampleZh": "这是一个乐队。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3054"
  },
  {
   "en": "bride",
@@ -141,7 +141,7 @@
   "example": "This is a bride.",
   "exampleZh": "这是一个新娘。",
   "source": "template+generated",
-  "word_id": "w2979"
+  "word_id": "w3055"
  },
  {
   "en": "cake",
@@ -150,7 +150,7 @@
   "example": "We baked a cake for her birthday.",
   "exampleZh": "我们为她的生日烤了一个蛋糕。",
   "source": "reused",
-  "word_id": "w2980"
+  "word_id": "w3056"
  },
  {
   "en": "disco",
@@ -159,7 +159,7 @@
   "example": "This is a disco.",
   "exampleZh": "这是一个迪斯科舞厅。",
   "source": "template+generated",
-  "word_id": "w2981"
+  "word_id": "w3057"
  },
  {
   "en": "guest",
@@ -168,7 +168,7 @@
   "example": "We have guests today.",
   "exampleZh": "今天我们家有客人。",
   "source": "reused",
-  "word_id": "w2982"
+  "word_id": "w3058"
  },
  {
   "en": "invitation",
@@ -177,7 +177,7 @@
   "example": "This is an invitation.",
   "exampleZh": "这是一个邀请。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3059"
  },
  {
   "en": "neighbour",
@@ -186,7 +186,7 @@
   "example": "My neighbour is very kind.",
   "exampleZh": "我的邻居很善良。",
   "source": "reused",
-  "word_id": "w2984"
+  "word_id": "w3060"
  },
  {
   "en": "party",
@@ -195,7 +195,7 @@
   "example": "This is a party.",
   "exampleZh": "这是一个派对。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3061"
  },
  {
   "en": "reception",
@@ -204,7 +204,7 @@
   "example": "This is a reception.",
   "exampleZh": "这是一个招待会。",
   "source": "template+generated",
-  "word_id": "w2986"
+  "word_id": "w3062"
  },
  {
   "en": "ring",
@@ -213,7 +213,7 @@
   "example": "She wears a diamond ring.",
   "exampleZh": "她戴一枚钻石戒指。",
   "source": "reused",
-  "word_id": "w2987"
+  "word_id": "w3063"
  },
  {
   "en": "speech",
@@ -222,7 +222,7 @@
   "example": "This is a speech.",
   "exampleZh": "这是一个演讲；发言。",
   "source": "template+generated",
-  "word_id": "w2988"
+  "word_id": "w3064"
  },
  {
   "en": "wedding",
@@ -231,7 +231,7 @@
   "example": "The wedding is in June.",
   "exampleZh": "婚礼在六月举行。",
   "source": "reused",
-  "word_id": "w2989"
+  "word_id": "w3065"
  },
  {
   "en": "assistant",
@@ -240,7 +240,7 @@
   "example": "This is an assistant.",
   "exampleZh": "这是一个助手。",
   "source": "template+generated",
-  "word_id": "w2990"
+  "word_id": "w3066"
  },
  {
   "en": "bill",
@@ -249,7 +249,7 @@
   "example": "Can I have the bill?",
   "exampleZh": "请给我账单。",
   "source": "reused",
-  "word_id": "w2991"
+  "word_id": "w3067"
  },
  {
   "en": "cash",
@@ -258,7 +258,7 @@
   "example": "This is a cash.",
   "exampleZh": "这是一个现金。",
   "source": "template+generated",
-  "word_id": "w2992"
+  "word_id": "w3068"
  },
  {
   "en": "cent",
@@ -267,7 +267,7 @@
   "example": "It costs fifty cents.",
   "exampleZh": "它要50分。",
   "source": "reused",
-  "word_id": "w2993"
+  "word_id": "w3069"
  },
  {
   "en": "change",
@@ -276,7 +276,7 @@
   "example": "Here is your change.",
   "exampleZh": "这是你的零钱。",
   "source": "reused",
-  "word_id": "w2994"
+  "word_id": "w3070"
  },
  {
   "en": "charge",
@@ -285,7 +285,7 @@
   "example": "I need to charge my phone.",
   "exampleZh": "我需要给手机充电。",
   "source": "reused",
-  "word_id": "w2995"
+  "word_id": "w3071"
  },
  {
   "en": "close",
@@ -294,7 +294,7 @@
   "example": "This is a close.",
   "exampleZh": "这是一个关闭；结束。",
   "source": "template+generated",
-  "word_id": "w2996"
+  "word_id": "w3072"
  },
  {
   "en": "cost",
@@ -303,7 +303,7 @@
   "example": "How much does it cost?",
   "exampleZh": "它要多少钱？",
   "source": "reused",
-  "word_id": "w2997"
+  "word_id": "w3073"
  },
  {
   "en": "credit card",
@@ -312,7 +312,7 @@
   "example": "This is a credit card.",
   "exampleZh": "这是一个信用卡。",
   "source": "template+generated",
-  "word_id": "w2998"
+  "word_id": "w3074"
  },
  {
   "en": "customer",
@@ -321,7 +321,7 @@
   "example": "The customer buys a shirt.",
   "exampleZh": "顾客买了一件衬衫。",
   "source": "reused",
-  "word_id": "w2999"
+  "word_id": "w3075"
  },
  {
   "en": "dollar",
@@ -330,7 +330,7 @@
   "example": "The book is ten dollars.",
   "exampleZh": "这本书是10美元。",
   "source": "reused",
-  "word_id": "w3000"
+  "word_id": "w3076"
  },
  {
   "en": "discount",
@@ -339,7 +339,7 @@
   "example": "There is a discount today.",
   "exampleZh": "今天有折扣。",
   "source": "reused",
-  "word_id": "w3001"
+  "word_id": "w3077"
  },
  {
   "en": "dry-cleaner's",
@@ -348,7 +348,7 @@
   "example": "This is a dry-cleaner's.",
   "exampleZh": "这是一个干洗店。",
   "source": "template+corrected",
-  "word_id": "w3002"
+  "word_id": "w3078"
  },
  {
   "en": "euro",
@@ -357,7 +357,7 @@
   "example": "This is an euro.",
   "exampleZh": "这是一个欧元。",
   "source": "template+generated",
-  "word_id": "w3003"
+  "word_id": "w3079"
  },
  {
   "en": "for sale",
@@ -366,7 +366,7 @@
   "example": "This is a for sale.",
   "exampleZh": "这是一个待售。",
   "source": "template+generated",
-  "word_id": "w3004"
+  "word_id": "w3080"
  },
  {
   "en": "go shopping",
@@ -375,7 +375,7 @@
   "example": "This is a go shopping.",
   "exampleZh": "这是一个去购物。",
   "source": "template+generated",
-  "word_id": "w3005"
+  "word_id": "w3081"
  },
  {
   "en": "grocery store",
@@ -384,7 +384,7 @@
   "example": "This is a grocery store.",
   "exampleZh": "这是一个杂货店。",
   "source": "template+generated",
-  "word_id": "w3006"
+  "word_id": "w3082"
  },
  {
   "en": "hairdresser",
@@ -393,7 +393,7 @@
   "example": "This is a hairdresser.",
   "exampleZh": "这是一个美发师。",
   "source": "template+generated",
-  "word_id": "w3007"
+  "word_id": "w3083"
  },
  {
   "en": "jeweller",
@@ -402,7 +402,7 @@
   "example": "This is a jeweller.",
   "exampleZh": "这是一个珠宝商；珠宝店。",
   "source": "template+corrected",
-  "word_id": "w3008"
+  "word_id": "w3084"
  },
  {
   "en": "mall",
@@ -411,7 +411,7 @@
   "example": "This is a mall.",
   "exampleZh": "这是一个大规模购物中心。",
   "source": "template+generated",
-  "word_id": "w3009"
+  "word_id": "w3085"
  },
  {
   "en": "manager",
@@ -420,7 +420,7 @@
   "example": "This is a manager.",
   "exampleZh": "这是一个经理。",
   "source": "template+generated",
-  "word_id": "w3010"
+  "word_id": "w3086"
  },
  {
   "en": "penny",
@@ -429,7 +429,7 @@
   "example": "This is a penny.",
   "exampleZh": "这是一个便士。",
   "source": "template+generated",
-  "word_id": "w3011"
+  "word_id": "w3087"
  },
  {
   "en": "pound",
@@ -438,7 +438,7 @@
   "example": "It costs five pounds.",
   "exampleZh": "它要5英镑。",
   "source": "reused",
-  "word_id": "w3012"
+  "word_id": "w3088"
  },
  {
   "en": "receipt",
@@ -447,7 +447,7 @@
   "example": "Keep the receipt.",
   "exampleZh": "保留收据。",
   "source": "reused",
-  "word_id": "w3013"
+  "word_id": "w3089"
  },
  {
   "en": "salesman",
@@ -456,7 +456,7 @@
   "example": "This is a salesman.",
   "exampleZh": "这是一个销售人员。",
   "source": "template+generated",
-  "word_id": "w3014"
+  "word_id": "w3090"
  },
  {
   "en": "spend",
@@ -465,7 +465,7 @@
   "example": "I spend ten pounds.",
   "exampleZh": "我花了10英镑。",
   "source": "reused",
-  "word_id": "w3015"
+  "word_id": "w3091"
  },
  {
   "en": "travel agent",
@@ -474,7 +474,7 @@
   "example": "This is a travel agent.",
   "exampleZh": "这是一个旅行社。",
   "source": "template+generated",
-  "word_id": "w3016"
+  "word_id": "w3092"
  },
  {
   "en": "chat",
@@ -483,7 +483,7 @@
   "example": "This is a chat.",
   "exampleZh": "这是一个聊天；闲谈。",
   "source": "template+generated",
-  "word_id": "w3017"
+  "word_id": "w3093"
  },
  {
   "en": "conversation",
@@ -492,7 +492,7 @@
   "example": "This is a conversation.",
   "exampleZh": "这是一个会话。",
   "source": "template+generated",
-  "word_id": "w3018"
+  "word_id": "w3094"
  },
  {
   "en": "note",
@@ -501,7 +501,7 @@
   "example": "This is a note.",
   "exampleZh": "这是一个便条。",
   "source": "template+generated",
-  "word_id": "w3019"
+  "word_id": "w3095"
  },
  {
   "en": "speak",
@@ -510,7 +510,7 @@
   "example": "I speak English.",
   "exampleZh": "我说英语。",
   "source": "reused",
-  "word_id": "w3020"
+  "word_id": "w3096"
  },
  {
   "en": "telephone",
@@ -519,7 +519,7 @@
   "example": "This is a telephone.",
   "exampleZh": "这是一个电话。",
   "source": "template+generated",
-  "word_id": "w3021"
+  "word_id": "w3097"
  },
  {
   "en": "text message",
@@ -528,7 +528,7 @@
   "example": "This is a text message.",
   "exampleZh": "这是一个短信。",
   "source": "template+generated",
-  "word_id": "w3022"
+  "word_id": "w3098"
  },
  {
   "en": "write",
@@ -537,7 +537,7 @@
   "example": "I write stories.",
   "exampleZh": "我写故事。",
   "source": "reused",
-  "word_id": "w3023"
+  "word_id": "w3099"
  },
  {
   "en": "good night",
@@ -546,7 +546,7 @@
   "example": "This is a good night.",
   "exampleZh": "这是一个晚安。",
   "source": "template+generated",
-  "word_id": "w3024"
+  "word_id": "w3100"
  },
  {
   "en": "hey",
@@ -555,7 +555,7 @@
   "example": "This is a hey.",
   "exampleZh": "这是一个嘿；喂。",
   "source": "template+generated",
-  "word_id": "w3025"
+  "word_id": "w3101"
  },
  {
   "en": "hi",
@@ -564,7 +564,7 @@
   "example": "This is a hi.",
   "exampleZh": "这是一个嘿；喂；你好。",
   "source": "template+generated",
-  "word_id": "w3026"
+  "word_id": "w3102"
  },
  {
   "en": "oh",
@@ -573,7 +573,7 @@
   "example": "This is an oh.",
   "exampleZh": "这是一个噢；哎；啊。",
   "source": "template+generated",
-  "word_id": "w3027"
+  "word_id": "w3103"
  },
  {
   "en": "oh dear!",
@@ -582,7 +582,7 @@
   "example": "This is an oh dear!.",
   "exampleZh": "这是一个天哪。",
   "source": "template+generated",
-  "word_id": "w3028"
+  "word_id": "w3104"
  },
  {
   "en": "wow",
@@ -591,7 +591,7 @@
   "example": "This is a wow.",
   "exampleZh": "这是一个呀；哇。",
   "source": "template+generated",
-  "word_id": "w3029"
+  "word_id": "w3105"
  },
  {
   "en": "yeah",
@@ -600,6 +600,6 @@
   "example": "This is a yeah.",
   "exampleZh": "这是一个是的；没错。",
   "source": "template+generated",
-  "word_id": "w3030"
+  "word_id": "w3106"
  }
 ]

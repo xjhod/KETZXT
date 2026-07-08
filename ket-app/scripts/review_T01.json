@@ -6,7 +6,7 @@
   "example": "This is an anniversary.",
   "exampleZh": "这是一个周年纪念日。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3222"
  },
  {
   "en": "band",
@@ -15,7 +15,7 @@
   "example": "This is a band.",
   "exampleZh": "这是一个乐队。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3223"
  },
  {
   "en": "bride",
@@ -24,7 +24,7 @@
   "example": "This is a bride.",
   "exampleZh": "这是一个新娘。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3224"
  },
  {
   "en": "cake",
@@ -33,7 +33,7 @@
   "example": "We baked a cake for her birthday.",
   "exampleZh": "我们为她的生日烤了一个蛋糕。",
   "source": "reused",
-  "word_id": "w2967"
+  "word_id": "w3225"
  },
  {
   "en": "disco",
@@ -42,7 +42,7 @@
   "example": "This is a disco.",
   "exampleZh": "这是一个迪斯科舞厅。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3226"
  },
  {
   "en": "invitation",
@@ -51,7 +51,7 @@
   "example": "This is an invitation.",
   "exampleZh": "这是一个邀请。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3227"
  },
  {
   "en": "party",
@@ -60,7 +60,7 @@
   "example": "This is a party.",
   "exampleZh": "这是一个派对。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3228"
  },
  {
   "en": "reception",
@@ -69,7 +69,7 @@
   "example": "This is a reception.",
   "exampleZh": "这是一个招待会。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3229"
  },
  {
   "en": "ring",
@@ -78,7 +78,7 @@
   "example": "She wears a diamond ring.",
   "exampleZh": "她戴一枚钻石戒指。",
   "source": "reused",
-  "word_id": "w2972"
+  "word_id": "w3230"
  },
  {
   "en": "speech",
@@ -87,7 +87,7 @@
   "example": "This is a speech.",
   "exampleZh": "这是一个演讲；发言。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3231"
  },
  {
   "en": "bring up",
@@ -96,7 +96,7 @@
   "example": "This is a bring up.",
   "exampleZh": "这是一个抚养长大。",
   "source": "template+generated",
-  "word_id": "w2974"
+  "word_id": "w3232"
  },
  {
   "en": "dad",
@@ -105,7 +105,7 @@
   "example": "This is a dad.",
   "exampleZh": "这是一个爸爸。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3233"
  },
  {
   "en": "get on",
@@ -114,7 +114,7 @@
   "example": "This is a get on.",
   "exampleZh": "这是一个进展；进步。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3234"
  },
  {
   "en": "get up",
@@ -123,7 +123,7 @@
   "example": "I get up at 7:10.",
   "exampleZh": "我7点10分起床。",
   "source": "reused",
-  "word_id": "w2977"
+  "word_id": "w3235"
  },
  {
   "en": "give up",
@@ -132,7 +132,7 @@
   "example": "This is a give up.",
   "exampleZh": "这是一个放弃。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3236"
  },
  {
   "en": "grandad",
@@ -141,7 +141,7 @@
   "example": "This is a grandad.",
   "exampleZh": "这是一个爷爷；外公。",
   "source": "template+generated",
-  "word_id": "w2979"
+  "word_id": "w3237"
  },
  {
   "en": "granddaughter",
@@ -150,7 +150,7 @@
   "example": "This is a granddaughter.",
   "exampleZh": "这是一个外 ) 孙女。",
   "source": "template+generated",
-  "word_id": "w2980"
+  "word_id": "w3238"
  },
  {
   "en": "grandma",
@@ -159,7 +159,7 @@
   "example": "This is a grandma.",
   "exampleZh": "这是一个奶奶；外婆。",
   "source": "template+generated",
-  "word_id": "w2981"
+  "word_id": "w3239"
  },
  {
   "en": "grandpa",
@@ -168,7 +168,7 @@
   "example": "This is a grandpa.",
   "exampleZh": "这是一个爷爷；外公。",
   "source": "template+generated",
-  "word_id": "w2982"
+  "word_id": "w3240"
  },
  {
   "en": "grandson",
@@ -177,7 +177,7 @@
   "example": "This is a grandson.",
   "exampleZh": "这是一个外孙；孙子。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3241"
  },
  {
   "en": "granny",
@@ -186,7 +186,7 @@
   "example": "This is a granny.",
   "exampleZh": "这是一个奶奶；外婆。",
   "source": "template+generated",
-  "word_id": "w2984"
+  "word_id": "w3242"
  },
  {
   "en": "grow up",
@@ -195,7 +195,7 @@
   "example": "This is a grow up.",
   "exampleZh": "这是一个成长；长大。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3243"
  },
  {
   "en": "guy",
@@ -204,7 +204,7 @@
   "example": "This is a guy.",
   "exampleZh": "这是一个小伙子；家伙。",
   "source": "template+generated",
-  "word_id": "w2986"
+  "word_id": "w3244"
  },
  {
   "en": "look after",
@@ -213,7 +213,7 @@
   "example": "This is a look after.",
   "exampleZh": "这是一个照看；照顾。",
   "source": "template+generated",
-  "word_id": "w2987"
+  "word_id": "w3245"
  },
  {
   "en": "mum",
@@ -222,7 +222,7 @@
   "example": "This is a mum.",
   "exampleZh": "这是一个妈妈。",
   "source": "template+generated",
-  "word_id": "w2988"
+  "word_id": "w3246"
  },
  {
   "en": "nephew",
@@ -231,7 +231,7 @@
   "example": "This is a nephew.",
   "exampleZh": "这是一个侄子；外甥。",
   "source": "template+generated",
-  "word_id": "w2989"
+  "word_id": "w3247"
  },
  {
   "en": "niece",
@@ -240,7 +240,7 @@
   "example": "This is a niece.",
   "exampleZh": "这是一个外甥女；侄女。",
   "source": "template+generated",
-  "word_id": "w2990"
+  "word_id": "w3248"
  },
  {
   "en": "parents",
@@ -249,7 +249,7 @@
   "example": "This is a parents.",
   "exampleZh": "这是一个父母。",
   "source": "template+generated",
-  "word_id": "w2991"
+  "word_id": "w3249"
  },
  {
   "en": "pen friend",
@@ -258,7 +258,7 @@
   "example": "This is a pen friend.",
   "exampleZh": "这是一个笔友。",
   "source": "template+generated",
-  "word_id": "w2992"
+  "word_id": "w3250"
  },
  {
   "en": "adult",
@@ -267,7 +267,7 @@
   "example": "This is an adult.",
   "exampleZh": "这是一个成年人。",
   "source": "template+generated",
-  "word_id": "w2993"
+  "word_id": "w3251"
  },
  {
   "en": "beautiful",
@@ -276,7 +276,7 @@
   "example": "This is a beautiful.",
   "exampleZh": "这是一个美丽的。",
   "source": "template+generated",
-  "word_id": "w2994"
+  "word_id": "w3252"
  },
  {
   "en": "blond",
@@ -285,7 +285,7 @@
   "example": "This is a blond.",
   "exampleZh": "这是一个金发的。",
   "source": "template+generated",
-  "word_id": "w2995"
+  "word_id": "w3253"
  },
  {
   "en": "bright",
@@ -294,7 +294,7 @@
   "example": "This is a bright.",
   "exampleZh": "这是一个聪明的。",
   "source": "template+generated",
-  "word_id": "w2996"
+  "word_id": "w3254"
  },
  {
   "en": "curly",
@@ -303,7 +303,7 @@
   "example": "This is a curly.",
   "exampleZh": "这是一个卷曲的。",
   "source": "template+generated",
-  "word_id": "w2997"
+  "word_id": "w3255"
  },
  {
   "en": "dark",
@@ -312,7 +312,7 @@
   "example": "It is dark outside.",
   "exampleZh": "外面很黑。",
   "source": "reused",
-  "word_id": "w2998"
+  "word_id": "w3256"
  },
  {
   "en": "elderly",
@@ -321,7 +321,7 @@
   "example": "This is an elderly.",
   "exampleZh": "这是一个年长的。",
   "source": "template+generated",
-  "word_id": "w2999"
+  "word_id": "w3257"
  },
  {
   "en": "fat",
@@ -330,7 +330,7 @@
   "example": "This is a fat.",
   "exampleZh": "这是一个肥胖的。",
   "source": "template+generated",
-  "word_id": "w3000"
+  "word_id": "w3258"
  },
  {
   "en": "good-looking",
@@ -339,7 +339,7 @@
   "example": "This is a good-looking.",
   "exampleZh": "这是一个好看的。",
   "source": "template+generated",
-  "word_id": "w3001"
+  "word_id": "w3259"
  },
  {
   "en": "handsome",
@@ -348,7 +348,7 @@
   "example": "This is a handsome.",
   "exampleZh": "这是一个英俊的。",
   "source": "template+generated",
-  "word_id": "w3002"
+  "word_id": "w3260"
  },
  {
   "en": "light",
@@ -357,7 +357,7 @@
   "example": "Turn on the light.",
   "exampleZh": "开灯。",
   "source": "reused",
-  "word_id": "w3003"
+  "word_id": "w3261"
  },
  {
   "en": "long",
@@ -366,7 +366,7 @@
   "example": "This is a long.",
   "exampleZh": "这是一个长的。",
   "source": "template+generated",
-  "word_id": "w3004"
+  "word_id": "w3262"
  },
  {
   "en": "middle-aged",
@@ -375,7 +375,7 @@
   "example": "This is a middle-aged.",
   "exampleZh": "这是一个中年的。",
   "source": "template+generated",
-  "word_id": "w3005"
+  "word_id": "w3263"
  },
  {
   "en": "pretty",
@@ -384,7 +384,7 @@
   "example": "This is a pretty.",
   "exampleZh": "这是一个漂亮的；可爱的。",
   "source": "template+generated",
-  "word_id": "w3006"
+  "word_id": "w3264"
  },
  {
   "en": "slim",
@@ -393,7 +393,7 @@
   "example": "This is a slim.",
   "exampleZh": "这是一个苗条的。",
   "source": "template+generated",
-  "word_id": "w3007"
+  "word_id": "w3265"
  },
  {
   "en": "smart",
@@ -402,7 +402,7 @@
   "example": "This is a smart.",
   "exampleZh": "这是一个聪明的。",
   "source": "template+generated",
-  "word_id": "w3008"
+  "word_id": "w3266"
  },
  {
   "en": "straight",
@@ -411,7 +411,7 @@
   "example": "Go straight ahead.",
   "exampleZh": "一直往前走。",
   "source": "reused",
-  "word_id": "w3009"
+  "word_id": "w3267"
  },
  {
   "en": "teenage",
@@ -420,7 +420,7 @@
   "example": "This is a teenage.",
   "exampleZh": "这是一个青少年的。",
   "source": "template+generated",
-  "word_id": "w3010"
+  "word_id": "w3268"
  },
  {
   "en": "ugly",
@@ -429,7 +429,7 @@
   "example": "This is an ugly.",
   "exampleZh": "这是一个丑陋的。",
   "source": "template+generated",
-  "word_id": "w3011"
+  "word_id": "w3269"
  },
  {
   "en": "youth",
@@ -438,6 +438,6 @@
   "example": "This is a youth.",
   "exampleZh": "这是一个青春。",
   "source": "template+generated",
-  "word_id": "w3012"
+  "word_id": "w3270"
  }
 ]

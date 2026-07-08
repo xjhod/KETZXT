@@ -6,7 +6,7 @@
   "example": "This is an advise.",
   "exampleZh": "这是一个建议。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3648"
  },
  {
   "en": "agree",
@@ -15,7 +15,7 @@
   "example": "This is an agree.",
   "exampleZh": "这是一个同意。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3649"
  },
  {
   "en": "decide",
@@ -24,7 +24,7 @@
   "example": "This is a decide.",
   "exampleZh": "这是一个决定。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3650"
  },
  {
   "en": "describe",
@@ -33,7 +33,7 @@
   "example": "This is a describe.",
   "exampleZh": "这是一个描述。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3651"
  },
  {
   "en": "explain",
@@ -42,7 +42,7 @@
   "example": "This is an explain.",
   "exampleZh": "这是一个解释；说明。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3652"
  },
  {
   "en": "review",
@@ -51,7 +51,7 @@
   "example": "This is a review.",
   "exampleZh": "这是一个评论。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3653"
  },
  {
   "en": "suggest",
@@ -60,7 +60,7 @@
   "example": "This is a suggest.",
   "exampleZh": "这是一个建议。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3654"
  },
  {
   "en": "warn",
@@ -69,6 +69,6 @@
   "example": "This is a warn.",
   "exampleZh": "这是一个警告。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3655"
  }
 ]

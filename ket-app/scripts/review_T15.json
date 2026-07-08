@@ -6,7 +6,7 @@
   "example": "April is rainy.",
   "exampleZh": "四月很多雨。",
   "source": "reused",
-  "word_id": "w2964"
+  "word_id": "w3364"
  },
  {
   "en": "August",
@@ -15,7 +15,7 @@
   "example": "August is hot.",
   "exampleZh": "八月很热。",
   "source": "reused",
-  "word_id": "w2965"
+  "word_id": "w3365"
  },
  {
   "en": "autumn",
@@ -24,7 +24,7 @@
   "example": "Autumn is cool.",
   "exampleZh": "秋天很凉爽。",
   "source": "reused",
-  "word_id": "w2966"
+  "word_id": "w3366"
  },
  {
   "en": "December",
@@ -33,7 +33,7 @@
   "example": "This is a December.",
   "exampleZh": "这是一个十二月。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3367"
  },
  {
   "en": "east",
@@ -42,7 +42,7 @@
   "example": "The sun rises in the east.",
   "exampleZh": "太阳从东方升起。",
   "source": "reused",
-  "word_id": "w2968"
+  "word_id": "w3368"
  },
  {
   "en": "fall",
@@ -51,7 +51,7 @@
   "example": "This is a fall.",
   "exampleZh": "这是一个秋天。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3369"
  },
  {
   "en": "February",
@@ -60,7 +60,7 @@
   "example": "February is short.",
   "exampleZh": "二月很短。",
   "source": "reused",
-  "word_id": "w2970"
+  "word_id": "w3370"
  },
  {
   "en": "July",
@@ -69,7 +69,7 @@
   "example": "July is hot.",
   "exampleZh": "七月很热。",
   "source": "reused",
-  "word_id": "w2971"
+  "word_id": "w3371"
  },
  {
   "en": "June",
@@ -78,7 +78,7 @@
   "example": "June is sunny.",
   "exampleZh": "六月很多晴天。",
   "source": "reused",
-  "word_id": "w2972"
+  "word_id": "w3372"
  },
  {
   "en": "March",
@@ -87,7 +87,7 @@
   "example": "March is windy.",
   "exampleZh": "三月很多风。",
   "source": "reused",
-  "word_id": "w2973"
+  "word_id": "w3373"
  },
  {
   "en": "May",
@@ -96,7 +96,7 @@
   "example": "May is warm.",
   "exampleZh": "五月很温暖。",
   "source": "reused",
-  "word_id": "w2974"
+  "word_id": "w3374"
  },
  {
   "en": "north",
@@ -105,7 +105,7 @@
   "example": "The north is cold.",
   "exampleZh": "北方很冷。",
   "source": "reused",
-  "word_id": "w2975"
+  "word_id": "w3375"
  },
  {
   "en": "northeast",
@@ -114,7 +114,7 @@
   "example": "This is a northeast.",
   "exampleZh": "这是一个东北。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3376"
  },
  {
   "en": "northwest",
@@ -123,7 +123,7 @@
   "example": "This is a northwest.",
   "exampleZh": "这是一个西北。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3377"
  },
  {
   "en": "November",
@@ -132,7 +132,7 @@
   "example": "This is a November.",
   "exampleZh": "这是一个十一月。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3378"
  },
  {
   "en": "October",
@@ -141,7 +141,7 @@
   "example": "This is an October.",
   "exampleZh": "这是一个十月。",
   "source": "template+generated",
-  "word_id": "w2979"
+  "word_id": "w3379"
  },
  {
   "en": "September",
@@ -150,7 +150,7 @@
   "example": "September is cool.",
   "exampleZh": "九月很凉爽。",
   "source": "reused",
-  "word_id": "w2980"
+  "word_id": "w3380"
  },
  {
   "en": "south",
@@ -159,7 +159,7 @@
   "example": "The south is warm.",
   "exampleZh": "南方很温暖。",
   "source": "reused",
-  "word_id": "w2981"
+  "word_id": "w3381"
  },
  {
   "en": "southeast",
@@ -168,7 +168,7 @@
   "example": "This is a southeast.",
   "exampleZh": "这是一个东南。",
   "source": "template+generated",
-  "word_id": "w2982"
+  "word_id": "w3382"
  },
  {
   "en": "southwest",
@@ -177,7 +177,7 @@
   "example": "This is a southwest.",
   "exampleZh": "这是一个西南。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3383"
  },
  {
   "en": "spring",
@@ -186,7 +186,7 @@
   "example": "Spring is warm.",
   "exampleZh": "春天很温暖。",
   "source": "reused",
-  "word_id": "w2984"
+  "word_id": "w3384"
  },
  {
   "en": "summer",
@@ -195,7 +195,7 @@
   "example": "Summer is hot.",
   "exampleZh": "夏天很热。",
   "source": "reused",
-  "word_id": "w2985"
+  "word_id": "w3385"
  },
  {
   "en": "west",
@@ -204,7 +204,7 @@
   "example": "The sun sets in the west.",
   "exampleZh": "太阳从西边落下。",
   "source": "reused",
-  "word_id": "w2986"
+  "word_id": "w3386"
  },
  {
   "en": "winter",
@@ -213,7 +213,7 @@
   "example": "Winter is cold.",
   "exampleZh": "冬天很冷。",
   "source": "reused",
-  "word_id": "w2987"
+  "word_id": "w3387"
  },
  {
   "en": "after",
@@ -222,7 +222,7 @@
   "example": "This is an after.",
   "exampleZh": "这是一个在…之后；以后。",
   "source": "template+generated",
-  "word_id": "w2988"
+  "word_id": "w3388"
  },
  {
   "en": "a.m.",
@@ -231,7 +231,7 @@
   "example": "This is an a.m..",
   "exampleZh": "这是一个上午。",
   "source": "template+corrected",
-  "word_id": "w2989"
+  "word_id": "w3389"
  },
  {
   "en": "before",
@@ -240,7 +240,7 @@
   "example": "This is a before.",
   "exampleZh": "这是一个在 .. 之前；以前。",
   "source": "template+generated",
-  "word_id": "w2990"
+  "word_id": "w3390"
  },
  {
   "en": "century",
@@ -249,7 +249,7 @@
   "example": "This is a century.",
   "exampleZh": "这是一个世纪。",
   "source": "template+generated",
-  "word_id": "w2991"
+  "word_id": "w3391"
  },
  {
   "en": "date",
@@ -258,7 +258,7 @@
   "example": "This is a date.",
   "exampleZh": "这是一个日期。",
   "source": "template+generated",
-  "word_id": "w2992"
+  "word_id": "w3392"
  },
  {
   "en": "day",
@@ -267,7 +267,7 @@
   "example": "This is a day.",
   "exampleZh": "这是一个一天。",
   "source": "template+generated",
-  "word_id": "w2993"
+  "word_id": "w3393"
  },
  {
   "en": "half",
@@ -276,7 +276,7 @@
   "example": "This is a half.",
   "exampleZh": "这是一个一半；一般的。",
   "source": "template+generated",
-  "word_id": "w2994"
+  "word_id": "w3394"
  },
  {
   "en": "midnight",
@@ -285,7 +285,7 @@
   "example": "This is a midnight.",
   "exampleZh": "这是一个午夜。",
   "source": "template+generated",
-  "word_id": "w2995"
+  "word_id": "w3395"
  },
  {
   "en": "moment",
@@ -294,7 +294,7 @@
   "example": "This is a moment.",
   "exampleZh": "这是一个时刻；片刻。",
   "source": "template+generated",
-  "word_id": "w2996"
+  "word_id": "w3396"
  },
  {
   "en": "noon",
@@ -303,7 +303,7 @@
   "example": "This is a noon.",
   "exampleZh": "这是一个中午。",
   "source": "template+generated",
-  "word_id": "w2997"
+  "word_id": "w3397"
  },
  {
   "en": "now",
@@ -312,7 +312,7 @@
   "example": "This is a now.",
   "exampleZh": "这是一个现在；此刻。",
   "source": "template+generated",
-  "word_id": "w2998"
+  "word_id": "w3398"
  },
  {
   "en": "p.m.",
@@ -321,7 +321,7 @@
   "example": "This is a p.m..",
   "exampleZh": "这是一个下午。",
   "source": "template+corrected",
-  "word_id": "w2999"
+  "word_id": "w3399"
  },
  {
   "en": "tonight",
@@ -330,7 +330,7 @@
   "example": "This is a tonight.",
   "exampleZh": "这是一个今晚。",
   "source": "template+generated",
-  "word_id": "w3000"
+  "word_id": "w3400"
  },
  {
   "en": "weekday",
@@ -339,7 +339,7 @@
   "example": "This is a weekday.",
   "exampleZh": "这是一个工作日。",
   "source": "template+generated",
-  "word_id": "w3001"
+  "word_id": "w3401"
  },
  {
   "en": "weekend",
@@ -348,7 +348,7 @@
   "example": "This is a weekend.",
   "exampleZh": "这是一个周末；周末的。",
   "source": "template+generated",
-  "word_id": "w3002"
+  "word_id": "w3402"
  },
  {
   "en": "working hours",
@@ -357,7 +357,7 @@
   "example": "This is a working hours.",
   "exampleZh": "这是一个工作时间。",
   "source": "template+generated",
-  "word_id": "w3003"
+  "word_id": "w3403"
  },
  {
   "en": "Tuesday",
@@ -366,7 +366,7 @@
   "example": "This is a Tuesday.",
   "exampleZh": "这是一个星期二。",
   "source": "template+generated",
-  "word_id": "w3004"
+  "word_id": "w3404"
  },
  {
   "en": "Wednesday",
@@ -375,7 +375,7 @@
   "example": "This is a Wednesday.",
   "exampleZh": "这是一个星期三。",
   "source": "template+generated",
-  "word_id": "w3005"
+  "word_id": "w3405"
  },
  {
   "en": "Thursday",
@@ -384,7 +384,7 @@
   "example": "This is a Thursday.",
   "exampleZh": "这是一个星期四。",
   "source": "template+generated",
-  "word_id": "w3006"
+  "word_id": "w3406"
  },
  {
   "en": "Friday",
@@ -393,7 +393,7 @@
   "example": "This is a Friday.",
   "exampleZh": "这是一个星期五。",
   "source": "template+generated",
-  "word_id": "w3007"
+  "word_id": "w3407"
  },
  {
   "en": "Saturday",
@@ -402,7 +402,7 @@
   "example": "This is a Saturday.",
   "exampleZh": "这是一个星期六。",
   "source": "template+generated",
-  "word_id": "w3008"
+  "word_id": "w3408"
  },
  {
   "en": "Sunday",
@@ -411,6 +411,6 @@
   "example": "This is a Sunday.",
   "exampleZh": "这是一个星期日。",
   "source": "template+generated",
-  "word_id": "w3009"
+  "word_id": "w3409"
  }
 ]

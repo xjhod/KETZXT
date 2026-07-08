@@ -6,7 +6,7 @@
   "example": "This is an arrival.",
   "exampleZh": "这是一个到达。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3491"
  },
  {
   "en": "by air",
@@ -15,7 +15,7 @@
   "example": "This is a by air.",
   "exampleZh": "这是一个乘飞机。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3492"
  },
  {
   "en": "by land",
@@ -24,7 +24,7 @@
   "example": "This is a by land.",
   "exampleZh": "这是一个由陆路。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3493"
  },
  {
   "en": "by rail",
@@ -33,7 +33,7 @@
   "example": "This is a by rail.",
   "exampleZh": "这是一个乘火车；由铁路。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3494"
  },
  {
   "en": "by road",
@@ -42,7 +42,7 @@
   "example": "This is a by road.",
   "exampleZh": "这是一个由公路。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3495"
  },
  {
   "en": "by sea",
@@ -51,7 +51,7 @@
   "example": "This is a by sea.",
   "exampleZh": "这是一个乘船；走水路。",
   "source": "template+generated",
-  "word_id": "w2969"
+  "word_id": "w3496"
  },
  {
   "en": "check-in",
@@ -60,7 +60,7 @@
   "example": "This is a check-in.",
   "exampleZh": "这是一个登记；登记处。",
   "source": "template+corrected",
-  "word_id": "w2970"
+  "word_id": "w3497"
  },
  {
   "en": "comfortable",
@@ -69,7 +69,7 @@
   "example": "The bed is comfortable.",
   "exampleZh": "床很舒适。",
   "source": "reused",
-  "word_id": "w2971"
+  "word_id": "w3498"
  },
  {
   "en": "convenient",
@@ -78,7 +78,7 @@
   "example": "This is a convenient.",
   "exampleZh": "这是一个方便的，便利的。",
   "source": "template+generated",
-  "word_id": "w2972"
+  "word_id": "w3499"
  },
  {
   "en": "crowded",
@@ -87,7 +87,7 @@
   "example": "This is a crowded.",
   "exampleZh": "这是一个拥挤的。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3500"
  },
  {
   "en": "dangerous",
@@ -96,7 +96,7 @@
   "example": "Be careful, it is dangerous.",
   "exampleZh": "小心，很危险。",
   "source": "reused",
-  "word_id": "w2974"
+  "word_id": "w3501"
  },
  {
   "en": "empty",
@@ -105,7 +105,7 @@
   "example": "This is an empty.",
   "exampleZh": "这是一个空的；空闲的。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3502"
  },
  {
   "en": "fare",
@@ -114,7 +114,7 @@
   "example": "This is a fare.",
   "exampleZh": "这是一个票价。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3503"
  },
  {
   "en": "land",
@@ -123,7 +123,7 @@
   "example": "This is a land.",
   "exampleZh": "这是一个着陆。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3504"
  },
  {
   "en": "leave",
@@ -132,7 +132,7 @@
   "example": "This is a leave.",
   "exampleZh": "这是一个离开。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3505"
  },
  {
   "en": "lounge",
@@ -141,7 +141,7 @@
   "example": "This is a lounge.",
   "exampleZh": "这是一个休息室。",
   "source": "template+generated",
-  "word_id": "w2979"
+  "word_id": "w3506"
  },
  {
   "en": "noisy",
@@ -150,7 +150,7 @@
   "example": "The classroom is noisy.",
   "exampleZh": "教室很吵闹。",
   "source": "reused",
-  "word_id": "w2980"
+  "word_id": "w3507"
  },
  {
   "en": "quiet",
@@ -159,7 +159,7 @@
   "example": "The library is quiet.",
   "exampleZh": "图书馆很安静。",
   "source": "reused",
-  "word_id": "w2981"
+  "word_id": "w3508"
  },
  {
   "en": "safe",
@@ -168,7 +168,7 @@
   "example": "This area is safe.",
   "exampleZh": "这个区域很安全。",
   "source": "reused",
-  "word_id": "w2982"
+  "word_id": "w3509"
  },
  {
   "en": "safety",
@@ -177,7 +177,7 @@
   "example": "This is a safety.",
   "exampleZh": "这是一个安全。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3510"
  },
  {
   "en": "tourist",
@@ -186,7 +186,7 @@
   "example": "There are many tourists.",
   "exampleZh": "有很多游客。",
   "source": "reused",
-  "word_id": "w2984"
+  "word_id": "w3511"
  },
  {
   "en": "traffic lights",
@@ -195,7 +195,7 @@
   "example": "This is a traffic lights.",
   "exampleZh": "这是一个交通信号灯。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3512"
  },
  {
   "en": "visit",
@@ -204,7 +204,7 @@
   "example": "This is a visit.",
   "exampleZh": "这是一个访问；参观。",
   "source": "template+generated",
-  "word_id": "w2986"
+  "word_id": "w3513"
  },
  {
   "en": "visitor",
@@ -213,7 +213,7 @@
   "example": "This is a visitor.",
   "exampleZh": "这是一个来访者；参观者。",
   "source": "template+generated",
-  "word_id": "w2987"
+  "word_id": "w3514"
  },
  {
   "en": "uncomfortable",
@@ -222,7 +222,7 @@
   "example": "This is an uncomfortable.",
   "exampleZh": "这是一个不舒服的。",
   "source": "template+generated",
-  "word_id": "w2988"
+  "word_id": "w3515"
  },
  {
   "en": "waiting room",
@@ -231,7 +231,7 @@
   "example": "This is a waiting room.",
   "exampleZh": "这是一个候车室。",
   "source": "template+generated",
-  "word_id": "w2989"
+  "word_id": "w3516"
  },
  {
   "en": "aeroplane",
@@ -240,7 +240,7 @@
   "example": "This is an aeroplane.",
   "exampleZh": "这是一个飞机。",
   "source": "template+corrected",
-  "word_id": "w2990"
+  "word_id": "w3517"
  },
  {
   "en": "bicycle bike",
@@ -249,7 +249,7 @@
   "example": "This is a bicycle bike.",
   "exampleZh": "这是一个自行车。",
   "source": "template+corrected",
-  "word_id": "w2991"
+  "word_id": "w3518"
  },
  {
   "en": "cab",
@@ -258,7 +258,7 @@
   "example": "This is a cab.",
   "exampleZh": "这是一个出租车。",
   "source": "template+generated",
-  "word_id": "w2992"
+  "word_id": "w3519"
  },
  {
   "en": "coach",
@@ -267,7 +267,7 @@
   "example": "This is a coach.",
   "exampleZh": "这是一个长途汽车。",
   "source": "template+generated",
-  "word_id": "w2993"
+  "word_id": "w3520"
  },
  {
   "en": "lorry",
@@ -276,7 +276,7 @@
   "example": "This is a lorry.",
   "exampleZh": "这是一个卡车；货车。",
   "source": "template+generated",
-  "word_id": "w2994"
+  "word_id": "w3521"
  },
  {
   "en": "seatbelt",
@@ -285,7 +285,7 @@
   "example": "This is a seatbelt.",
   "exampleZh": "这是一个安全带。",
   "source": "template+generated",
-  "word_id": "w2995"
+  "word_id": "w3522"
  },
  {
   "en": "ship",
@@ -294,7 +294,7 @@
   "example": "This is a ship.",
   "exampleZh": "这是一个轮船。",
   "source": "template+generated",
-  "word_id": "w2996"
+  "word_id": "w3523"
  },
  {
   "en": "truck",
@@ -303,7 +303,7 @@
   "example": "This is a truck.",
   "exampleZh": "这是一个卡车。",
   "source": "template+generated",
-  "word_id": "w2997"
+  "word_id": "w3524"
  },
  {
   "en": "wheel",
@@ -312,7 +312,7 @@
   "example": "This is a wheel.",
   "exampleZh": "这是一个车轮；方向盘。",
   "source": "template+generated",
-  "word_id": "w2998"
+  "word_id": "w3525"
  },
  {
   "en": "wing",
@@ -321,6 +321,6 @@
   "example": "The bird has two wings.",
   "exampleZh": "鸟有两只翅膀。",
   "source": "reused",
-  "word_id": "w2999"
+  "word_id": "w3526"
  }
 ]

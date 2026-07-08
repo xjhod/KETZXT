@@ -6,7 +6,7 @@
   "example": "This is an add.",
   "exampleZh": "这是一个增加。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3624"
  },
  {
   "en": "bake",
@@ -15,7 +15,7 @@
   "example": "This is a bake.",
   "exampleZh": "这是一个烘培；烤。",
   "source": "template+generated",
-  "word_id": "w2965"
+  "word_id": "w3625"
  },
  {
   "en": "barbecue",
@@ -24,7 +24,7 @@
   "example": "This is a barbecue.",
   "exampleZh": "这是一个户外烧烤。",
   "source": "template+generated",
-  "word_id": "w2966"
+  "word_id": "w3626"
  },
  {
   "en": "boil",
@@ -33,7 +33,7 @@
   "example": "This is a boil.",
   "exampleZh": "这是一个煮沸；烧开。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3627"
  },
  {
   "en": "burn",
@@ -42,7 +42,7 @@
   "example": "I burned my hand.",
   "exampleZh": "我烧伤了手。",
   "source": "reused",
-  "word_id": "w2968"
+  "word_id": "w3628"
  },
  {
   "en": "cook",
@@ -51,7 +51,7 @@
   "example": "My mother cooks dinner.",
   "exampleZh": "我妈妈做晚餐。",
   "source": "reused",
-  "word_id": "w2969"
+  "word_id": "w3629"
  },
  {
   "en": "cut",
@@ -60,7 +60,7 @@
   "example": "This is a cut.",
   "exampleZh": "这是一个切。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3630"
  },
  {
   "en": "fry",
@@ -69,7 +69,7 @@
   "example": "This is a fry.",
   "exampleZh": "这是一个油炸；油煎。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3631"
  },
  {
   "en": "mix",
@@ -78,7 +78,7 @@
   "example": "This is a mix.",
   "exampleZh": "这是一个混合。",
   "source": "template+generated",
-  "word_id": "w2972"
+  "word_id": "w3632"
  },
  {
   "en": "pour",
@@ -87,7 +87,7 @@
   "example": "This is a pour.",
   "exampleZh": "这是一个灌；倒。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3633"
  },
  {
   "en": "recipe",
@@ -96,7 +96,7 @@
   "example": "This is a recipe.",
   "exampleZh": "这是一个烹饪法；食谱。",
   "source": "template+generated",
-  "word_id": "w2974"
+  "word_id": "w3634"
  },
  {
   "en": "roast",
@@ -105,7 +105,7 @@
   "example": "This is a roast.",
   "exampleZh": "这是一个烘；烤。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3635"
  },
  {
   "en": "stir",
@@ -114,7 +114,7 @@
   "example": "This is a stir.",
   "exampleZh": "这是一个搅拌。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3636"
  },
  {
   "en": "taste",
@@ -123,6 +123,6 @@
   "example": "This is a taste.",
   "exampleZh": "这是一个尝。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3637"
  }
 ]

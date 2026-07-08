@@ -6,7 +6,7 @@
   "example": "April is rainy.",
   "exampleZh": "四月很多雨。",
   "source": "reused",
-  "word_id": "w2964"
+  "word_id": "w3317"
  },
  {
   "en": "August",
@@ -15,7 +15,7 @@
   "example": "August is hot.",
   "exampleZh": "八月很热。",
   "source": "reused",
-  "word_id": "w2965"
+  "word_id": "w3318"
  },
  {
   "en": "autumn",
@@ -24,7 +24,7 @@
   "example": "Autumn is cool.",
   "exampleZh": "秋天很凉爽。",
   "source": "reused",
-  "word_id": "w2966"
+  "word_id": "w3319"
  },
  {
   "en": "December",
@@ -33,7 +33,7 @@
   "example": "This is a December.",
   "exampleZh": "这是一个十二月。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3320"
  },
  {
   "en": "fall",
@@ -42,7 +42,7 @@
   "example": "This is a fall.",
   "exampleZh": "这是一个秋天。",
   "source": "template+generated",
-  "word_id": "w2968"
+  "word_id": "w3321"
  },
  {
   "en": "February",
@@ -51,7 +51,7 @@
   "example": "February is short.",
   "exampleZh": "二月很短。",
   "source": "reused",
-  "word_id": "w2969"
+  "word_id": "w3322"
  },
  {
   "en": "January",
@@ -60,7 +60,7 @@
   "example": "January is the first month.",
   "exampleZh": "一月是第一个月。",
   "source": "reused",
-  "word_id": "w2970"
+  "word_id": "w3323"
  },
  {
   "en": "July",
@@ -69,7 +69,7 @@
   "example": "July is hot.",
   "exampleZh": "七月很热。",
   "source": "reused",
-  "word_id": "w2971"
+  "word_id": "w3324"
  },
  {
   "en": "June",
@@ -78,7 +78,7 @@
   "example": "June is sunny.",
   "exampleZh": "六月很多晴天。",
   "source": "reused",
-  "word_id": "w2972"
+  "word_id": "w3325"
  },
  {
   "en": "March",
@@ -87,7 +87,7 @@
   "example": "March is windy.",
   "exampleZh": "三月很多风。",
   "source": "reused",
-  "word_id": "w2973"
+  "word_id": "w3326"
  },
  {
   "en": "May",
@@ -96,7 +96,7 @@
   "example": "May is warm.",
   "exampleZh": "五月很温暖。",
   "source": "reused",
-  "word_id": "w2974"
+  "word_id": "w3327"
  },
  {
   "en": "northeast",
@@ -105,7 +105,7 @@
   "example": "This is a northeast.",
   "exampleZh": "这是一个东北。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3328"
  },
  {
   "en": "northwest",
@@ -114,7 +114,7 @@
   "example": "This is a northwest.",
   "exampleZh": "这是一个西北。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3329"
  },
  {
   "en": "November",
@@ -123,7 +123,7 @@
   "example": "This is a November.",
   "exampleZh": "这是一个十一月。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3330"
  },
  {
   "en": "October",
@@ -132,7 +132,7 @@
   "example": "This is an October.",
   "exampleZh": "这是一个十月。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3331"
  },
  {
   "en": "September",
@@ -141,7 +141,7 @@
   "example": "September is cool.",
   "exampleZh": "九月很凉爽。",
   "source": "reused",
-  "word_id": "w2979"
+  "word_id": "w3332"
  },
  {
   "en": "southeast",
@@ -150,7 +150,7 @@
   "example": "This is a southeast.",
   "exampleZh": "这是一个东南。",
   "source": "template+generated",
-  "word_id": "w2980"
+  "word_id": "w3333"
  },
  {
   "en": "southwest",
@@ -159,7 +159,7 @@
   "example": "This is a southwest.",
   "exampleZh": "这是一个西南。",
   "source": "template+generated",
-  "word_id": "w2981"
+  "word_id": "w3334"
  },
  {
   "en": "spring",
@@ -168,7 +168,7 @@
   "example": "Spring is warm.",
   "exampleZh": "春天很温暖。",
   "source": "reused",
-  "word_id": "w2982"
+  "word_id": "w3335"
  },
  {
   "en": "summer",
@@ -177,7 +177,7 @@
   "example": "Summer is hot.",
   "exampleZh": "夏天很热。",
   "source": "reused",
-  "word_id": "w2983"
+  "word_id": "w3336"
  },
  {
   "en": "winter",
@@ -186,7 +186,7 @@
   "example": "Winter is cold.",
   "exampleZh": "冬天很冷。",
   "source": "reused",
-  "word_id": "w2984"
+  "word_id": "w3337"
  },
  {
   "en": "bar",
@@ -195,7 +195,7 @@
   "example": "This is a bar.",
   "exampleZh": "这是一个酒吧。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3338"
  },
  {
   "en": "beautiful",
@@ -204,7 +204,7 @@
   "example": "This is a beautiful.",
   "exampleZh": "这是一个美丽的。",
   "source": "template+generated",
-  "word_id": "w2986"
+  "word_id": "w3339"
  },
  {
   "en": "bookshop",
@@ -213,7 +213,7 @@
   "example": "This is a bookshop.",
   "exampleZh": "这是一个书店。",
   "source": "template+generated",
-  "word_id": "w2987"
+  "word_id": "w3340"
  },
  {
   "en": "boring",
@@ -222,7 +222,7 @@
   "example": "This is a boring.",
   "exampleZh": "这是一个无聊的。",
   "source": "template+generated",
-  "word_id": "w2988"
+  "word_id": "w3341"
  },
  {
   "en": "bus station",
@@ -231,7 +231,7 @@
   "example": "This is a bus station.",
   "exampleZh": "这是一个公交车站。",
   "source": "template+generated",
-  "word_id": "w2989"
+  "word_id": "w3342"
  },
  {
   "en": "busy",
@@ -240,7 +240,7 @@
   "example": "This is a busy.",
   "exampleZh": "这是一个忙碌的。",
   "source": "template+generated",
-  "word_id": "w2990"
+  "word_id": "w3343"
  },
  {
   "en": "city centre",
@@ -249,7 +249,7 @@
   "example": "This is a city centre.",
   "exampleZh": "这是一个市中心。",
   "source": "template+generated",
-  "word_id": "w2991"
+  "word_id": "w3344"
  },
  {
   "en": "clean",
@@ -258,7 +258,7 @@
   "example": "I clean my room.",
   "exampleZh": "我打扫我的房间。",
   "source": "reused",
-  "word_id": "w2992"
+  "word_id": "w3345"
  },
  {
   "en": "coffee shop",
@@ -267,7 +267,7 @@
   "example": "This is a coffee shop.",
   "exampleZh": "这是一个咖啡店。",
   "source": "template+generated",
-  "word_id": "w2993"
+  "word_id": "w3346"
  },
  {
   "en": "crowded",
@@ -276,7 +276,7 @@
   "example": "This is a crowded.",
   "exampleZh": "这是一个拥挤的。",
   "source": "template+generated",
-  "word_id": "w2994"
+  "word_id": "w3347"
  },
  {
   "en": "dangerous",
@@ -285,7 +285,7 @@
   "example": "Be careful, it is dangerous.",
   "exampleZh": "小心，很危险。",
   "source": "reused",
-  "word_id": "w2995"
+  "word_id": "w3348"
  },
  {
   "en": "dirty",
@@ -294,7 +294,7 @@
   "example": "The floor is dirty.",
   "exampleZh": "地板很脏。",
   "source": "reused",
-  "word_id": "w2996"
+  "word_id": "w3349"
  },
  {
   "en": "disco",
@@ -303,7 +303,7 @@
   "example": "This is a disco.",
   "exampleZh": "这是一个迪斯科舞厅。",
   "source": "template+generated",
-  "word_id": "w2997"
+  "word_id": "w3350"
  },
  {
   "en": "motorway",
@@ -312,7 +312,7 @@
   "example": "This is a motorway.",
   "exampleZh": "这是一个高速公路。",
   "source": "template+corrected",
-  "word_id": "w2998"
+  "word_id": "w3351"
  },
  {
   "en": "noise",
@@ -321,7 +321,7 @@
   "example": "This is a noise.",
   "exampleZh": "这是一个噪音。",
   "source": "template+generated",
-  "word_id": "w2999"
+  "word_id": "w3352"
  },
  {
   "en": "palace",
@@ -330,7 +330,7 @@
   "example": "This is a palace.",
   "exampleZh": "这是一个宫殿。",
   "source": "template+generated",
-  "word_id": "w3000"
+  "word_id": "w3353"
  },
  {
   "en": "park",
@@ -339,7 +339,7 @@
   "example": "This is a park.",
   "exampleZh": "这是一个公园。",
   "source": "template+generated",
-  "word_id": "w3001"
+  "word_id": "w3354"
  },
  {
   "en": "quiet",
@@ -348,7 +348,7 @@
   "example": "The library is quiet.",
   "exampleZh": "图书馆很安静。",
   "source": "reused",
-  "word_id": "w3002"
+  "word_id": "w3355"
  },
  {
   "en": "railway station",
@@ -357,7 +357,7 @@
   "example": "This is a railway station.",
   "exampleZh": "这是一个火车站。",
   "source": "template+generated",
-  "word_id": "w3003"
+  "word_id": "w3356"
  },
  {
   "en": "roundabout",
@@ -366,7 +366,7 @@
   "example": "Turn left at the roundabout.",
   "exampleZh": "在环岛左转。",
   "source": "reused",
-  "word_id": "w3004"
+  "word_id": "w3357"
  },
  {
   "en": "safe",
@@ -375,7 +375,7 @@
   "example": "This area is safe.",
   "exampleZh": "这个区域很安全。",
   "source": "reused",
-  "word_id": "w3005"
+  "word_id": "w3358"
  },
  {
   "en": "square",
@@ -384,7 +384,7 @@
   "example": "This is a square.",
   "exampleZh": "这是一个广场。",
   "source": "template+generated",
-  "word_id": "w3006"
+  "word_id": "w3359"
  },
  {
   "en": "street",
@@ -393,7 +393,7 @@
   "example": "This is a street.",
   "exampleZh": "这是一个街道。",
   "source": "template+generated",
-  "word_id": "w3007"
+  "word_id": "w3360"
  },
  {
   "en": "supermarket",
@@ -402,7 +402,7 @@
   "example": "I go to the supermarket.",
   "exampleZh": "我去超市。",
   "source": "reused",
-  "word_id": "w3008"
+  "word_id": "w3361"
  },
  {
   "en": "traffic lights",
@@ -411,7 +411,7 @@
   "example": "This is a traffic lights.",
   "exampleZh": "这是一个交通信号灯。",
   "source": "template+generated",
-  "word_id": "w3009"
+  "word_id": "w3362"
  },
  {
   "en": "turning",
@@ -420,6 +420,6 @@
   "example": "This is a turning.",
   "exampleZh": "这是一个转弯处；岔路口。",
   "source": "template+generated",
-  "word_id": "w3010"
+  "word_id": "w3363"
  }
 ]

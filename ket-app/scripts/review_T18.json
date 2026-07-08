@@ -6,7 +6,7 @@
   "example": "This is an assistant.",
   "exampleZh": "这是一个助手。",
   "source": "template+generated",
-  "word_id": "w2964"
+  "word_id": "w3600"
  },
  {
   "en": "bill",
@@ -15,7 +15,7 @@
   "example": "Can I have the bill?",
   "exampleZh": "请给我账单。",
   "source": "reused",
-  "word_id": "w2965"
+  "word_id": "w3601"
  },
  {
   "en": "buy",
@@ -24,7 +24,7 @@
   "example": "I buy a book.",
   "exampleZh": "我买了一本书。",
   "source": "reused",
-  "word_id": "w2966"
+  "word_id": "w3602"
  },
  {
   "en": "cash",
@@ -33,7 +33,7 @@
   "example": "This is a cash.",
   "exampleZh": "这是一个现金。",
   "source": "template+generated",
-  "word_id": "w2967"
+  "word_id": "w3603"
  },
  {
   "en": "charge",
@@ -42,7 +42,7 @@
   "example": "I need to charge my phone.",
   "exampleZh": "我需要给手机充电。",
   "source": "reused",
-  "word_id": "w2968"
+  "word_id": "w3604"
  },
  {
   "en": "cheap",
@@ -51,7 +51,7 @@
   "example": "This shirt is cheap.",
   "exampleZh": "这件衬衫很便宜。",
   "source": "reused",
-  "word_id": "w2969"
+  "word_id": "w3605"
  },
  {
   "en": "close",
@@ -60,7 +60,7 @@
   "example": "This is a close.",
   "exampleZh": "这是一个关闭；结束。",
   "source": "template+generated",
-  "word_id": "w2970"
+  "word_id": "w3606"
  },
  {
   "en": "credit card",
@@ -69,7 +69,7 @@
   "example": "This is a credit card.",
   "exampleZh": "这是一个信用卡。",
   "source": "template+generated",
-  "word_id": "w2971"
+  "word_id": "w3607"
  },
  {
   "en": "dry-cleaner's",
@@ -78,7 +78,7 @@
   "example": "This is a dry-cleaner's.",
   "exampleZh": "这是一个干洗店。",
   "source": "template+corrected",
-  "word_id": "w2972"
+  "word_id": "w3608"
  },
  {
   "en": "euro",
@@ -87,7 +87,7 @@
   "example": "This is an euro.",
   "exampleZh": "这是一个欧元。",
   "source": "template+generated",
-  "word_id": "w2973"
+  "word_id": "w3609"
  },
  {
   "en": "expensive",
@@ -96,7 +96,7 @@
   "example": "The computer is expensive.",
   "exampleZh": "这台电脑很贵。",
   "source": "reused",
-  "word_id": "w2974"
+  "word_id": "w3610"
  },
  {
   "en": "for sale",
@@ -105,7 +105,7 @@
   "example": "This is a for sale.",
   "exampleZh": "这是一个待售。",
   "source": "template+generated",
-  "word_id": "w2975"
+  "word_id": "w3611"
  },
  {
   "en": "go shopping",
@@ -114,7 +114,7 @@
   "example": "This is a go shopping.",
   "exampleZh": "这是一个去购物。",
   "source": "template+generated",
-  "word_id": "w2976"
+  "word_id": "w3612"
  },
  {
   "en": "grocery store",
@@ -123,7 +123,7 @@
   "example": "This is a grocery store.",
   "exampleZh": "这是一个杂货店。",
   "source": "template+generated",
-  "word_id": "w2977"
+  "word_id": "w3613"
  },
  {
   "en": "hairdresser",
@@ -132,7 +132,7 @@
   "example": "This is a hairdresser.",
   "exampleZh": "这是一个美发师。",
   "source": "template+generated",
-  "word_id": "w2978"
+  "word_id": "w3614"
  },
  {
   "en": "jeweller",
@@ -141,7 +141,7 @@
   "example": "This is a jeweller.",
   "exampleZh": "这是一个珠宝商；珠宝店。",
   "source": "template+corrected",
-  "word_id": "w2979"
+  "word_id": "w3615"
  },
  {
   "en": "mall",
@@ -150,7 +150,7 @@
   "example": "This is a mall.",
   "exampleZh": "这是一个大规模购物中心。",
   "source": "template+generated",
-  "word_id": "w2980"
+  "word_id": "w3616"
  },
  {
   "en": "manager",
@@ -159,7 +159,7 @@
   "example": "This is a manager.",
   "exampleZh": "这是一个经理。",
   "source": "template+generated",
-  "word_id": "w2981"
+  "word_id": "w3617"
  },
  {
   "en": "pay",
@@ -168,7 +168,7 @@
   "example": "I pay by card.",
   "exampleZh": "我用卡付款。",
   "source": "reused",
-  "word_id": "w2982"
+  "word_id": "w3618"
  },
  {
   "en": "penny",
@@ -177,7 +177,7 @@
   "example": "This is a penny.",
   "exampleZh": "这是一个便士。",
   "source": "template+generated",
-  "word_id": "w2983"
+  "word_id": "w3619"
  },
  {
   "en": "price",
@@ -186,7 +186,7 @@
   "example": "What is the price of this shirt?",
   "exampleZh": "这件衬衫的价格是多少？",
   "source": "reused",
-  "word_id": "w2984"
+  "word_id": "w3620"
  },
  {
   "en": "salesman",
@@ -195,7 +195,7 @@
   "example": "This is a salesman.",
   "exampleZh": "这是一个销售人员。",
   "source": "template+generated",
-  "word_id": "w2985"
+  "word_id": "w3621"
  },
  {
   "en": "shop assistant",
@@ -204,7 +204,7 @@
   "example": "The shop assistant helps me.",
   "exampleZh": "店员帮助我。",
   "source": "reused",
-  "word_id": "w2986"
+  "word_id": "w3622"
  },
  {
   "en": "travel agent",
@@ -213,6 +213,6 @@
   "example": "This is a travel agent.",
   "exampleZh": "这是一个旅行社。",
   "source": "template+generated",
-  "word_id": "w2987"
+  "word_id": "w3623"
  }
 ]
