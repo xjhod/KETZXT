@@ -275,3 +275,34 @@ export function importFromUrlHash(): { success: boolean; message: string; import
 
   return result;
 }
+
+// ========== 默认测试账号（预置，避免每次更新部署后都要重新注册） ==========
+const SEED_USERS: User[] = [
+  {
+    id: 'user_seed_1234',
+    name: '1234',
+    password: '123456',
+    passwordHint: '123456',
+    createdAt: '2026-07-09T00:00:00.000Z',
+  },
+];
+
+/**
+ * 预置默认测试账号：若测试账号不存在则自动写入 localStorage。
+ * 应用启动时（本模块被 import 时）自动执行一次，避免每次更新部署后都要重新注册。
+ * 仅按 name 查重追加，不会覆盖用户已有的账号，也不会重复写入。
+ */
+export function seedDefaultUsers(): void {
+  const users = getUsers();
+  let changed = false;
+  for (const seed of SEED_USERS) {
+    if (!users.some((u) => u.name.toLowerCase() === seed.name.toLowerCase())) {
+      users.push(seed);
+      changed = true;
+    }
+  }
+  if (changed) saveUsers(users);
+}
+
+// 应用启动即确保测试账号存在（纯前端 localStorage，无后端，故启动时 seed）
+seedDefaultUsers();
