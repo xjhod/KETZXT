@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash } from '../utils/auth';
+import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY } from '../utils/auth';
 import type { User } from '../types/user';
 
 export default function LoginPage() {
@@ -87,7 +87,7 @@ export default function LoginPage() {
 
   const handleExportData = () => {
     try {
-      const data = localStorage.getItem('ket-users');
+      const data = localStorage.getItem(USERS_KEY);
       if (data) {
         const blob = new Blob([data], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -115,7 +115,7 @@ export default function LoginPage() {
         reader.onload = (event: any) => {
           try {
             const data = event.target.result;
-            localStorage.setItem('ket-users', data);
+            localStorage.setItem(USERS_KEY, data);
             alert('导入成功！请刷新页面。');
           } catch (err) {
             alert('导入失败：' + String(err));

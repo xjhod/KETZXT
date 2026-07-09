@@ -2,7 +2,7 @@ import LZString from 'lz-string';
 import type { User } from '../types/user';
 
 // ========== 用户存储键名 ==========
-const USERS_KEY = 'ket-app-users';
+export const USERS_KEY = 'ket-app-users';
 const CURRENT_USER_KEY = 'ket-app-current-user';
 
 // ========== 用户管理函数 ==========
