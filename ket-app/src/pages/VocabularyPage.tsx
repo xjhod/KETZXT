@@ -190,8 +190,9 @@ function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void })
             </div>
           ) : (
             <div className="text-center w-full">
-              <p className="text-3xl font-bold text-gray-800 mb-2">{word.en}</p>
-              <p className="text-sm text-gray-400 mb-2">{word.phonetic}</p>
+              <p className="text-3xl font-bold text-gray-800 mb-1">{word.en}</p>
+              <p className="text-sm text-gray-400 mb-1">{word.phonetic}</p>
+              <p className="text-lg font-medium text-blue-600 mb-3">{word.zh}</p>
               
               {/* 发音评分按钮 - 增大按钮尺寸 */}
               <div className="flex justify-center gap-4 mb-2">
@@ -263,8 +264,9 @@ function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void })
                 </div>
               )}
 
+              {/* 例句（学习模式始终展示） */}
               {!proResult && !isRecording && (
-                <p className="text-xs text-gray-300 mt-2">点击翻转查看释义 ↻</p>
+                <p className="text-xs text-gray-400 mt-2">"{word.example}"</p>
               )}
               {isRecording && (
                 <p className="text-xs text-red-400 mt-2 animate-pulse">请大声朗读单词...</p>
