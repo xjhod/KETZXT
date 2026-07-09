@@ -33,7 +33,7 @@ export const g01Fill: GrammarFillQuestion[] = [
   { id: 'g01f13', grammarId: 'G01', sentence: 'My sister ____ (teach) English.', options: ['teach', 'teaches', 'teachs'], answer: 'teaches', explanation: '以 ch 结尾，加 -es。' },
   { id: 'g01f14', grammarId: 'G01', sentence: 'We ____ (not / play) tennis.', options: ["don't play", "doesn't play", 'not play'], answer: "don't play", explanation: 'We 用 don\'t + 动词原形。' },
   { id: 'g01f15', grammarId: 'G01', sentence: '____ she ____ (speak) French?', options: ['Do / speak', 'Does / speaks', 'Does / speak'], answer: 'Does / speak', explanation: 'she 用 Does，后面用动词原形。' },
-  { id: 'g01f16', grammarId: 'G01', sentence: 'The earth ____ (go) around the sun.', options: ['go', 'goes', 'goes'], answer: 'goes', explanation: '客观事实，第三人称单数。' },
+  { id: 'g01f16', grammarId: 'G01', sentence: 'The earth ____ (go) around the sun.', options: ['go', 'goes', 'going'], answer: 'goes', explanation: '客观事实，第三人称单数。' },
   { id: 'g01f17', grammarId: 'G01', sentence: 'They ____ (not / be) late.', options: ["don't", "aren't", "doesn't be"], answer: "aren't", explanation: 'be 动词否定：aren\'t。' },
   { id: 'g01f18', grammarId: 'G01', sentence: 'My father ____ (have) a car.', options: ['have', 'has', 'haves'], answer: 'has', explanation: 'have 第三人称单数不规则变化 has。' },
   { id: 'g01f19', grammarId: 'G01', sentence: '____ you ____ (know) him?', options: ['Do / know', 'Does / knows', 'Are / know'], answer: 'Do / know', explanation: 'you 用 Do 提问。' },
@@ -71,13 +71,13 @@ export const g01Correction: GrammarCorrectionQuestion[] = [
   { id: 'g01x02', grammarId: 'G01', sentence: "I doesn't like cats.", answer: "I don't like cats.", explanation: 'I 用 don\'t，不用 doesn\'t。' },
   { id: 'g01x03', grammarId: 'G01', sentence: 'Do she go to school by bus?', answer: 'Does she go to school by bus?', explanation: 'she 是第三人称单数，用 Does。' },
   { id: 'g01x04', grammarId: 'G01', sentence: 'My brother studys very hard.', answer: 'My brother studies very hard.', explanation: '辅音+y结尾，变 y 为 i 加 -es。' },
-  { id: 'g01x05', grammarId: 'G01', sentence: "They don't play tennis.", answer: "They don't play tennis.", explanation: 'They 用 don\'t。' },
+  { id: 'g01x05', grammarId: 'G01', sentence: "They doesn't play tennis.", answer: "They don't play tennis.", explanation: 'They 用 don\'t。' },
   // --- 新增 5 题（扩充到 10 道 Correction）---
   { id: 'g01x06', grammarId: 'G01', sentence: 'He work in a factory.', answer: 'He works in a factory.', explanation: '第三人称单数，动词加 -s。' },
   { id: 'g01x07', grammarId: 'G01', sentence: 'I is a student.', answer: 'I am a student.', explanation: 'I 搭配 am，不用 is。' },
   { id: 'g01x08', grammarId: 'G01', sentence: "She don't like cats.", answer: "She doesn't like cats.", explanation: 'she 用 doesn\'t，不用 don\'t。' },
   { id: 'g01x09', grammarId: 'G01', sentence: 'Do he speak English?', answer: 'Does he speak English?', explanation: 'he 用 Does 提问，后面用动词原形。' },
-  { id: 'g01x10', grammarId: 'G01', sentence: "We don't have a car.", answer: "We don't have a car.", explanation: 'We 用 don\'t，不用 doesn\'t。' },
+  { id: 'g01x10', grammarId: 'G01', sentence: "We doesn't have a car.", answer: "We don't have a car.", explanation: 'We 用 don\'t，不用 doesn\'t。' },
 ];
 
 
@@ -668,11 +668,11 @@ export const g09Choice: GrammarChoiceQuestion[] = [
   { id: 'g09c03', grammarId: 'G09', question: 'Which is correct?', options: ['She is best.', 'She is the best.', 'She is better.'], answer: 'She is the best.', explanation: 'good 的最高级是 best，加 the。' },
   { id: 'g09c04', grammarId: 'G09', question: 'Choose the correct sentence:', options: ['This is most expensive.', 'This is the most expensive.', 'This is expensivest.'], answer: 'This is the most expensive.', explanation: '长形容词用 most + 原形，加 the。' },
   { id: 'g09c05', grammarId: 'G09', question: 'Which is correct?', options: ['He is badest.', 'He is the worst.', 'He is badder.'], answer: 'He is the worst.', explanation: 'bad 的最高级是 worst。' },
-  { id: 'g09c06', grammarId: 'G09', question: 'Choose the superlative:', options: ['the smartest', 'smartest', 'the smartest'], answer: 'the smartest', explanation: '短形容词加 -est，加 the。' },
+  { id: 'g09c06', grammarId: 'G09', question: 'Choose the superlative:', options: ['the smartest', 'smartest', 'smart'], answer: 'the smartest', explanation: '短形容词加 -est，加 the。' },
   { id: 'g09c07', grammarId: 'G09', question: 'Which is correct?', options: ['She is happiest.', 'She is the happiest.', 'She is happier.'], answer: 'She is the happiest.', explanation: 'happy 变 y 为 i 加 -est。' },
   { id: 'g09c08', grammarId: 'G09', question: 'Choose the correct sentence:', options: ['This is most interesting.', 'This is the most interesting.', 'This is interestingest.'], answer: 'This is the most interesting.', explanation: '长形容词用 most + 原形。' },
   { id: 'g09c09', grammarId: 'G09', question: 'Which is correct?', options: ['He is younggest.', 'He is the youngest.', 'He is youngger.'], answer: 'He is the youngest.', explanation: 'young 的最高级是 youngest。' },
-  { id: 'g09c10', grammarId: 'G09', question: 'Choose the superlative:', options: ['the biggest', 'biggest', 'the biggest'], answer: 'the biggest', explanation: '重读闭音节双写末尾辅音加 -est。' },
+  { id: 'g09c10', grammarId: 'G09', question: 'Choose the superlative:', options: ['the biggest', 'biggest', 'big'], answer: 'the biggest', explanation: '重读闭音节双写末尾辅音加 -est。' },
 ];
 
 export const g09Correction: GrammarCorrectionQuestion[] = [
@@ -758,7 +758,7 @@ export const g10Correction: GrammarCorrectionQuestion[] = [
   { id: 'g10x07', grammarId: 'G10', sentence: 'She is an teacher.', answer: 'She is a teacher.', explanation: 'teacher 以辅音音素 /t/ 开头，用 a。' },
   { id: 'g10x08', grammarId: 'G10', sentence: 'A sun is hot.', answer: 'The sun is hot.', explanation: '世界上独一无二的事物用 the。' },
   { id: 'g10x09', grammarId: 'G10', sentence: 'I saw an movie.', answer: 'I saw a movie.', explanation: 'movie 以辅音音素 /m/ 开头，用 a。' },
-  { id: 'g10x10', grammarId: 'G10', sentence: 'He is a university student.', answer: 'He is a university student.', explanation: 'university 中 u 发 /j/（辅音音素），用 a。' },
+  { id: 'g10x10', grammarId: 'G10', sentence: 'He is an university student.', answer: 'He is a university student.', explanation: 'university 中 u 发 /j/（辅音音素），用 a。' },
 ];
 
 
@@ -811,7 +811,7 @@ export const g11Fill: GrammarFillQuestion[] = [
 export const g11Choice: GrammarChoiceQuestion[] = [
   { id: 'g11c01', grammarId: 'G11', question: 'Which is correct?', options: ['She gave I a book.', 'She gave me a book.', 'She gave my a book.'], answer: 'She gave me a book.', explanation: '动词后用人称代词宾格 me。' },
   { id: 'g11c02', grammarId: 'G11', question: 'Choose the correct sentence:', options: ['This book is my.', 'This book is mine.', 'This book is I.'], answer: 'This book is mine.', explanation: '名词性物主代词 mine = my book。' },
-  { id: 'g11c03', grammarId: 'G11', question: 'Which is correct?', options: ['He did it himself.', 'He did it himself.', 'He did it his.'], answer: 'He did it himself.', explanation: '反身代词 himself 表示"他自己"。' },
+  { id: 'g11c03', grammarId: 'G11', question: 'Which is correct?', options: ['He did it himself.', 'He did it his.', 'He did it themselves.'], answer: 'He did it himself.', explanation: '反身代词 himself 表示"他自己"。' },
   { id: 'g11c04', grammarId: 'G11', question: 'Choose the correct sentence:', options: ['Her is my sister.', 'She is my sister.', 'Hers is my sister.'], answer: 'She is my sister.', explanation: '主格 she 作主语。' },
   { id: 'g11c05', grammarId: 'G11', question: 'Which is correct?', options: ['This is their house.', 'This is theirs house.', 'This is them house.'], answer: 'This is their house.', explanation: '形容词性物主代词 their 修饰 house。' },
   { id: 'g11c06', grammarId: 'G11', question: 'Choose the correct sentence:', options: ['I saw he.', 'I saw him.', 'I saw his.'], answer: 'I saw him.', explanation: '动词后用人称代词宾格 him。' },
@@ -1268,7 +1268,7 @@ export const g17Correction: GrammarCorrectionQuestion[] = [
   { id: 'g17x06', grammarId: 'G17', sentence: "There aren't some students.", answer: "There aren't any students.", explanation: '否定句用 any，不用 some。' },
   { id: 'g17x07', grammarId: 'G17', sentence: 'Are there some apples?', answer: 'Are there any apples?', explanation: '疑问句用 any，不用 some。' },
   { id: 'g17x08', grammarId: 'G17', sentence: 'She has any money.', answer: 'She has some money.', explanation: '肯定句用 some，不用 any。' },
-  { id: 'g17x09', grammarId: 'G17', sentence: "He doesn't have any brothers.", answer: "He doesn't have any brothers.", explanation: '否定句用 any，正确。' },
+  { id: 'g17x09', grammarId: 'G17', sentence: "He doesn't have some brothers.", answer: "He doesn't have any brothers.", explanation: '否定句用 any，正确。' },
   { id: 'g17x10', grammarId: 'G17', sentence: 'How much people are there?', answer: 'How many people are there?', explanation: 'people 是复数，用 many。' },
 ];
 
@@ -1381,7 +1381,7 @@ export const g19Fill: GrammarFillQuestion[] = [
   { id: 'g19f19', grammarId: 'G19', sentence: 'If you ____ (not / go) now, you will be late.', options: ["don't go", "won't go", "didn't go"], answer: "don't go", explanation: 'if 从句用一般现在时的否定。' },
   { id: 'g19f20', grammarId: 'G19', sentence: 'If I ____ (see) him, I will tell him.', options: ['see', 'saw', 'will see'], answer: 'see', explanation: 'if 从句用一般现在时。' },
   { id: 'g19f21', grammarId: 'G19', sentence: 'If it ____ (rain) yesterday, the ground would be wet.', options: ['rained', 'rains', 'would rain'], answer: 'rained', explanation: '第二类条件句，用一般过去时。' },
-  { id: 'g19f22', grammarId: 'G19', sentence: 'If they ____ (invite) me, I will go.', options: ['invite', 'invite', 'will invitate'], answer: 'invite', explanation: 'if 从句用一般现在时。' },
+  { id: 'g19f22', grammarId: 'G19', sentence: 'If they ____ (invite) me, I will go.', options: ['invite', 'invites', 'will invite'], answer: 'invite', explanation: 'if 从句用一般现在时。' },
   { id: 'g19f23', grammarId: 'G19', sentence: 'If I ____ (can) help, I would.', options: ['can', 'could', 'will can'], answer: 'could', explanation: '第二类条件句，can 变成 could。' },
   { id: 'g19f24', grammarId: 'G19', sentence: 'If he ____ (not / be) busy, he will come.', options: ["isn't", "won't be", "wasn't"], answer: "isn't", explanation: 'if 从句用一般现在时的否定。' },
   { id: 'g19f25', grammarId: 'G19', sentence: 'If we ____ (go) to Paris, I would visit the Eiffel Tower.', options: ['go', 'went', 'will go'], answer: 'went', explanation: '第二类条件句，用一般过去时。' },

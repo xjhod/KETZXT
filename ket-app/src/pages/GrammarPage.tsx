@@ -90,7 +90,7 @@ interface QuizQuestion {
 }
 
 // ========== 讲解页 ==========
-function LearnPage({ grammarId, onBack }: { grammarId: string; onBack: () => void }) {
+function LearnPage({ grammarId, onBack, onPractice }: { grammarId: string; onBack: () => void; onPractice?: () => void }) {
   const gp = allGrammarPoints.find(g => g.id === grammarId)!;
 
   return (
@@ -114,6 +114,10 @@ function LearnPage({ grammarId, onBack }: { grammarId: string; onBack: () => voi
             </div>
           ))}
         </div>
+
+        {onPractice && (
+          <button onClick={onPractice} className="btn-primary mt-4">✏️ 去练习这个语法点 →</button>
+        )}
       </div>
     </div>
   );
@@ -170,8 +174,10 @@ function QuestionCard({
     onAnswer(correct, opt);
   };
 
+  const typeHint = pType === 'fill' ? '请选择正确的词填空' : pType === 'choice' ? '请选择正确答案' : '';
   return (
     <>
+      {typeHint && <p className="text-sm text-gray-400 mb-3">{typeHint}</p>}
       {/* 题目区域 */}
       {pType === 'fill' ? (
         <div className="mb-6">
@@ -565,7 +571,7 @@ export default function GrammarPage() {
   const [selectedGrammar, setSelectedGrammar] = useState<string>('');
   const navigate = useNavigate();
 
-  if (mode === 'learn') return <LearnPage grammarId={selectedGrammar} onBack={() => setMode('list')} />;
+  if (mode === 'learn') return <LearnPage grammarId={selectedGrammar} onBack={() => setMode('list')} onPractice={() => setMode('practice')} />;
   if (mode === 'practice') return <PracticePage grammarId={selectedGrammar} onBack={() => setMode('list')} />;
   if (mode === 'quiz') return <QuizPage onBack={() => setMode('list')} />;
 
