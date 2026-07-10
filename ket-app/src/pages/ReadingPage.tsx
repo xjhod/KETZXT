@@ -399,7 +399,7 @@ function Part3ClozeView({ article }: { article: typeof part3ClozeArticles[0] }) 
       <div className="card p-5 mb-4 prose prose-sm max-w-none text-gray-700 leading-relaxed text-base whitespace-pre-line">{renderPassageSpans()}</div>
 
       {/* 题目选项 */}
-      <h4 className="font-semibold text-sm text-gray-600 mb-3">请为每个空格选择正确的词：</h4>
+      <h4 className="font-semibold text-sm text-gray-600 mb-3">请为每个空格从 A / B / C 中选择正确的词：</h4>
       <div className="space-y-3">
         {article.blanks.map(blank => {
           const sel = answers[blank.id];
@@ -408,7 +408,7 @@ function Part3ClozeView({ article }: { article: typeof part3ClozeArticles[0] }) 
             <div key={blank.id} className={`card p-3 ${showResult && !ok && sel ? 'border-red-200 bg-red-50/20' : ''}`}>
               <p className="text-sm font-medium text-gray-700 mb-2">第 {blank.position} 题</p>
               <div className="flex gap-2 flex-wrap">
-                {(shuffledMap[blank.id] || blank.options).map(opt => {
+                {(shuffledMap[blank.id] || blank.options).map((opt, oi) => {
                   let cls = 'px-3 py-1.5 rounded-lg text-sm border transition-all cursor-pointer ';
                   if (showResult) {
                     if (opt === blank.answer) cls += 'bg-green-50 border-green-300 text-green-800 font-medium';
@@ -418,7 +418,7 @@ function Part3ClozeView({ article }: { article: typeof part3ClozeArticles[0] }) 
                     if (sel === opt) cls += 'bg-blue-50 border-blue-300 text-blue-800';
                     else cls += 'border-gray-200 hover:bg-gray-50 text-gray-700';
                   }
-                  return (<div key={opt} onClick={() => selectOpt(blank.id, opt)} className={cls}>{opt}</div>);
+                  return (<div key={opt} onClick={() => selectOpt(blank.id, opt)} className={cls}><span className="font-bold mr-1 text-gray-400">{String.fromCharCode(65 + oi)}</span>{opt}</div>);
                 })}
               </div>
               {showResult && (<p className="text-xs mt-2 text-gray-500 bg-gray-50 p-2 rounded">💡 {blank.explanation}</p>)}
@@ -430,10 +430,10 @@ function Part3ClozeView({ article }: { article: typeof part3ClozeArticles[0] }) 
       {showResult && (
         <>
           <div className="mt-4 card p-4 text-center">
-            <p className="text-2xl font-bold mb-1" style={{ color: score >= 5 ? '#16a34a' : score >= 3 ? '#eab308' : '#dc2626' }}>
+            <p className="text-2xl font-bold mb-1" style={{ color: score >= 8 ? '#16a34a' : score >= 6 ? '#eab308' : '#dc2626' }}>
               {score} / {article.blanks.length}
             </p>
-            <p className="text-sm text-gray-500">{score >= 5 ? '完形填空掌握很好！' : score >= 3 ? '还不错，注意语法细节！' : '多背固定搭配和语法规则哦！'}</p>
+            <p className="text-sm text-gray-500">{score >= 8 ? '完形填空掌握很好！' : score >= 6 ? '还不错，注意语法细节！' : '多背固定搭配和语法规则哦！'}</p>
           </div>
           <details className="mt-3 card p-4">
             <summary className="cursor-pointer text-sm font-medium text-blue-600">查看完整原文（含答案）</summary>
