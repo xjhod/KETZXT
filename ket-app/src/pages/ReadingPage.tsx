@@ -737,7 +737,7 @@ function Part5View({ article }: { article: typeof part5Articles[0] }) {
     return out;
   };
 
-  const scCol = score >= 4 ? '#16a34a' : score >= 3 ? '#eab308' : '#dc2626';
+  const scCol = score >= 8 ? '#16a34a' : score >= 6 ? '#eab308' : '#dc2626';
 
   return (
     <div>
@@ -761,7 +761,7 @@ function Part5View({ article }: { article: typeof part5Articles[0] }) {
         <>
           <div className="mt-4 card p-4 text-center">
             <p className="text-2xl font-bold mb-1" style={{ color: scCol }}>{score} / {article.blanks.length}</p>
-            <p className="text-sm text-gray-500">{score >= 4 ? '单词填空很棒！' : score >= 3 ? '不错，注意词义和拼写！' : '多读短文，结合上下文猜词哦！'}</p>
+            <p className="text-sm text-gray-500">{score >= 8 ? '单词填空很棒！' : score >= 6 ? '不错，注意词义和拼写！' : '多读短文，结合上下文猜词哦！'}</p>
           </div>
           <details className="mt-3 card p-4">
             <summary className="cursor-pointer text-sm font-medium text-blue-600">查看完整原文（含答案）</summary>
