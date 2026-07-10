@@ -5,6 +5,7 @@ node_modules/
 dist/
 build/
 out/
+.build_tmp/
 
 # Temporary files
 *.tar.gz

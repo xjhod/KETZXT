@@ -130,99 +130,93 @@ function Part1View({ article }: { article: typeof part1Articles[0] }) {
 }
 
 // ==================== Part 2 ====================
-// 数据结构：people[] 人物列表, statements[] 陈述列表, answers[] 位置映射 (answers[i] = personId)
-// 用户操作：先点击人物卡片选中，再点击下方陈述将其分配给该人物
+// 数据结构（KET 标准）：people[] 5 个人物(题目), texts[] 8 则信息(选项 A–H), answers[] 长度 5 (answers[i]=第 i 个人物匹配的 text 下标)
+// 用户操作：先点击人物卡片选中，再点击下方 8 则信息（A–H）将其分配给该人物
 function Part2View({ article }: { article: typeof part2Articles[0] }) {
-  // answers: statementIndex → personId
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  // assignments: personIndex → textIndex
+  const [assignments, setAssignments] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
-  const [activePerson, setActivePerson] = useState<string | null>(null);
+  const [activePerson, setActivePerson] = useState<number | null>(null);
   const { recordAnswer, recordSession } = useProgressStore();
 
+  const letter = (i: number) => String.fromCharCode(65 + i);
+
   const handleSubmit = () => {
-    article.statements.forEach((stmt, i) => {
-      const userPersonId = answers[i] || '';
-      const correctPersonId = article.answers[i] || '';
-      const userPerson = article.people.find(p => p.id === userPersonId);
-      const correctPerson = article.people.find(p => p.id === correctPersonId);
+    article.people.forEach((p, i) => {
+      const userTextIdx = assignments[i];
+      const correctTextIdx = article.answers[i];
+      const isCorrect = userTextIdx === correctTextIdx;
       recordAnswer({
         module: 'reading', exerciseType: 'reading_p2',
         subjectId: article.id, subjectName: article.titleZh,
-        questionId: `p2-${article.id}-s${i}`,
-        questionText: `[Part2] ${stmt}`,
-        userAnswer: userPerson?.name || '（未作答）',
-        correctAnswer: correctPerson?.name || '',
-        isCorrect: userPersonId === correctPersonId,
+        questionId: `p2-${article.id}-p${i}`,
+        questionText: `[Part2] ${p.name}: ${p.description}`,
+        userAnswer: userTextIdx != null ? letter(userTextIdx) : '（未作答）',
+        correctAnswer: letter(correctTextIdx),
+        isCorrect,
       });
     });
-    const correctStatements = article.statements.filter((_, i) => answers[i] === article.answers[i]).length;
+    const correctCount = article.people.filter((_, i) => assignments[i] === article.answers[i]).length;
     recordSession({
       module: 'reading', exerciseType: 'reading_p2',
       subjectId: article.id, subjectName: article.titleZh,
-      correct: correctStatements, total: article.statements.length, duration: 0,
+      correct: correctCount, total: article.people.length, duration: 0,
     });
     setShowResult(true);
   };
 
-  // 点击陈述 → 分配给当前选中的人物
-  const handleStatementClick = (stmtIdx: number) => {
-    if (showResult) return;
-    let targetPerson = activePerson;
-    if (!targetPerson) return;
-    setAnswers(prev => {
-      const next = { ...prev };
-      next[stmtIdx] = targetPerson!;
-      return next;
-    });
+  // 点击信息 → 分配给当前选中的人物
+  const handleTextClick = (textIdx: number) => {
+    if (showResult || activePerson === null) return;
+    const personIdx = activePerson;
+    setAssignments(prev => ({ ...prev, [personIdx]: textIdx }));
   };
 
-  // 取消某条陈述的匹配
-  const removeMatch = (stmtIdx: number, e?: React.MouseEvent) => {
+  // 取消某人的匹配
+  const removeMatch = (personIdx: number, e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (showResult) return;
-    setAnswers(prev => { const n = { ...prev }; delete n[stmtIdx]; return n; });
+    setAssignments(prev => { const n = { ...prev }; delete n[personIdx]; return n; });
   };
 
   const score = useMemo(() => {
     let c = 0;
-    article.statements.forEach((_, i) => { if (answers[i] === article.answers[i]) c++; });
+    article.people.forEach((_, i) => { if (assignments[i] === article.answers[i]) c++; });
     return c;
-  }, [answers, showResult]);
-  const totalStatements = article.statements.length;
-  const answeredCount = Object.keys(answers).length;
-  const sc = score >= 7 ? '#16a34a' : score >= 5 ? '#eab308' : '#dc2626';
+  }, [assignments, showResult]);
+  const totalQuestions = article.people.length;
+  const answeredCount = Object.keys(assignments).length;
+  const sc = score >= 4 ? '#16a34a' : score >= 3 ? '#eab308' : '#dc2626';
 
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-800">{article.titleZh}</h3>
-        {!showResult && answeredCount >= totalStatements && (
-          <button onClick={handleSubmit} className="btn-primary text-sm">提交答案 ({answeredCount}/{totalStatements})</button>
+        {!showResult && answeredCount >= totalQuestions && (
+          <button onClick={handleSubmit} className="btn-primary text-sm">提交答案 ({answeredCount}/{totalQuestions})</button>
         )}
       </div>
 
       {/* 操作提示 */}
       {!showResult && (
         <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-          💡 <strong>操作方法：</strong>先点击上方人物卡片选中，再点击下方陈述将其分配给该人物。每条陈述对应一个人物。
-          {activePerson && <span className="block mt-1 font-medium">→ 当前选中：<span className="text-blue-700">{article.people.find(p => p.id === activePerson)?.name}</span></span>}
+          💡 <strong>操作方法：</strong>先点击上方人物卡片选中，再点击下方 8 则信息（A–H）将其分配给该人物。每个人物对应一则信息。
+          {activePerson !== null && <span className="block mt-1 font-medium">→ 当前选中：<span className="text-blue-700">{article.people[activePerson].name}</span></span>}
         </div>
       )}
 
-      {/* 人物卡片 */}
+      {/* 人物卡片（题目） */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-        {article.people.map(p => {
-          const isActive = activePerson === p.id;
-          const matchedCount = Object.values(answers).filter(a => a === p.id).length;
-          const isAllCorrect = showResult && article.statements.every((_, i) => article.answers[i] !== p.id || answers[i] === p.id);
-          const isAnyCorrect = showResult && Object.entries(answers).some(([idx, a]) => a === p.id && article.answers[Number(idx)] === p.id);
-          const isAnyWrong = showResult && Object.entries(answers).some(([idx, a]) => a === p.id && article.answers[Number(idx)] !== p.id);
+        {article.people.map((p, i) => {
+          const isActive = activePerson === i;
+          const assignedTextIdx = assignments[i];
+          const isCorrect = showResult && assignedTextIdx === article.answers[i];
+          const isWrong = showResult && assignedTextIdx !== undefined && assignedTextIdx !== article.answers[i];
 
           let ringClass = '';
           if (showResult) {
-            if (isAllCorrect) ringClass = 'ring-2 ring-green-300 bg-green-50/30';
-            else if (isAnyWrong) ringClass = 'ring-2 ring-red-300 bg-red-50/30';
-            else if (isAnyCorrect) ringClass = 'ring-2 ring-yellow-300 bg-yellow-50/30';
+            if (isCorrect) ringClass = 'ring-2 ring-green-300 bg-green-50/30';
+            else if (isWrong) ringClass = 'ring-2 ring-red-300 bg-red-50/30';
           } else {
             ringClass = isActive ? 'ring-2 ring-blue-400 bg-blue-50/40' : '';
           }
@@ -230,61 +224,65 @@ function Part2View({ article }: { article: typeof part2Articles[0] }) {
           return (
             <div
               key={p.id}
-              onClick={() => !showResult && setActivePerson(isActive ? null : p.id)}
+              onClick={() => !showResult && setActivePerson(isActive ? null : i)}
               className={`card p-3 text-center cursor-pointer transition-all hover:shadow-md ${ringClass}`}
             >
               <p className="font-semibold text-sm text-gray-800">{p.name}</p>
               <p className="text-xs text-gray-500 mt-1 line-clamp-2">{p.description}</p>
-              {matchedCount > 0 && (
-                <p className="text-xs text-blue-500 mt-1">📎 {matchedCount} 条陈述</p>
+              {assignedTextIdx !== undefined && !showResult && (
+                <div className="relative group inline-block mt-1">
+                  <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">信息 {letter(assignedTextIdx)}</span>
+                  <button
+                    onClick={(e) => removeMatch(i, e)}
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity leading-4 text-center"
+                  >✕</button>
+                </div>
+              )}
+              {showResult && (
+                <p className={`text-xs mt-1 font-medium ${isCorrect ? 'text-green-600' : 'text-red-500'}`}>
+                  {isCorrect ? `✓ ${letter(assignedTextIdx)}` : `→ ${letter(article.answers[i])}`}
+                </p>
               )}
             </div>
           );
         })}
       </div>
 
-      {/* 陈述列表 */}
+      {/* 信息列表（选项 A–H） */}
       <h4 className="font-semibold text-sm text-gray-600 mb-2">
-        陈述列表（共 {totalStatements} 条）
+        信息列表（A–H，共 {article.texts.length} 则，其中 3 则为干扰项）
       </h4>
       <div className="space-y-2">
-        {article.statements.map((stmt, i) => {
-          const assignedPersonId = answers[i];
-          const assignedPerson = assignedPersonId ? article.people.find(p => p.id === assignedPersonId) : null;
-          const correctPersonId = article.answers[i];
-          const correctPerson = article.people.find(p => p.id === correctPersonId);
-          const isCorrect = showResult && assignedPersonId === correctPersonId;
-          const isWrong = showResult && !!assignedPersonId && assignedPersonId !== correctPersonId;
+        {article.texts.map((txt, i) => {
+          const assignedPersons = Object.entries(assignments)
+            .filter(([pi, ti]) => ti === i)
+            .map(([pi]) => article.people[Number(pi)].name);
+          const correctPerson = article.people.find((_, pi) => article.answers[pi] === i);
+          const isAnyCorrectHere = article.people.some((_, pi) => assignments[pi] === i && article.answers[pi] === i);
+          const isAnyWrongHere = article.people.some((_, pi) => assignments[pi] === i && article.answers[pi] !== i);
 
           let cls = 'card p-3 cursor-pointer transition-all border ';
           if (showResult) {
-            if (isCorrect) cls += 'border-green-300 bg-green-50';
-            else if (isWrong) cls += 'border-red-300 bg-red-50';
+            if (isAnyCorrectHere) cls += 'border-green-300 bg-green-50';
+            else if (isAnyWrongHere) cls += 'border-red-300 bg-red-50';
             else cls += 'border-gray-200 opacity-60';
           } else {
-            if (assignedPerson) cls += 'border-blue-300 bg-blue-50 ring-1 ring-blue-200';
-            else if (activePerson) cls += 'border-blue-300 border-dashed hover:bg-blue-50/50';
+            if (assignedPersons.length > 0) cls += 'border-blue-300 bg-blue-50 ring-1 ring-blue-200';
+            else if (activePerson !== null) cls += 'border-blue-300 border-dashed hover:bg-blue-50/50';
             else cls += 'border-gray-200 hover:border-blue-200 hover:bg-gray-50';
           }
 
           return (
-            <div key={i} onClick={() => handleStatementClick(i)} className={cls}>
+            <div key={i} onClick={() => handleTextClick(i)} className={cls}>
               <div className="flex items-start gap-2">
-                <span className="inline-block w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-xs font-bold leading-6 text-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                <p className="text-sm text-gray-700 leading-relaxed flex-1">{stmt}</p>
-                {assignedPerson && !showResult && (
-                  <div className="relative group flex-shrink-0">
-                    <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">{assignedPerson.name}</span>
-                    <button
-                      onClick={(e) => removeMatch(i, e)}
-                      className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity leading-4 text-center"
-                    >✕</button>
-                  </div>
+                <span className="inline-block w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-xs font-bold leading-6 text-center flex-shrink-0 mt-0.5">{letter(i)}</span>
+                <p className="text-sm text-gray-700 leading-relaxed flex-1">{txt}</p>
+                {assignedPersons.length > 0 && !showResult && (
+                  <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full flex-shrink-0">{assignedPersons.join(', ')}</span>
                 )}
-                {showResult && isWrong && (
-                  <span className="text-xs text-green-600 flex-shrink-0">→ {correctPerson?.name}</span>
+                {showResult && correctPerson && (
+                  <span className="text-xs text-green-600 flex-shrink-0">← {correctPerson.name}</span>
                 )}
-                {showResult && isCorrect && <span className="text-xs text-green-600 flex-shrink-0">✓</span>}
               </div>
             </div>
           );
@@ -292,9 +290,9 @@ function Part2View({ article }: { article: typeof part2Articles[0] }) {
       </div>
 
       {/* 进度指示 + 提交按钮 */}
-      {!showResult && answeredCount > 0 && answeredCount < totalStatements && (
+      {!showResult && answeredCount > 0 && answeredCount < totalQuestions && (
         <div className="mt-3 text-center">
-          <span className="text-sm text-gray-400">已匹配 {answeredCount}/{totalStatements} 条</span>
+          <span className="text-sm text-gray-400">已匹配 {answeredCount}/{totalQuestions} 人</span>
           <span className="mx-2 text-gray-300">|</span>
           <button onClick={handleSubmit} className="text-sm text-orange-500 hover:text-orange-600 underline">提前交卷</button>
         </div>
@@ -302,8 +300,8 @@ function Part2View({ article }: { article: typeof part2Articles[0] }) {
 
       {showResult && (
         <div className="mt-4 card p-4 text-center">
-          <p className="text-2xl font-bold mb-1" style={{ color: sc }}>{score}/{totalStatements}</p>
-          <p className="text-sm text-gray-500">{score >= 7 ? '很棒的信息匹配能力！' : score >= 5 ? '继续努力！' : '多读几遍人物描述哦！'}</p>
+          <p className="text-2xl font-bold mb-1" style={{ color: sc }}>{score}/{totalQuestions}</p>
+          <p className="text-sm text-gray-500">{score >= 4 ? '很棒的信息匹配能力！' : score >= 3 ? '继续努力！' : '多读几遍人物描述哦！'}</p>
         </div>
       )}
     </div>

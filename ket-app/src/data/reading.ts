@@ -120,9 +120,9 @@ export interface Part2Article {
   titleZh: string;
   difficulty: 'easy' | 'medium' | 'hard';
   topic: string;
-  people: Part2Person[];  // 5个人物
-  statements: string[];     // 8则信息/需求描述
-  answers: string[];        // 每个statement对应的person id（长度=8）
+  people: Part2Person[];  // 5个人物（题目）
+  texts: string[];        // 8则信息（选项 A–H）
+  answers: number[];      // 长度=5，answers[i]=第 i 个人物匹配的 text 下标(0..7)
 }
 
 // ==================== Part 1 数据 ====================
@@ -948,19 +948,19 @@ export const part1Articles: Part1Article[] = [
 
 export const part2Articles: Part2Article[] = [
   {
-    id: 'p2-001',
+    id: "p2-001",
     title: "Travel Destinations",
     titleZh: "旅行目的地",
     difficulty: "easy",
     topic: "旅行",
     people: [
-      { id: 'p2-001-a', name: 'PersonA', description: "PersonA wants a quiet beach with no crowds." },
-      { id: 'p2-001-b', name: 'PersonB', description: "PersonB loves old buildings and history." },
-      { id: 'p2-001-c', name: 'PersonC', description: "PersonC wants to see wild animals." },
-      { id: 'p2-001-d', name: 'PersonD', description: "PersonD likes busy cities and shopping." },
-      { id: 'p2-001-e', name: 'PersonE', description: "PersonE enjoys mountains and long walks." }
+      { id: "p2-001-a", name: "PersonA", description: "PersonA wants a quiet beach with no crowds." },
+      { id: "p2-001-b", name: "PersonB", description: "PersonB loves old buildings and history." },
+      { id: "p2-001-c", name: "PersonC", description: "PersonC wants to see wild animals." },
+      { id: "p2-001-d", name: "PersonD", description: "PersonD likes busy cities and shopping." },
+      { id: "p2-001-e", name: "PersonE", description: "PersonE enjoys mountains and long walks." }
     ],
-    statements: [
+    texts: [
       "A small island with empty beaches and very few visitors.",
       "A city full of shops, markets and bright lights.",
       "Ancient castles and museums on every street.",
@@ -970,22 +970,22 @@ export const part2Articles: Part2Article[] = [
       "A modern town with big shopping centres.",
       "A forest area with birds and monkeys to observe."
     ],
-    answers: ['p2-001-a', 'p2-001-d', 'p2-001-b', 'p2-001-c', 'p2-001-e', 'p2-001-a', 'p2-001-d', 'p2-001-c'],
+    answers: [0, 2, 3, 1, 4],
   },
   {
-    id: 'p2-002',
+    id: "p2-002",
     title: "Weekend Plans",
     titleZh: "周末计划",
     difficulty: "easy",
     topic: "休闲",
     people: [
-      { id: 'p2-002-a', name: 'PersonA', description: "PersonA wants to stay at home and relax." },
-      { id: 'p2-002-b', name: 'PersonB', description: "PersonB would like to eat good food." },
-      { id: 'p2-002-c', name: 'PersonC', description: "PersonC hopes to learn something new." },
-      { id: 'p2-002-d', name: 'PersonD', description: "PersonD wants to do exercise outside." },
-      { id: 'p2-002-e', name: 'PersonE', description: "PersonE enjoys watching films." }
+      { id: "p2-002-a", name: "PersonA", description: "PersonA wants to stay at home and relax." },
+      { id: "p2-002-b", name: "PersonB", description: "PersonB would like to eat good food." },
+      { id: "p2-002-c", name: "PersonC", description: "PersonC hopes to learn something new." },
+      { id: "p2-002-d", name: "PersonD", description: "PersonD wants to do exercise outside." },
+      { id: "p2-002-e", name: "PersonE", description: "PersonE enjoys watching films." }
     ],
-    statements: [
+    texts: [
       "A cooking class where you make pizza.",
       "A football match in the park this Saturday.",
       "A new action film at the cinema tonight.",
@@ -995,22 +995,22 @@ export const part2Articles: Part2Article[] = [
       "A long bike ride along the river.",
       "A box set of old comedies at home."
     ],
-    answers: ['p2-002-c', 'p2-002-d', 'p2-002-e', 'p2-002-a', 'p2-002-b', 'p2-002-c', 'p2-002-d', 'p2-002-a'],
+    answers: [3, 4, 0, 1, 2],
   },
   {
-    id: 'p2-003',
+    id: "p2-003",
     title: "Hobbies",
     titleZh: "爱好",
     difficulty: "easy",
     topic: "兴趣",
     people: [
-      { id: 'p2-003-a', name: 'PersonA', description: "PersonA likes making things with hands." },
-      { id: 'p2-003-b', name: 'PersonB', description: "PersonB enjoys music and singing." },
-      { id: 'p2-003-c', name: 'PersonC', description: "PersonC loves reading books." },
-      { id: 'p2-003-d', name: 'PersonD', description: "PersonD wants to play a sport." },
-      { id: 'p2-003-e', name: 'PersonE', description: "PersonE likes taking photos." }
+      { id: "p2-003-a", name: "PersonA", description: "PersonA likes making things with hands." },
+      { id: "p2-003-b", name: "PersonB", description: "PersonB enjoys music and singing." },
+      { id: "p2-003-c", name: "PersonC", description: "PersonC loves reading books." },
+      { id: "p2-003-d", name: "PersonD", description: "PersonD wants to play a sport." },
+      { id: "p2-003-e", name: "PersonE", description: "PersonE likes taking photos." }
     ],
-    statements: [
+    texts: [
       "A camera club that meets every Sunday.",
       "A guitar lesson for beginners.",
       "A library with free novels to borrow.",
@@ -1020,22 +1020,22 @@ export const part2Articles: Part2Article[] = [
       "A shop selling pencils and sketchbooks.",
       "A magazine about famous writers."
     ],
-    answers: ['p2-003-e', 'p2-003-b', 'p2-003-c', 'p2-003-d', 'p2-003-a', 'p2-003-b', 'p2-003-a', 'p2-003-c'],
+    answers: [4, 1, 2, 3, 0],
   },
   {
-    id: 'p2-004',
+    id: "p2-004",
     title: "Travel Plans",
     titleZh: "旅行计划",
     difficulty: "easy",
     topic: "旅行",
     people: [
-      { id: 'p2-004-a', name: 'PersonA', description: "PersonA needs a cheap place to sleep." },
-      { id: 'p2-004-b', name: 'PersonB', description: "PersonB wants to travel by train." },
-      { id: 'p2-004-c', name: 'PersonC', description: "PersonC likes warm weather." },
-      { id: 'p2-004-d', name: 'PersonD', description: "PersonD wants to visit family." },
-      { id: 'p2-004-e', name: 'PersonE', description: "PersonE enjoys boat trips." }
+      { id: "p2-004-a", name: "PersonA", description: "PersonA needs a cheap place to sleep." },
+      { id: "p2-004-b", name: "PersonB", description: "PersonB wants to travel by train." },
+      { id: "p2-004-c", name: "PersonC", description: "PersonC likes warm weather." },
+      { id: "p2-004-d", name: "PersonD", description: "PersonD wants to visit family." },
+      { id: "p2-004-e", name: "PersonE", description: "PersonE enjoys boat trips." }
     ],
-    statements: [
+    texts: [
       "A small hostel with beds for £10 a night.",
       "A fast train to the mountains every morning.",
       "A sunny island with 30°C all week.",
@@ -1045,22 +1045,22 @@ export const part2Articles: Part2Article[] = [
       "A cruise along the river with dinner.",
       "A warm beach resort for the holiday."
     ],
-    answers: ['p2-004-a', 'p2-004-b', 'p2-004-c', 'p2-004-e', 'p2-004-d', 'p2-004-a', 'p2-004-e', 'p2-004-c'],
+    answers: [0, 1, 2, 4, 3],
   },
   {
-    id: 'p2-005',
+    id: "p2-005",
     title: "After-school Clubs",
     titleZh: "课后俱乐部",
     difficulty: "easy",
     topic: "校园",
     people: [
-      { id: 'p2-005-a', name: 'PersonA', description: "PersonA wants to play an instrument." },
-      { id: 'p2-005-b', name: 'PersonB', description: "PersonB likes computers and robots." },
-      { id: 'p2-005-c', name: 'PersonC', description: "PersonC enjoys drawing." },
-      { id: 'p2-005-d', name: 'PersonD', description: "PersonD wants to play a team game." },
-      { id: 'p2-005-e', name: 'PersonE', description: "PersonE loves animals." }
+      { id: "p2-005-a", name: "PersonA", description: "PersonA wants to play an instrument." },
+      { id: "p2-005-b", name: "PersonB", description: "PersonB likes computers and robots." },
+      { id: "p2-005-c", name: "PersonC", description: "PersonC enjoys drawing." },
+      { id: "p2-005-d", name: "PersonD", description: "PersonD wants to play a team game." },
+      { id: "p2-005-e", name: "PersonE", description: "PersonE loves animals." }
     ],
-    statements: [
+    texts: [
       "A violin group that practises on Tuesdays.",
       "A science club that builds small robots.",
       "An art room open after school.",
@@ -1070,22 +1070,22 @@ export const part2Articles: Part2Article[] = [
       "A coding competition next month.",
       "A painting exhibition by students."
     ],
-    answers: ['p2-005-a', 'p2-005-b', 'p2-005-c', 'p2-005-d', 'p2-005-e', 'p2-005-a', 'p2-005-b', 'p2-005-c'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-006',
+    id: "p2-006",
     title: "Birthday Gifts",
     titleZh: "生日礼物",
     difficulty: "easy",
     topic: "礼物",
     people: [
-      { id: 'p2-006-a', name: 'PersonA', description: "PersonA loves football." },
-      { id: 'p2-006-b', name: 'PersonB', description: "PersonB likes sweets and chocolate." },
-      { id: 'p2-006-c', name: 'PersonC', description: "PersonC enjoys reading stories." },
-      { id: 'p2-006-d', name: 'PersonD', description: "PersonD wants to learn the guitar." },
-      { id: 'p2-006-e', name: 'PersonE', description: "PersonE likes taking pictures." }
+      { id: "p2-006-a", name: "PersonA", description: "PersonA loves football." },
+      { id: "p2-006-b", name: "PersonB", description: "PersonB likes sweets and chocolate." },
+      { id: "p2-006-c", name: "PersonC", description: "PersonC enjoys reading stories." },
+      { id: "p2-006-d", name: "PersonD", description: "PersonD wants to learn the guitar." },
+      { id: "p2-006-e", name: "PersonE", description: "PersonE likes taking pictures." }
     ],
-    statements: [
+    texts: [
       "A real football with his name on it.",
       "A box of dark chocolate from Belgium.",
       "The new adventure book by her favourite writer.",
@@ -1095,22 +1095,22 @@ export const part2Articles: Part2Article[] = [
       "A notebook for writing stories.",
       "A beginner guitar course online."
     ],
-    answers: ['p2-006-a', 'p2-006-b', 'p2-006-c', 'p2-006-d', 'p2-006-e', 'p2-006-a', 'p2-006-c', 'p2-006-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-007',
+    id: "p2-007",
     title: "Restaurants",
     titleZh: "餐厅",
     difficulty: "easy",
     topic: "美食",
     people: [
-      { id: 'p2-007-a', name: 'PersonA', description: "PersonA is a vegetarian." },
-      { id: 'p2-007-b', name: 'PersonB', description: "PersonB loves Italian food." },
-      { id: 'p2-007-c', name: 'PersonC', description: "PersonC wants a cheap meal." },
-      { id: 'p2-007-d', name: 'PersonD', description: "PersonD likes spicy dishes." },
-      { id: 'p2-007-e', name: 'PersonE', description: "PersonE wants a place for children." }
+      { id: "p2-007-a", name: "PersonA", description: "PersonA is a vegetarian." },
+      { id: "p2-007-b", name: "PersonB", description: "PersonB loves Italian food." },
+      { id: "p2-007-c", name: "PersonC", description: "PersonC wants a cheap meal." },
+      { id: "p2-007-d", name: "PersonD", description: "PersonD likes spicy dishes." },
+      { id: "p2-007-e", name: "PersonE", description: "PersonE wants a place for children." }
     ],
-    statements: [
+    texts: [
       "A cafe with salads and meat-free burgers.",
       "A pizzeria with fresh pasta.",
       "A street stall with meals under £5.",
@@ -1120,22 +1120,22 @@ export const part2Articles: Part2Article[] = [
       "A small trattoria in the old town.",
       "A play centre with kids menu."
     ],
-    answers: ['p2-007-a', 'p2-007-b', 'p2-007-c', 'p2-007-d', 'p2-007-e', 'p2-007-a', 'p2-007-b', 'p2-007-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-008',
+    id: "p2-008",
     title: "Summer Courses",
     titleZh: "暑期课程",
     difficulty: "medium",
     topic: "学习",
     people: [
-      { id: 'p2-008-a', name: 'PersonA', description: "PersonA wants to improve English." },
-      { id: 'p2-008-b', name: 'PersonB', description: "PersonB likes sports and water." },
-      { id: 'p2-008-c', name: 'PersonC', description: "PersonC enjoys art and design." },
-      { id: 'p2-008-d', name: 'PersonD', description: "PersonD wants to learn to cook." },
-      { id: 'p2-008-e', name: 'PersonE', description: "PersonE is interested in science." }
+      { id: "p2-008-a", name: "PersonA", description: "PersonA wants to improve English." },
+      { id: "p2-008-b", name: "PersonB", description: "PersonB likes sports and water." },
+      { id: "p2-008-c", name: "PersonC", description: "PersonC enjoys art and design." },
+      { id: "p2-008-d", name: "PersonD", description: "PersonD wants to learn to cook." },
+      { id: "p2-008-e", name: "PersonE", description: "PersonE is interested in science." }
     ],
-    statements: [
+    texts: [
       "An English camp with games and trips.",
       "A swimming and sailing school.",
       "A fashion design workshop.",
@@ -1145,22 +1145,22 @@ export const part2Articles: Part2Article[] = [
       "A painting and sculpture course.",
       "A kitchen skills programme."
     ],
-    answers: ['p2-008-a', 'p2-008-b', 'p2-008-c', 'p2-008-d', 'p2-008-e', 'p2-008-a', 'p2-008-c', 'p2-008-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-009',
+    id: "p2-009",
     title: "Films to Watch",
     titleZh: "电影推荐",
     difficulty: "easy",
     topic: "影视",
     people: [
-      { id: 'p2-009-a', name: 'PersonA', description: "PersonA likes funny films." },
-      { id: 'p2-009-b', name: 'PersonB', description: "PersonB enjoys scary stories." },
-      { id: 'p2-009-c', name: 'PersonC', description: "PersonC loves cartoon movies." },
-      { id: 'p2-009-d', name: 'PersonD', description: "PersonD wants to see real animals." },
-      { id: 'p2-009-e', name: 'PersonE', description: "PersonE likes adventure films." }
+      { id: "p2-009-a", name: "PersonA", description: "PersonA likes funny films." },
+      { id: "p2-009-b", name: "PersonB", description: "PersonB enjoys scary stories." },
+      { id: "p2-009-c", name: "PersonC", description: "PersonC loves cartoon movies." },
+      { id: "p2-009-d", name: "PersonD", description: "PersonD wants to see real animals." },
+      { id: "p2-009-e", name: "PersonE", description: "PersonE likes adventure films." }
     ],
-    statements: [
+    texts: [
       "A comedy about a clumsy detective.",
       "A horror film set in a dark forest.",
       "A cartoon about a talking cat.",
@@ -1170,22 +1170,22 @@ export const part2Articles: Part2Article[] = [
       "A thriller with a surprising end.",
       "A journey to a lost island."
     ],
-    answers: ['p2-009-a', 'p2-009-b', 'p2-009-c', 'p2-009-d', 'p2-009-e', 'p2-009-a', 'p2-009-b', 'p2-009-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-010',
+    id: "p2-010",
     title: "Pets to Adopt",
     titleZh: "领养宠物",
     difficulty: "easy",
     topic: "动物",
     people: [
-      { id: 'p2-010-a', name: 'PersonA', description: "PersonA lives in a small flat." },
-      { id: 'p2-010-b', name: 'PersonB', description: "PersonB has a big garden." },
-      { id: 'p2-010-c', name: 'PersonC', description: "PersonC wants a quiet animal." },
-      { id: 'p2-010-d', name: 'PersonD', description: "PersonD wants a friendly dog." },
-      { id: 'p2-010-e', name: 'PersonE', description: "PersonE likes small animals." }
+      { id: "p2-010-a", name: "PersonA", description: "PersonA lives in a small flat." },
+      { id: "p2-010-b", name: "PersonB", description: "PersonB has a big garden." },
+      { id: "p2-010-c", name: "PersonC", description: "PersonC wants a quiet animal." },
+      { id: "p2-010-d", name: "PersonD", description: "PersonD wants a friendly dog." },
+      { id: "p2-010-e", name: "PersonE", description: "PersonE likes small animals." }
     ],
-    statements: [
+    texts: [
       "A small fish that needs little space.",
       "A young dog that loves to run.",
       "A quiet old cat for a calm home.",
@@ -1195,22 +1195,22 @@ export const part2Articles: Part2Article[] = [
       "A turtle that lives in water.",
       "A horse for a large field."
     ],
-    answers: ['p2-010-a', 'p2-010-d', 'p2-010-c', 'p2-010-b', 'p2-010-e', 'p2-010-d', 'p2-010-a', 'p2-010-b'],
+    answers: [0, 3, 2, 1, 4],
   },
   {
-    id: 'p2-011',
+    id: "p2-011",
     title: "Books to Read",
     titleZh: "好书推荐",
     difficulty: "easy",
     topic: "阅读",
     people: [
-      { id: 'p2-011-a', name: 'PersonA', description: "PersonA likes funny stories." },
-      { id: 'p2-011-b', name: 'PersonB', description: "PersonB enjoys mysteries." },
-      { id: 'p2-011-c', name: 'PersonC', description: "PersonC loves space and planets." },
-      { id: 'p2-011-d', name: 'PersonD', description: "PersonD wants to learn to cook." },
-      { id: 'p2-011-e', name: 'PersonE', description: "PersonE likes books about animals." }
+      { id: "p2-011-a", name: "PersonA", description: "PersonA likes funny stories." },
+      { id: "p2-011-b", name: "PersonB", description: "PersonB enjoys mysteries." },
+      { id: "p2-011-c", name: "PersonC", description: "PersonC loves space and planets." },
+      { id: "p2-011-d", name: "PersonD", description: "PersonD wants to learn to cook." },
+      { id: "p2-011-e", name: "PersonE", description: "PersonE likes books about animals." }
     ],
-    statements: [
+    texts: [
       "A silly book about a laughing prince.",
       "A detective story with a clever ending.",
       "A guide to the stars and the moon.",
@@ -1220,22 +1220,22 @@ export const part2Articles: Part2Article[] = [
       "A science book about rockets.",
       "A cookbook with easy dinners."
     ],
-    answers: ['p2-011-a', 'p2-011-b', 'p2-011-c', 'p2-011-d', 'p2-011-e', 'p2-011-a', 'p2-011-c', 'p2-011-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-012',
+    id: "p2-012",
     title: "Sports to Try",
     titleZh: "尝试的运动",
     difficulty: "easy",
     topic: "运动",
     people: [
-      { id: 'p2-012-a', name: 'PersonA', description: "PersonA wants a sport with a ball." },
-      { id: 'p2-012-b', name: 'PersonB', description: "PersonB likes water sports." },
-      { id: 'p2-012-c', name: 'PersonC', description: "PersonC enjoys individual exercise." },
-      { id: 'p2-012-d', name: 'PersonD', description: "PersonD wants a team game." },
-      { id: 'p2-012-e', name: 'PersonE', description: "PersonE likes fast movement." }
+      { id: "p2-012-a", name: "PersonA", description: "PersonA wants a sport with a ball." },
+      { id: "p2-012-b", name: "PersonB", description: "PersonB likes water sports." },
+      { id: "p2-012-c", name: "PersonC", description: "PersonC enjoys individual exercise." },
+      { id: "p2-012-d", name: "PersonD", description: "PersonD wants a team game." },
+      { id: "p2-012-e", name: "PersonE", description: "PersonE likes fast movement." }
     ],
-    statements: [
+    texts: [
       "A tennis lesson in the park.",
       "A swimming class for all ages.",
       "A yoga session every morning.",
@@ -1245,22 +1245,22 @@ export const part2Articles: Part2Article[] = [
       "A diving course at the pool.",
       "A badminton game for two."
     ],
-    answers: ['p2-012-a', 'p2-012-b', 'p2-012-c', 'p2-012-d', 'p2-012-e', 'p2-012-d', 'p2-012-b', 'p2-012-a'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-013',
+    id: "p2-013",
     title: "Jobs for Students",
     titleZh: "学生兼职",
     difficulty: "medium",
     topic: "工作",
     people: [
-      { id: 'p2-013-a', name: 'PersonA', description: "PersonA is good with children." },
-      { id: 'p2-013-b', name: 'PersonB', description: "PersonB can speak two languages." },
-      { id: 'p2-013-c', name: 'PersonC', description: "PersonC likes working with food." },
-      { id: 'p2-013-d', name: 'PersonD', description: "PersonD enjoys computers." },
-      { id: 'p2-013-e', name: 'PersonE', description: "PersonE likes being outside." }
+      { id: "p2-013-a", name: "PersonA", description: "PersonA is good with children." },
+      { id: "p2-013-b", name: "PersonB", description: "PersonB can speak two languages." },
+      { id: "p2-013-c", name: "PersonC", description: "PersonC likes working with food." },
+      { id: "p2-013-d", name: "PersonD", description: "PersonD enjoys computers." },
+      { id: "p2-013-e", name: "PersonE", description: "PersonE likes being outside." }
     ],
-    statements: [
+    texts: [
       "A babysitter needed on weekends.",
       "A translator for a travel office.",
       "A shop assistant in a bakery.",
@@ -1270,22 +1270,22 @@ export const part2Articles: Part2Article[] = [
       "A cafe cook on Friday nights.",
       "A dog walker in the mornings."
     ],
-    answers: ['p2-013-a', 'p2-013-b', 'p2-013-c', 'p2-013-d', 'p2-013-e', 'p2-013-b', 'p2-013-c', 'p2-013-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-014',
+    id: "p2-014",
     title: "Music Concerts",
     titleZh: "音乐会",
     difficulty: "easy",
     topic: "音乐",
     people: [
-      { id: 'p2-014-a', name: 'PersonA', description: "PersonA likes classical music." },
-      { id: 'p2-014-b', name: 'PersonB', description: "PersonB enjoys pop songs." },
-      { id: 'p2-014-c', name: 'PersonC', description: "PersonC loves jazz." },
-      { id: 'p2-014-d', name: 'PersonD', description: "PersonD wants to dance." },
-      { id: 'p2-014-e', name: 'PersonE', description: "PersonE likes guitar music." }
+      { id: "p2-014-a", name: "PersonA", description: "PersonA likes classical music." },
+      { id: "p2-014-b", name: "PersonB", description: "PersonB enjoys pop songs." },
+      { id: "p2-014-c", name: "PersonC", description: "PersonC loves jazz." },
+      { id: "p2-014-d", name: "PersonD", description: "PersonD wants to dance." },
+      { id: "p2-014-e", name: "PersonE", description: "PersonE likes guitar music." }
     ],
-    statements: [
+    texts: [
       "An orchestra playing Beethoven.",
       "A famous pop star on tour.",
       "A small jazz band in a cafe.",
@@ -1295,22 +1295,22 @@ export const part2Articles: Part2Article[] = [
       "A summer pop festival.",
       "A blues guitarist downtown."
     ],
-    answers: ['p2-014-a', 'p2-014-b', 'p2-014-c', 'p2-014-d', 'p2-014-e', 'p2-014-a', 'p2-014-b', 'p2-014-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-015',
+    id: "p2-015",
     title: "Holiday Activities",
     titleZh: "假期活动",
     difficulty: "easy",
     topic: "休闲",
     people: [
-      { id: 'p2-015-a', name: 'PersonA', description: "PersonA wants to learn to swim." },
-      { id: 'p2-015-b', name: 'PersonB', description: "PersonB likes making friends." },
-      { id: 'p2-015-c', name: 'PersonC', description: "PersonC enjoys nature." },
-      { id: 'p2-015-d', name: 'PersonD', description: "PersonD wants to ride horses." },
-      { id: 'p2-015-e', name: 'PersonE', description: "PersonE likes building things." }
+      { id: "p2-015-a", name: "PersonA", description: "PersonA wants to learn to swim." },
+      { id: "p2-015-b", name: "PersonB", description: "PersonB likes making friends." },
+      { id: "p2-015-c", name: "PersonC", description: "PersonC enjoys nature." },
+      { id: "p2-015-d", name: "PersonD", description: "PersonD wants to ride horses." },
+      { id: "p2-015-e", name: "PersonE", description: "PersonE likes building things." }
     ],
-    statements: [
+    texts: [
       "A swimming pool open all day.",
       "A camp with group games.",
       "A forest walk with a guide.",
@@ -1320,22 +1320,22 @@ export const part2Articles: Part2Article[] = [
       "A picnic in the countryside.",
       "A carpentry class for kids."
     ],
-    answers: ['p2-015-a', 'p2-015-b', 'p2-015-c', 'p2-015-d', 'p2-015-e', 'p2-015-a', 'p2-015-c', 'p2-015-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-016',
+    id: "p2-016",
     title: "Apps to Download",
     titleZh: "推荐应用",
     difficulty: "medium",
     topic: "科技",
     people: [
-      { id: 'p2-016-a', name: 'PersonA', description: "PersonA wants to learn words." },
-      { id: 'p2-016-b', name: 'PersonB', description: "PersonB likes to draw." },
-      { id: 'p2-016-c', name: 'PersonC', description: "PersonC wants to keep fit." },
-      { id: 'p2-016-d', name: 'PersonD', description: "PersonD enjoys cooking." },
-      { id: 'p2-016-e', name: 'PersonE', description: "PersonE likes music." }
+      { id: "p2-016-a", name: "PersonA", description: "PersonA wants to learn words." },
+      { id: "p2-016-b", name: "PersonB", description: "PersonB likes to draw." },
+      { id: "p2-016-c", name: "PersonC", description: "PersonC wants to keep fit." },
+      { id: "p2-016-d", name: "PersonD", description: "PersonD enjoys cooking." },
+      { id: "p2-016-e", name: "PersonE", description: "PersonE likes music." }
     ],
-    statements: [
+    texts: [
       "A daily vocabulary game.",
       "A simple drawing pad app.",
       "A step counter and workout planner.",
@@ -1345,22 +1345,22 @@ export const part2Articles: Part2Article[] = [
       "A paint tool with colours.",
       "A running music player."
     ],
-    answers: ['p2-016-a', 'p2-016-b', 'p2-016-c', 'p2-016-d', 'p2-016-e', 'p2-016-a', 'p2-016-b', 'p2-016-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-017',
+    id: "p2-017",
     title: "Places to Study",
     titleZh: "学习场所",
     difficulty: "easy",
     topic: "学习",
     people: [
-      { id: 'p2-017-a', name: 'PersonA', description: "PersonA needs a quiet room." },
-      { id: 'p2-017-b', name: 'PersonB', description: "PersonB wants free wifi." },
-      { id: 'p2-017-c', name: 'PersonC', description: "PersonC likes books around." },
-      { id: 'p2-017-d', name: 'PersonD', description: "PersonD wants a group space." },
-      { id: 'p2-017-e', name: 'PersonE', description: "PersonE needs coffee nearby." }
+      { id: "p2-017-a", name: "PersonA", description: "PersonA needs a quiet room." },
+      { id: "p2-017-b", name: "PersonB", description: "PersonB wants free wifi." },
+      { id: "p2-017-c", name: "PersonC", description: "PersonC likes books around." },
+      { id: "p2-017-d", name: "PersonD", description: "PersonD wants a group space." },
+      { id: "p2-017-e", name: "PersonE", description: "PersonE needs coffee nearby." }
     ],
-    statements: [
+    texts: [
       "A silent study hall on the top floor.",
       "A cafe with fast internet.",
       "A library with many desks.",
@@ -1370,22 +1370,22 @@ export const part2Articles: Part2Article[] = [
       "A co-working space downtown.",
       "A book cafe open late."
     ],
-    answers: ['p2-017-a', 'p2-017-b', 'p2-017-c', 'p2-017-d', 'p2-017-e', 'p2-017-a', 'p2-017-b', 'p2-017-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-018',
+    id: "p2-018",
     title: "Gifts for Family",
     titleZh: "给家人的礼物",
     difficulty: "easy",
     topic: "礼物",
     people: [
-      { id: 'p2-018-a', name: 'PersonA', description: "PersonA wants a gift for Mum." },
-      { id: 'p2-018-b', name: 'PersonB', description: "PersonB wants a gift for Dad." },
-      { id: 'p2-018-c', name: 'PersonC', description: "PersonC wants a gift for a baby." },
-      { id: 'p2-018-d', name: 'PersonD', description: "PersonD wants a gift for Grandma." },
-      { id: 'p2-018-e', name: 'PersonE', description: "PersonE wants a gift for a friend." }
+      { id: "p2-018-a", name: "PersonA", description: "PersonA wants a gift for Mum." },
+      { id: "p2-018-b", name: "PersonB", description: "PersonB wants a gift for Dad." },
+      { id: "p2-018-c", name: "PersonC", description: "PersonC wants a gift for a baby." },
+      { id: "p2-018-d", name: "PersonD", description: "PersonD wants a gift for Grandma." },
+      { id: "p2-018-e", name: "PersonE", description: "PersonE wants a gift for a friend." }
     ],
-    statements: [
+    texts: [
       "A flower box with a nice card.",
       "A tool kit for the garage.",
       "A soft toy for a small child.",
@@ -1395,22 +1395,22 @@ export const part2Articles: Part2Article[] = [
       "A book of old recipes.",
       "A key ring with his name."
     ],
-    answers: ['p2-018-a', 'p2-018-b', 'p2-018-c', 'p2-018-d', 'p2-018-e', 'p2-018-a', 'p2-018-d', 'p2-018-b'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-019',
+    id: "p2-019",
     title: "Weekend Trips",
     titleZh: "周末出游",
     difficulty: "medium",
     topic: "旅行",
     people: [
-      { id: 'p2-019-a', name: 'PersonA', description: "PersonA likes the sea." },
-      { id: 'p2-019-b', name: 'PersonB', description: "PersonB enjoys museums." },
-      { id: 'p2-019-c', name: 'PersonC', description: "PersonC wants adventure." },
-      { id: 'p2-019-d', name: 'PersonD', description: "PersonD likes the countryside." },
-      { id: 'p2-019-e', name: 'PersonE', description: "PersonE enjoys markets." }
+      { id: "p2-019-a", name: "PersonA", description: "PersonA likes the sea." },
+      { id: "p2-019-b", name: "PersonB", description: "PersonB enjoys museums." },
+      { id: "p2-019-c", name: "PersonC", description: "PersonC wants adventure." },
+      { id: "p2-019-d", name: "PersonD", description: "PersonD likes the countryside." },
+      { id: "p2-019-e", name: "PersonE", description: "PersonE enjoys markets." }
     ],
-    statements: [
+    texts: [
       "A day at a quiet beach.",
       "A tour of the history museum.",
       "A zip-line in the mountains.",
@@ -1420,22 +1420,22 @@ export const part2Articles: Part2Article[] = [
       "An art gallery afternoon.",
       "A farm shop with fresh eggs."
     ],
-    answers: ['p2-019-a', 'p2-019-b', 'p2-019-c', 'p2-019-d', 'p2-019-e', 'p2-019-a', 'p2-019-b', 'p2-019-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-020',
+    id: "p2-020",
     title: "Cooking Classes",
     titleZh: "烹饪课",
     difficulty: "medium",
     topic: "美食",
     people: [
-      { id: 'p2-020-a', name: 'PersonA', description: "PersonA wants to bake bread." },
-      { id: 'p2-020-b', name: 'PersonB', description: "PersonB likes Asian food." },
-      { id: 'p2-020-c', name: 'PersonC', description: "PersonC enjoys sweets." },
-      { id: 'p2-020-d', name: 'PersonD', description: "PersonD wants healthy meals." },
-      { id: 'p2-020-e', name: 'PersonE', description: "PersonE likes pasta." }
+      { id: "p2-020-a", name: "PersonA", description: "PersonA wants to bake bread." },
+      { id: "p2-020-b", name: "PersonB", description: "PersonB likes Asian food." },
+      { id: "p2-020-c", name: "PersonC", description: "PersonC enjoys sweets." },
+      { id: "p2-020-d", name: "PersonD", description: "PersonD wants healthy meals." },
+      { id: "p2-020-e", name: "PersonE", description: "PersonE likes pasta." }
     ],
-    statements: [
+    texts: [
       "A bread-making workshop.",
       "A sushi rolling class.",
       "A chocolate dessert course.",
@@ -1445,22 +1445,22 @@ export const part2Articles: Part2Article[] = [
       "A cake decorating day.",
       "A stir-fry evening."
     ],
-    answers: ['p2-020-a', 'p2-020-b', 'p2-020-c', 'p2-020-d', 'p2-020-e', 'p2-020-e', 'p2-020-c', 'p2-020-b'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-021',
+    id: "p2-021",
     title: "Outdoor Activities",
     titleZh: "户外活动",
     difficulty: "easy",
     topic: "自然",
     people: [
-      { id: 'p2-021-a', name: 'PersonA', description: "PersonA likes climbing." },
-      { id: 'p2-021-b', name: 'PersonB', description: "PersonB enjoys biking." },
-      { id: 'p2-021-c', name: 'PersonC', description: "PersonC wants to camp." },
-      { id: 'p2-021-d', name: 'PersonD', description: "PersonD likes watching birds." },
-      { id: 'p2-021-e', name: 'PersonE', description: "PersonE enjoys water." }
+      { id: "p2-021-a", name: "PersonA", description: "PersonA likes climbing." },
+      { id: "p2-021-b", name: "PersonB", description: "PersonB enjoys biking." },
+      { id: "p2-021-c", name: "PersonC", description: "PersonC wants to camp." },
+      { id: "p2-021-d", name: "PersonD", description: "PersonD likes watching birds." },
+      { id: "p2-021-e", name: "PersonE", description: "PersonE enjoys water." }
     ],
-    statements: [
+    texts: [
       "A rock wall at the gym.",
       "A mountain bike trail.",
       "A tent night under the stars.",
@@ -1470,22 +1470,22 @@ export const part2Articles: Part2Article[] = [
       "A camping weekend.",
       "A kayak lesson."
     ],
-    answers: ['p2-021-a', 'p2-021-b', 'p2-021-c', 'p2-021-d', 'p2-021-e', 'p2-021-a', 'p2-021-c', 'p2-021-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-022',
+    id: "p2-022",
     title: "Computer Games",
     titleZh: "电脑游戏",
     difficulty: "medium",
     topic: "科技",
     people: [
-      { id: 'p2-022-a', name: 'PersonA', description: "PersonA likes racing games." },
-      { id: 'p2-022-b', name: 'PersonB', description: "PersonB enjoys puzzles." },
-      { id: 'p2-022-c', name: 'PersonC', description: "PersonC likes sports games." },
-      { id: 'p2-022-d', name: 'PersonD', description: "PersonD wants to build worlds." },
-      { id: 'p2-022-e', name: 'PersonE', description: "PersonE likes fighting games." }
+      { id: "p2-022-a", name: "PersonA", description: "PersonA likes racing games." },
+      { id: "p2-022-b", name: "PersonB", description: "PersonB enjoys puzzles." },
+      { id: "p2-022-c", name: "PersonC", description: "PersonC likes sports games." },
+      { id: "p2-022-d", name: "PersonD", description: "PersonD wants to build worlds." },
+      { id: "p2-022-e", name: "PersonE", description: "PersonE likes fighting games." }
     ],
-    statements: [
+    texts: [
       "A fast car racing simulator.",
       "A logic game with levels.",
       "A football manager game.",
@@ -1495,22 +1495,22 @@ export const part2Articles: Part2Article[] = [
       "A block-building adventure.",
       "A boxing video game."
     ],
-    answers: ['p2-022-a', 'p2-022-b', 'p2-022-c', 'p2-022-d', 'p2-022-e', 'p2-022-a', 'p2-022-d', 'p2-022-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-023',
+    id: "p2-023",
     title: "Museums to Visit",
     titleZh: "博物馆",
     difficulty: "easy",
     topic: "文化",
     people: [
-      { id: 'p2-023-a', name: 'PersonA', description: "PersonA likes old cars." },
-      { id: 'p2-023-b', name: 'PersonB', description: "PersonB enjoys paintings." },
-      { id: 'p2-023-c', name: 'PersonC', description: "PersonC loves space." },
-      { id: 'p2-023-d', name: 'PersonD', description: "PersonD likes dinosaurs." },
-      { id: 'p2-023-e', name: 'PersonE', description: "PersonE enjoys ships." }
+      { id: "p2-023-a", name: "PersonA", description: "PersonA likes old cars." },
+      { id: "p2-023-b", name: "PersonB", description: "PersonB enjoys paintings." },
+      { id: "p2-023-c", name: "PersonC", description: "PersonC loves space." },
+      { id: "p2-023-d", name: "PersonD", description: "PersonD likes dinosaurs." },
+      { id: "p2-023-e", name: "PersonE", description: "PersonE enjoys ships." }
     ],
-    statements: [
+    texts: [
       "A transport museum with vintage cars.",
       "An art gallery with modern works.",
       "A planetarium with rocket shows.",
@@ -1520,22 +1520,22 @@ export const part2Articles: Part2Article[] = [
       "A Picasso exhibition.",
       "A submarine you can enter."
     ],
-    answers: ['p2-023-a', 'p2-023-b', 'p2-023-c', 'p2-023-d', 'p2-023-e', 'p2-023-a', 'p2-023-b', 'p2-023-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-024',
+    id: "p2-024",
     title: "Parties",
     titleZh: "派对",
     difficulty: "easy",
     topic: "社交",
     people: [
-      { id: 'p2-024-a', name: 'PersonA', description: "PersonA wants music and dancing." },
-      { id: 'p2-024-b', name: 'PersonB', description: "PersonB likes games." },
-      { id: 'p2-024-c', name: 'PersonC', description: "PersonC enjoys good food." },
-      { id: 'p2-024-d', name: 'PersonD', description: "PersonD wants a small group." },
-      { id: 'p2-024-e', name: 'PersonE', description: "PersonE likes costumes." }
+      { id: "p2-024-a", name: "PersonA", description: "PersonA wants music and dancing." },
+      { id: "p2-024-b", name: "PersonB", description: "PersonB likes games." },
+      { id: "p2-024-c", name: "PersonC", description: "PersonC enjoys good food." },
+      { id: "p2-024-d", name: "PersonD", description: "PersonD wants a small group." },
+      { id: "p2-024-e", name: "PersonE", description: "PersonE likes costumes." }
     ],
-    statements: [
+    texts: [
       "A disco with a DJ.",
       "A board-game evening.",
       "A dinner party with friends.",
@@ -1545,22 +1545,22 @@ export const part2Articles: Part2Article[] = [
       "A pizza and games night.",
       "A Halloween dress-up."
     ],
-    answers: ['p2-024-a', 'p2-024-b', 'p2-024-c', 'p2-024-d', 'p2-024-e', 'p2-024-a', 'p2-024-b', 'p2-024-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-025',
+    id: "p2-025",
     title: "Volunteer Work",
     titleZh: "志愿工作",
     difficulty: "medium",
     topic: "公益",
     people: [
-      { id: 'p2-025-a', name: 'PersonA', description: "PersonA likes helping old people." },
-      { id: 'p2-025-b', name: 'PersonB', description: "PersonB enjoys animals." },
-      { id: 'p2-025-c', name: 'PersonC', description: "PersonC likes the environment." },
-      { id: 'p2-025-d', name: 'PersonD', description: "PersonD wants to help children." },
-      { id: 'p2-025-e', name: 'PersonE', description: "PersonE likes cooking." }
+      { id: "p2-025-a", name: "PersonA", description: "PersonA likes helping old people." },
+      { id: "p2-025-b", name: "PersonB", description: "PersonB enjoys animals." },
+      { id: "p2-025-c", name: "PersonC", description: "PersonC likes the environment." },
+      { id: "p2-025-d", name: "PersonD", description: "PersonD wants to help children." },
+      { id: "p2-025-e", name: "PersonE", description: "PersonE likes cooking." }
     ],
-    statements: [
+    texts: [
       "A visit to a care home.",
       "A dog shelter assistant.",
       "A beach clean-up group.",
@@ -1570,22 +1570,22 @@ export const part2Articles: Part2Article[] = [
       "A tree planting day.",
       "A meal service for families."
     ],
-    answers: ['p2-025-a', 'p2-025-b', 'p2-025-c', 'p2-025-d', 'p2-025-e', 'p2-025-a', 'p2-025-c', 'p2-025-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-026',
+    id: "p2-026",
     title: "New Phone",
     titleZh: "新手机",
     difficulty: "medium",
     topic: "科技",
     people: [
-      { id: 'p2-026-a', name: 'PersonA', description: "PersonA wants a cheap phone." },
-      { id: 'p2-026-b', name: 'PersonB', description: "PersonB needs a good camera." },
-      { id: 'p2-026-c', name: 'PersonC', description: "PersonC wants a big screen." },
-      { id: 'p2-026-d', name: 'PersonD', description: "PersonD needs long battery." },
-      { id: 'p2-026-e', name: 'PersonE', description: "PersonE likes a small phone." }
+      { id: "p2-026-a", name: "PersonA", description: "PersonA wants a cheap phone." },
+      { id: "p2-026-b", name: "PersonB", description: "PersonB needs a good camera." },
+      { id: "p2-026-c", name: "PersonC", description: "PersonC wants a big screen." },
+      { id: "p2-026-d", name: "PersonD", description: "PersonD needs long battery." },
+      { id: "p2-026-e", name: "PersonE", description: "PersonE likes a small phone." }
     ],
-    statements: [
+    texts: [
       "A budget model under £100.",
       "A phone with a 200MP camera.",
       "A 7-inch screen tablet-phone.",
@@ -1595,22 +1595,22 @@ export const part2Articles: Part2Article[] = [
       "A photo phone for travel.",
       "A compact mini handset."
     ],
-    answers: ['p2-026-a', 'p2-026-b', 'p2-026-c', 'p2-026-d', 'p2-026-e', 'p2-026-a', 'p2-026-b', 'p2-026-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-027',
+    id: "p2-027",
     title: "Exercise Plans",
     titleZh: "锻炼计划",
     difficulty: "easy",
     topic: "健康",
     people: [
-      { id: 'p2-027-a', name: 'PersonA', description: "PersonA wants to lose weight." },
-      { id: 'p2-027-b', name: 'PersonB', description: "PersonB wants to relax." },
-      { id: 'p2-027-c', name: 'PersonC', description: "PersonC likes strong exercise." },
-      { id: 'p2-027-d', name: 'PersonD', description: "PersonD wants to stretch." },
-      { id: 'p2-027-e', name: 'PersonE', description: "PersonE likes dancing." }
+      { id: "p2-027-a", name: "PersonA", description: "PersonA wants to lose weight." },
+      { id: "p2-027-b", name: "PersonB", description: "PersonB wants to relax." },
+      { id: "p2-027-c", name: "PersonC", description: "PersonC likes strong exercise." },
+      { id: "p2-027-d", name: "PersonD", description: "PersonD wants to stretch." },
+      { id: "p2-027-e", name: "PersonE", description: "PersonE likes dancing." }
     ],
-    statements: [
+    texts: [
       "A running plan three times a week.",
       "A calm meditation class.",
       "A heavy weight-training session.",
@@ -1620,22 +1620,22 @@ export const part2Articles: Part2Article[] = [
       "A Pilates class.",
       "A salsa fitness hour."
     ],
-    answers: ['p2-027-a', 'p2-027-b', 'p2-027-c', 'p2-027-d', 'p2-027-e', 'p2-027-a', 'p2-027-d', 'p2-027-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-028',
+    id: "p2-028",
     title: "Art Classes",
     titleZh: "美术课",
     difficulty: "easy",
     topic: "艺术",
     people: [
-      { id: 'p2-028-a', name: 'PersonA', description: "PersonA likes painting." },
-      { id: 'p2-028-b', name: 'PersonB', description: "PersonB enjoys clay." },
-      { id: 'p2-028-c', name: 'PersonC', description: "PersonC likes drawing." },
-      { id: 'p2-028-d', name: 'PersonD', description: "PersonD wants to take photos." },
-      { id: 'p2-028-e', name: 'PersonE', description: "PersonE likes making jewellery." }
+      { id: "p2-028-a", name: "PersonA", description: "PersonA likes painting." },
+      { id: "p2-028-b", name: "PersonB", description: "PersonB enjoys clay." },
+      { id: "p2-028-c", name: "PersonC", description: "PersonC likes drawing." },
+      { id: "p2-028-d", name: "PersonD", description: "PersonD wants to take photos." },
+      { id: "p2-028-e", name: "PersonE", description: "PersonE likes making jewellery." }
     ],
-    statements: [
+    texts: [
       "A watercolour painting group.",
       "A pottery class with clay.",
       "A pencil sketch workshop.",
@@ -1645,22 +1645,22 @@ export const part2Articles: Part2Article[] = [
       "A sculpture lesson.",
       "A portrait drawing club."
     ],
-    answers: ['p2-028-a', 'p2-028-b', 'p2-028-c', 'p2-028-d', 'p2-028-e', 'p2-028-a', 'p2-028-b', 'p2-028-c'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-029',
+    id: "p2-029",
     title: "Language Learning",
     titleZh: "语言学习",
     difficulty: "medium",
     topic: "学习",
     people: [
-      { id: 'p2-029-a', name: 'PersonA', description: "PersonA wants to learn Spanish." },
-      { id: 'p2-029-b', name: 'PersonB', description: "PersonB wants to learn French." },
-      { id: 'p2-029-c', name: 'PersonC', description: "PersonC wants to learn Chinese." },
-      { id: 'p2-029-d', name: 'PersonD', description: "PersonD wants to learn Japanese." },
-      { id: 'p2-029-e', name: 'PersonE', description: "PersonE wants to learn German." }
+      { id: "p2-029-a", name: "PersonA", description: "PersonA wants to learn Spanish." },
+      { id: "p2-029-b", name: "PersonB", description: "PersonB wants to learn French." },
+      { id: "p2-029-c", name: "PersonC", description: "PersonC wants to learn Chinese." },
+      { id: "p2-029-d", name: "PersonD", description: "PersonD wants to learn Japanese." },
+      { id: "p2-029-e", name: "PersonE", description: "PersonE wants to learn German." }
     ],
-    statements: [
+    texts: [
       "A Spanish conversation group.",
       "A French film and chat club.",
       "A Chinese characters class.",
@@ -1670,22 +1670,22 @@ export const part2Articles: Part2Article[] = [
       "A French songs lesson.",
       "A Japanese calligraphy group."
     ],
-    answers: ['p2-029-a', 'p2-029-b', 'p2-029-c', 'p2-029-d', 'p2-029-e', 'p2-029-a', 'p2-029-b', 'p2-029-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-030',
+    id: "p2-030",
     title: "Garden Plants",
     titleZh: "园艺",
     difficulty: "easy",
     topic: "自然",
     people: [
-      { id: 'p2-030-a', name: 'PersonA', description: "PersonA wants flowers." },
-      { id: 'p2-030-b', name: 'PersonB', description: "PersonB likes vegetables." },
-      { id: 'p2-030-c', name: 'PersonC', description: "PersonC wants a tree." },
-      { id: 'p2-030-d', name: 'PersonD', description: "PersonD likes herbs." },
-      { id: 'p2-030-e', name: 'PersonE', description: "PersonE wants easy plants." }
+      { id: "p2-030-a", name: "PersonA", description: "PersonA wants flowers." },
+      { id: "p2-030-b", name: "PersonB", description: "PersonB likes vegetables." },
+      { id: "p2-030-c", name: "PersonC", description: "PersonC wants a tree." },
+      { id: "p2-030-d", name: "PersonD", description: "PersonD likes herbs." },
+      { id: "p2-030-e", name: "PersonE", description: "PersonE wants easy plants." }
     ],
-    statements: [
+    texts: [
       "A pack of rose seeds.",
       "A box of tomato plants.",
       "A small apple tree.",
@@ -1695,22 +1695,22 @@ export const part2Articles: Part2Article[] = [
       "A lettuce garden box.",
       "A cactus collection."
     ],
-    answers: ['p2-030-a', 'p2-030-b', 'p2-030-c', 'p2-030-d', 'p2-030-e', 'p2-030-a', 'p2-030-b', 'p2-030-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-031',
+    id: "p2-031",
     title: "Holiday Gifts",
     titleZh: "节日礼物",
     difficulty: "medium",
     topic: "礼物",
     people: [
-      { id: 'p2-031-a', name: 'PersonA', description: "PersonA wants something sweet." },
-      { id: 'p2-031-b', name: 'PersonB', description: "PersonB wants something warm." },
-      { id: 'p2-031-c', name: 'PersonC', description: "PersonC wants something funny." },
-      { id: 'p2-031-d', name: 'PersonD', description: "PersonD wants something useful." },
-      { id: 'p2-031-e', name: 'PersonE', description: "PersonE wants something musical." }
+      { id: "p2-031-a", name: "PersonA", description: "PersonA wants something sweet." },
+      { id: "p2-031-b", name: "PersonB", description: "PersonB wants something warm." },
+      { id: "p2-031-c", name: "PersonC", description: "PersonC wants something funny." },
+      { id: "p2-031-d", name: "PersonD", description: "PersonD wants something useful." },
+      { id: "p2-031-e", name: "PersonE", description: "PersonE wants something musical." }
     ],
-    statements: [
+    texts: [
       "A box of holiday chocolates.",
       "A knitted winter hat.",
       "A joke book for the season.",
@@ -1720,22 +1720,22 @@ export const part2Articles: Part2Article[] = [
       "A cosy pair of socks.",
       "A singing snow globe."
     ],
-    answers: ['p2-031-a', 'p2-031-b', 'p2-031-c', 'p2-031-d', 'p2-031-e', 'p2-031-a', 'p2-031-b', 'p2-031-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-032',
+    id: "p2-032",
     title: "Bicycle Tours",
     titleZh: "自行车游",
     difficulty: "medium",
     topic: "运动",
     people: [
-      { id: 'p2-032-a', name: 'PersonA', description: "PersonA wants an easy ride." },
-      { id: 'p2-032-b', name: 'PersonB', description: "PersonB likes long distances." },
-      { id: 'p2-032-c', name: 'PersonC', description: "PersonC wants a city tour." },
-      { id: 'p2-032-d', name: 'PersonD', description: "PersonD likes mountain trails." },
-      { id: 'p2-032-e', name: 'PersonE', description: "PersonE wants a family ride." }
+      { id: "p2-032-a", name: "PersonA", description: "PersonA wants an easy ride." },
+      { id: "p2-032-b", name: "PersonB", description: "PersonB likes long distances." },
+      { id: "p2-032-c", name: "PersonC", description: "PersonC wants a city tour." },
+      { id: "p2-032-d", name: "PersonD", description: "PersonD likes mountain trails." },
+      { id: "p2-032-e", name: "PersonE", description: "PersonE wants a family ride." }
     ],
-    statements: [
+    texts: [
       "A flat 5km riverside loop.",
       "A 100km coast route.",
       "A guided old-town ride.",
@@ -1745,22 +1745,22 @@ export const part2Articles: Part2Article[] = [
       "A hill climb challenge.",
       "A child-friendly greenway."
     ],
-    answers: ['p2-032-a', 'p2-032-b', 'p2-032-c', 'p2-032-d', 'p2-032-e', 'p2-032-a', 'p2-032-d', 'p2-032-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-033',
+    id: "p2-033",
     title: "Food Markets",
     titleZh: "美食市场",
     difficulty: "easy",
     topic: "美食",
     people: [
-      { id: 'p2-033-a', name: 'PersonA', description: "PersonA wants fresh fruit." },
-      { id: 'p2-033-b', name: 'PersonB', description: "PersonB likes cheese." },
-      { id: 'p2-033-c', name: 'PersonC', description: "PersonC wants street food." },
-      { id: 'p2-033-d', name: 'PersonD', description: "PersonD likes fish." },
-      { id: 'p2-033-e', name: 'PersonE', description: "PersonE wants bread." }
+      { id: "p2-033-a", name: "PersonA", description: "PersonA wants fresh fruit." },
+      { id: "p2-033-b", name: "PersonB", description: "PersonB likes cheese." },
+      { id: "p2-033-c", name: "PersonC", description: "PersonC wants street food." },
+      { id: "p2-033-d", name: "PersonD", description: "PersonD likes fish." },
+      { id: "p2-033-e", name: "PersonE", description: "PersonE wants bread." }
     ],
-    statements: [
+    texts: [
       "A stall with local apples.",
       "A shop with aged cheese.",
       "A truck selling tacos.",
@@ -1770,22 +1770,22 @@ export const part2Articles: Part2Article[] = [
       "A bread oven on the corner.",
       "A sushi stand."
     ],
-    answers: ['p2-033-a', 'p2-033-b', 'p2-033-c', 'p2-033-d', 'p2-033-e', 'p2-033-a', 'p2-033-e', 'p2-033-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-034',
+    id: "p2-034",
     title: "Winter Activities",
     titleZh: "冬季活动",
     difficulty: "easy",
     topic: "季节",
     people: [
-      { id: 'p2-034-a', name: 'PersonA', description: "PersonA likes snow sports." },
-      { id: 'p2-034-b', name: 'PersonB', description: "PersonB wants to stay warm." },
-      { id: 'p2-034-c', name: 'PersonC', description: "PersonC likes ice." },
-      { id: 'p2-034-d', name: 'PersonD', description: "PersonD wants indoor fun." },
-      { id: 'p2-034-e', name: 'PersonE', description: "PersonE likes winter light." }
+      { id: "p2-034-a", name: "PersonA", description: "PersonA likes snow sports." },
+      { id: "p2-034-b", name: "PersonB", description: "PersonB wants to stay warm." },
+      { id: "p2-034-c", name: "PersonC", description: "PersonC likes ice." },
+      { id: "p2-034-d", name: "PersonD", description: "PersonD wants indoor fun." },
+      { id: "p2-034-e", name: "PersonE", description: "PersonE likes winter light." }
     ],
-    statements: [
+    texts: [
       "A ski lesson on the slopes.",
       "A hot chocolate festival.",
       "An ice-skating rink.",
@@ -1795,22 +1795,22 @@ export const part2Articles: Part2Article[] = [
       "A warm pool day.",
       "An ice sculpture park."
     ],
-    answers: ['p2-034-a', 'p2-034-b', 'p2-034-c', 'p2-034-d', 'p2-034-e', 'p2-034-a', 'p2-034-b', 'p2-034-c'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-035',
+    id: "p2-035",
     title: "Summer Camp",
     titleZh: "夏令营",
     difficulty: "medium",
     topic: "休闲",
     people: [
-      { id: 'p2-035-a', name: 'PersonA', description: "PersonA wants water fun." },
-      { id: 'p2-035-b', name: 'PersonB', description: "PersonB likes performing." },
-      { id: 'p2-035-c', name: 'PersonC', description: "PersonC wants to code." },
-      { id: 'p2-035-d', name: 'PersonD', description: "PersonD likes sports." },
-      { id: 'p2-035-e', name: 'PersonE', description: "PersonE wants crafts." }
+      { id: "p2-035-a", name: "PersonA", description: "PersonA wants water fun." },
+      { id: "p2-035-b", name: "PersonB", description: "PersonB likes performing." },
+      { id: "p2-035-c", name: "PersonC", description: "PersonC wants to code." },
+      { id: "p2-035-d", name: "PersonD", description: "PersonD likes sports." },
+      { id: "p2-035-e", name: "PersonE", description: "PersonE wants crafts." }
     ],
-    statements: [
+    texts: [
       "A lake swimming programme.",
       "A drama and acting week.",
       "A robotics summer camp.",
@@ -1820,22 +1820,22 @@ export const part2Articles: Part2Article[] = [
       "A theatre show camp.",
       "A pottery and craft week."
     ],
-    answers: ['p2-035-a', 'p2-035-b', 'p2-035-c', 'p2-035-d', 'p2-035-e', 'p2-035-a', 'p2-035-b', 'p2-035-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-036',
+    id: "p2-036",
     title: "Photo Spots",
     titleZh: "拍照地点",
     difficulty: "easy",
     topic: "旅行",
     people: [
-      { id: 'p2-036-a', name: 'PersonA', description: "PersonA likes city views." },
-      { id: 'p2-036-b', name: 'PersonB', description: "PersonB enjoys nature." },
-      { id: 'p2-036-c', name: 'PersonC', description: "PersonC likes old buildings." },
-      { id: 'p2-036-d', name: 'PersonD', description: "PersonD wants the beach." },
-      { id: 'p2-036-e', name: 'PersonE', description: "PersonE likes night lights." }
+      { id: "p2-036-a", name: "PersonA", description: "PersonA likes city views." },
+      { id: "p2-036-b", name: "PersonB", description: "PersonB enjoys nature." },
+      { id: "p2-036-c", name: "PersonC", description: "PersonC likes old buildings." },
+      { id: "p2-036-d", name: "PersonD", description: "PersonD wants the beach." },
+      { id: "p2-036-e", name: "PersonE", description: "PersonE likes night lights." }
     ],
-    statements: [
+    texts: [
       "A rooftop over the skyline.",
       "A forest with tall trees.",
       "A castle with stone walls.",
@@ -1845,22 +1845,22 @@ export const part2Articles: Part2Article[] = [
       "A waterfall in the hills.",
       "A lit fountain square."
     ],
-    answers: ['p2-036-a', 'p2-036-b', 'p2-036-c', 'p2-036-d', 'p2-036-e', 'p2-036-a', 'p2-036-b', 'p2-036-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-037',
+    id: "p2-037",
     title: "Board Games",
     titleZh: "桌游",
     difficulty: "easy",
     topic: "休闲",
     people: [
-      { id: 'p2-037-a', name: 'PersonA', description: "PersonA likes strategy." },
-      { id: 'p2-037-b', name: 'PersonB', description: "PersonB enjoys card games." },
-      { id: 'p2-037-c', name: 'PersonC', description: "PersonC likes word games." },
-      { id: 'p2-037-d', name: 'PersonD', description: "PersonD wants a party game." },
-      { id: 'p2-037-e', name: 'PersonE', description: "PersonE likes building." }
+      { id: "p2-037-a", name: "PersonA", description: "PersonA likes strategy." },
+      { id: "p2-037-b", name: "PersonB", description: "PersonB enjoys card games." },
+      { id: "p2-037-c", name: "PersonC", description: "PersonC likes word games." },
+      { id: "p2-037-d", name: "PersonD", description: "PersonD wants a party game." },
+      { id: "p2-037-e", name: "PersonE", description: "PersonE likes building." }
     ],
-    statements: [
+    texts: [
       "A war strategy board game.",
       "A fast poker-style card game.",
       "A scrabble word challenge.",
@@ -1870,22 +1870,22 @@ export const part2Articles: Part2Article[] = [
       "A spelling bee game.",
       "A tower-stacking game."
     ],
-    answers: ['p2-037-a', 'p2-037-b', 'p2-037-c', 'p2-037-d', 'p2-037-e', 'p2-037-a', 'p2-037-c', 'p2-037-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-038',
+    id: "p2-038",
     title: "Dance Classes",
     titleZh: "舞蹈课",
     difficulty: "easy",
     topic: "艺术",
     people: [
-      { id: 'p2-038-a', name: 'PersonA', description: "PersonA likes ballet." },
-      { id: 'p2-038-b', name: 'PersonB', description: "PersonB enjoys hip-hop." },
-      { id: 'p2-038-c', name: 'PersonC', description: "PersonC likes Latin." },
-      { id: 'p2-038-d', name: 'PersonD', description: "PersonD wants slow dance." },
-      { id: 'p2-038-e', name: 'PersonE', description: "PersonE likes folk." }
+      { id: "p2-038-a", name: "PersonA", description: "PersonA likes ballet." },
+      { id: "p2-038-b", name: "PersonB", description: "PersonB enjoys hip-hop." },
+      { id: "p2-038-c", name: "PersonC", description: "PersonC likes Latin." },
+      { id: "p2-038-d", name: "PersonD", description: "PersonD wants slow dance." },
+      { id: "p2-038-e", name: "PersonE", description: "PersonE likes folk." }
     ],
-    statements: [
+    texts: [
       "A classical ballet school.",
       "A street dance crew.",
       "A salsa and rumba class.",
@@ -1895,22 +1895,22 @@ export const part2Articles: Part2Article[] = [
       "A breakdance workshop.",
       "A tango evening."
     ],
-    answers: ['p2-038-a', 'p2-038-b', 'p2-038-c', 'p2-038-d', 'p2-038-e', 'p2-038-a', 'p2-038-b', 'p2-038-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-039',
+    id: "p2-039",
     title: "Local Events",
     titleZh: "本地活动",
     difficulty: "easy",
     topic: "社交",
     people: [
-      { id: 'p2-039-a', name: 'PersonA', description: "PersonA likes live music." },
-      { id: 'p2-039-b', name: 'PersonB', description: "PersonB enjoys fairs." },
-      { id: 'p2-039-c', name: 'PersonC', description: "PersonC likes talks." },
-      { id: 'p2-039-d', name: 'PersonD', description: "PersonD wants a race." },
-      { id: 'p2-039-e', name: 'PersonE', description: "PersonE likes food." }
+      { id: "p2-039-a", name: "PersonA", description: "PersonA likes live music." },
+      { id: "p2-039-b", name: "PersonB", description: "PersonB enjoys fairs." },
+      { id: "p2-039-c", name: "PersonC", description: "PersonC likes talks." },
+      { id: "p2-039-d", name: "PersonD", description: "PersonD wants a race." },
+      { id: "p2-039-e", name: "PersonE", description: "PersonE likes food." }
     ],
-    statements: [
+    texts: [
       "A band playing in the square.",
       "A fun fair with rides.",
       "A science lecture at the library.",
@@ -1920,22 +1920,22 @@ export const part2Articles: Part2Article[] = [
       "A craft fair.",
       "A tasting event."
     ],
-    answers: ['p2-039-a', 'p2-039-b', 'p2-039-c', 'p2-039-d', 'p2-039-e', 'p2-039-a', 'p2-039-b', 'p2-039-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-040',
+    id: "p2-040",
     title: "Car Hire",
     titleZh: "租车",
     difficulty: "medium",
     topic: "交通",
     people: [
-      { id: 'p2-040-a', name: 'PersonA', description: "PersonA wants a small car." },
-      { id: 'p2-040-b', name: 'PersonB', description: "PersonB needs a big car." },
-      { id: 'p2-040-c', name: 'PersonC', description: "PersonC wants an electric car." },
-      { id: 'p2-040-d', name: 'PersonD', description: "PersonD wants a cheap car." },
-      { id: 'p2-040-e', name: 'PersonE', description: "PersonE wants a luxury car." }
+      { id: "p2-040-a", name: "PersonA", description: "PersonA wants a small car." },
+      { id: "p2-040-b", name: "PersonB", description: "PersonB needs a big car." },
+      { id: "p2-040-c", name: "PersonC", description: "PersonC wants an electric car." },
+      { id: "p2-040-d", name: "PersonD", description: "PersonD wants a cheap car." },
+      { id: "p2-040-e", name: "PersonE", description: "PersonE wants a luxury car." }
     ],
-    statements: [
+    texts: [
       "A mini city hatchback.",
       "A seven-seat family van.",
       "A zero-emission EV.",
@@ -1945,22 +1945,22 @@ export const part2Articles: Part2Article[] = [
       "A Tesla rental.",
       "A low-cost economy car."
     ],
-    answers: ['p2-040-a', 'p2-040-b', 'p2-040-c', 'p2-040-d', 'p2-040-e', 'p2-040-a', 'p2-040-c', 'p2-040-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-041',
+    id: "p2-041",
     title: "Hotel Rooms",
     titleZh: "酒店房间",
     difficulty: "medium",
     topic: "旅行",
     people: [
-      { id: 'p2-041-a', name: 'PersonA', description: "PersonA wants a sea view." },
-      { id: 'p2-041-b', name: 'PersonB', description: "PersonB needs two beds." },
-      { id: 'p2-041-c', name: 'PersonC', description: "PersonC wants quiet." },
-      { id: 'p2-041-d', name: 'PersonD', description: "PersonD wants a kitchen." },
-      { id: 'p2-041-e', name: 'PersonE', description: "PersonE wants cheap." }
+      { id: "p2-041-a", name: "PersonA", description: "PersonA wants a sea view." },
+      { id: "p2-041-b", name: "PersonB", description: "PersonB needs two beds." },
+      { id: "p2-041-c", name: "PersonC", description: "PersonC wants quiet." },
+      { id: "p2-041-d", name: "PersonD", description: "PersonD wants a kitchen." },
+      { id: "p2-041-e", name: "PersonE", description: "PersonE wants cheap." }
     ],
-    statements: [
+    texts: [
       "A room facing the ocean.",
       "A family room with twin beds.",
       "A top-floor silent suite.",
@@ -1970,22 +1970,22 @@ export const part2Articles: Part2Article[] = [
       "A quiet garden bungalow.",
       "A budget pod room."
     ],
-    answers: ['p2-041-a', 'p2-041-b', 'p2-041-c', 'p2-041-d', 'p2-041-e', 'p2-041-a', 'p2-041-c', 'p2-041-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-042',
+    id: "p2-042",
     title: "Online Shopping",
     titleZh: "网购",
     difficulty: "medium",
     topic: "购物",
     people: [
-      { id: 'p2-042-a', name: 'PersonA', description: "PersonA wants books." },
-      { id: 'p2-042-b', name: 'PersonB', description: "PersonB wants clothes." },
-      { id: 'p2-042-c', name: 'PersonC', description: "PersonC wants electronics." },
-      { id: 'p2-042-d', name: 'PersonD', description: "PersonD wants toys." },
-      { id: 'p2-042-e', name: 'PersonE', description: "PersonE wants food." }
+      { id: "p2-042-a", name: "PersonA", description: "PersonA wants books." },
+      { id: "p2-042-b", name: "PersonB", description: "PersonB wants clothes." },
+      { id: "p2-042-c", name: "PersonC", description: "PersonC wants electronics." },
+      { id: "p2-042-d", name: "PersonD", description: "PersonD wants toys." },
+      { id: "p2-042-e", name: "PersonE", description: "PersonE wants food." }
     ],
-    statements: [
+    texts: [
       "A site with millions of titles.",
       "A fashion marketplace.",
       "A gadget store online.",
@@ -1995,22 +1995,22 @@ export const part2Articles: Part2Article[] = [
       "A clothing outlet sale.",
       "A snack box subscription."
     ],
-    answers: ['p2-042-a', 'p2-042-b', 'p2-042-c', 'p2-042-d', 'p2-042-e', 'p2-042-a', 'p2-042-b', 'p2-042-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-043',
+    id: "p2-043",
     title: "Music Lessons",
     titleZh: "音乐课",
     difficulty: "easy",
     topic: "音乐",
     people: [
-      { id: 'p2-043-a', name: 'PersonA', description: "PersonA wants to sing." },
-      { id: 'p2-043-b', name: 'PersonB', description: "PersonB wants piano." },
-      { id: 'p2-043-c', name: 'PersonC', description: "PersonC wants drums." },
-      { id: 'p2-043-d', name: 'PersonD', description: "PersonD wants violin." },
-      { id: 'p2-043-e', name: 'PersonE', description: "PersonE wants guitar." }
+      { id: "p2-043-a", name: "PersonA", description: "PersonA wants to sing." },
+      { id: "p2-043-b", name: "PersonB", description: "PersonB wants piano." },
+      { id: "p2-043-c", name: "PersonC", description: "PersonC wants drums." },
+      { id: "p2-043-d", name: "PersonD", description: "PersonD wants violin." },
+      { id: "p2-043-e", name: "PersonE", description: "PersonE wants guitar." }
     ],
-    statements: [
+    texts: [
       "A vocal coaching class.",
       "A piano teacher at home.",
       "A drum kit lesson.",
@@ -2020,22 +2020,22 @@ export const part2Articles: Part2Article[] = [
       "A keyboard beginners group.",
       "An acoustic guitar club."
     ],
-    answers: ['p2-043-a', 'p2-043-b', 'p2-043-c', 'p2-043-d', 'p2-043-e', 'p2-043-a', 'p2-043-b', 'p2-043-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-044',
+    id: "p2-044",
     title: "Science Club",
     titleZh: "科学俱乐部",
     difficulty: "medium",
     topic: "学习",
     people: [
-      { id: 'p2-044-a', name: 'PersonA', description: "PersonA likes chemistry." },
-      { id: 'p2-044-b', name: 'PersonB', description: "PersonB enjoys space." },
-      { id: 'p2-044-c', name: 'PersonC', description: "PersonC likes biology." },
-      { id: 'p2-044-d', name: 'PersonD', description: "PersonD wants robotics." },
-      { id: 'p2-044-e', name: 'PersonE', description: "PersonE likes weather." }
+      { id: "p2-044-a", name: "PersonA", description: "PersonA likes chemistry." },
+      { id: "p2-044-b", name: "PersonB", description: "PersonB enjoys space." },
+      { id: "p2-044-c", name: "PersonC", description: "PersonC likes biology." },
+      { id: "p2-044-d", name: "PersonD", description: "PersonD wants robotics." },
+      { id: "p2-044-e", name: "PersonE", description: "PersonE likes weather." }
     ],
-    statements: [
+    texts: [
       "A lab mixing experiments.",
       "A stargazing telescope night.",
       "A plant cell microscope group.",
@@ -2045,22 +2045,22 @@ export const part2Articles: Part2Article[] = [
       "A Mars mission talk.",
       "A weather balloon launch."
     ],
-    answers: ['p2-044-a', 'p2-044-b', 'p2-044-c', 'p2-044-d', 'p2-044-e', 'p2-044-a', 'p2-044-b', 'p2-044-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-045',
+    id: "p2-045",
     title: "Healthy Food",
     titleZh: "健康食品",
     difficulty: "easy",
     topic: "健康",
     people: [
-      { id: 'p2-045-a', name: 'PersonA', description: "PersonA wants low sugar." },
-      { id: 'p2-045-b', name: 'PersonB', description: "PersonB wants protein." },
-      { id: 'p2-045-c', name: 'PersonC', description: "PersonC wants vegetables." },
-      { id: 'p2-045-d', name: 'PersonD', description: "PersonD wants gluten-free." },
-      { id: 'p2-045-e', name: 'PersonE', description: "PersonE wants smoothies." }
+      { id: "p2-045-a", name: "PersonA", description: "PersonA wants low sugar." },
+      { id: "p2-045-b", name: "PersonB", description: "PersonB wants protein." },
+      { id: "p2-045-c", name: "PersonC", description: "PersonC wants vegetables." },
+      { id: "p2-045-d", name: "PersonD", description: "PersonD wants gluten-free." },
+      { id: "p2-045-e", name: "PersonE", description: "PersonE wants smoothies." }
     ],
-    statements: [
+    texts: [
       "A no-sugar snack bar.",
       "A grilled chicken bowl.",
       "A big salad plate.",
@@ -2070,22 +2070,22 @@ export const part2Articles: Part2Article[] = [
       "A bean and tofu dish.",
       "A berry shake."
     ],
-    answers: ['p2-045-a', 'p2-045-b', 'p2-045-c', 'p2-045-d', 'p2-045-e', 'p2-045-a', 'p2-045-d', 'p2-045-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-046',
+    id: "p2-046",
     title: "Weekend Markets",
     titleZh: "周末集市",
     difficulty: "easy",
     topic: "购物",
     people: [
-      { id: 'p2-046-a', name: 'PersonA', description: "PersonA wants antiques." },
-      { id: 'p2-046-b', name: 'PersonB', description: "PersonB wants handmade." },
-      { id: 'p2-046-c', name: 'PersonC', description: "PersonC wants fresh meat." },
-      { id: 'p2-046-d', name: 'PersonD', description: "PersonD wants books." },
-      { id: 'p2-046-e', name: 'PersonE', description: "PersonE wants flowers." }
+      { id: "p2-046-a", name: "PersonA", description: "PersonA wants antiques." },
+      { id: "p2-046-b", name: "PersonB", description: "PersonB wants handmade." },
+      { id: "p2-046-c", name: "PersonC", description: "PersonC wants fresh meat." },
+      { id: "p2-046-d", name: "PersonD", description: "PersonD wants books." },
+      { id: "p2-046-e", name: "PersonE", description: "PersonE wants flowers." }
     ],
-    statements: [
+    texts: [
       "A stall with old clocks.",
       "A table of knit scarves.",
       "A butcher with local beef.",
@@ -2095,22 +2095,22 @@ export const part2Articles: Part2Article[] = [
       "A craft jewellery stand.",
       "A rose garden seller."
     ],
-    answers: ['p2-046-a', 'p2-046-b', 'p2-046-c', 'p2-046-d', 'p2-046-e', 'p2-046-a', 'p2-046-b', 'p2-046-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-047',
+    id: "p2-047",
     title: "Theatre Shows",
     titleZh: "戏剧演出",
     difficulty: "medium",
     topic: "艺术",
     people: [
-      { id: 'p2-047-a', name: 'PersonA', description: "PersonA likes comedy." },
-      { id: 'p2-047-b', name: 'PersonB', description: "PersonB enjoys musicals." },
-      { id: 'p2-047-c', name: 'PersonC', description: "PersonC likes drama." },
-      { id: 'p2-047-d', name: 'PersonD', description: "PersonD wants a kids show." },
-      { id: 'p2-047-e', name: 'PersonE', description: "PersonE likes magic." }
+      { id: "p2-047-a", name: "PersonA", description: "PersonA likes comedy." },
+      { id: "p2-047-b", name: "PersonB", description: "PersonB enjoys musicals." },
+      { id: "p2-047-c", name: "PersonC", description: "PersonC likes drama." },
+      { id: "p2-047-d", name: "PersonD", description: "PersonD wants a kids show." },
+      { id: "p2-047-e", name: "PersonE", description: "PersonE likes magic." }
     ],
-    statements: [
+    texts: [
       "A funny play about neighbours.",
       "A singing and dancing show.",
       "A serious historical drama.",
@@ -2120,22 +2120,22 @@ export const part2Articles: Part2Article[] = [
       "A Disney-style musical.",
       "A close-up magic act."
     ],
-    answers: ['p2-047-a', 'p2-047-b', 'p2-047-c', 'p2-047-d', 'p2-047-e', 'p2-047-a', 'p2-047-b', 'p2-047-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-048',
+    id: "p2-048",
     title: "Writing Group",
     titleZh: "写作小组",
     difficulty: "medium",
     topic: "阅读",
     people: [
-      { id: 'p2-048-a', name: 'PersonA', description: "PersonA writes stories." },
-      { id: 'p2-048-b', name: 'PersonB', description: "PersonB writes poems." },
-      { id: 'p2-048-c', name: 'PersonC', description: "PersonC writes news." },
-      { id: 'p2-048-d', name: 'PersonD', description: "PersonD writes scripts." },
-      { id: 'p2-048-e', name: 'PersonE', description: "PersonE writes blogs." }
+      { id: "p2-048-a", name: "PersonA", description: "PersonA writes stories." },
+      { id: "p2-048-b", name: "PersonB", description: "PersonB writes poems." },
+      { id: "p2-048-c", name: "PersonC", description: "PersonC writes news." },
+      { id: "p2-048-d", name: "PersonD", description: "PersonD writes scripts." },
+      { id: "p2-048-e", name: "PersonE", description: "PersonE writes blogs." }
     ],
-    statements: [
+    texts: [
       "A fiction workshop.",
       "A poetry reading circle.",
       "A school newspaper team.",
@@ -2145,22 +2145,22 @@ export const part2Articles: Part2Article[] = [
       "A rhyme and verse group.",
       "A film-writing class."
     ],
-    answers: ['p2-048-a', 'p2-048-b', 'p2-048-c', 'p2-048-d', 'p2-048-e', 'p2-048-a', 'p2-048-b', 'p2-048-d'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-049',
+    id: "p2-049",
     title: "Animal Shelter",
     titleZh: "动物收容所",
     difficulty: "easy",
     topic: "动物",
     people: [
-      { id: 'p2-049-a', name: 'PersonA', description: "PersonA wants to walk dogs." },
-      { id: 'p2-049-b', name: 'PersonB', description: "PersonB wants to feed cats." },
-      { id: 'p2-049-c', name: 'PersonC', description: "PersonC likes birds." },
-      { id: 'p2-049-d', name: 'PersonD', description: "PersonD wants to clean." },
-      { id: 'p2-049-e', name: 'PersonE', description: "PersonE likes rabbits." }
+      { id: "p2-049-a", name: "PersonA", description: "PersonA wants to walk dogs." },
+      { id: "p2-049-b", name: "PersonB", description: "PersonB wants to feed cats." },
+      { id: "p2-049-c", name: "PersonC", description: "PersonC likes birds." },
+      { id: "p2-049-d", name: "PersonD", description: "PersonD wants to clean." },
+      { id: "p2-049-e", name: "PersonE", description: "PersonE likes rabbits." }
     ],
-    statements: [
+    texts: [
       "A dog walking roster.",
       "A cat feeding shift.",
       "A bird cage care task.",
@@ -2170,22 +2170,22 @@ export const part2Articles: Part2Article[] = [
       "A parrot feeding job.",
       "A hutch cleaning role."
     ],
-    answers: ['p2-049-a', 'p2-049-b', 'p2-049-c', 'p2-049-d', 'p2-049-e', 'p2-049-a', 'p2-049-c', 'p2-049-e'],
+    answers: [0, 1, 2, 3, 4],
   },
   {
-    id: 'p2-050',
+    id: "p2-050",
     title: "Free Time",
     titleZh: "空闲时间",
     difficulty: "easy",
     topic: "休闲",
     people: [
-      { id: 'p2-050-a', name: 'PersonA', description: "PersonA likes to sleep." },
-      { id: 'p2-050-b', name: 'PersonB', description: "PersonB likes to travel." },
-      { id: 'p2-050-c', name: 'PersonC', description: "PersonC likes to cook." },
-      { id: 'p2-050-d', name: 'PersonD', description: "PersonD likes to read." },
-      { id: 'p2-050-e', name: 'PersonE', description: "PersonE likes to exercise." }
+      { id: "p2-050-a", name: "PersonA", description: "PersonA likes to sleep." },
+      { id: "p2-050-b", name: "PersonB", description: "PersonB likes to travel." },
+      { id: "p2-050-c", name: "PersonC", description: "PersonC likes to cook." },
+      { id: "p2-050-d", name: "PersonD", description: "PersonD likes to read." },
+      { id: "p2-050-e", name: "PersonE", description: "PersonE likes to exercise." }
     ],
-    statements: [
+    texts: [
       "A lazy Sunday with no plans.",
       "A weekend trip to another city.",
       "A new recipe to try tonight.",
@@ -2195,11 +2195,9 @@ export const part2Articles: Part2Article[] = [
       "A train journey to the coast.",
       "A gym session after work."
     ],
-    answers: ['p2-050-a', 'p2-050-b', 'p2-050-c', 'p2-050-d', 'p2-050-e', 'p2-050-a', 'p2-050-b', 'p2-050-e'],
+    answers: [0, 1, 2, 3, 4],
   }
 ];
-
-// ==================== Part 3-1 数据 ====================
 
 export const part3ClozeArticles: Part3ClozeArticle[] = [
 
