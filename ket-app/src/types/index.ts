@@ -178,7 +178,8 @@ export interface ListeningPart3Blank {
 
 export interface ListeningPart3Set extends ListeningSet {
   part: 3;
-  passage: string;        // 完整短文（空格用 ____ 表示）
+  speaker?: string;       // 说话者身份（如：Camp Counselor）
+  passage?: string;       // 完整短文（空格用 ____ 表示），缺省时 UI 用 generatePassage 兜底
   monologueAudio: string; // 整段短文的朗读文本（独白）
   blanks: ListeningPart3Blank[];
   transcript: string;      // 完整原文
@@ -191,12 +192,13 @@ export interface ListeningPart4Question {
   options: string[];       // A/B/C/D 选项
   answer: string;          // 正确答案
   hint: string;            // 提示（中文）
-  explanation: string;     // 解析
+  explanation?: string;    // 解析（可选，数据缺失时回退显示 hint）
   audioText?: string;      // 相关对话片段的朗读文本（可选）
 }
 
 export interface ListeningPart4Set extends ListeningSet {
   part: 4;
+  speaker?: string;        // 说话者身份（如：Teacher / Friend）
   monologueAudio: string;  // 完整独白/对话朗读文本
   transcript: string;      // 完整原文
   questions: ListeningPart4Question[];

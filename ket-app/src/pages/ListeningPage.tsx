@@ -2,13 +2,12 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
-import type { ListeningPart1Set, ListeningPart1Question, ListeningPart2Set, ListeningPart3Set, ListeningPart4Set, ListeningPart5Set } from '../types';
+import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart4Set, ListeningPart5Set } from '../types';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
-let voicesReady = false;
 if (typeof window !== 'undefined' && window.speechSynthesis) {
+  // 触发浏览器异步加载语音列表（部分浏览器首屏不立即就绪）
   window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged = () => { voicesReady = true; };
 }
 
 function playSpeech(text: string, rate = 0.9): Promise<void> {
@@ -35,9 +34,7 @@ function playSpeech(text: string, rate = 0.9): Promise<void> {
         }
       }, 3000);
       // Prevent double resolve
-      const origOnEnd = utter.onend;
       utter.onend = () => { clearTimeout(safety); resolve(); };
-      const origOnError = utter.onerror;
       utter.onerror = () => { clearTimeout(safety); playWithAudio(text, rate).then(resolve); };
     } else {
       playWithAudio(text, rate).then(resolve);
@@ -324,7 +321,7 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
     setIdx(0);
   };
 
-  const handleAnswer = (qId: string, letter: string, optText: string) => {
+  const handleAnswer = (qId: string, _letter: string, optText: string) => {
     if (submitted) return;
     setAnswers(prev => ({ ...prev, [qId]: optText }));
   };
@@ -439,7 +436,7 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
                   <p className={`text-xs ${correct ? 'text-green-600' : 'text-red-600'}`}>
                     你的答案：{userAns || '（未答）'} {correct ? '√' : '× 正确答案：' + q.answer}
                   </p>
-                  <p className="text-xs text-gray-400">{q.explanation}</p>
+                  {q.explanation && <p className="text-xs text-gray-400">{q.explanation}</p>}
                 </div>
               );
             })}
