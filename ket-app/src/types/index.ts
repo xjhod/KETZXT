@@ -148,21 +148,23 @@ export interface ListeningPart1Set extends ListeningSet {
   questions: ListeningPart1Question[];
 }
 
-/** Part 2: 对话听力选择题 */
-export interface ListeningPart2Question {
+/** Part 2: 听独白填空（note completion）— 一段独白，填写 5 个关键信息 */
+export interface ListeningPart2Blank {
   id: string;
-  person: string;        // 人物名称
-  choices: string[];     // 选项列表
-  answer: string;        // 正确答案（选项文本）
-  hint: string;          // 提示（中文）
+  field: string;          // 字段英文标签（如：Event / Day / Time / Price / Place）
+  fieldZh: string;        // 字段中文标签
+  answer: string;         // 正确答案（1-2 个词或数字，多个用 " / " 分隔）
+  audioText: string;      // 包含此空的句子的朗读文本（用于单句 TTS 播放）
+  hint: string;           // 提示（中文）
+  choices?: string[];     // 选项列表（可选，提供则显示按钮选择）
 }
 
 export interface ListeningPart2Set extends ListeningSet {
   part: 2;
-  speaker: string;               // 对话者身份
-  conversationAudio: string;       // 对话原文
-  questions: ListeningPart2Question[];
-  transcript: string;             // 完整原文
+  speaker: string;               // 说话人身份（如：Camp Leader / Librarian）
+  monologueAudio: string;        // 完整独白朗读文本
+  transcript: string;            // 完整原文（与 monologueAudio 一致）
+  blanks: ListeningPart2Blank[]; // 5 个填空
 }
 
 /** Part 3: 听录音填空 — 一段长对话/独白，填空 */
