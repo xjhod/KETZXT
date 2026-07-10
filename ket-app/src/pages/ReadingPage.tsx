@@ -21,19 +21,15 @@ const PART_INFO: Record<ReadingPart, { label: string; icon: string; desc: string
 function Part1View({ article }: { article: typeof part1Articles[0] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResult, setShowResult] = useState(false);
-  // ✅ 存储每个题目的打乱后选项（只在初始化时打乱一次）
-  const [shuffledMap, setShuffledMap] = useState<Record<string, string[]>>({});
+  // ✅ 共享的 8 个句子（A-H），只在初始化时打乱一次顺序
+  const [shuffledSentences, setShuffledSentences] = useState<string[]>([]);
   useEffect(() => {
-    const map: Record<string, string[]> = {};
-    article.questions.forEach(q => {
-      const arr = [...(q.options || [])];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      map[q.id] = arr;
-    });
-    setShuffledMap(map);
+    const arr = [...(article.sentences || [])];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    setShuffledSentences(arr);
   }, [article.id]);
   const { recordAnswer, recordSession } = useProgressStore();
 
@@ -73,6 +69,8 @@ function Part1View({ article }: { article: typeof part1Articles[0] }) {
   const scoreLabel = score >= 4 ? '太棒了！继续加油！' : score >= 3 ? '还不错，再接再厉！' : '需要多加练习哦！';
   const scoreColor = score >= 4 ? '#16a34a' : score >= 3 ? '#eab308' : '#dc2626';
 
+  const opts = shuffledSentences.length ? shuffledSentences : (article.sentences || []);
+
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
@@ -81,6 +79,7 @@ function Part1View({ article }: { article: typeof part1Articles[0] }) {
           <button onClick={handleSubmit} className="btn-primary text-sm">提交答案</button>
         )}
       </div>
+      <p className="text-xs text-gray-400 mb-3">为每张图从下面的 8 个句子中选出最匹配的一项（A–H）。</p>
       <div className="space-y-4">
         {article.questions.map((q, i) => {
           const isCorrect = answers[q.id] === q.answer;
@@ -99,9 +98,10 @@ function Part1View({ article }: { article: typeof part1Articles[0] }) {
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {(shuffledMap[q.id] || q.options).map((opt) => {
+                {opts.map((opt, oi) => {
+                  const letter = String.fromCharCode(65 + oi);
                   const selected = answers[q.id] === opt;
-                  let cls = 'border px-3 py-2 rounded-lg text-sm transition-all cursor-pointer ';
+                  let cls = 'border px-3 py-2 rounded-lg text-sm transition-all cursor-pointer flex items-center ';
                   if (showResult) {
                     if (opt === q.answer) cls += 'bg-green-50 border-green-300 text-green-800 font-medium';
                     else if (selected && opt !== q.answer) cls += 'bg-red-50 border-red-300 text-red-700';
@@ -110,7 +110,9 @@ function Part1View({ article }: { article: typeof part1Articles[0] }) {
                     if (selected) cls += 'border-blue-300 bg-blue-50 text-blue-800';
                     else cls += 'border-gray-200 hover:border-blue-200 hover:bg-gray-50 text-gray-700';
                   }
-                  return (<div key={opt} onClick={() => handleSelect(q.id, opt)} className={cls}>{opt}</div>);
+                  return (<div key={opt} onClick={() => handleSelect(q.id, opt)} className={cls}>
+                    <span className="font-bold mr-2 text-gray-400">{letter}</span>{opt}
+                  </div>);
                 })}
               </div>
             </div>
