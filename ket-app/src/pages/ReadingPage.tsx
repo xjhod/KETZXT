@@ -255,7 +255,7 @@ function Part2View({ article }: { article: typeof part2Articles[0] }) {
       <div className="space-y-2">
         {article.texts.map((txt, i) => {
           const assignedPersons = Object.entries(assignments)
-            .filter(([pi, ti]) => ti === i)
+            .filter(([, ti]) => ti === i)
             .map(([pi]) => article.people[Number(pi)].name);
           const correctPerson = article.people.find((_, pi) => article.answers[pi] === i);
           const isAnyCorrectHere = article.people.some((_, pi) => assignments[pi] === i && article.answers[pi] === i);
