@@ -410,7 +410,7 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
 
   const playSentence = async (b: ListeningPart2Set['blanks'][number]) => {
     setIsPlaying(true);
-    await playAudioFile(set.id + '-' + b.id, b.audioText, 0.9);
+    await playAudioFile(b.id, b.audioText, 0.9);
     setIsPlaying(false);
   };
 
@@ -571,7 +571,7 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
   const playSnippet = async (q: ListeningPart3Question) => {
     if (!q.audioText) return;
     setIsPlaying(true);
-    await playAudioFile(set.id + '-' + q.id, q.audioText, 0.95);
+    await playAudioFile(q.id, q.audioText, 0.95);
     setIsPlaying(false);
   };
 
@@ -722,6 +722,13 @@ function Part5Practice({ set, onBack }: { set: ListeningPart5Set; onBack: () => 
     setPlayed(true);
   };
 
+  const playNote = async (n: { id: string; audioText: string }) => {
+    if (!n.audioText) return;
+    setIsPlaying(true);
+    await playAudioFile(n.id, n.audioText, 0.9);
+    setIsPlaying(false);
+  };
+
   const handleAnswer = (noteId: string, value: string) => {
     if (submitted) return;
     setAnswers(prev => ({ ...prev, [noteId]: value }));
@@ -782,6 +789,15 @@ function Part5Practice({ set, onBack }: { set: ListeningPart5Set; onBack: () => 
                 <label className="text-sm font-bold text-gray-700 w-24 flex-shrink-0">
                   {n.fieldZh}：
                 </label>
+                <button
+                  type="button"
+                  onClick={() => playNote(n)}
+                  disabled={isPlaying || !n.audioText}
+                  title="重听此句"
+                  className={`flex-shrink-0 w-9 h-9 rounded-full text-sm ${isPlaying ? 'bg-gray-200 text-gray-400' : 'bg-blue-100 text-blue-600 hover:bg-blue-200'} transition`}
+                >
+                  🔊
+                </button>
                 <input
                   type="text"
                   value={answers[n.id] || ''}
