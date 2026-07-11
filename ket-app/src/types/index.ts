@@ -167,24 +167,24 @@ export interface ListeningPart2Set extends ListeningSet {
   blanks: ListeningPart2Blank[]; // 5 个填空
 }
 
-/** Part 3: 听录音填空 — 一段长对话/独白，填空 */
-export interface ListeningPart3Blank {
+/** Part 3: 长对话选择题（KET 标准）— 听一段较长的对话，5 题，每题 A/B/C 三选一 */
+export interface ListeningPart3Question {
   id: string;
-  field: string;          // 字段名称（如：Name / Age / Phone）
-  fieldZh: string;        // 字段中文名称（如：姓名 / 年龄 / 电话）
-  answer: string;          // 正确答案（多个答案用 " / " 分隔）
-  hint: string;            // 提示（中文）
-  audioText: string;       // 包含此空的句子的朗读文本
-  choices?: string[];      // 选项列表（可选，有则此空显示为按钮选择）
+  question: string;        // 问题文本
+  questionZh?: string;     // 中文问题（可选）
+  options: string[];       // A/B/C 三个选项
+  answer: string;          // 正确答案（A/B/C）
+  explanation?: string;    // 解析（可选，缺失时回退显示 hint/transcript）
+  audioText?: string;      // 相关对话片段（可选，用于单句重听）
 }
 
 export interface ListeningPart3Set extends ListeningSet {
   part: 3;
-  speaker?: string;       // 说话者身份（如：Camp Counselor）
-  passage?: string;       // 完整短文（空格用 ____ 表示），缺省时 UI 用 generatePassage 兜底
-  monologueAudio: string; // 整段短文的朗读文本（独白）
-  blanks: ListeningPart3Blank[];
-  transcript: string;      // 完整原文
+  speakerA: string;        // 对话者 A 身份（如：Boy / Tom）
+  speakerB: string;        // 对话者 B 身份（如：Mum / Teacher）
+  conversationAudio: string; // 完整对话朗读文本（含说话人标记，如 "Tom: ..."）
+  transcript: string;      // 完整原文（与 conversationAudio 一致）
+  questions: ListeningPart3Question[]; // 5 道题
 }
 
 /** Part 4: 选择题 — 一段对话/访谈，5-6道选择 */

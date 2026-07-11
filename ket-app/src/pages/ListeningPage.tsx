@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
-import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart4Set, ListeningPart5Set } from '../types';
+import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart3Question, ListeningPart4Set, ListeningPart5Set } from '../types';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -70,31 +70,6 @@ function playWithAudio(text: string, rate = 0.9): Promise<void> {
       audio.play().catch(() => resolve());
     } catch { resolve(); }
   });
-}
-
-// ========== Part 3：从 transcript 自动生成短文（passage fallback）==========
-function generatePassage(transcript: string, blankCount: number): string {
-  if (!transcript || blankCount <= 0) return transcript || '';
-  // Split into sentences
-  const sentences = transcript.split(/(?<=[.!?])\s+/).filter(s => s.trim());
-  if (sentences.length === 0) return transcript + ' ' + Array.from({length: blankCount}, (_, i) => `____ (${i + 1})`).join(' ');
-  // Distribute placeholders evenly across sentences
-  const result: string[] = [];
-  const step = sentences.length / (blankCount + 1);
-  let inserted = 0;
-  sentences.forEach((s, i) => {
-    result.push(s);
-    if (inserted < blankCount && (i + 1) >= Math.round((inserted + 1) * step)) {
-      inserted++;
-      result.push(`____ (${inserted})`);
-    }
-  });
-  // Ensure all placeholders are present
-  while (inserted < blankCount) {
-    inserted++;
-    result.push(`____ (${inserted})`);
-  }
-  return result.join(' ');
 }
 
 // ========== Part 1 练习视图 ==========
@@ -594,16 +569,34 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
   );
 }
 
-// ========== Part 3 练习视图（听录音填空）==========
+// ========== Part 3 练习视图（长对话选择题 / KET 标准）==========
 function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => void }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [idx, setIdx] = useState(-1);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
-  const [played, setPlayed] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const { recordAnswer, recordSession } = useProgressStore();
+
+  // 存储每个题目的打乱后选项（只在初始化时打乱一次）
+  const [shuffledMap, setShuffledMap] = useState<Record<string, string[]>>({});
+  useEffect(() => {
+    const map: Record<string, string[]> = {};
+    set.questions.forEach(q => {
+      if (q.options) {
+        const arr = [...q.options];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        map[q.id] = arr;
+      }
+    });
+    setShuffledMap(map);
+  }, [set.id]);
+
   const startTime = useRef(Date.now());
 
-  if (!set?.blanks || set.blanks.length === 0) {
+  if (!set?.questions || set.questions.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-400">套题数据为空</p>
@@ -612,168 +605,134 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
     );
   }
 
-  const playPassage = async () => {
+  const playConversation = async () => {
     setIsPlaying(true);
-    await playAudioFile(set.id, set.monologueAudio || '', 0.9);
+    await playAudioFile(set.id, set.conversationAudio || '', 0.95);
     setIsPlaying(false);
-    setPlayed(true);
+    setIdx(0);
   };
 
-  const handleAnswer = (blankId: string, value: string) => {
+  const playSnippet = async (q: ListeningPart3Question) => {
+    if (!q.audioText) return;
+    setIsPlaying(true);
+    await playAudioFile(set.id + '-' + q.id, q.audioText, 0.95);
+    setIsPlaying(false);
+  };
+
+  const handleAnswer = (qId: string, _letter: string, optText: string) => {
     if (submitted) return;
-    setAnswers(prev => ({ ...prev, [blankId]: value }));
+    setAnswers(prev => ({ ...prev, [qId]: optText }));
+  };
+
+  const isCorrectQ = (q: ListeningPart3Question) => {
+    const userAns = answers[q.id] || '';
+    const userAnsIndex = q.options.indexOf(userAns);
+    const correctAnsIndex = q.answer.charCodeAt(0) - 65;
+    return userAnsIndex === correctAnsIndex;
   };
 
   const handleSubmit = () => {
-    set.blanks.forEach((b) => {
-      const userAns = answers[b.id] || '';
-      // 支持多答案匹配（答案用 " / " 分隔）
-      const validAnswers = b.answer.split(' / ').map(a => a.trim().toLowerCase());
-      const isCorrect = validAnswers.some(a => userAns.trim().toLowerCase() === a);
+    set.questions.forEach((q) => {
+      const userAns = answers[q.id] || '';
+      const userAnsIndex = q.options.indexOf(userAns);
+      const correctAnsIndex = q.answer.charCodeAt(0) - 65;
+      const isCorrect = userAnsIndex === correctAnsIndex;
       recordAnswer({
-        module: 'listening',
-        exerciseType: 'Part3-' + set.id,
-        subjectId: set.id,
-        subjectName: set.titleZh,
-        questionId: b.id,
-        questionText: `填空 (${b.field || b.id})`,
+        module: 'listening', exerciseType: 'Part3-' + set.id,
+        subjectId: set.id, subjectName: set.titleZh,
+        questionId: q.id, questionText: q.question,
         userAnswer: userAns,
-        correctAnswer: b.answer,
+        correctAnswer: q.options[correctAnsIndex],
         isCorrect,
       });
     });
-    const correctCount = set.blanks.filter(b => {
-      const userAns = answers[b.id] || '';
-      const validAnswers = b.answer.split(' / ').map(a => a.trim().toLowerCase());
-      return validAnswers.some(a => userAns.trim().toLowerCase() === a);
-    }).length;
+    const correctCount = set.questions.filter(isCorrectQ).length;
     recordSession({
-      module: 'listening',
-      exerciseType: 'Part3-' + set.id,
-      subjectId: set.id,
-      subjectName: set.titleZh,
+      module: 'listening', exerciseType: 'Part3-' + set.id,
+      subjectId: set.id, subjectName: set.titleZh,
       correct: correctCount,
-      total: set.blanks.length,
+      total: set.questions.length,
       duration: Math.round((Date.now() - startTime.current) / 1000),
     });
     setSubmitted(true);
   };
 
-  // 渲染文章，在填空位置插入输入框或选项按钮
-  const renderPassage = () => {
-    const passage = set.passage || generatePassage(set.transcript || set.monologueAudio, set.blanks.length);
-    const parts = passage.split(/____ \(\d+\)/);
-    return parts.map((part, i) => {
-      if (i >= set.blanks.length) return <span key={i}>{part}</span>;
-      
-      const blank = set.blanks[i];
-      const choices = blank.choices || (blank.answer.includes(' / ') ? blank.answer.split(' / ').map(s => s.trim()) : null);
-      
-      return (
-        <span key={i}>
-          {part}
-          {choices ? (
-            // 显示选项按钮
-            <div className="inline-flex flex-wrap gap-1 mx-1 my-1">
-              {choices.map((choice, ci) => {
-                const label = String.fromCharCode(65 + ci);
-                const isSelected = (answers[blank.id] || '') === choice;
-                return (
-                  <button
-                    key={ci}
-                    onClick={() => handleAnswer(blank.id, choice)}
-                    disabled={submitted}
-                    className={`px-2 py-1 rounded-lg text-sm border-2 transition-all ${
-                      submitted
-                        ? choice.toLowerCase() === blank.answer.split(' / ').map(a => a.trim().toLowerCase()).join(' / ')
-                          ? 'border-green-500 bg-green-50 text-green-700'
-                          : isSelected
-                            ? 'border-red-500 bg-red-50 text-red-700'
-                            : 'border-gray-200 bg-gray-50 text-gray-400'
-                        : isSelected
-                          ? 'border-purple-500 bg-purple-50 text-purple-700'
-                          : 'border-gray-300 hover:border-purple-300 bg-white'
-                    }`}
-                  >
-                    <span className="font-bold text-purple-600">{label}. </span>{choice}
-                  </button>
-                );
-              })}
-            </div>
-          ) : (
-            // 显示文本输入框（短答案）
-            <input
-              type="text"
-              value={answers[blank.id] || ''}
-              onChange={(e) => handleAnswer(blank.id, e.target.value)}
-              disabled={submitted}
-              className={`mx-1 px-2 py-0.5 border-b-2 w-24 text-center rounded ${
-                submitted
-                  ? (answers[blank.id] || '').trim().toLowerCase() === blank.answer.toLowerCase()
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-red-500 bg-red-50 text-red-700'
-                  : 'border-blue-500 focus:outline-none'
-              }`}
-              placeholder={`(${i + 1})`}
-            />
-          )}
-        </span>
-      );
-    });
-  };
+  const correctCount = submitted ? set.questions.filter(isCorrectQ).length : 0;
 
-  const correctCount = submitted ? set.blanks.filter(b => (answers[b.id] || '').trim().toLowerCase() === b.answer.toLowerCase()).length : 0;
+  if (idx === -1) {
+    return (
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <button onClick={onBack} className="text-blue-600 text-sm hover:underline">返回列表</button>
+          <span className="text-sm text-gray-400">|</span>
+          <span className="text-sm text-gray-500">Part 3 · {set.titleZh}</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-8 text-center">
+          <p className="text-lg font-bold text-gray-700 mb-2">{set.titleZh}</p>
+          <p className="text-sm text-gray-400 mb-1">{set.title}</p>
+          <p className="text-xs text-gray-400 mb-1">{set.speakerA} &amp; {set.speakerB}</p>
+          <p className="text-xs text-gray-400 mb-4">{set.conversationAudio ? set.conversationAudio.substring(0, 100) + '...' : ''}</p>
+          <div className="mb-4 flex justify-center">
+            <button onClick={playConversation} disabled={isPlaying} className={`btn-primary mb-4 ${isPlaying ? 'animate-pulse' : ''}`}>
+              {isPlaying ? '播放中...' : '🔊 播放对话'}
+            </button>
+          </div>
+          <p className="text-xs text-gray-400 text-center">点击播放后听对话，然后选择答案</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-4">
         <button onClick={onBack} className="text-blue-600 text-sm hover:underline">返回列表</button>
-        <span className="text-sm text-gray-400">|</span>
         <span className="text-sm text-gray-500">Part 3 · {set.titleZh}</span>
       </div>
 
-      <div className="bg-white rounded-2xl shadow p-6 mb-4 text-center">
-        <button onClick={playPassage} disabled={isPlaying} className={`btn-primary mb-4 ${isPlaying ? 'animate-pulse' : ''}`}>
-          {isPlaying ? '播放中...' : '播放录音'}
-        </button>
-        <p className="text-xs text-gray-400 mb-2">点击播放后听录音，在下方填空处填写单词</p>
-      </div>
-
-      {played && (
-        <div className="bg-white rounded-2xl shadow p-6 mb-4">
-          <p className="text-sm text-gray-600 leading-relaxed mb-4">{renderPassage()}</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {set.blanks.map((b) => (
-              <span key={b.id} className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-500">提示：{b.hint}</span>
-            ))}
-          </div>
-          {!submitted && (
-            <button onClick={handleSubmit} className="btn-primary w-full">提交答案</button>
-          )}
+      {!submitted ? (
+        <div className="space-y-4">
+          {set.questions.map((q, qi) => (
+            <div key={q.id} className="bg-white rounded-xl shadow p-4">
+              <p className="font-bold text-gray-700 mb-2">Q{qi + 1}. {q.question}{q.questionZh ? <span className="text-xs text-gray-400 ml-1">（{q.questionZh}）</span> : null}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {(shuffledMap[q.id] || q.options).map((opt, oi) => {
+                  const label = String.fromCharCode(65 + oi);
+                  const isSelected = answers[q.id] === opt;
+                  return (
+                    <button key={oi} onClick={() => handleAnswer(q.id, label, opt)} className={`text-left px-3 py-2 rounded-lg border transition-all ${
+                      isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                    }`}>
+                      <span className="font-bold text-purple-600">{label}. </span>{opt}
+                    </button>
+                  );
+                })}
+              </div>
+              {q.audioText && (
+                <button onClick={() => playSnippet(q)} disabled={isPlaying} className="text-xs text-blue-500 mt-2 hover:underline" title="重听相关对话">🔊 重听此句</button>
+              )}
+            </div>
+          ))}
+          <button onClick={handleSubmit} className="btn-primary w-full">提交答案</button>
         </div>
-      )}
-
-      {submitted && (
+      ) : (
         <div className="bg-white rounded-2xl shadow p-6 text-center">
           <p className="text-2xl font-bold mb-2">练习完成！</p>
-          <p className="text-lg mb-4">得分：<b className="text-green-600">{correctCount}/{set.blanks.length}</b></p>
-          <div className="text-left space-y-2 mb-4">
-            {set.blanks.map((b, bi) => {
-              const userAns = answers[b.id] || '';
-              // 支持多答案匹配（答案用 " / " 分隔）
-              const validAnswers = b.answer.split(' / ').map(a => a.trim().toLowerCase());
-              const correct = validAnswers.some(a => userAns.trim().toLowerCase() === a);
+          <p className="text-lg mb-4">得分：<b className="text-purple-600">{correctCount}/{set.questions.length}</b></p>
+          <div className="text-left space-y-3 mb-4">
+            {set.questions.map((q, qi) => {
+              const correct = isCorrectQ(q);
               return (
-                <div key={b.id} className={`p-2 rounded-lg ${correct ? 'bg-green-50' : 'bg-red-50'}`}>
-                  <p className="text-sm">({bi + 1}) {b.fieldZh}：{b.hint}</p>
+                <div key={q.id} className={`p-2 rounded-lg ${correct ? 'bg-green-50' : 'bg-red-50'}`}>
+                  <p className="text-sm font-bold">Q{qi + 1}. {q.question}</p>
                   <p className={`text-xs ${correct ? 'text-green-600' : 'text-red-600'}`}>
-                    你的答案：{userAns || '（未答）'} {correct ? '✅' : `❌ 正确答案：${b.answer}`}
+                    你的答案：{answers[q.id] || '（未答）'} {correct ? '√' : '× 正确答案：' + q.answer}
                   </p>
+                  {q.explanation && <p className="text-xs text-gray-400">{q.explanation}</p>}
                 </div>
               );
             })}
           </div>
-          <p className="text-xs text-gray-400 mb-3">原文：{set.transcript}</p>
           <button onClick={onBack} className="btn-primary">返回列表</button>
         </div>
       )}
