@@ -187,23 +187,28 @@ export interface ListeningPart3Set extends ListeningSet {
   questions: ListeningPart3Question[]; // 5 道题
 }
 
-/** Part 4: 选择题 — 一段对话/访谈，5-6道选择 */
+/** Part 4: 图片选择题（KET 标准）— 5 个短对话，每题 3 图，选正确图片 */
+export interface ListeningPart4Option {
+  emoji: string;          // 图片 emoji
+  desc: string;           // 中文描述
+  descEn?: string;        // 英文描述（可选）
+}
+
 export interface ListeningPart4Question {
   id: string;
-  question: string;       // 问题文本
-  options: string[];       // A/B/C/D 选项
-  answer: string;          // 正确答案
-  hint: string;            // 提示（中文）
-  explanation?: string;    // 解析（可选，数据缺失时回退显示 hint）
-  audioText?: string;      // 相关对话片段的朗读文本（可选）
+  speakerA: string;       // 对话者 A
+  speakerB: string;       // 对话者 B
+  audioText: string;      // 短对话朗读文本
+  question: string;       // 问题
+  questionZh?: string;    // 中文问题（可选）
+  options: ListeningPart4Option[]; // 3 个图片选项
+  answer: string;         // 正确答案（A/B/C）
+  explanation?: string;   // 解析（可选）
 }
 
 export interface ListeningPart4Set extends ListeningSet {
   part: 4;
-  speaker?: string;        // 说话者身份（如：Teacher / Friend）
-  monologueAudio: string;  // 完整独白/对话朗读文本
-  transcript: string;      // 完整原文
-  questions: ListeningPart4Question[];
+  questions: ListeningPart4Question[]; // 5 个短对话
 }
 
 /** Part 5: 听写/笔记填空 — 一段独白，填写关键信息 */
