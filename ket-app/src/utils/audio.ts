@@ -8,6 +8,33 @@
 // 注：不依赖 translate.google.com（中国大陆被墙），优先用本地 mp3 文件，
 //    文本回退用系统内置 speechSynthesis（不依赖网络）。
 
+// ========== 全局播放控制（跨组件停止）==========
+// 保持对"当前正在播放的 <audio> 与 TTS 取消函数"的引用，
+// 以便组件卸载（如返回主页）时调用 stopAllAudio() 立即停掉，
+// 避免音频/朗读在离开页面后仍在后台继续播放。
+let currentAudioEl: HTMLAudioElement | null = null;
+let currentAudioDone: (() => void) | null = null;
+let currentTtsCancel: (() => void) | null = null;
+
+/** 立即停止当前任何正在播放的音频 <audio> 与系统 TTS。组件卸载时应调用。 */
+export function stopAllAudio(): void {
+  if (currentAudioEl) {
+    try { currentAudioEl.pause(); currentAudioEl.currentTime = 0; } catch { /* ignore */ }
+    currentAudioEl = null;
+  }
+  if (currentAudioDone) {
+    try { currentAudioDone(); } catch { /* ignore */ }
+    currentAudioDone = null;
+  }
+  if (currentTtsCancel) {
+    try { currentTtsCancel(); } catch { /* ignore */ }
+    currentTtsCancel = null;
+  }
+  try {
+    if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
+  } catch { /* ignore */ }
+}
+
 /** 拼接正确的音频文件 URL（适配 GitHub Pages 子路径） */
 export function audioFileUrl(id: string): string {
   const base = import.meta.env.BASE_URL || '/';
@@ -20,6 +47,7 @@ export function audioFileUrl(id: string): string {
  * @returns true=正常播放结束, false=出错（可据此回退 TTS）
  */
 export function playAudioEl(src: string, rate = 1): Promise<boolean> {
+  stopAllAudio(); // 先停掉上一段，避免叠音 / 离开后仍播放
   return new Promise((resolve) => {
     try {
       const el = new Audio(src);
@@ -29,8 +57,12 @@ export function playAudioEl(src: string, rate = 1): Promise<boolean> {
         if (settled) return;
         settled = true;
         clearTimeout(wd);
+        if (currentAudioEl === el) currentAudioEl = null;
+        if (currentAudioDone === done) currentAudioDone = null;
         resolve(ok);
       };
+      currentAudioEl = el;
+      currentAudioDone = done;
       el.onended = () => done(true);
       el.onerror = () => done(false);
       el.play().catch(() => done(false));
@@ -50,6 +82,7 @@ export function speakText(
   text: string,
   opts: { rate?: number; lang?: string; onStart?: () => void; onEnd?: () => void } = {}
 ): () => void {
+  stopAllAudio(); // 先停掉上一段音频 / TTS，避免叠音
   if (
     typeof window === 'undefined' ||
     !window.speechSynthesis ||
@@ -83,6 +116,7 @@ export function speakText(
     if (ended) return;
     ended = true;
     clearTimeout(wd);
+    if (currentTtsCancel === cancel) currentTtsCancel = null;
     opts.onEnd?.();
   };
 
@@ -108,7 +142,7 @@ export function speakText(
   synth.speak(utter);
 
   // 返回取消函数
-  return () => {
+  const cancel = () => {
     try {
       synth.cancel();
     } catch {
@@ -116,4 +150,6 @@ export function speakText(
     }
     finish();
   };
+  currentTtsCancel = cancel; // 记录，便于 stopAllAudio 停掉
+  return cancel;
 }

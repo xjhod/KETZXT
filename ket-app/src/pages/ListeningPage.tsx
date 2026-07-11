@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
 import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart3Question, ListeningPart4Set, ListeningPart4Option, ListeningPart5Set } from '../types';
-import { audioFileUrl, playAudioEl, speakText } from '../utils/audio';
+import { audioFileUrl, playAudioEl, speakText, stopAllAudio } from '../utils/audio';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -55,6 +55,11 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
     });
     setShuffledMap(map);
   }, [set.id]); // 只在套题变化时重新计算
+
+  // ✅ 离开页面（返回列表/主页）时停止音频，避免后台继续播放
+  useEffect(() => {
+    return () => { stopAllAudio(); };
+  }, []);
 
   const startTime = useRef(Date.now());
 
@@ -220,6 +225,11 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
   const correctCountRef = useRef(0);
   const startTime = useRef(Date.now());
   const { recordAnswer, recordSession } = useProgressStore();
+
+  // ✅ 离开页面时停止音频，避免后台继续播放
+  useEffect(() => {
+    return () => { stopAllAudio(); };
+  }, []);
 
   if (!set?.questions || set.questions.length === 0) {
     return (
@@ -387,6 +397,11 @@ function Part2Practice({ set, onBack }: { set: ListeningPart2Set; onBack: () => 
   const { recordAnswer, recordSession } = useProgressStore();
   const startTime = useRef(Date.now());
 
+  // ✅ 离开页面时停止音频，避免后台继续播放
+  useEffect(() => {
+    return () => { stopAllAudio(); };
+  }, []);
+
   if (!set?.blanks || set.blanks.length === 0) {
     return (
       <div className="text-center py-12">
@@ -550,6 +565,11 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
     setShuffledMap(map);
   }, [set.id]);
 
+  // ✅ 离开页面时停止音频，避免后台继续播放
+  useEffect(() => {
+    return () => { stopAllAudio(); };
+  }, []);
+
   const startTime = useRef(Date.now());
 
   if (!set?.questions || set.questions.length === 0) {
@@ -705,6 +725,11 @@ function Part5Practice({ set, onBack }: { set: ListeningPart5Set; onBack: () => 
   const [played, setPlayed] = useState(false);
   const { recordAnswer, recordSession } = useProgressStore();
   const startTime = useRef(Date.now());
+
+  // ✅ 离开页面时停止音频，避免后台继续播放
+  useEffect(() => {
+    return () => { stopAllAudio(); };
+  }, []);
 
   if (!set?.notes || set.notes.length === 0) {
     return (
