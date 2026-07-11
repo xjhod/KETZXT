@@ -5,6 +5,7 @@ import type { SpeakingPart1Question, SpeakingPart2Question } from '../types/spea
 import { getCurrentUser } from '../utils/auth';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
 import { useProgressStore } from '../store/useProgressStore';
+import { audioFileUrl, playAudioEl, speakText } from '../utils/audio';
 
 // ========== 类型定义 ==========
 interface ScoreResult {
@@ -59,17 +60,13 @@ function scoreAnswer(transcript: string, keywords: string[]): ScoreResult {
   };
 }
 
-// ========== TTS 播放标准答案 ==========
-function playModelAnswer(text: string): void {
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis) {
-    window.speechSynthesis.cancel(); // 停止当前播放
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9; // 稍慢
-    utterance.pitch = 1.0;
-    window.speechSynthesis.speak(utterance);
+// ========== 播放标准答案（优先预生成 mp3，缺失则回退浏览器 TTS）==========
+async function playModelAnswer(id: string, text: string): Promise<void> {
+  const ok = await playAudioEl(audioFileUrl(id), 0.9);
+  if (!ok) {
+    // 预生成音频缺失/加载失败时，回退到浏览器内置 TTS
+    speakText(text, { rate: 0.9, lang: 'en-US' });
   }
-  // 不支持语音合成时静默（发音按钮已通过 AudioButton 提示）
 }
 
 // ========== 转录结果面板（真实语音识别）==========
@@ -346,7 +343,7 @@ export default function SpeakingPage() {
             🔊 标准答案（点击播放）
           </h4>
           <button
-            onClick={() => playModelAnswer(q.modelAnswer)}
+            onClick={() => playModelAnswer(q.id, q.modelAnswer)}
             className="w-full p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-left hover:bg-green-100 dark:hover:bg-green-900/30 transition"
           >
             <p className="text-sm text-green-800 dark:text-green-300">
@@ -542,7 +539,7 @@ export default function SpeakingPage() {
           ) : (
             <div className="mt-4 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
               <img
-                src={q.imageUrl}
+                src={`${import.meta.env.BASE_URL}${q.imageUrl}`}
                 alt={`口语场景 ${q.id}`}
                 className="w-full h-auto object-cover"
                 onError={() => setImgError(true)}
@@ -843,8 +840,8 @@ export default function SpeakingPage() {
       <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
         <p className="text-sm text-yellow-800 dark:text-yellow-300">
           💡 <strong>提示：</strong> 
-          已接入浏览器内置语音识别（Web Speech API），无需联网即可将你的口语实时转为文字并自动评分。
-          建议使用 Chrome 或 Edge 浏览器，并在弹窗中允许麦克风权限。标准答案播放使用浏览器语音合成。
+          已接入浏览器内置语音识别（Web Speech API），需要联网才能将你的口语实时转为文字并自动评分。
+          建议使用 Chrome 或 Edge 浏览器，并在弹窗中允许麦克风权限。标准答案播放使用预生成音频（手机/电脑发音一致）。
         </p>
       </div>
     </div>
