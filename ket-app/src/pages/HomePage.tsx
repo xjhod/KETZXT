@@ -1,8 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useProgressStore } from '../store/useProgressStore';
+import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
 import { getCurrentUser } from '../utils/auth';
 
 const features = [
+  {
+    title: '每日语法打卡',
+    desc: '每天10分钟 · 语法稳步进阶',
+    icon: '📆',
+    to: '/grammar-daily',
+    color: 'from-teal-400 to-teal-600',
+    bg: 'bg-teal-50',
+    border: 'border-teal-100',
+  },
   {
     title: '词汇学习',
     desc: '21个主题 · 1500词 · 语音拼写练习',
@@ -53,6 +63,7 @@ const features = [
 export default function HomePage() {
   const navigate = useNavigate();
   const { getModuleStats, getWrongAnswers, sessionRecords } = useProgressStore();
+  const dc = useDailyCheckinStore();
   const currentUser = getCurrentUser();
 
   // 从 store 读取实时统计
@@ -103,6 +114,12 @@ export default function HomePage() {
             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             📝 开始学语法
+          </button>
+          <button
+            onClick={() => navigate('/grammar-daily')}
+            className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            📆 每日打卡
           </button>
           <button
             onClick={() => navigate('/reading')}
@@ -171,7 +188,12 @@ export default function HomePage() {
       <div>
         <h3 className="text-lg font-semibold text-gray-800 mb-3">学习模块</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {features.map((f) => (
+          {features.map((f) => {
+            const desc =
+              f.to === '/grammar-daily' && dc.streak > 0
+                ? `🔥 连续 ${dc.streak} 天 · 每天10分钟`
+                : f.desc;
+            return (
             <div
               key={f.to}
               onClick={() => navigate(f.to)}
@@ -183,11 +205,12 @@ export default function HomePage() {
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-800">{f.title}</h4>
-                  <p className="text-sm text-gray-500 mt-1">{f.desc}</p>
+                  <p className="text-sm text-gray-500 mt-1">{desc}</p>
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
