@@ -1994,201 +1994,556 @@ export const part4Sets: ListeningPart4Set[] = [
 ];
 
 export const part5Sets: ListeningPart5Set[] = [
-  // L5-01 到 L5-10
-  
   // ========== L5-01: Library Membership ==========
   {
-    id: 'L5-01',
-    title: 'Library Membership',
-    titleZh: '图书馆会员',
-    part: 5,
-    difficulty: 'easy',
-    speed: 'slow',
-    speaker: 'Librarian',
-    monologueAudio: 'Welcome to the City Library! To become a member, please fill in this form. First, write your full name and address. Then, choose your membership type: student membership is free, adult membership is 10 pounds per year. Next, write the subjects you are interested in: history, science, or fiction. Finally, sign at the bottom. You can borrow up to 5 books at a time. The library opens from 9am to 7pm, Monday to Saturday.',
-    notes: [
-      { id: 'L5-01-N1', field: 'Full Name & Address', fieldZh: '姓名和地址', answer: 'full name and address', hint: '你的姓名和地址', audioText: 'First, write your full name and address.' },
-      { id: 'L5-01-N2', field: 'Membership Type', fieldZh: '会员类型', answer: 'student / adult', hint: '学生免费/成人10镑', audioText: 'Then, choose your membership type: student membership is free, adult membership is 10 pounds per year.' },
-      { id: 'L5-01-N3', field: 'Subject Interest', fieldZh: '感兴趣的学科', answer: 'history / science / fiction', hint: '3个学科选1或多个', audioText: 'Next, write the subjects you are interested in: history, science, or fiction.' },
-      { id: 'L5-01-N4', field: 'Opening Hours', fieldZh: '开放时间', answer: '9am to 7pm', hint: '周一至周六几点到几点', audioText: 'The library opens from 9am to 7pm, Monday to Saturday.' },
+    "id": "L5-01",
+    "title": "Library Membership",
+    "titleZh": "图书馆会员",
+    "part": 5,
+    "difficulty": "easy",
+    "speed": "slow",
+    "speaker": "Librarian",
+    "monologueAudio": "Welcome to the City Library! To become a member, please fill in this form. First, write your full name and address. Then, choose your membership type: student membership is free, adult membership is 10 pounds per year. Next, write the subjects you are interested in: history, science, or fiction. Finally, sign at the bottom. You can borrow up to 5 books at a time. The library opens from 9am to 7pm, Monday to Saturday.",
+    "notes": [
+      {
+        "id": "L5-01-N1",
+        "field": "Full Name & Address",
+        "fieldZh": "姓名和地址",
+        "answer": "full name and address",
+        "hint": "你的姓名和地址",
+        "audioText": "First, write your full name and address."
+      },
+      {
+        "id": "L5-01-N2",
+        "field": "Membership Type",
+        "fieldZh": "会员类型",
+        "answer": "student / adult",
+        "hint": "学生免费 / 成人每年10镑",
+        "audioText": "Then, choose your membership type: student membership is free, adult membership is 10 pounds per year."
+      },
+      {
+        "id": "L5-01-N3",
+        "field": "Subject Interest",
+        "fieldZh": "感兴趣的学科",
+        "answer": "history / science / fiction",
+        "hint": "3个学科选1或多个",
+        "audioText": "Next, write the subjects you are interested in: history, science, or fiction."
+      },
+      {
+        "id": "L5-01-N4",
+        "field": "Books Allowed",
+        "fieldZh": "可借阅数量",
+        "answer": "5 books",
+        "hint": "一次最多可借几本",
+        "audioText": "You can borrow up to 5 books at a time."
+      },
+      {
+        "id": "L5-01-N5",
+        "field": "Opening Hours",
+        "fieldZh": "开放时间",
+        "answer": "9am to 7pm",
+        "hint": "周一至周六几点到几点",
+        "audioText": "The library opens from 9am to 7pm, Monday to Saturday."
+      }
     ],
-    transcript: 'Welcome to the City Library! To become a member, please fill in this form. First, write your full name and address. Then, choose your membership type: student membership is free, adult membership is 10 pounds per year. Next, write the subjects you are interested in: history, science, or fiction. Finally, sign at the bottom. You can borrow up to 5 books at a time. The library opens from 9am to 7pm, Monday to Saturday.',
+    "transcript": "Welcome to the City Library! To become a member, please fill in this form. First, write your full name and address. Then, choose your membership type: student membership is free, adult membership is 10 pounds per year. Next, write the subjects you are interested in: history, science, or fiction. Finally, sign at the bottom. You can borrow up to 5 books at a time. The library opens from 9am to 7pm, Monday to Saturday."
   },
 
   // ========== L5-02: Gym Membership ==========
   {
-    id: 'L5-02',
-    title: 'Gym Membership',
-    titleZh: '健身房会员',
-    part: 5,
-    difficulty: 'medium',
-    speed: 'normal',
-    speaker: 'Gym Staff',
-    monologueAudio: 'Welcome to Active Fitness Centre! My name is Coach Sarah. To become a member, please fill in this form. First, write your name and address. Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month. The premium membership includes a free personal trainer session every month. Next, write any injuries or health problems you have. Finally, sign at the bottom. We open every day from 6am to 10pm!',
-    notes: [
-      { id: 'L5-02-N1', field: 'Name & Address', fieldZh: '姓名和地址', answer: 'name and address', hint: '你的姓名和地址', audioText: 'First, write your name and address.' },
-      { id: 'L5-02-N2', field: 'Basic Membership', fieldZh: '基础会员费', answer: '30 pounds per month', hint: '基础会员每月多少钱', audioText: 'Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month.' },
-      { id: 'L5-02-N3', field: 'Premium Membership', fieldZh: '高级会员费', answer: '50 pounds per month', hint: '高级会员每月多少钱', audioText: 'Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month.' },
-      { id: 'L5-02-N4', field: 'Opening Hours', fieldZh: '开放时间', answer: '6am to 10pm', hint: '每天几点到几点开门', audioText: 'We open every day from 6am to 10pm!' },
+    "id": "L5-02",
+    "title": "Gym Membership",
+    "titleZh": "健身房会员",
+    "part": 5,
+    "difficulty": "medium",
+    "speed": "normal",
+    "speaker": "Gym Staff",
+    "monologueAudio": "Welcome to Active Fitness Centre! My name is Coach Sarah. To become a member, please fill in this form. First, write your name and address. Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month. The premium membership includes a free personal trainer session every month. Next, write any injuries or health problems you have. Finally, sign at the bottom. We open every day from 6am to 10pm!",
+    "notes": [
+      {
+        "id": "L5-02-N1",
+        "field": "Name & Address",
+        "fieldZh": "姓名和地址",
+        "answer": "name and address",
+        "hint": "你的姓名和地址",
+        "audioText": "First, write your name and address."
+      },
+      {
+        "id": "L5-02-N2",
+        "field": "Basic Membership",
+        "fieldZh": "基础会员费",
+        "answer": "30 pounds per month",
+        "hint": "基础会员每月多少钱",
+        "audioText": "Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month."
+      },
+      {
+        "id": "L5-02-N3",
+        "field": "Premium Membership",
+        "fieldZh": "高级会员费",
+        "answer": "50 pounds per month",
+        "hint": "高级会员每月多少钱",
+        "audioText": "Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month."
+      },
+      {
+        "id": "L5-02-N4",
+        "field": "Health Problems",
+        "fieldZh": "伤病或健康问题",
+        "answer": "injuries or health problems",
+        "hint": "填写你的伤病或健康问题",
+        "audioText": "Next, write any injuries or health problems you have."
+      },
+      {
+        "id": "L5-02-N5",
+        "field": "Opening Hours",
+        "fieldZh": "开放时间",
+        "answer": "6am to 10pm",
+        "hint": "每天几点到几点开门",
+        "audioText": "We open every day from 6am to 10pm!"
+      }
     ],
-    transcript: 'Welcome to Active Fitness Centre! My name is Coach Sarah. To become a member, please fill in this form. First, write your name and address. Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month. The premium membership includes a free personal trainer session every month. Next, write any injuries or health problems you have. Finally, sign at the bottom. We open every day from 6am to 10pm!',
+    "transcript": "Welcome to Active Fitness Centre! My name is Coach Sarah. To become a member, please fill in this form. First, write your name and address. Then, choose your membership type: basic membership is 30 pounds per month, premium is 50 pounds per month. The premium membership includes a free personal trainer session every month. Next, write any injuries or health problems you have. Finally, sign at the bottom. We open every day from 6am to 10pm!"
   },
 
   // ========== L5-03: Language School Enrollment ==========
   {
-    id: 'L5-03',
-    title: 'Language School Enrollment',
-    titleZh: '语言学校报名',
-    part: 5,
-    difficulty: 'medium',
-    speed: 'normal',
-    speaker: 'School Secretary',
-    monologueAudio: 'Hello and welcome to Brighton Language School! To enroll, please complete this form. First, write your full name and nationality. Then, choose your course: General English, Business English, or Exam Preparation. Next, select your level: Beginner, Intermediate, or Advanced. After that, write your emergency contact number. Finally, pay the course fee: 200 pounds for 4 weeks. Classes start every Monday. Good luck with your studies!',
-    notes: [
-      { id: 'L5-03-N1', field: 'Full Name & Nationality', fieldZh: '姓名和国籍', answer: 'full name and nationality', hint: '你的全名和国籍', audioText: 'First, write your full name and nationality.' },
-      { id: 'L5-03-N2', field: 'Course Choice', fieldZh: '课程选择', answer: 'General English / Business English / Exam Preparation', hint: '3种课程选1', audioText: 'Then, choose your course: General English, Business English, or Exam Preparation.' },
-      { id: 'L5-03-N3', field: 'Level', fieldZh: '水平等级', answer: 'Beginner / Intermediate / Advanced', hint: '3个等级选1', audioText: 'Next, select your level: Beginner, Intermediate, or Advanced.' },
-      { id: 'L5-03-N4', field: 'Course Fee', fieldZh: '课程费用', answer: '200 pounds for 4 weeks', hint: '4周课程多少钱', audioText: 'Finally, pay the course fee: 200 pounds for 4 weeks.' },
+    "id": "L5-03",
+    "title": "Language School Enrollment",
+    "titleZh": "语言学校报名",
+    "part": 5,
+    "difficulty": "medium",
+    "speed": "normal",
+    "speaker": "School Secretary",
+    "monologueAudio": "Hello and welcome to Brighton Language School! To enroll, please complete this form. First, write your full name and nationality. Then, choose your course: General English, Business English, or Exam Preparation. Next, select your level: Beginner, Intermediate, or Advanced. After that, write your emergency contact number. Finally, pay the course fee: 200 pounds for 4 weeks. Classes start every Monday. Good luck with your studies!",
+    "notes": [
+      {
+        "id": "L5-03-N1",
+        "field": "Full Name & Nationality",
+        "fieldZh": "姓名和国籍",
+        "answer": "full name and nationality",
+        "hint": "你的全名和国籍",
+        "audioText": "First, write your full name and nationality."
+      },
+      {
+        "id": "L5-03-N2",
+        "field": "Course Choice",
+        "fieldZh": "课程选择",
+        "answer": "General English / Business English / Exam Preparation",
+        "hint": "3种课程选1",
+        "audioText": "Then, choose your course: General English, Business English, or Exam Preparation."
+      },
+      {
+        "id": "L5-03-N3",
+        "field": "Level",
+        "fieldZh": "水平等级",
+        "answer": "Beginner / Intermediate / Advanced",
+        "hint": "3个等级选1",
+        "audioText": "Next, select your level: Beginner, Intermediate, or Advanced."
+      },
+      {
+        "id": "L5-03-N4",
+        "field": "Emergency Contact",
+        "fieldZh": "紧急联系电话",
+        "answer": "emergency contact number",
+        "hint": "填写紧急联系人电话",
+        "audioText": "After that, write your emergency contact number."
+      },
+      {
+        "id": "L5-03-N5",
+        "field": "Course Fee",
+        "fieldZh": "课程费用",
+        "answer": "200 pounds for 4 weeks",
+        "hint": "4周课程多少钱",
+        "audioText": "Finally, pay the course fee: 200 pounds for 4 weeks."
+      }
     ],
-    transcript: 'Hello and welcome to Brighton Language School! To enroll, please complete this form. First, write your full name and nationality. Then, choose your course: General English, Business English, or Exam Preparation. Next, select your level: Beginner, Intermediate, or Advanced. After that, write your emergency contact number. Finally, pay the course fee: 200 pounds for 4 weeks. Classes start every Monday. Good luck with your studies!',
+    "transcript": "Hello and welcome to Brighton Language School! To enroll, please complete this form. First, write your full name and nationality. Then, choose your course: General English, Business English, or Exam Preparation. Next, select your level: Beginner, Intermediate, or Advanced. After that, write your emergency contact number. Finally, pay the course fee: 200 pounds for 4 weeks. Classes start every Monday. Good luck with your studies!"
   },
 
   // ========== L5-04: Holiday Camp Booking ==========
   {
-    id: 'L5-04',
-    title: 'Holiday Camp Booking',
-    titleZh: '假日营地预订',
-    part: 5,
-    difficulty: 'medium',
-    speed: 'normal',
-    speaker: 'Camp Organizer',
-    monologueAudio: 'Welcome to Starlight Holiday Camp! To book your place, please fill in this form. First, write the camper\'s name and age. Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks. Next, select activities: sports, arts and crafts, or music. The cost is 150 pounds per week. Include lunch and snacks. Finally, provide any dietary requirements. We look forward to seeing you!',
-    notes: [
-      { id: 'L5-04-N1', field: 'Camper\'s Name & Age', fieldZh: '营员姓名和年龄', answer: 'camper\'s name and age', hint: '营员的姓名和年龄', audioText: 'First, write the camper\'s name and age.' },
-      { id: 'L5-04-N2', field: 'Week Choice', fieldZh: '周次选择', answer: 'Week 1 / Week 2 / both weeks', hint: '选择第1周、第2周或两周都选', audioText: 'Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks.' },
-      { id: 'L5-04-N3', field: 'Activities', fieldZh: '活动选择', answer: 'sports / arts and crafts / music', hint: '3种活动选1或多个', audioText: 'Next, select activities: sports, arts and crafts, or music.' },
-      { id: 'L5-04-N4', field: 'Cost per Week', fieldZh: '每周费用', answer: '150 pounds per week', hint: '每周营地费用多少', audioText: 'The cost is 150 pounds per week. Include lunch and snacks.' },
+    "id": "L5-04",
+    "title": "Holiday Camp Booking",
+    "titleZh": "假日营地预订",
+    "part": 5,
+    "difficulty": "medium",
+    "speed": "normal",
+    "speaker": "Camp Organizer",
+    "monologueAudio": "Welcome to Starlight Holiday Camp! To book your place, please fill in this form. First, write the camper's name and age. Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks. Next, select activities: sports, arts and crafts, or music. The cost is 150 pounds per week. Include lunch and snacks. Finally, provide any dietary requirements. We look forward to seeing you!",
+    "notes": [
+      {
+        "id": "L5-04-N1",
+        "field": "Camper's Name & Age",
+        "fieldZh": "营员姓名和年龄",
+        "answer": "camper's name and age",
+        "hint": "营员的姓名和年龄",
+        "audioText": "First, write the camper's name and age."
+      },
+      {
+        "id": "L5-04-N2",
+        "field": "Week Choice",
+        "fieldZh": "周次选择",
+        "answer": "Week 1 / Week 2 / both weeks",
+        "hint": "选择第1周、第2周或两周都选",
+        "audioText": "Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks."
+      },
+      {
+        "id": "L5-04-N3",
+        "field": "Activities",
+        "fieldZh": "活动选择",
+        "answer": "sports / arts and crafts / music",
+        "hint": "3种活动选1或多个",
+        "audioText": "Next, select activities: sports, arts and crafts, or music."
+      },
+      {
+        "id": "L5-04-N4",
+        "field": "Cost per Week",
+        "fieldZh": "每周费用",
+        "answer": "150 pounds per week",
+        "hint": "每周营地费用多少",
+        "audioText": "The cost is 150 pounds per week. Include lunch and snacks."
+      },
+      {
+        "id": "L5-04-N5",
+        "field": "Dietary Requirements",
+        "fieldZh": "饮食要求",
+        "answer": "dietary requirements",
+        "hint": "填写你的饮食要求（如过敏）",
+        "audioText": "Finally, provide any dietary requirements."
+      }
     ],
-    transcript: 'Welcome to Starlight Holiday Camp! To book your place, please fill in this form. First, write the camper\'s name and age. Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks. Next, select activities: sports, arts and crafts, or music. The cost is 150 pounds per week. Include lunch and snacks. Finally, provide any dietary requirements. We look forward to seeing you!',
+    "transcript": "Welcome to Starlight Holiday Camp! To book your place, please fill in this form. First, write the camper's name and age. Then, choose your week: Week 1 (July 10-16), Week 2 (July 17-23), or both weeks. Next, select activities: sports, arts and crafts, or music. The cost is 150 pounds per week. Include lunch and snacks. Finally, provide any dietary requirements. We look forward to seeing you!"
   },
 
   // ========== L5-05: Music School Application ==========
   {
-    id: 'L5-05',
-    title: 'Music School Application',
-    titleZh: '音乐学校申请',
-    part: 5,
-    difficulty: 'medium',
-    speed: 'normal',
-    speaker: 'Music Teacher',
-    monologueAudio: 'Hello! Welcome to Melody Music School. To apply, please complete this form. First, write your name and phone number. Then, choose your instrument: piano, guitar, violin, or drums. Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson). After that, choose your preferred day: Monday, Wednesday, or Saturday. Finally, sign at the bottom. We also offer a free trial lesson!',
-    notes: [
-      { id: 'L5-05-N1', field: 'Name & Phone', fieldZh: '姓名和电话', answer: 'name and phone number', hint: '你的姓名和电话号码', audioText: 'First, write your name and phone number.' },
-      { id: 'L5-05-N2', field: 'Instrument Choice', fieldZh: '乐器选择', answer: 'piano / guitar / violin / drums', hint: '4种乐器选1', audioText: 'Then, choose your instrument: piano, guitar, violin, or drums.' },
-      { id: 'L5-05-N3', field: 'Individual Lesson Cost', fieldZh: '一对一课程费用', answer: '20 pounds per lesson', hint: '一对一课程每节多少钱', audioText: 'Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson).' },
-      { id: 'L5-05-N4', field: 'Group Lesson Cost', fieldZh: '团体课程费用', answer: '12 pounds per lesson', hint: '团体课程每节多少钱', audioText: 'Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson).' },
+    "id": "L5-05",
+    "title": "Music School Application",
+    "titleZh": "音乐学校申请",
+    "part": 5,
+    "difficulty": "medium",
+    "speed": "normal",
+    "speaker": "Music Teacher",
+    "monologueAudio": "Hello! Welcome to Melody Music School. To apply, please complete this form. First, write your name and phone number. Then, choose your instrument: piano, guitar, violin, or drums. Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson). After that, choose your preferred day: Monday, Wednesday, or Saturday. Finally, sign at the bottom. We also offer a free trial lesson!",
+    "notes": [
+      {
+        "id": "L5-05-N1",
+        "field": "Name & Phone",
+        "fieldZh": "姓名和电话",
+        "answer": "name and phone number",
+        "hint": "你的姓名和电话号码",
+        "audioText": "First, write your name and phone number."
+      },
+      {
+        "id": "L5-05-N2",
+        "field": "Instrument Choice",
+        "fieldZh": "乐器选择",
+        "answer": "piano / guitar / violin / drums",
+        "hint": "4种乐器选1",
+        "audioText": "Then, choose your instrument: piano, guitar, violin, or drums."
+      },
+      {
+        "id": "L5-05-N3",
+        "field": "Individual Lesson Cost",
+        "fieldZh": "一对一课程费用",
+        "answer": "20 pounds per lesson",
+        "hint": "一对一课程每节多少钱",
+        "audioText": "Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson)."
+      },
+      {
+        "id": "L5-05-N4",
+        "field": "Group Lesson Cost",
+        "fieldZh": "团体课程费用",
+        "answer": "12 pounds per lesson",
+        "hint": "团体课程每节多少钱",
+        "audioText": "Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson)."
+      },
+      {
+        "id": "L5-05-N5",
+        "field": "Preferred Day",
+        "fieldZh": "偏好上课日",
+        "answer": "Monday / Wednesday / Saturday",
+        "hint": "3个可选上课日",
+        "audioText": "After that, choose your preferred day: Monday, Wednesday, or Saturday."
+      }
     ],
-    transcript: 'Hello! Welcome to Melody Music School. To apply, please complete this form. First, write your name and phone number. Then, choose your instrument: piano, guitar, violin, or drums. Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson). After that, choose your preferred day: Monday, Wednesday, or Saturday. Finally, sign at the bottom. We also offer a free trial lesson!',
+    "transcript": "Hello! Welcome to Melody Music School. To apply, please complete this form. First, write your name and phone number. Then, choose your instrument: piano, guitar, violin, or drums. Next, select your lesson type: individual (20 pounds per lesson) or group (12 pounds per lesson). After that, choose your preferred day: Monday, Wednesday, or Saturday. Finally, sign at the bottom. We also offer a free trial lesson!"
   },
 
   // ========== L5-06: Sports Club Registration ==========
   {
-    id: 'L5-06',
-    title: 'Sports Club Registration',
-    titleZh: '体育俱乐部注册',
-    part: 5,
-    difficulty: 'medium',
-    speed: 'normal',
-    speaker: 'Club Manager',
-    monologueAudio: 'Welcome to Champion Sports Club! To register, please fill in this form. First, write your name, age, and emergency contact. Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday). Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports. Finally, collect your club T-shirt from reception. Training starts next week!',
-    notes: [
-      { id: 'L5-06-N1', field: 'Name, Age & Emergency Contact', fieldZh: '姓名、年龄、紧急联系人', answer: 'name, age, and emergency contact', hint: '填写姓名、年龄和紧急联系人', audioText: 'First, write your name, age, and emergency contact.' },
-      { id: 'L5-06-N2', field: 'Football Days', fieldZh: '足球训练日', answer: 'Tuesday and Thursday', hint: '足球在周几训练', audioText: 'Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday).' },
-      { id: 'L5-06-N3', field: 'Basketball Days', fieldZh: '篮球训练日', answer: 'Monday and Wednesday', hint: '篮球在周几训练', audioText: 'Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday).' },
-      { id: 'L5-06-N4', field: 'One Sport Fee', fieldZh: '一项运动费用', answer: '40 pounds per month', hint: '参加一项运动每月多少钱', audioText: 'Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports.' },
+    "id": "L5-06",
+    "title": "Sports Club Registration",
+    "titleZh": "体育俱乐部注册",
+    "part": 5,
+    "difficulty": "medium",
+    "speed": "normal",
+    "speaker": "Club Manager",
+    "monologueAudio": "Welcome to Champion Sports Club! To register, please fill in this form. First, write your name, age, and emergency contact. Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday). Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports. Finally, collect your club T-shirt from reception. Training starts next week!",
+    "notes": [
+      {
+        "id": "L5-06-N1",
+        "field": "Name, Age & Emergency Contact",
+        "fieldZh": "姓名、年龄、紧急联系人",
+        "answer": "name, age, and emergency contact",
+        "hint": "填写姓名、年龄和紧急联系人",
+        "audioText": "First, write your name, age, and emergency contact."
+      },
+      {
+        "id": "L5-06-N2",
+        "field": "Football Days",
+        "fieldZh": "足球训练日",
+        "answer": "Tuesday and Thursday",
+        "hint": "足球在周几训练",
+        "audioText": "Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday)."
+      },
+      {
+        "id": "L5-06-N3",
+        "field": "Basketball Days",
+        "fieldZh": "篮球训练日",
+        "answer": "Monday and Wednesday",
+        "hint": "篮球在周几训练",
+        "audioText": "Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday)."
+      },
+      {
+        "id": "L5-06-N4",
+        "field": "One Sport Fee",
+        "fieldZh": "一项运动费用",
+        "answer": "40 pounds per month",
+        "hint": "参加一项运动每月多少钱",
+        "audioText": "Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports."
+      },
+      {
+        "id": "L5-06-N5",
+        "field": "Two Sports Fee",
+        "fieldZh": "两项运动费用",
+        "answer": "60 pounds for two sports",
+        "hint": "参加两项运动每月多少钱",
+        "audioText": "Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports."
+      }
     ],
-    transcript: 'Welcome to Champion Sports Club! To register, please fill in this form. First, write your name, age, and emergency contact. Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday). Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports. Finally, collect your club T-shirt from reception. Training starts next week!',
+    "transcript": "Welcome to Champion Sports Club! To register, please fill in this form. First, write your name, age, and emergency contact. Then, choose your sport: football (Tuesday and Thursday), basketball (Monday and Wednesday), or swimming (every day except Sunday). Next, pay the membership fee: 40 pounds per month for one sport, 60 pounds for two sports. Finally, collect your club T-shirt from reception. Training starts next week!"
   },
 
   // ========== L5-07: Art Class Booking ==========
   {
-    id: 'L5-07',
-    title: 'Art Class Booking',
-    titleZh: '美术课预订',
-    part: 5,
-    difficulty: 'medium',
-    speed: 'normal',
-    speaker: 'Art Instructor',
-    monologueAudio: 'Hello artists! Welcome to Creative Art Studio. To book your place, please complete this form. First, write your name and email address. Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm). Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes. Finally, bring your own brushes and canvas. We provide all paints and materials. See you in class!',
-    notes: [
-      { id: 'L5-07-N1', field: 'Name & Email', fieldZh: '姓名和邮箱', answer: 'name and email address', hint: '你的姓名和邮箱地址', audioText: 'First, write your name and email address.' },
-      { id: 'L5-07-N2', field: 'Painting Class Time', fieldZh: '绘画课时间', answer: 'Tuesday 4-6pm', hint: '绘画课在什么时候', audioText: 'Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm).' },
-      { id: 'L5-07-N3', field: 'Drawing Class Time', fieldZh: '素描课时间', answer: 'Thursday 4-6pm', hint: '素描课在什么时候', audioText: 'Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm).' },
-      { id: 'L5-07-N4', field: '4 Classes Fee', fieldZh: '4节课费用', answer: '50 pounds for 4 classes', hint: '4节课套装多少钱', audioText: 'Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes.' },
+    "id": "L5-07",
+    "title": "Art Class Booking",
+    "titleZh": "美术课预订",
+    "part": 5,
+    "difficulty": "medium",
+    "speed": "normal",
+    "speaker": "Art Instructor",
+    "monologueAudio": "Hello artists! Welcome to Creative Art Studio. To book your place, please complete this form. First, write your name and email address. Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm). Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes. Finally, bring your own brushes and canvas. We provide all paints and materials. See you in class!",
+    "notes": [
+      {
+        "id": "L5-07-N1",
+        "field": "Name & Email",
+        "fieldZh": "姓名和邮箱",
+        "answer": "name and email address",
+        "hint": "你的姓名和邮箱地址",
+        "audioText": "First, write your name and email address."
+      },
+      {
+        "id": "L5-07-N2",
+        "field": "Painting Class Time",
+        "fieldZh": "绘画课时间",
+        "answer": "Tuesday 4-6pm",
+        "hint": "绘画课在什么时候",
+        "audioText": "Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm)."
+      },
+      {
+        "id": "L5-07-N3",
+        "field": "Drawing Class Time",
+        "fieldZh": "素描课时间",
+        "answer": "Thursday 4-6pm",
+        "hint": "素描课在什么时候",
+        "audioText": "Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm)."
+      },
+      {
+        "id": "L5-07-N4",
+        "field": "Sculpture Class Time",
+        "fieldZh": "雕塑课时间",
+        "answer": "Saturday 10am-12pm",
+        "hint": "雕塑课在什么时候",
+        "audioText": "Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm)."
+      },
+      {
+        "id": "L5-07-N5",
+        "field": "4 Classes Fee",
+        "fieldZh": "4节课费用",
+        "answer": "50 pounds for 4 classes",
+        "hint": "4节课套装多少钱",
+        "audioText": "Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes."
+      }
     ],
-    transcript: 'Hello artists! Welcome to Creative Art Studio. To book your place, please complete this form. First, write your name and email address. Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm). Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes. Finally, bring your own brushes and canvas. We provide all paints and materials. See you in class!',
+    "transcript": "Hello artists! Welcome to Creative Art Studio. To book your place, please complete this form. First, write your name and email address. Then, choose your class type: painting (Tuesday 4-6pm), drawing (Thursday 4-6pm), or sculpture (Saturday 10am-12pm). Next, pay the class fee: 15 pounds per class, or 50 pounds for 4 classes. Finally, bring your own brushes and canvas. We provide all paints and materials. See you in class!"
   },
 
   // ========== L5-08: Cooking Workshop Registration ==========
   {
-    id: 'L5-08',
-    title: 'Cooking Workshop Registration',
-    titleZh: '烹饪工作坊报名',
-    part: 5,
-    difficulty: 'hard',
-    speed: 'fast',
-    speaker: 'Chef',
-    monologueAudio: 'Welcome to Tasty Cooking Workshop! To join our cooking classes, please register using this form. First, write your name and any food allergies. Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm). The cost is 35 per workshop, including all ingredients and recipes to take home. Next, indicate if you want to join our monthly cooking competition. Finally, provide your phone number for updates. Bon appétit!',
-    notes: [
-      { id: 'L5-08-N1', field: 'Name & Food Allergies', fieldZh: '姓名和食物过敏', answer: 'name and food allergies', hint: '你的姓名和食物过敏信息', audioText: 'First, write your name and any food allergies.' },
-      { id: 'L5-08-N2', field: 'Italian Cuisine Time', fieldZh: '意大利菜工作坊时间', answer: 'Saturday 10am-1pm', hint: '意大利菜工作坊在什么时候', audioText: 'Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm).' },
-      { id: 'L5-08-N3', field: 'Workshop Cost', fieldZh: '工作坊费用', answer: '35 per workshop', hint: '每个工作坊多少钱', audioText: 'The cost is 35 per workshop, including all ingredients and recipes to take home.' },
-      { id: 'L5-08-N4', field: 'Phone Number', fieldZh: '电话号码', answer: 'phone number', hint: '填写你的电话号码用于接收更新', audioText: 'Finally, provide your phone number for updates.' },
+    "id": "L5-08",
+    "title": "Cooking Workshop Registration",
+    "titleZh": "烹饪工作坊报名",
+    "part": 5,
+    "difficulty": "hard",
+    "speed": "fast",
+    "speaker": "Chef",
+    "monologueAudio": "Welcome to Tasty Cooking Workshop! To join our cooking classes, please register using this form. First, write your name and any food allergies. Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm). The cost is 35 per workshop, including all ingredients and recipes to take home. Next, indicate if you want to join our monthly cooking competition. Finally, provide your phone number for updates. Bon appétit!",
+    "notes": [
+      {
+        "id": "L5-08-N1",
+        "field": "Name & Food Allergies",
+        "fieldZh": "姓名和食物过敏",
+        "answer": "name and any food allergies",
+        "hint": "你的姓名和食物过敏信息",
+        "audioText": "First, write your name and any food allergies."
+      },
+      {
+        "id": "L5-08-N2",
+        "field": "Italian Cuisine Time",
+        "fieldZh": "意大利菜工作坊时间",
+        "answer": "Saturday 10am-1pm",
+        "hint": "意大利菜工作坊在什么时候",
+        "audioText": "Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm)."
+      },
+      {
+        "id": "L5-08-N3",
+        "field": "Asian Fusion Time",
+        "fieldZh": "亚洲融合菜时间",
+        "answer": "Sunday 10am-1pm",
+        "hint": "亚洲融合菜工作坊在什么时候",
+        "audioText": "Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm)."
+      },
+      {
+        "id": "L5-08-N4",
+        "field": "Workshop Cost",
+        "fieldZh": "工作坊费用",
+        "answer": "35 per workshop",
+        "hint": "每个工作坊多少钱",
+        "audioText": "The cost is 35 per workshop, including all ingredients and recipes to take home."
+      },
+      {
+        "id": "L5-08-N5",
+        "field": "Phone Number",
+        "fieldZh": "电话号码",
+        "answer": "phone number",
+        "hint": "填写你的电话号码用于接收更新",
+        "audioText": "Finally, provide your phone number for updates."
+      }
     ],
-    transcript: 'Welcome to Tasty Cooking Workshop! To join our cooking classes, please register using this form. First, write your name and any food allergies. Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm). The cost is 35 per workshop, including all ingredients and recipes to take home. Next, indicate if you want to join our monthly cooking competition. Finally, provide your phone number for updates. Bon appétit!',
+    "transcript": "Welcome to Tasty Cooking Workshop! To join our cooking classes, please register using this form. First, write your name and any food allergies. Then, choose your workshop: Italian Cuisine (Saturday 10am-1pm), Asian Fusion (Sunday 10am-1pm), or Baking and Desserts (Saturday 2-5pm). The cost is 35 per workshop, including all ingredients and recipes to take home. Next, indicate if you want to join our monthly cooking competition. Finally, provide your phone number for updates. Bon appétit!"
   },
 
   // ========== L5-09: Volunteer Program Application ==========
   {
-    id: 'L5-09',
-    title: 'Volunteer Program Application',
-    titleZh: '志愿者项目申请',
-    part: 5,
-    difficulty: 'hard',
-    speed: 'fast',
-    speaker: 'Program Coordinator',
-    monologueAudio: 'Thank you for your interest in our Community Volunteer Program! To apply, please complete this application form. First, write your full name, age, and occupation (student, worker, or retired). Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday). Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9). Finally, provide two references with their contact information. We will contact you within one week!',
-    notes: [
-      { id: 'L5-09-N1', field: 'Full Name, Age & Occupation', fieldZh: '姓名、年龄、职业', answer: 'full name, age, and occupation', hint: '填写姓名、年龄和职业', audioText: 'First, write your full name, age, and occupation (student, worker, or retired).' },
-      { id: 'L5-09-N2', field: 'Animal Shelter Days', fieldZh: '动物收容所服务日', answer: 'Tuesday and Friday', hint: '动物收容所在周几需要志愿者', audioText: 'Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday).' },
-      { id: 'L5-09-N3', field: 'Availability Options', fieldZh: '可服务时间段', answer: 'morning (8-12) / afternoon (1-5) / evening (6-9)', hint: '3个时间段可选', audioText: 'Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9).' },
-      { id: 'L5-09-N4', field: 'References', fieldZh: '证明人', answer: 'two references with contact information', hint: '需要提供2个证明人和他们的联系方式', audioText: 'Finally, provide two references with their contact information.' },
+    "id": "L5-09",
+    "title": "Volunteer Program Application",
+    "titleZh": "志愿者项目申请",
+    "part": 5,
+    "difficulty": "hard",
+    "speed": "fast",
+    "speaker": "Program Coordinator",
+    "monologueAudio": "Thank you for your interest in our Community Volunteer Program! To apply, please complete this application form. First, write your full name, age, and occupation (student, worker, or retired). Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday). Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9). Finally, provide two references with their contact information. We will contact you within one week!",
+    "notes": [
+      {
+        "id": "L5-09-N1",
+        "field": "Full Name, Age & Occupation",
+        "fieldZh": "姓名、年龄、职业",
+        "answer": "full name, age, and occupation",
+        "hint": "填写姓名、年龄和职业",
+        "audioText": "First, write your full name, age, and occupation (student, worker, or retired)."
+      },
+      {
+        "id": "L5-09-N2",
+        "field": "Animal Shelter Days",
+        "fieldZh": "动物收容所服务日",
+        "answer": "Tuesday and Friday",
+        "hint": "动物收容所在周几需要志愿者",
+        "audioText": "Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday)."
+      },
+      {
+        "id": "L5-09-N3",
+        "field": "Homeless Shelter Days",
+        "fieldZh": "无家可归者收容所服务日",
+        "answer": "Monday and Thursday",
+        "hint": "食物分发站在周几需要志愿者",
+        "audioText": "Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday)."
+      },
+      {
+        "id": "L5-09-N4",
+        "field": "Availability",
+        "fieldZh": "可服务时间段",
+        "answer": "morning (8-12) / afternoon (1-5) / evening (6-9)",
+        "hint": "3个时间段可选",
+        "audioText": "Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9)."
+      },
+      {
+        "id": "L5-09-N5",
+        "field": "References",
+        "fieldZh": "证明人",
+        "answer": "two references with their contact information",
+        "hint": "需要提供2个证明人和他们的联系方式",
+        "audioText": "Finally, provide two references with their contact information."
+      }
     ],
-    transcript: 'Thank you for your interest in our Community Volunteer Program! To apply, please complete this application form. First, write your full name, age, and occupation (student, worker, or retired). Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday). Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9). Finally, provide two references with their contact information. We will contact you within one week!',
+    "transcript": "Thank you for your interest in our Community Volunteer Program! To apply, please complete this application form. First, write your full name, age, and occupation (student, worker, or retired). Then, choose your volunteer area: helping at the animal shelter (Tuesday and Friday), serving food at the homeless shelter (Monday and Thursday), or teaching English to immigrants (Wednesday and Saturday). Next, indicate your availability: morning (8-12), afternoon (1-5), or evening (6-9). Finally, provide two references with their contact information. We will contact you within one week!"
   },
 
   // ========== L5-10: Summer Camp Registration ==========
   {
-    id: 'L5-10',
-    title: 'Summer Camp Registration',
-    titleZh: '夏令营报名',
-    part: 5,
-    difficulty: 'easy',
-    speed: 'slow',
-    speaker: 'Camp Counselor',
-    monologueAudio: 'Hello! Welcome to Sunny Summer Camp. To register, please fill in this form. First, write your name and age. Next, choose your activity: swimming, hiking, or art class. Then, write your parent\'s phone number. Finally, tick any food allergies you have. The camp starts on July 1st. See you there!',
-    notes: [
-      { id: 'L5-10-N1', field: 'Name', fieldZh: '姓名', answer: 'name', hint: '你的名字', audioText: 'First, write your name and age.' },
-      { id: 'L5-10-N2', field: 'Age', fieldZh: '年龄', answer: 'age', hint: '你的年龄', audioText: 'First, write your name and age.' },
-      { id: 'L5-10-N3', field: 'Activity Choice', fieldZh: '活动选择', answer: 'swimming / hiking / art class', hint: '3种活动选1', audioText: 'Next, choose your activity: swimming, hiking, or art class.' },
-      { id: 'L5-10-N4', field: 'Parent\'s Phone', fieldZh: '家长电话', answer: 'parent\'s phone number', hint: '你家长的电话号码', audioText: 'Then, write your parent\'s phone number.' },
+    "id": "L5-10",
+    "title": "Summer Camp Registration",
+    "titleZh": "夏令营报名",
+    "part": 5,
+    "difficulty": "easy",
+    "speed": "slow",
+    "speaker": "Camp Counselor",
+    "monologueAudio": "Hello! Welcome to Sunny Summer Camp. To register, please fill in this form. First, write your name and age. Next, choose your activity: swimming, hiking, or art class. Then, write your parent's phone number. Finally, tick any food allergies you have. The camp starts on July 1st. See you there!",
+    "notes": [
+      {
+        "id": "L5-10-N1",
+        "field": "Name",
+        "fieldZh": "姓名",
+        "answer": "name",
+        "hint": "你的名字",
+        "audioText": "First, write your name and age."
+      },
+      {
+        "id": "L5-10-N2",
+        "field": "Age",
+        "fieldZh": "年龄",
+        "answer": "age",
+        "hint": "你的年龄",
+        "audioText": "First, write your name and age."
+      },
+      {
+        "id": "L5-10-N3",
+        "field": "Activity Choice",
+        "fieldZh": "活动选择",
+        "answer": "swimming / hiking / art class",
+        "hint": "3种活动选1",
+        "audioText": "Next, choose your activity: swimming, hiking, or art class."
+      },
+      {
+        "id": "L5-10-N4",
+        "field": "Parent's Phone",
+        "fieldZh": "家长电话",
+        "answer": "parent's phone number",
+        "hint": "你家长的电话号码",
+        "audioText": "Then, write your parent's phone number."
+      },
+      {
+        "id": "L5-10-N5",
+        "field": "Food Allergies",
+        "fieldZh": "食物过敏",
+        "answer": "food allergies",
+        "hint": "填写你是否有食物过敏",
+        "audioText": "Finally, tick any food allergies you have."
+      }
     ],
-    transcript: 'Hello! Welcome to Sunny Summer Camp. To register, please fill in this form. First, write your name and age. Next, choose your activity: swimming, hiking, or art class. Then, write your parent\'s phone number. Finally, tick any food allergies you have. The camp starts on July 1st. See you there!',
-  },
+    "transcript": "Hello! Welcome to Sunny Summer Camp. To register, please fill in this form. First, write your name and age. Next, choose your activity: swimming, hiking, or art class. Then, write your parent's phone number. Finally, tick any food allergies you have. The camp starts on July 1st. See you there!"
+  }
 ];
-
-
-// ========== 汇总导出 ==========
 
 export const allListeningSets = {
   1: part1Sets,
