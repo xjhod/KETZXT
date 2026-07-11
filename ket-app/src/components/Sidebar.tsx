@@ -18,6 +18,7 @@ const menuItems: MenuItem[] = [
   { to: '/', label: '首页', icon: '🏠' },
   { to: '/vocabulary', label: '词汇学习', icon: '📚' },
   { to: '/grammar', label: '语法学习', icon: '📝' },
+  { to: '/grammar-daily', label: '每日语法', icon: '📆' },
   { to: '/reading', label: '阅读理解', icon: '📖' },
   { to: '/listening', label: '听力训练', icon: '🎧' },
   { to: '/speaking', label: '口语练习', icon: '🎤' },
