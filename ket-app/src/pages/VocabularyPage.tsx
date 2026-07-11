@@ -6,6 +6,7 @@ import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/
 import { AudioButton } from '../components/AudioButton';
 import { VoiceInputButton } from '../components/VoiceInputButton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { audioFileUrl, playAudioEl, speakText } from '../utils/audio';
 
 // ========== 常量 ==========
 const SESSION_SIZE = 10;
@@ -110,14 +111,10 @@ function SessionResult({ correct, total, onBack, onRetry }: { correct: number; t
   );
 }
 
-// ========== 单词发音工具函数 ==========
-function speakWord(word: string) {
-  if (typeof window === 'undefined' || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(word);
-  utter.lang = 'en-US';
-  utter.rate = 0.85;
-  window.speechSynthesis.speak(utter);
+// ========== 单词发音工具函数（优先预生成 mp3，失败回退 TTS）==========
+async function speakWord(id: string, text: string) {
+  const ok = await playAudioEl(audioFileUrl(id));
+  if (!ok && text) speakText(text, { rate: 0.85 });
 }
 
 // ========== 单词卡片学习（每次10题）==========
@@ -141,7 +138,7 @@ function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void })
     if (word) {
       setFlipped(false);
       resetPro();
-      const timer = setTimeout(() => { if (typeof window !== 'undefined' && window.speechSynthesis) speakWord(word.en); }, 300);
+      const timer = setTimeout(() => { if (typeof window !== 'undefined') speakWord(word.id, word.en); }, 300);
       return () => clearTimeout(timer);
     }
   }, [idx]);
@@ -179,11 +176,12 @@ function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void })
               <p className="text-2xl font-bold text-blue-700 mb-2">{word.zh}</p>
               <p className="text-sm text-gray-400 mb-1">{word.phonetic}</p>
               <div className="mb-2 flex justify-center">
-                <AudioButton
-                  text={word.en}
-                  label="播放发音"
-                  size="large"
-                />
+              <AudioButton
+                text={word.en}
+                audioSrc={audioFileUrl(word.id)}
+                label="播放发音"
+                size="large"
+              />
               </div>
               <p className="text-sm text-gray-600 italic">"{word.example}"</p>
               <p className="text-xs text-gray-400 mt-1">{word.exampleZh}</p>
@@ -196,11 +194,12 @@ function WordCards({ themeId, onBack }: { themeId: string; onBack: () => void })
               
               {/* 发音评分按钮 - 增大按钮尺寸 */}
               <div className="flex justify-center gap-4 mb-2">
-                <AudioButton
-                  text={word.en}
-                  label="播放发音"
-                  size="large"
-                />
+              <AudioButton
+                text={word.en}
+                audioSrc={audioFileUrl(word.id)}
+                label="播放发音"
+                size="large"
+              />
                 {speechSupported ? (
                   <div className="flex flex-col items-center gap-1">
                     <button
