@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 // ========== 发音评分 Hook ==========
 // 方案A: Web Speech API 文本匹配评分（免费、离线可用）
@@ -125,6 +125,16 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
   const currentTargetRef = useRef('');
   const recognitionRef = useRef<any>(null);
 
+  // 看门狗：Android 上 SpeechRecognition 既不 onend 也不 onerror 时会一直 hang，
+  // 导致 isRecording 永远为 true（麦克风按钮卡在“录音中”）。超时强制复位。
+  const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearWatchdog = useCallback(() => {
+    if (watchdogRef.current) {
+      clearTimeout(watchdogRef.current);
+      watchdogRef.current = null;
+    }
+  }, []);
+
   const startRecord = (targetWord: string) => {
     setError(null);
     setResult(null);
@@ -152,6 +162,7 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
     recognition.maxAlternatives = 3; // 获取多个候选结果，提高准确率
 
     recognition.onresult = (event: any) => {
+      clearWatchdog();
       setIsRecording(false);
 
       // 尝试所有候选结果，选最佳匹配
@@ -178,11 +189,13 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
     };
 
     recognition.onend = () => {
+      clearWatchdog();
       setIsRecording(false);
       recognitionRef.current = null;
     };
 
     recognition.onerror = (event: any) => {
+      clearWatchdog();
       setIsRecording(false);
       recognitionRef.current = null;
       const msgMap: Record<string, string> = {
@@ -204,6 +217,13 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
     try {
       recognition.start();
       setIsRecording(true);
+      // 超时强制复位，防止安卓上识别 hang 导致麦克风按钮卡住
+      watchdogRef.current = setTimeout(() => {
+        try { recognition.stop(); } catch (_) { /* ignore */ }
+        setIsRecording(false);
+        recognitionRef.current = null;
+        setError('识别超时，请重试（安卓上语音识别可能不稳定）');
+      }, 20000);
     } catch (err) {
       console.error('Pronunciation record start error:', err);
       setError('启动录音失败，请刷新页面后重试');
@@ -213,6 +233,7 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
   };
 
   const stopRecord = () => {
+    clearWatchdog();
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (_) { /* ignore */ }
     }
@@ -220,9 +241,13 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
   };
 
   const reset = () => {
+    clearWatchdog();
     setResult(null);
     setError(null);
   };
+
+  // 卸载时清理看门狗
+  useEffect(() => () => clearWatchdog(), [clearWatchdog]);
 
   return { isRecording, result, error, startRecord, stopRecord, reset };
 }

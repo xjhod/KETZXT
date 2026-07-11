@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { speakText, playAudioEl } from '../utils/audio';
 
 interface AudioButtonProps {
   text: string;           // 要播放的文本（无预生成音频时走 TTS）
@@ -26,73 +27,60 @@ export function AudioButton({
   const [isLooping, setIsLooping] = useState(false);
   const [playCount, setPlayCount] = useState(0);
   const audioElRef = useRef<HTMLAudioElement | null>(null);
+  const cancelRef = useRef<() => void>(() => {});
+  const loopRef = useRef(isLooping);
+  loopRef.current = isLooping;
+  const playingRef = useRef(false);
 
   // 浏览器语音合成(TTS)可用性检测：部分国产手机浏览器不支持 speechSynthesis
   const ttsAvailable = typeof window !== 'undefined' && !!window.speechSynthesis;
 
-  // 播放语音
-  const playSpeech = useCallback(async (rate = playbackRate) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    
-    setIsPlaying(true);
-    window.speechSynthesis.cancel();
-    
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    utter.rate = rate;
-    utter.pitch = 1.0;
-    
-    utter.onend = () => {
-      setIsPlaying(false);
-      setPlayCount(prev => prev + 1);
-      if (isLooping) {
-        setTimeout(() => playSpeech(rate), 500);
-      }
-    };
-    
-    utter.onerror = () => {
-      setIsPlaying(false);
-    };
-    
-    window.speechSynthesis.speak(utter);
-  }, [text, playbackRate, isLooping]);
-
-  // 停止播放（文件 + TTS 统一停止）
-  const stopAll = () => {
+  // 统一停止（文件 + TTS），并复位状态（防止 Android 上卡在播放态）
+  const stopAll = useCallback(() => {
     audioElRef.current?.pause();
     audioElRef.current = null;
-    window.speechSynthesis?.cancel();
+    cancelRef.current();
+    cancelRef.current = () => {};
+    playingRef.current = false;
     setIsPlaying(false);
-  };
+  }, []);
 
-  // 优先播放预生成音频文件；失败/缺失时回退到 TTS
-  const playFile = useCallback(() => {
-    if (!audioSrc) { playSpeech(); return; }
+  // 播放一次（文件优先，失败回退 TTS；始终会结束，绝不卡住）
+  const playOnce = useCallback(async (rate: number): Promise<void> => {
+    if (audioSrc) {
+      const ok = await playAudioEl(audioSrc, rate);
+      if (!ok && text) {
+        await new Promise<void>((res) => {
+          cancelRef.current = speakText(text, { rate, onEnd: res });
+        });
+      }
+    } else if (text) {
+      await new Promise<void>((res) => {
+        cancelRef.current = speakText(text, { rate, onEnd: res });
+      });
+    }
+  }, [audioSrc, text]);
+
+  // 主播放流程（支持循环；靠 playingRef 与 loopRef 控制退出）
+  const play = useCallback(async () => {
+    if ((!text && !audioSrc) || playingRef.current) return;
+    playingRef.current = true;
     setIsPlaying(true);
-    const el = new Audio(audioSrc);
-    audioElRef.current = el;
-    el.onended = () => {
-      audioElRef.current = null;
-      setIsPlaying(false);
-      setPlayCount(prev => prev + 1);
-      if (isLooping) setTimeout(playFile, 500);
-    };
-    el.onerror = () => {
-      audioElRef.current = null;
-      playSpeech();
-    };
-    el.play().catch(() => {
-      audioElRef.current = null;
-      playSpeech();
-    });
-  }, [audioSrc, isLooping, playSpeech]);
+    setPlayCount((p) => p + 1);
+    do {
+      await playOnce(playbackRate);
+    } while (loopRef.current && playingRef.current);
+    playingRef.current = false;
+    cancelRef.current = () => {};
+    setIsPlaying(false);
+  }, [audioSrc, text, playbackRate, playOnce]);
 
   // 组件卸载时停止播放
   useEffect(() => {
     return () => {
       audioElRef.current?.pause();
       audioElRef.current = null;
-      window.speechSynthesis?.cancel();
+      cancelRef.current();
     };
   }, []);
 
@@ -112,10 +100,14 @@ export function AudioButton({
           if (isPlaying) {
             stopAll();
           } else if (!maxPlays || playCount < maxPlays) {
-            playFile();
+            play();
           }
         }}
-        disabled={!text || (maxPlays ? playCount >= maxPlays : false) || (!audioSrc && !ttsAvailable)}
+        disabled={
+          (!text && !audioSrc) ||
+          (maxPlays ? playCount >= maxPlays : false) ||
+          (!audioSrc && !ttsAvailable)
+        }
         className={`
           ${sizeStyles[size]}
           rounded-full 
@@ -133,7 +125,7 @@ export function AudioButton({
         title={isPlaying ? '点击停止' : '点击播放'}
       >
         {isPlaying ? '⏸️' : '🔊'}
-        
+
         {/* 播放中动画效果 */}
         {isPlaying && (
           <div className="absolute inset-0 rounded-full border-4 border-blue-300 animate-ping" />

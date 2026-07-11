@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
 import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart3Question, ListeningPart4Set, ListeningPart4Option, ListeningPart5Set } from '../types';
+import { audioFileUrl, playAudioEl, speakText } from '../utils/audio';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -10,65 +11,21 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
   window.speechSynthesis.getVoices();
 }
 
-function playSpeech(text: string, rate = 0.9): Promise<void> {
-  return new Promise((resolve) => {
-    if (typeof window === 'undefined') { resolve(); return; }
-
-    // Try Web Speech API
-    if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = 'en-US';
-      utter.rate = rate;
-      utter.onend = () => resolve();
-      utter.onerror = () => {
-        // Fallback to Audio API
-        playWithAudio(text, rate).then(resolve);
-      };
-      window.speechSynthesis.speak(utter);
-
-      // Safety timeout: if nothing happens in 3s, try Audio fallback
-      const safety = setTimeout(() => {
-        if (!window.speechSynthesis?.speaking) {
-          playWithAudio(text, rate).then(resolve);
-        }
-      }, 3000);
-      // Prevent double resolve
-      utter.onend = () => { clearTimeout(safety); resolve(); };
-      utter.onerror = () => { clearTimeout(safety); playWithAudio(text, rate).then(resolve); };
-    } else {
-      playWithAudio(text, rate).then(resolve);
-    }
-  });
-}
-
-// ========== 优先播放预生成音频文件，缺失时回退 TTS ==========
+// ========== 优先播放预生成音频文件（已修复子路径 404），缺失时回退系统 TTS ==========
 function playAudioFile(id: string, fallbackText: string, rate = 0.9): Promise<void> {
   return new Promise((resolve) => {
-    try {
-      const audio = new Audio(`/audio/${id}.mp3`);
-      audio.playbackRate = rate;
-      let done = false;
-      const finish = () => { if (!done) { done = true; resolve(); } };
-      audio.onended = finish;
-      audio.onerror = () => { playSpeech(fallbackText, rate).then(finish); };
-      audio.play().catch(() => { playSpeech(fallbackText, rate).then(finish); });
-    } catch {
-      playSpeech(fallbackText, rate).then(resolve);
-    }
-  });
-}
-
-// Audio fallback using Google Translate TTS (works on all browsers including mobile)
-function playWithAudio(text: string, rate = 0.9): Promise<void> {
-  return new Promise((resolve) => {
-    try {
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=en&client=tw-ob&ttsspeed=${rate}`;
-      const audio = new Audio(url);
-      audio.onended = () => resolve();
-      audio.onerror = () => resolve();
-      audio.play().catch(() => resolve());
-    } catch { resolve(); }
+    let settled = false;
+    const once = () => { if (!settled) { settled = true; resolve(); } };
+    playAudioEl(audioFileUrl(id), rate).then((ok) => {
+      if (ok) {
+        once();
+      } else if (fallbackText) {
+        // 文件缺失/加载失败：回退系统 TTS（speakText 自带看门狗，安卓不会卡住）
+        speakText(fallbackText, { rate, onEnd: once });
+      } else {
+        once();
+      }
+    });
   });
 }
 

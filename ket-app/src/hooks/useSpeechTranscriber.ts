@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 
 // ========== 真实语音转录 Hook ==========
 // 基于浏览器内置 Web Speech API（SpeechRecognition / webkitSpeechRecognition）
@@ -31,6 +31,16 @@ export function useSpeechTranscriber(): UseSpeechTranscriberReturn {
 
   const recognitionRef = useRef<any>(null);
   const finalRef = useRef(''); // 累积的最终文本
+
+  // 看门狗：Android 上 SpeechRecognition 既不 onend 也不 onerror 时会一直 hang，
+  // 导致 isListening 永远为 true（按钮卡在“录音中”）。超时强制复位。
+  const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearWatchdog = useCallback(() => {
+    if (watchdogRef.current) {
+      clearTimeout(watchdogRef.current);
+      watchdogRef.current = null;
+    }
+  }, []);
 
   const supported = useMemo(() => isSpeechRecognitionSupported(), []);
 
@@ -88,9 +98,12 @@ export function useSpeechTranscriber(): UseSpeechTranscriberReturn {
       };
       const friendly = msgMap[event.error] || `识别出错：${event.error || '未知错误'}`;
       setError(friendly);
+      setIsListening(false);
+      recognitionRef.current = null;
     };
 
     recognition.onend = () => {
+      clearWatchdog();
       setIsListening(false);
       recognitionRef.current = null;
     };
@@ -98,6 +111,13 @@ export function useSpeechTranscriber(): UseSpeechTranscriberReturn {
     try {
       recognition.start();
       setIsListening(true);
+      // 连续监听模式下，超时自动停止，避免长时间卡在“录音中”
+      watchdogRef.current = setTimeout(() => {
+        try { recognition.stop(); } catch (_) { /* ignore */ }
+        setIsListening(false);
+        recognitionRef.current = null;
+        setError('识别超时，请重试（安卓上语音识别可能不稳定）');
+      }, 45000);
     } catch (err) {
       console.error('Speech transcriber start error:', err);
       setError('启动语音识别失败，请刷新页面后重试');
@@ -107,6 +127,7 @@ export function useSpeechTranscriber(): UseSpeechTranscriberReturn {
   }, []);
 
   const stop = useCallback(() => {
+    clearWatchdog();
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (_) { /* ignore */ }
     }
@@ -114,11 +135,15 @@ export function useSpeechTranscriber(): UseSpeechTranscriberReturn {
   }, []);
 
   const reset = useCallback(() => {
+    clearWatchdog();
     finalRef.current = '';
     setTranscript('');
     setInterim('');
     setError(null);
   }, []);
+
+  // 卸载时清理看门狗
+  useEffect(() => () => clearWatchdog(), [clearWatchdog]);
 
   return { isListening, transcript, interim, error, supported, start, stop, reset };
 }
