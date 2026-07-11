@@ -2,13 +2,114 @@
 // 流程：复习旧知识 → 今日新语法(归纳式) → 对比训练 → 产出练习 → 混合测验 → 完成
 // 顶部：连续打卡 streak + 日历热力图 + 路线图进度。难度按 ROADMAP 由易到难推进，错题加权复习。
 import { useState, useMemo, useRef } from 'react';
-import { useDailyCheckinStore, todayString } from '../store/useDailyCheckinStore';
+import { useDailyCheckinStore, todayString, type TodayLog } from '../store/useDailyCheckinStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { generateSession, type DailySession, type SessionQuestion } from '../utils/grammarSession';
 import { GrammarQuestionCard } from '../components/GrammarQuestionCard';
 import { ROADMAP, getPoint } from '../data/grammarRoadmap';
 
 type PhaseKey = 'review' | 'learn' | 'contrast' | 'production' | 'mixed' | 'done';
+
+// ========== 今日打卡结果总结（战报）==========
+const PHASE_META: { key: PhaseKey; label: string }[] = [
+  { key: 'review', label: '复习巩固' },
+  { key: 'learn', label: '今日新语法' },
+  { key: 'contrast', label: '对比训练' },
+  { key: 'production', label: '产出练习' },
+  { key: 'mixed', label: '混合测验' },
+];
+
+function TodaySummary({ log }: { log: TodayLog }) {
+  const items = log.items;
+  const total = items.length;
+  const correct = items.filter((i) => i.correct).length;
+  const acc = total ? Math.round((correct / total) * 100) : 0;
+
+  const byPhase: Record<string, { t: number; c: number }> = {};
+  for (const it of items) {
+    byPhase[it.phase] = byPhase[it.phase] ?? { t: 0, c: 0 };
+    byPhase[it.phase].t += 1;
+    byPhase[it.phase].c += it.correct ? 1 : 0;
+  }
+
+  const weak = Array.from(new Set(items.filter((i) => !i.correct).map((i) => i.grammarId)))
+    .map((id) => getPoint(id)?.nameZh ?? id)
+    .filter(Boolean);
+  const newName = log.newPointId ? getPoint(log.newPointId)?.nameZh ?? null : null;
+
+  const accColor = acc >= 80 ? 'text-green-600' : acc >= 60 ? 'text-amber-600' : 'text-red-500';
+  const praise =
+    acc >= 90
+      ? '今天表现超棒，继续保持！'
+      : acc >= 80
+        ? '掌握得不错，稳扎稳打。'
+        : acc >= 60
+          ? '有进步空间，把薄弱点再过一遍。'
+          : '别急，今天错的正是明天要攻克的。';
+
+  return (
+    <div className="mt-5 text-left bg-gray-50 rounded-2xl border border-gray-100 p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-base font-bold text-gray-800">📊 今日战报</h3>
+        <span className={`text-lg font-bold ${accColor}`}>{acc}%</span>
+      </div>
+
+      <div className="flex items-end gap-4 mb-4">
+        <div>
+          <div className="text-2xl font-bold text-gray-800">{total}</div>
+          <div className="text-xs text-gray-400">总题数</div>
+        </div>
+        <div>
+          <div className="text-2xl font-bold text-green-600">{correct}</div>
+          <div className="text-xs text-gray-400">答对</div>
+        </div>
+        <div>
+          <div className="text-2xl font-bold text-red-500">{total - correct}</div>
+          <div className="text-xs text-gray-400">答错</div>
+        </div>
+      </div>
+
+      {/* 各阶段表现 */}
+      <div className="space-y-1.5 mb-4">
+        {PHASE_META.filter((p) => byPhase[p.key]).map((p) => {
+          const s = byPhase[p.key];
+          const pc = Math.round((s.c / s.t) * 100);
+          return (
+            <div key={p.key} className="flex items-center gap-2 text-sm">
+              <span className="w-20 text-gray-500">{p.label}</span>
+              <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full ${pc >= 80 ? 'bg-green-500' : pc >= 60 ? 'bg-amber-400' : 'bg-red-400'}`}
+                  style={{ width: `${pc}%` }}
+                />
+              </div>
+              <span className="w-14 text-right text-gray-400">{s.c}/{s.t}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {newName && (
+        <p className="text-sm text-gray-600 mb-2">
+          🌟 今日新学：<span className="font-medium text-blue-700">{newName}</span>
+        </p>
+      )}
+
+      {weak.length > 0 ? (
+        <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
+          <p className="text-sm text-amber-800 mb-1">⚠️ 还薄弱的点（建议明天优先复习）：</p>
+          <p className="text-sm font-medium text-amber-900">{weak.join('、')}</p>
+        </div>
+      ) : (
+        <div className="p-3 bg-green-50 border border-green-100 rounded-xl">
+          <p className="text-sm text-green-700">✅ 今天全部答对，没有薄弱点！</p>
+        </div>
+      )}
+
+      <p className="text-sm text-gray-500 mt-3">{praise}</p>
+    </div>
+  );
+}
 
 export default function GrammarDailyPage() {
   const dc = useDailyCheckinStore();
@@ -57,6 +158,7 @@ export default function GrammarDailyPage() {
       .getWrongAnswers('grammar')
       .map((r) => ({ grammarId: r.subjectId, questionId: r.questionId }));
     const s = generateSession({ points: dc.points, wrongList });
+    dc.setTodayNewPoint(s.newPointId);
     mixedCorrect.current = 0;
     mixedTotal.current = 0;
     setSession(s);
@@ -68,6 +170,7 @@ export default function GrammarDailyPage() {
 
   function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string) {
     dc.recordQuestion(sq.grammarId, correct);
+    dc.logAnswer(sq.grammarId, sq.purpose, correct);
     const pType =
       sq.pType === 'fill' ? 'grammar_fill' : sq.pType === 'choice' ? 'grammar_choice' : 'grammar_correction';
     const point = getPoint(sq.grammarId);
@@ -178,6 +281,7 @@ export default function GrammarDailyPage() {
               <div className="text-5xl mb-3">🎉</div>
               <h2 className="text-xl font-bold text-gray-800 mb-1">今日打卡已完成！</h2>
               <p className="text-gray-500 mb-4">连续打卡 {dc.streak} 天，坚持得真好。可以再做一组额外复习巩固。</p>
+              {dc.todayLog && dc.todayLog.date === today && <TodaySummary log={dc.todayLog} />}
               <button
                 onClick={startSession}
                 className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -321,6 +425,7 @@ export default function GrammarDailyPage() {
                 `，混合测验正确率 ${Math.round((mixedCorrect.current / mixedTotal.current) * 100)}%`}
             </p>
           )}
+          {dc.todayLog && dc.todayLog.date === today && <TodaySummary log={dc.todayLog} />}
           <button
             onClick={() => setSession(null)}
             className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

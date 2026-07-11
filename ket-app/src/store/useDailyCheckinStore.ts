@@ -16,16 +16,31 @@ export interface PointProgress {
   lastSeen: string | null; // 最近一次练习日期 YYYY-MM-DD
 }
 
+export interface TodayAnswer {
+  grammarId: string;
+  phase: 'review' | 'learn' | 'contrast' | 'production' | 'mixed';
+  correct: boolean;
+}
+
+export interface TodayLog {
+  date: string; // YYYY-MM-DD
+  newPointId: string | null; // 今日主学的新语法点（额外练习可能为 null）
+  items: TodayAnswer[];
+}
+
 interface DailyCheckinState {
   points: Record<string, PointProgress>;
   streak: number;
   lastCheckinDate: string | null; // YYYY-MM-DD
   checkinDates: string[]; // 已打卡日期，用于热力图
+  todayLog: TodayLog | null; // 今日答题明细，用于打卡结果总结
 
   // actions
   ensurePoint: (id: string) => void;
   getPoint: (id: string) => PointProgress;
   recordQuestion: (grammarId: string, isCorrect: boolean) => void;
+  logAnswer: (grammarId: string, phase: TodayAnswer['phase'], isCorrect: boolean) => void;
+  setTodayNewPoint: (id: string | null) => void;
   finishPoint: (grammarId: string, stageReached: number) => void;
   completeCheckin: (todayStr: string) => void;
   getNextNewPointId: () => string | null;
@@ -58,6 +73,8 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
       lastCheckinDate: null,
       checkinDates: [],
 
+      todayLog: null,
+
       ensurePoint: (id) => {
         set((state) => {
           if (state.points[id]) return state;
@@ -82,6 +99,33 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
             lastSeen: todayString(),
           };
           return { points: { ...state.points, [grammarId]: next } };
+        });
+      },
+
+      logAnswer: (grammarId, phase, isCorrect) => {
+        set((state) => {
+          const t = todayString();
+          const base =
+            state.todayLog && state.todayLog.date === t
+              ? state.todayLog
+              : { date: t, newPointId: null, items: [] as TodayAnswer[] };
+          return {
+            todayLog: {
+              ...base,
+              items: [...base.items, { grammarId, phase, correct: isCorrect }],
+            },
+          };
+        });
+      },
+
+      setTodayNewPoint: (id) => {
+        set((state) => {
+          const t = todayString();
+          const base =
+            state.todayLog && state.todayLog.date === t
+              ? state.todayLog
+              : { date: t, newPointId: null, items: [] as TodayAnswer[] };
+          return { todayLog: { ...base, newPointId: id } };
         });
       },
 
