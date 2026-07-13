@@ -835,7 +835,7 @@ export const part1Articles: Part1Article[] = [
       { id: 'p1-s21-q3', emoji: '🥄', imageDesc: '一把勺子',
         answer: 'This is a spoon.',
       },
-      { id: 'p1-s21-q4', emoji: '🥏', imageDesc: '一个盘子',
+      { id: 'p1-s21-q4', emoji: '🍽️', imageDesc: '一个盘子',
         answer: 'This is a plate.',
       },
       { id: 'p1-s21-q5', emoji: '🫖', imageDesc: '一个茶壶',
@@ -3411,8 +3411,8 @@ export const part3ClozeArticles: Part3ClozeArticle[] = [  {
     id: 'p3c-018',
     title: 'Working with Animals',
     titleZh: '与动物一起工作',
-    passage: `When I am older I (1) ____ to work with animals. I (2) ____ dogs and cats very much. A vet (3) ____ sick animals get well. To do this job I must (4) ____ biology at university. I (5) ____ at an animal shelter at weekends. The work is sometimes (6) ____ but always meaningful. We (7) ____ homeless pets find new families. It (8) ____ patience and love. I (9) ____ this is my true calling. Animals (10) ____ us with trust.`,
-    passageFull: `When I am older I want (1) to work with animals. I love (2) dogs and cats very much. A vet helps (3) sick animals get well. To do this job I must study (4) biology at university. I volunteer (5) at an animal shelter at weekends. The work is sometimes hard (6) but always meaningful. We help (7) homeless pets find new families. It needs (8) patience and love. I believe (9) this is my true calling. Animals give (10) us with trust.`,
+    passage: `When I am older I (1) ____ to work with animals. I (2) ____ dogs and cats very much. A vet (3) ____ sick animals get well. To do this job I must (4) ____ biology at university. I (5) ____ at an animal shelter at weekends. The work is sometimes (6) ____ but always meaningful. We (7) ____ homeless pets find new families. It (8) ____ patience and love. I (9) ____ this is my true calling. Animals (10) ____ us their trust.`,
+    passageFull: `When I am older I want (1) to work with animals. I love (2) dogs and cats very much. A vet helps (3) sick animals get well. To do this job I must study (4) biology at university. I volunteer (5) at an animal shelter at weekends. The work is sometimes hard (6) but always meaningful. We help (7) homeless pets find new families. It needs (8) patience and love. I believe (9) this is my true calling. Animals give (10) us their trust.`,
     blanks: [
     {
       id: 'b018-1', position: 1,
@@ -6430,7 +6430,7 @@ export const part5Articles: Part5Article[] = [
     difficulty: "hard",
     topic: "度假",
     passage: "My dream holiday is to (1) ____ Japan in spring. I want to (2) ____ the pink cherry trees in the parks. The streets will be (3) ____ with people and flowers. I (4) ____ to eat sushi and try green tea. I also (5) ____ to visit old temples on the hills. At night the (6) ____ light up the cities. I will (7) ____ photos to show my family. I (8) ____ need to learn some Japanese words before I go. The trip (9) ____ cost a lot of money, but it will be (10) ____.\n\nI hope it comes true!",
-    passageFull: "My dream holiday is to visit Japan in spring. I want to see the pink cherry trees in the parks. The streets will be full with people and flowers. I plan to eat sushi and try green tea. I also hope to visit old temples on the hills. At night the lights light up the cities. I will take photos to show my family. I will need to learn some Japanese words before I go. The trip will cost a lot of money, but it will be wonderful.\n\nI hope it comes true!",
+    passageFull: "My dream holiday is to visit Japan in spring. I want to see the pink cherry trees in the parks. The streets will be full of people and flowers. I plan to eat sushi and try green tea. I also hope to visit old temples on the hills. At night the lights light up the cities. I will take photos to show my family. I will need to learn some Japanese words before I go. The trip will cost a lot of money, but it will be wonderful.\n\nI hope it comes true!",
     blanks: [
       { id: "p5-020-b1", position: 1, answer: "visit", hint: "go to see", hintZh: "去游览", accept: ["see"] },
       { id: "p5-020-b2", position: 2, answer: "see", hint: "look at", hintZh: "看", accept: ["watch"] },
