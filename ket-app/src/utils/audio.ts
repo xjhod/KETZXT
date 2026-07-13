@@ -35,6 +35,24 @@ export function stopAllAudio(): void {
   } catch { /* ignore */ }
 }
 
+/** 是否安卓设备（用于决定是否允许依赖浏览器 TTS 回退） */
+export function isAndroidDevice(): boolean {
+  try {
+    return /Android/i.test(navigator.userAgent || '');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 是否允许在"文件播放失败"时回退浏览器 TTS。
+ * 安卓 + 中国大陆：Web Speech TTS 后端走 Google 服务器，被墙不可用，
+ * 回退只会无声 / 长时间挂起。因此安卓上禁用 TTS 回退，强制走预生成 mp3。
+ */
+export function ttsFallbackAllowed(): boolean {
+  return !isAndroidDevice();
+}
+
 /** 拼接正确的音频文件 URL（适配 GitHub Pages 子路径） */
 export function audioFileUrl(id: string): string {
   const base = import.meta.env.BASE_URL || '/';
@@ -46,11 +64,33 @@ export function audioFileUrl(id: string): string {
  * 始终会在 ended / error / 超时(30s) 之一时 resolve，绝不永久挂起。
  * @returns true=正常播放结束, false=出错（可据此回退 TTS）
  */
+// 移动端（尤其 Android Chrome）对"每次 new Audio() 且不挂载 DOM"的音频
+// 首声易静音 / play() 失败。复用单一全局 audio 元素并挂载到 body 可显著提升可靠性。
+let sharedAudio: HTMLAudioElement | null = null;
+function getSharedAudio(): HTMLAudioElement | null {
+  if (typeof window === 'undefined' || !window.HTMLAudioElement) return null;
+  if (!sharedAudio) {
+    sharedAudio = new Audio();
+    sharedAudio.preload = 'auto';
+    try {
+      sharedAudio.setAttribute('style', 'display:none;position:absolute;');
+      document.body.appendChild(sharedAudio);
+    } catch {
+      /* 无 document.body 等极端环境：不挂载也能 play()，忽略 */
+    }
+  }
+  return sharedAudio;
+}
+
 export function playAudioEl(src: string, rate = 1): Promise<boolean> {
   stopAllAudio(); // 先停掉上一段，避免叠音 / 离开后仍播放
   return new Promise((resolve) => {
     try {
-      const el = new Audio(src);
+      const el = getSharedAudio();
+      if (!el) {
+        resolve(false);
+        return;
+      }
       el.playbackRate = rate;
       let settled = false;
       const done = (ok: boolean) => {
@@ -65,7 +105,12 @@ export function playAudioEl(src: string, rate = 1): Promise<boolean> {
       currentAudioDone = done;
       el.onended = () => done(true);
       el.onerror = () => done(false);
-      el.play().catch(() => done(false));
+      el.src = src;
+      try { el.load(); } catch { /* ignore */ }
+      const p = el.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => done(false)); // 自动播放策略拦截等：标记失败，由调用方决定是否回退
+      }
       // 看门狗：防止任何情况下 onended 不触发而永久卡住
       const wd = setTimeout(() => done(true), 30000);
     } catch {

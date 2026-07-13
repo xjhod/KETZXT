@@ -6,7 +6,7 @@ import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/
 import { AudioButton } from '../components/AudioButton';
 import { VoiceInputButton } from '../components/VoiceInputButton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { audioFileUrl, playAudioEl, speakText } from '../utils/audio';
+import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 // ========== 常量 ==========
 const SESSION_SIZE = 10;
@@ -114,7 +114,7 @@ function SessionResult({ correct, total, onBack, onRetry }: { correct: number; t
 // ========== 单词发音工具函数（优先预生成 mp3，失败回退 TTS）==========
 async function speakWord(id: string, text: string) {
   const ok = await playAudioEl(audioFileUrl(id));
-  if (!ok && text) speakText(text, { rate: 0.85 });
+  if (!ok && text && ttsFallbackAllowed()) speakText(text, { rate: 0.85 });
 }
 
 // ========== 单词卡片学习（每次10题）==========

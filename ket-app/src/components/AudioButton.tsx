@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { speakText, playAudioEl } from '../utils/audio';
+import { speakText, playAudioEl, ttsFallbackAllowed } from '../utils/audio';
 
 interface AudioButtonProps {
   text: string;           // 要播放的文本（无预生成音频时走 TTS）
@@ -49,7 +49,7 @@ export function AudioButton({
   const playOnce = useCallback(async (rate: number): Promise<void> => {
     if (audioSrc) {
       const ok = await playAudioEl(audioSrc, rate);
-      if (!ok && text) {
+      if (!ok && text && ttsFallbackAllowed()) {
         await new Promise<void>((res) => {
           cancelRef.current = speakText(text, { rate, onEnd: res });
         });

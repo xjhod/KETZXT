@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
 import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart3Question, ListeningPart4Set, ListeningPart4Option, ListeningPart5Set } from '../types';
-import { audioFileUrl, playAudioEl, speakText, stopAllAudio } from '../utils/audio';
+import { audioFileUrl, playAudioEl, speakText, stopAllAudio, ttsFallbackAllowed, isAndroidDevice } from '../utils/audio';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -13,15 +13,17 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
 
 // ========== 优先播放预生成音频文件（已修复子路径 404），缺失时回退系统 TTS ==========
 function playAudioFile(id: string, fallbackText: string, rate = 0.9): Promise<void> {
+  // 安卓 + 国内：浏览器 TTS 不可用，禁用回退，避免无声 / 卡顿
+  const fallback = ttsFallbackAllowed() ? fallbackText : '';
   return new Promise((resolve) => {
     let settled = false;
     const once = () => { if (!settled) { settled = true; resolve(); } };
     playAudioEl(audioFileUrl(id), rate).then((ok) => {
       if (ok) {
         once();
-      } else if (fallbackText) {
-        // 文件缺失/加载失败：回退系统 TTS（speakText 自带看门狗，安卓不会卡住）
-        speakText(fallbackText, { rate, onEnd: once });
+      } else if (fallback) {
+        // 文件缺失/加载失败：回退系统 TTS（speakText 自带看门狗）
+        speakText(fallback, { rate, onEnd: once });
       } else {
         once();
       }
@@ -85,7 +87,9 @@ function Part1Practice({ set, onBack }: { set: ListeningPart1Set; onBack: () => 
     await playAudioFile(q.id, q.audioText, 0.85);
     setIsPlaying(false);
   };
-  useEffect(() => { playQuestion(); }, [idx]);
+  // 安卓 Chrome 自动播放策略会拦截无手势的 play()，回退 TTS 在安卓又不可用，
+  // 因此安卓上不自动播放，改为让用户点击「播放听力」按钮（有手势，可正常播音）。
+  useEffect(() => { if (!isAndroidDevice()) playQuestion(); }, [idx]);
 
   const handleSubmit = () => {
     if (!selected || !q) return;

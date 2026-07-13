@@ -5,7 +5,7 @@ import type { SpeakingPart1Question, SpeakingPart2Question } from '../types/spea
 import { getCurrentUser } from '../utils/auth';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
 import { useProgressStore } from '../store/useProgressStore';
-import { audioFileUrl, playAudioEl, speakText } from '../utils/audio';
+import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 // ========== 类型定义 ==========
 interface ScoreResult {
@@ -63,8 +63,8 @@ function scoreAnswer(transcript: string, keywords: string[]): ScoreResult {
 // ========== 播放标准答案（优先预生成 mp3，缺失则回退浏览器 TTS）==========
 async function playModelAnswer(id: string, text: string): Promise<void> {
   const ok = await playAudioEl(audioFileUrl(id), 0.9);
-  if (!ok) {
-    // 预生成音频缺失/加载失败时，回退到浏览器内置 TTS
+  if (!ok && ttsFallbackAllowed()) {
+    // 预生成音频缺失/加载失败时，回退到浏览器内置 TTS（安卓+国内不可用，已禁用）
     speakText(text, { rate: 0.9, lang: 'en-US' });
   }
 }
