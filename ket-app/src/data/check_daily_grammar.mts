@@ -1,5 +1,6 @@
 import * as G from '../data/grammar';
 import * as R from '../data/grammarRoadmap';
+import * as RD from '../data/grammarReading';
 
 const points = G.allGrammarPoints as Array<{
   id: string; name: string; nameZh: string;
@@ -45,8 +46,36 @@ if (ROADMAP.length !== 20) issues.push({ id: 'ROADMAP', kind: 'roadmap-length', 
 for (const id of points.map((p) => p.id))
   if (!ROADMAP.includes(id)) issues.push({ id, kind: 'roadmap-missing-point', detail: '' });
 
-// ---- 4. 提取讲解+例句+对比提示 到 JSON（供语义审查）----
+// ---- 3b. 短文精读(reading) 校验 ----
 const fs = await import('node:fs');
+const readings = RD.GRAMMAR_READINGS as Record<string, any>;
+const audioDir = new URL('../../public/audio/', import.meta.url);
+let readingSegTotal = 0;
+let readingAudioMissing = 0;
+for (const id of points.map((p) => p.id)) {
+  const rd = readings[id];
+  if (!rd) {
+    issues.push({ id, kind: 'reading-missing', detail: '缺少短文精读语料' });
+    continue;
+  }
+  if (!rd.title || !rd.mode) issues.push({ id, kind: 'reading-meta-missing', detail: JSON.stringify({ title: rd.title, mode: rd.mode }) });
+  if (!Array.isArray(rd.segments) || rd.segments.length === 0) {
+    issues.push({ id, kind: 'reading-segments-empty', detail: '' });
+    continue;
+  }
+  for (const seg of rd.segments) {
+    readingSegTotal++;
+    if (!seg.en || !seg.en.trim()) issues.push({ id, kind: 'reading-en-empty', detail: seg.audio || '' });
+    if (!seg.zh || !seg.zh.trim()) issues.push({ id, kind: 'reading-zh-empty', detail: seg.audio || '' });
+    if (!seg.audio) issues.push({ id, kind: 'reading-audio-id-empty', detail: seg.en || '' });
+    else {
+      const mp3 = new URL(`${seg.audio}.mp3`, audioDir);
+      if (!fs.existsSync(mp3)) { readingAudioMissing++; issues.push({ id, kind: 'reading-audio-file-missing', detail: `${seg.audio}.mp3` }); }
+    }
+  }
+}
+
+// ---- 4. 提取讲解+例句+对比提示 到 JSON（供语义审查）----
 const dump = points.map((p) => ({ id: p.id, name: p.name, nameZh: p.nameZh, explanation: p.explanation, examples: p.examples }));
 fs.writeFileSync(new URL('./daily_grammar_points.json', import.meta.url), JSON.stringify(dump, null, 2), 'utf8');
 const hints = R.CONTRAST_HINTS as Record<string, string>;
@@ -56,6 +85,7 @@ console.log('=== 每日打卡语法 - 结构校验 ===');
 console.log(`语法点(讲解/例句): ${points.length}`);
 console.log(`GRAMMAR_QUESTIONS 聚合题数: ${aggTotal}`);
 console.log(`ROADMAP 顺序点: ${ROADMAP.length}`);
+console.log(`短文精读段落: ${readingSegTotal} (缺失音频: ${readingAudioMissing})`);
 console.log('');
 console.log('=== 结构性错误 ===');
 if (issues.length === 0) console.log('  ALL STRUCTURAL OK');

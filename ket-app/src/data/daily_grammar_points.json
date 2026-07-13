@@ -1,0 +1,402 @@
+[
+  {
+    "id": "G01",
+    "name": "Present Simple",
+    "nameZh": "一般现在时",
+    "explanation": "一般现在时用来描述经常发生的动作、习惯、事实和固定安排。\n\n【结构】\n肯定句：I/You/We/They + 动词原形 | He/She/It + 动词三单形式\n否定句：don't / doesn't + 动词原形\n疑问句：Do/Does + 主语 + 动词原形？\n\n【三单变化规则】\n· 一般加 -s：work → works\n· 以 s/x/ch/sh/o 结尾加 -es：watch → watches\n· 以辅音+y结尾，变 y 为 i 加 -es：study → studies",
+    "examples": [
+      {
+        "en": "I drink coffee every morning.",
+        "zh": "我每天早上喝咖啡。"
+      },
+      {
+        "en": "She works in a hospital.",
+        "zh": "她在医院工作。"
+      },
+      {
+        "en": "Do you like pizza?",
+        "zh": "你喜欢披萨吗？"
+      }
+    ]
+  },
+  {
+    "id": "G02",
+    "name": "Past Simple",
+    "nameZh": "一般过去时",
+    "explanation": "一般过去时用来描述过去某个时间发生的动作或存在的状态。\n\n【结构】\n肯定句：主语 + 动词过去式\n否定句：didn't + 动词原形\n疑问句：Did + 主语 + 动词原形？\n\n【规则动词过去式】直接加 -ed：work → worked\n【不规则动词】需要记忆：go → went, have → had, see → saw",
+    "examples": [
+      {
+        "en": "I watched a film last night.",
+        "zh": "我昨晚看了一部电影。"
+      },
+      {
+        "en": "She didn't go to school yesterday.",
+        "zh": "她昨天没去上学。"
+      },
+      {
+        "en": "Did you finish your homework?",
+        "zh": "你做完作业了吗？"
+      }
+    ]
+  },
+  {
+    "id": "G03",
+    "name": "Present Continuous",
+    "nameZh": "现在进行时",
+    "explanation": "现在进行时用来描述此刻正在进行的动作，或现阶段正在进行的动作。\n\n【结构】am/is/are + 动词-ing\n\n【现在分词 -ing 构成规则】\n· 一般加 -ing：go → going\n· 以不发音 e 结尾，去 e 加 -ing：make → making\n· 以重读闭音节结尾，双写末尾辅音加 -ing：run → running",
+    "examples": [
+      {
+        "en": "Look! It is raining.",
+        "zh": "看！正在下雨。"
+      },
+      {
+        "en": "I am reading a book right now.",
+        "zh": "我现在正在读一本书。"
+      },
+      {
+        "en": "They are playing football at the moment.",
+        "zh": "他们此刻正在踢足球。"
+      }
+    ]
+  },
+  {
+    "id": "G04",
+    "name": "be going to (Future)",
+    "nameZh": "be going to 将来时",
+    "explanation": "be going to 用来描述将来打算做的事情或即将发生的事。\n\n【结构】\n肯定句：主语 + am/is/are going to + 动词原形\n否定句：主语 + am/is/are not going to + 动词原形\n疑问句：Am/Is/Are + 主语 + going to + 动词原形？\n\n【用法】\n· 打算、计划：I am going to visit my grandma.\n· 即将发生：Look at the clouds! It is going to rain.",
+    "examples": [
+      {
+        "en": "I am going to buy a new phone.",
+        "zh": "我打算买个新手机。"
+      },
+      {
+        "en": "She is not going to come.",
+        "zh": "她不打算来。"
+      },
+      {
+        "en": "Are you going to play tennis?",
+        "zh": "你打算打网球吗？"
+      }
+    ]
+  },
+  {
+    "id": "G05",
+    "name": "Present Perfect",
+    "nameZh": "现在完成时",
+    "explanation": "现在完成时用来描述过去发生但与现在有联系的动作，或持续到现在的状态。\n\n【结构】have/has + 过去分词\n\n【用法】\n· 经历：I have been to Beijing twice.\n· 已完成但对现在有影响的动作：I have lost my keys.\n· 持续状态：She has lived here for 10 years.\n\n【不规则过去分词】go → gone, see → seen, do → done",
+    "examples": [
+      {
+        "en": "I have finished my homework.",
+        "zh": "我已经做完作业了。"
+      },
+      {
+        "en": "She has never eaten sushi.",
+        "zh": "她从没吃过寿司。"
+      },
+      {
+        "en": "Have you seen the email?",
+        "zh": "你看到邮件了吗？"
+      }
+    ]
+  },
+  {
+    "id": "G06",
+    "name": "Modal Verbs: can/could",
+    "nameZh": "情态动词 can/could",
+    "explanation": "can 和 could 用来表示能力、许可或请求。\n\n【can】现在的能力/许可：I can swim.（我会游泳。）\n【could】过去的能力 / 委婉请求：I could swim when I was five.（我五岁时就会游泳了。）Could you help me?（你能帮我吗？语气更委婉）\n\n【结构】can/could + 动词原形（不接 to）",
+    "examples": [
+      {
+        "en": "I can ride a bike.",
+        "zh": "我会骑自行车。"
+      },
+      {
+        "en": "Could you open the window, please?",
+        "zh": "你能打开窗户吗？（委婉请求）"
+      },
+      {
+        "en": "I couldn't sleep last night.",
+        "zh": "我昨晚睡不着。"
+      }
+    ]
+  },
+  {
+    "id": "G07",
+    "name": "Modal Verbs: must/have to/should",
+    "nameZh": "情态动词 must/have to/should",
+    "explanation": "must, have to, should 用来表示义务、必要或建议。\n\n【must】主观认为必须：I must finish this today.\n【have to】客观需要：I have to wear a uniform.\n【should】建议：You should see a doctor.\n\n【结构】must/have to/should + 动词原形",
+    "examples": [
+      {
+        "en": "You must wear a seatbelt.",
+        "zh": "你必须系安全带。"
+      },
+      {
+        "en": "I have to get up early.",
+        "zh": "我得早起。"
+      },
+      {
+        "en": "You should drink more water.",
+        "zh": "你应该多喝水。"
+      }
+    ]
+  },
+  {
+    "id": "G08",
+    "name": "Comparatives & Superlatives",
+    "nameZh": "比较级与最高级",
+    "explanation": "比较级用于两者之间的比较，最高级用于三者或以上的比较。\n\n【比较级】A + be/动词 + 比较级 + than + B\n· 短形容词 + -er：taller, smaller\n· 以 e 结尾 + -r：nicer, larger\n· 辅音+y → -ier：heavier, happier\n· 长形容词 + more：more interesting, more beautiful\n\n【最高级】the + 最高级 (+ in/of...)\n· 短形容词 + -est：the tallest, the smallest\n· 长形容词 + most：the most interesting",
+    "examples": [
+      {
+        "en": "She is taller than her sister.",
+        "zh": "她比她姐姐高。"
+      },
+      {
+        "en": "This is the biggest city in China.",
+        "zh": "这是中国最大的城市。"
+      },
+      {
+        "en": "English is more difficult than maths.",
+        "zh": "英语比数学难。"
+      }
+    ]
+  },
+  {
+    "id": "G09",
+    "name": "Superlative",
+    "nameZh": "最高级",
+    "explanation": "最高级用来比较三个或以上的人或事物，表示\"最...\"。\n\n【结构】\n· 短形容词 + -est：the tallest, the biggest\n· 长形容词 + most / least：the most beautiful, the most expensive, the least expensive\n· 不规则：the best（good）, the worst（bad）, the farthest / furthest（far）\n\n【注意】最高级前通常要加 the",
+    "examples": [
+      {
+        "en": "He is the tallest in the class.",
+        "zh": "他是班里最高的。"
+      },
+      {
+        "en": "This is the most delicious cake.",
+        "zh": "这是最美味的蛋糕。"
+      },
+      {
+        "en": "She is the best student.",
+        "zh": "她是最好的学生。"
+      }
+    ]
+  },
+  {
+    "id": "G10",
+    "name": "Articles: a/an/the",
+    "nameZh": "冠词 a/an/the",
+    "explanation": "冠词用在名词前，帮助说明名词的特指或泛指。\n\n【a/an】泛指\"一个\"，用于可数名词单数。\na：用在辅音音素开头的单词前：a book, a university（u 发 /j/，辅音）\nan：用在元音音素开头的单词前：an apple, an hour（h 不发音）\n\n【the】特指，用于：\n· 双方都知道的人或物：Close the door, please.\n· 世界上独一无二的事物：the sun, the moon\n· 再次提到的人或物：I saw a dog. The dog was brown.",
+    "examples": [
+      {
+        "en": "I saw a cat and a dog. The dog was very friendly.",
+        "zh": "我看见一只猫和一只狗。那只狗很友好。"
+      },
+      {
+        "en": "She is an honest girl.",
+        "zh": "她是一个诚实的女孩。（h不发音）"
+      },
+      {
+        "en": "The Earth goes around the Sun.",
+        "zh": "地球绕着太阳转。"
+      }
+    ]
+  },
+  {
+    "id": "G11",
+    "name": "Pronouns",
+    "nameZh": "代词",
+    "explanation": "代词用来代替名词，避免重复。\n\n【人称代词】\n· 主格（作主语）：I, you, he, she, it, we, they\n· 宾格（作宾语）：me, you, him, her, it, us, them\n\n【物主代词】\n· 形容词性：my, your, his, her, its, our, their\n· 名词性：mine, yours, his, hers, its, ours, theirs\n\n【反身代词】myself, yourself, himself...",
+    "examples": [
+      {
+        "en": "She gave me a present.",
+        "zh": "她给了我一份礼物。"
+      },
+      {
+        "en": "This book is mine.",
+        "zh": "这本书是我的。"
+      },
+      {
+        "en": "He did it himself.",
+        "zh": "他自己做了这件事。"
+      }
+    ]
+  },
+  {
+    "id": "G12",
+    "name": "Prepositions of Time",
+    "nameZh": "介词（时间）",
+    "explanation": "时间介词 in, on, at 的用法。\n\n【in】用于较长的时间\n· 年、月、季节：in 2023, in July, in summer\n· 一天中的时段：in the morning/afternoon/evening\n\n【on】用于具体的某天\n· 星期、日期：on Monday, on May 1st\n· 具体某天的早晚：on Monday morning\n\n【at】用于具体的时间点\n· 钟点：at 8 o'clock, at noon, at night",
+    "examples": [
+      {
+        "en": "I was born in 2010.",
+        "zh": "我出生于2010年。"
+      },
+      {
+        "en": "We have a meeting on Monday.",
+        "zh": "我们周一有个会议。"
+      },
+      {
+        "en": "She gets up at 7 am.",
+        "zh": "她早上7点起床。"
+      }
+    ]
+  },
+  {
+    "id": "G13",
+    "name": "Prepositions of Place",
+    "nameZh": "介词（地点/方向）",
+    "explanation": "地点和方向介词的用法。\n\n【in】在...里面：in the box, in the room\n【on】在...上面（接触表面）：on the table, on the wall\n【at】在某地点（小地点）：at home, at school, at the bus stop\n\n【方向介词】\n· to：去...（方向）：go to school\n· from：从...（来源）：I come from China\n· through：穿过（立体）：walk through the tunnel",
+    "examples": [
+      {
+        "en": "The cat is on the table.",
+        "zh": "猫在桌子上。"
+      },
+      {
+        "en": "I live in Beijing.",
+        "zh": "我住在北京。"
+      },
+      {
+        "en": "She is at the library.",
+        "zh": "她在图书馆。"
+      }
+    ]
+  },
+  {
+    "id": "G14",
+    "name": "Conjunctions",
+    "nameZh": "连词",
+    "explanation": "连词用来连接词、短语或句子。\n\n【并列连词】\n· and：和（并列）：I like tea and coffee.\n· but：但是（转折）：I like tea but I don't like coffee.\n· or：或者（选择）：Do you want tea or coffee?\n· so：所以（结果）：It was raining, so we stayed home.\n\n【从属连词】\n· because：因为（原因）：I stayed home because it was raining.\n· when：当...时（时间）：Call me when you arrive.\n· if：如果（条件）：If it rains, I will stay home.",
+    "examples": [
+      {
+        "en": "I like apples and bananas.",
+        "zh": "我喜欢苹果和香蕉。"
+      },
+      {
+        "en": "She is smart but lazy.",
+        "zh": "她聪明但懒惰。"
+      },
+      {
+        "en": "I stayed home because I was sick.",
+        "zh": "我待在家里因为生病了。"
+      }
+    ]
+  },
+  {
+    "id": "G15",
+    "name": "there be",
+    "nameZh": "there be 句型",
+    "explanation": "there be 句型用来描述某处存在某物。\n\n【结构】\n· 单数/不可数名词：There is + 单数名词/不可数名词\n· 复数名词：There are + 复数名词\n\n【时态变化】\n· 一般现在时：There is/are\n· 一般过去时：There was/were\n· 将来时：There will be / There is/are going to be\n\n【疑问句】Are there...? / Is there...?",
+    "examples": [
+      {
+        "en": "There is a book on the table.",
+        "zh": "桌子上有一本书。"
+      },
+      {
+        "en": "There are five apples in the bowl.",
+        "zh": "碗里有五个苹果。"
+      },
+      {
+        "en": "Are there any questions?",
+        "zh": "有什么问题吗？"
+      }
+    ]
+  },
+  {
+    "id": "G16",
+    "name": "Questions and Negatives",
+    "nameZh": "疑问句与否定句",
+    "explanation": "疑问句和否定句的构成。\n\n【疑问句】\n· 助动词提前：Do you like...? / Can she...?\n· be动词提前：Are you...? / Is he...?\n· 特殊疑问句：Wh- + 助动词/be动词 + 主语...?\n\n【否定句】\n· 助动词 + not：don't / doesn't / didn't + 动词原形\n· be动词 + not：am not/isn't/aren't\n· 情态动词 + not：can't/mustn't/shouldn't",
+    "examples": [
+      {
+        "en": "Do you speak English?",
+        "zh": "你说英语吗？"
+      },
+      {
+        "en": "I don't like coffee.",
+        "zh": "我不喜欢咖啡。"
+      },
+      {
+        "en": "Where do you live?",
+        "zh": "你住在哪里？"
+      }
+    ]
+  },
+  {
+    "id": "G17",
+    "name": "some/any/much/many",
+    "nameZh": "some / any / much / many",
+    "explanation": "这些词用来表达数量和程度。\n\n【some/any】\n· some：肯定句、表示请求/建议的疑问句：I have some money. / Would you like some coffee?\n· any：否定句、疑问句：I don't have any money. / Do you have any questions?\n\n【much/many】\n· much + 不可数名词：much time, much water\n· many + 可数名词复数：many books, many people\n\n【区别】much 用于不可数名词，many 用于可数名词",
+    "examples": [
+      {
+        "en": "I have some friends.",
+        "zh": "我有一些朋友。"
+      },
+      {
+        "en": "Do you have any questions?",
+        "zh": "你有什么问题吗？"
+      },
+      {
+        "en": "How many books do you have?",
+        "zh": "你有多少本书？"
+      }
+    ]
+  },
+  {
+    "id": "G18",
+    "name": "Fixed Collocations and Phrasal Verbs",
+    "nameZh": "固定搭配与短语动词",
+    "explanation": "固定搭配和短语动词是英语中的重要部分。\n\n【固定搭配】动词+介词/副词的固定组合\n· listen to：听...\n· look for：寻找\n· depend on：取决于\n\n【短语动词】动词+副词/介词，意思往往与原来的动词不同\n· give up：放弃\n· look after：照顾\n· take off：起飞；脱掉\n· turn on/off：打开/关闭",
+    "examples": [
+      {
+        "en": "I am looking for my keys.",
+        "zh": "我在找我的钥匙。"
+      },
+      {
+        "en": "Can you look after my cat?",
+        "zh": "你能照顾我的猫吗？"
+      },
+      {
+        "en": "Turn off the light, please.",
+        "zh": "请关灯。"
+      }
+    ]
+  },
+  {
+    "id": "G19",
+    "name": "Conditional Sentences (if)",
+    "nameZh": "条件句 if",
+    "explanation": "条件句用来描述假设的情况及其结果。\n\n【第一类条件句】可能实现的条件\n· 结构：If + 一般现在时，主语 + will + 动词原形\n· 例：If it rains, I will stay home.\n\n【第二类条件句】不太可能或假设的条件\n· 结构：If + 一般过去时，主语 + would + 动词原形\n· 例：If I won the lottery, I would buy a house.\n\n【注意】if 从句用现在时表示将来，不用 will",
+    "examples": [
+      {
+        "en": "If it rains, we will cancel the picnic.",
+        "zh": "如果下雨，我们会取消野餐。"
+      },
+      {
+        "en": "If I have time, I will help you.",
+        "zh": "如果我有时间，我会帮你。"
+      },
+      {
+        "en": "If I were you, I would go.",
+        "zh": "如果我是你，我会去。"
+      }
+    ]
+  },
+  {
+    "id": "G20",
+    "name": "Gerund and Infinitive",
+    "nameZh": "动名词 / 不定式",
+    "explanation": "动名词（-ing）和不定式（to do）的用法。\n\n【动名词 -ing】\n· 作主语：Swimming is good exercise.\n· 介词后：I am interested in learning French.\n· 某些动词后：enjoy, mind, avoid + -ing\n\n【不定式 to do】\n· 表示目的：I came here to learn.\n· 某些动词后：want, decide, promise + to do\n· 名词/形容词后：It is important to sleep well.\n\n【区别】remember/stop/forget + to do（未做）vs + -ing（已做）",
+    "examples": [
+      {
+        "en": "I enjoy swimming.",
+        "zh": "我喜欢游泳。"
+      },
+      {
+        "en": "I want to learn French.",
+        "zh": "我想学法语。"
+      },
+      {
+        "en": "It is important to sleep well.",
+        "zh": "睡好觉很重要。"
+      }
+    ]
+  }
+]

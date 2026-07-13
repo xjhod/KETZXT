@@ -438,5 +438,405 @@
   {
     "id": "s1-020",
     "text": "I wake up at 7 o'clock every morning. I go to school at 8 o'clock. After school, I do my homework and then play with my friends. I go to bed at 10 o'clock."
+  },
+  {
+    "id": "gr-G01-1",
+    "text": "Tom, what time do you get up?"
+  },
+  {
+    "id": "gr-G01-2",
+    "text": "I get up at seven every day."
+  },
+  {
+    "id": "gr-G01-3",
+    "text": "Does your sister walk to school?"
+  },
+  {
+    "id": "gr-G01-4",
+    "text": "No, she doesn't. She goes by bus."
+  },
+  {
+    "id": "gr-G01-5",
+    "text": "My father works in a hospital. He helps sick people."
+  },
+  {
+    "id": "gr-G02-1",
+    "text": "What did you do last weekend?"
+  },
+  {
+    "id": "gr-G02-2",
+    "text": "I visited my grandma. We made cakes together."
+  },
+  {
+    "id": "gr-G02-3",
+    "text": "Did you have fun?"
+  },
+  {
+    "id": "gr-G02-4",
+    "text": "Yes, I did. But I didn't do my homework."
+  },
+  {
+    "id": "gr-G02-5",
+    "text": "On Sunday it rained, so we stayed at home."
+  },
+  {
+    "id": "gr-G03-1",
+    "text": "Hi Sam! What are you doing now?"
+  },
+  {
+    "id": "gr-G03-2",
+    "text": "I'm cooking dinner with my dad."
+  },
+  {
+    "id": "gr-G03-3",
+    "text": "Is your mum watching TV?"
+  },
+  {
+    "id": "gr-G03-4",
+    "text": "No, she isn't. She is reading a book."
+  },
+  {
+    "id": "gr-G03-5",
+    "text": "My little sister is drawing a picture."
+  },
+  {
+    "id": "gr-G04-1",
+    "text": "What are you going to do this Saturday?"
+  },
+  {
+    "id": "gr-G04-2",
+    "text": "I'm going to visit the zoo with my family."
+  },
+  {
+    "id": "gr-G04-3",
+    "text": "Is it going to rain on Sunday?"
+  },
+  {
+    "id": "gr-G04-4",
+    "text": "No, it isn't. It's going to be sunny."
+  },
+  {
+    "id": "gr-G04-5",
+    "text": "We are going to have a picnic in the park."
+  },
+  {
+    "id": "gr-G05-1",
+    "text": "Have you finished your homework?"
+  },
+  {
+    "id": "gr-G05-2",
+    "text": "Yes, I have. I've already done it."
+  },
+  {
+    "id": "gr-G05-3",
+    "text": "Has your brother cleaned his room?"
+  },
+  {
+    "id": "gr-G05-4",
+    "text": "No, he hasn't. He hasn't got up yet."
+  },
+  {
+    "id": "gr-G05-5",
+    "text": "I have never been to Beijing."
+  },
+  {
+    "id": "gr-G06-1",
+    "text": "Can you swim, Jack?"
+  },
+  {
+    "id": "gr-G06-2",
+    "text": "Yes, I can. But I can't ride a horse."
+  },
+  {
+    "id": "gr-G06-3",
+    "text": "Could you help me, please?"
+  },
+  {
+    "id": "gr-G06-4",
+    "text": "Sure. Can I borrow your pen?"
+  },
+  {
+    "id": "gr-G06-5",
+    "text": "When I was four, I couldn't read."
+  },
+  {
+    "id": "gr-G07-1",
+    "text": "You must wash your hands before dinner."
+  },
+  {
+    "id": "gr-G07-2",
+    "text": "Do I have to go to bed now?"
+  },
+  {
+    "id": "gr-G07-3",
+    "text": "Yes. And you shouldn't watch TV too late."
+  },
+  {
+    "id": "gr-G07-4",
+    "text": "Should I brush my teeth?"
+  },
+  {
+    "id": "gr-G07-5",
+    "text": "Yes, you should. But you mustn't eat sweets now."
+  },
+  {
+    "id": "gr-G08-1",
+    "text": "My brother is taller than me."
+  },
+  {
+    "id": "gr-G08-2",
+    "text": "This book is more interesting than that one."
+  },
+  {
+    "id": "gr-G08-3",
+    "text": "Today is hotter than yesterday."
+  },
+  {
+    "id": "gr-G08-4",
+    "text": "My sister is the tallest in our family."
+  },
+  {
+    "id": "gr-G08-5",
+    "text": "She is the most helpful person I know."
+  },
+  {
+    "id": "gr-G09-1",
+    "text": "Summer is my favourite season. It is the best time of the year."
+  },
+  {
+    "id": "gr-G09-2",
+    "text": "The blue whale is the biggest animal in the world."
+  },
+  {
+    "id": "gr-G09-3",
+    "text": "This is the most beautiful park in our city."
+  },
+  {
+    "id": "gr-G09-4",
+    "text": "Maths is the most difficult subject for me."
+  },
+  {
+    "id": "gr-G09-5",
+    "text": "Anna runs the fastest in her class."
+  },
+  {
+    "id": "gr-G10-1",
+    "text": "I have a cat and a dog."
+  },
+  {
+    "id": "gr-G10-2",
+    "text": "My friend has an apple and an orange."
+  },
+  {
+    "id": "gr-G10-3",
+    "text": "The cat is white. The cat likes milk."
+  },
+  {
+    "id": "gr-G10-4",
+    "text": "The sun is very bright today."
+  },
+  {
+    "id": "gr-G10-5",
+    "text": "I play the piano, but I don't play football."
+  },
+  {
+    "id": "gr-G11-1",
+    "text": "Is this your bag?"
+  },
+  {
+    "id": "gr-G11-2",
+    "text": "No, it isn't mine. It's hers."
+  },
+  {
+    "id": "gr-G11-3",
+    "text": "These pencils are ours. We share them."
+  },
+  {
+    "id": "gr-G11-4",
+    "text": "He is my brother. I help him every day."
+  },
+  {
+    "id": "gr-G11-5",
+    "text": "This is a photo of us at the beach."
+  },
+  {
+    "id": "gr-G12-1",
+    "text": "When is the party?"
+  },
+  {
+    "id": "gr-G12-2",
+    "text": "It's on Saturday, in the afternoon."
+  },
+  {
+    "id": "gr-G12-3",
+    "text": "What time does it start?"
+  },
+  {
+    "id": "gr-G12-4",
+    "text": "It starts at three o'clock."
+  },
+  {
+    "id": "gr-G12-5",
+    "text": "My birthday is in July, on the fifth."
+  },
+  {
+    "id": "gr-G13-1",
+    "text": "Mum, where is my ball?"
+  },
+  {
+    "id": "gr-G13-2",
+    "text": "It's under the table."
+  },
+  {
+    "id": "gr-G13-3",
+    "text": "And where are my shoes?"
+  },
+  {
+    "id": "gr-G13-4",
+    "text": "They're behind the door, next to your bag."
+  },
+  {
+    "id": "gr-G13-5",
+    "text": "Your coat is on the bed, in your room."
+  },
+  {
+    "id": "gr-G14-1",
+    "text": "I like apples and bananas."
+  },
+  {
+    "id": "gr-G14-2",
+    "text": "I want to play, but I have to do my homework."
+  },
+  {
+    "id": "gr-G14-3",
+    "text": "I'm happy because it's my birthday today."
+  },
+  {
+    "id": "gr-G14-4",
+    "text": "Would you like tea or juice?"
+  },
+  {
+    "id": "gr-G14-5",
+    "text": "It was raining, so we stayed at home."
+  },
+  {
+    "id": "gr-G15-1",
+    "text": "There is a big bed in my room."
+  },
+  {
+    "id": "gr-G15-2",
+    "text": "There are two windows and a desk."
+  },
+  {
+    "id": "gr-G15-3",
+    "text": "Is there a computer on the desk?"
+  },
+  {
+    "id": "gr-G15-4",
+    "text": "No, there isn't. But there are many books."
+  },
+  {
+    "id": "gr-G15-5",
+    "text": "There is some water in the glass."
+  },
+  {
+    "id": "gr-G16-1",
+    "text": "Do you like football?"
+  },
+  {
+    "id": "gr-G16-2",
+    "text": "No, I don't. I don't like sports."
+  },
+  {
+    "id": "gr-G16-3",
+    "text": "Where do you live?"
+  },
+  {
+    "id": "gr-G16-4",
+    "text": "Is your sister a student?"
+  },
+  {
+    "id": "gr-G16-5",
+    "text": "She isn't a teacher. She's a nurse."
+  },
+  {
+    "id": "gr-G17-1",
+    "text": "We need some milk and some eggs."
+  },
+  {
+    "id": "gr-G17-2",
+    "text": "Do we have any bread at home?"
+  },
+  {
+    "id": "gr-G17-3",
+    "text": "No, we don't have any bread."
+  },
+  {
+    "id": "gr-G17-4",
+    "text": "How many apples do you want?"
+  },
+  {
+    "id": "gr-G17-5",
+    "text": "Not too much sugar, please."
+  },
+  {
+    "id": "gr-G18-1",
+    "text": "Wake up! It's time to get up."
+  },
+  {
+    "id": "gr-G18-2",
+    "text": "Can you turn on the light, please?"
+  },
+  {
+    "id": "gr-G18-3",
+    "text": "Please look after your little sister."
+  },
+  {
+    "id": "gr-G18-4",
+    "text": "I'm looking for my school bag."
+  },
+  {
+    "id": "gr-G18-5",
+    "text": "Don't give up. You can do it!"
+  },
+  {
+    "id": "gr-G19-1",
+    "text": "If it rains tomorrow, we will stay at home."
+  },
+  {
+    "id": "gr-G19-2",
+    "text": "What will you do if it's sunny?"
+  },
+  {
+    "id": "gr-G19-3",
+    "text": "If the sun shines, we will go to the beach."
+  },
+  {
+    "id": "gr-G19-4",
+    "text": "If you study hard, you will pass the test."
+  },
+  {
+    "id": "gr-G19-5",
+    "text": "I will be happy if you come to my party."
+  },
+  {
+    "id": "gr-G20-1",
+    "text": "I like playing basketball after school."
+  },
+  {
+    "id": "gr-G20-2",
+    "text": "I enjoy reading and drawing."
+  },
+  {
+    "id": "gr-G20-3",
+    "text": "I want to be a pilot one day."
+  },
+  {
+    "id": "gr-G20-4",
+    "text": "I need to finish my homework first."
+  },
+  {
+    "id": "gr-G20-5",
+    "text": "It's fun to learn new things."
   }
 ]

@@ -1,0 +1,46 @@
+{
+  "pairs": [
+    [
+      "G01",
+      "G03"
+    ],
+    [
+      "G01",
+      "G02"
+    ],
+    [
+      "G02",
+      "G04"
+    ],
+    [
+      "G03",
+      "G04"
+    ],
+    [
+      "G12",
+      "G13"
+    ],
+    [
+      "G05",
+      "G02"
+    ],
+    [
+      "G06",
+      "G07"
+    ],
+    [
+      "G10",
+      "G17"
+    ]
+  ],
+  "hints": {
+    "G01|G03": "看时间：说\"经常/习惯/事实\"用一般现在时（He plays football every day）；说\"此刻正在\"用现在进行时（He is playing football now）。",
+    "G01|G02": "看时间：单词 usually / always / every day 多用一般现在时；yesterday / last week / ago 多用一般过去时。",
+    "G02|G04": "看时间：已经发生的动作用一般过去时（went）；打算/计划要做的用 be going to（is going to go）。",
+    "G03|G04": "现在进行 = 此刻正在发生（is doing）；be going to = 已经决定、马上/将来要做（is going to do）。",
+    "G12|G13": "这两组都用 in / on / at，关键看修饰什么：说\"时间\"用 in July / on Monday / at 8 o'clock；说\"地点/方位\"用 in Beijing / on the table / at school；方向用 to（去）/ from（从）。",
+    "G02|G05": "一般过去只讲过去（I saw him yesterday）；现在完成连接现在（I have seen him → 强调经历/结果，常配 ever/never/just）。",
+    "G06|G07": "can = 能力/可以（I can swim）；must = 必须，should = 应该（You must stop / should study）。",
+    "G10|G17": "单数可数用 a/an（a book）；复数/不可数表\"一些\"用 some/any（some books / any water）。"
+  }
+}

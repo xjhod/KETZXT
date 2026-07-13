@@ -56,6 +56,22 @@ export interface GrammarExample {
   zh: string;
 }
 
+// 生活化精读语料（对话 / 小短文），用于每日打卡 learn 阶段
+export interface GrammarReadingSegment {
+  speaker?: string;   // 对话角色（dialogue 模式），短文可留空
+  en: string;         // 一句/一段英文（孩子日常能用到的语句）
+  zh: string;         // 中文翻译
+  note?: string;      // 该段语法小注（含本点 + 顺带复习的已学点）
+  audio: string;      // 音频 id，对应 public/audio/{audio}.mp3
+}
+
+export interface GrammarReading {
+  grammarId: string;                  // 对应语法点 id，如 'G01'
+  title: string;                      // 场景标题，如 "At home · 在家"
+  mode: 'dialogue' | 'passage';       // 对话 / 短文
+  segments: GrammarReadingSegment[];  // 分段（每段自带翻译 + 语法小注 + 音频）
+}
+
 export interface GrammarFillQuestion {
   id: string;
   grammarId: string;

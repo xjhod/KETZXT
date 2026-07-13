@@ -1,12 +1,15 @@
 // ========== 语法每日打卡页面 ==========
 // 流程：复习旧知识 → 今日新语法(归纳式) → 对比训练 → 产出练习 → 混合测验 → 完成
 // 顶部：连续打卡 streak + 日历热力图 + 路线图进度。难度按 ROADMAP 由易到难推进，错题加权复习。
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useDailyCheckinStore, todayString, type TodayLog } from '../store/useDailyCheckinStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { generateSession, type DailySession, type SessionQuestion } from '../utils/grammarSession';
 import { GrammarQuestionCard } from '../components/GrammarQuestionCard';
+import { SentenceAudio } from '../components/SentenceAudio';
 import { ROADMAP, getPoint } from '../data/grammarRoadmap';
+import { getReading } from '../data/grammarReading';
+import { stopAllAudio } from '../utils/audio';
 
 type PhaseKey = 'review' | 'learn' | 'contrast' | 'production' | 'mixed' | 'done';
 
@@ -127,6 +130,9 @@ export default function GrammarDailyPage() {
   // 混合测验正确率（用于判定是否"熟练"）
   const mixedCorrect = useRef(0);
   const mixedTotal = useRef(0);
+
+  // 离开页面/卸载时停止任何正在播放的跟读音频
+  useEffect(() => () => stopAllAudio(), []);
 
   const phases = useMemo<{ key: PhaseKey; title: string }[]>(() => {
     if (!session) return [];
@@ -356,21 +362,63 @@ export default function GrammarDailyPage() {
               <p className="font-medium text-blue-800 mb-2">
                 {session.learn.point.nameZh} · {session.learn.point.name}
               </p>
-              <p className="text-sm text-gray-600 mb-2">先读例句，猜一猜它们在讲什么语法？</p>
-              <ul className="space-y-1.5 mb-3">
-                {session.learn.point.examples.map((ex: any, i: number) => (
-                  <li key={i} className="text-sm">
-                    <span className="text-gray-800">{ex.en}</span>
-                    <span className="text-gray-400"> — {ex.zh}</span>
-                  </li>
-                ))}
-              </ul>
+
+              {(() => {
+                const reading = getReading(session.learn.point.id);
+                if (reading) {
+                  return (
+                    <div className="mb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">{reading.mode === 'dialogue' ? '💬' : '📖'}</span>
+                        <span className="text-sm font-semibold text-gray-700">{reading.title}</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mb-3">点小喇叭听真人发音、跟着读一读，再看看每句用到的语法。</p>
+                      <div className="space-y-2.5">
+                        {reading.segments.map((seg, i) => (
+                          <div key={i} className="bg-white rounded-xl border border-blue-100 p-3">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                {seg.speaker && (
+                                  <span className="text-xs font-semibold text-blue-500 mr-1">{seg.speaker}:</span>
+                                )}
+                                <span className="text-[15px] text-gray-800 leading-relaxed">{seg.en}</span>
+                                <div className="text-sm text-gray-400 mt-0.5">{seg.zh}</div>
+                              </div>
+                              <SentenceAudio audioId={seg.audio} />
+                            </div>
+                            {seg.note && (
+                              <div className="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5 leading-relaxed">
+                                <span className="font-semibold">语法小注 · </span>{seg.note}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                // 无精读语料时回退到原单句例句
+                return (
+                  <>
+                    <p className="text-sm text-gray-600 mb-2">先读例句，猜一猜它们在讲什么语法？</p>
+                    <ul className="space-y-1.5 mb-3">
+                      {session.learn.point.examples.map((ex: any, i: number) => (
+                        <li key={i} className="text-sm">
+                          <span className="text-gray-800">{ex.en}</span>
+                          <span className="text-gray-400"> — {ex.zh}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                );
+              })()}
+
               {!revealRule ? (
                 <button
                   onClick={() => setRevealRule(true)}
                   className="px-3 py-1.5 bg-white border border-blue-300 text-blue-700 rounded-lg text-sm hover:bg-blue-50"
                 >
-                  揭示规则 ▶
+                  揭示系统讲解 ▶
                 </button>
               ) : (
                 <div className="text-sm text-gray-700 whitespace-pre-line bg-white p-3 rounded-lg border border-blue-100">

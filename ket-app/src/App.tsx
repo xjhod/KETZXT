@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import VocabularyPage from './pages/VocabularyPage';
 import GrammarPage from './pages/GrammarPage';
 import GrammarDailyPage from './pages/GrammarDailyPage';
+import DailyTrainingPage from './pages/DailyTrainingPage';
 import ReadingPage from './pages/ReadingPage';
 import ListeningPage from './pages/ListeningPage';
 import SpeakingPage from './pages/SpeakingPage';
@@ -105,6 +106,7 @@ function AppContent() {
             <Route path="/vocabulary" element={<RequireAuth><VocabularyPage /></RequireAuth>} />
             <Route path="/grammar" element={<RequireAuth><GrammarPage /></RequireAuth>} />
             <Route path="/grammar-daily" element={<RequireAuth><GrammarDailyPage /></RequireAuth>} />
+            <Route path="/daily" element={<RequireAuth><DailyTrainingPage /></RequireAuth>} />
             <Route path="/reading" element={<RequireAuth><ReadingPage /></RequireAuth>} />
             <Route path="/listening" element={<RequireAuth><ListeningPage /></RequireAuth>} />
             <Route path="/speaking" element={<RequireAuth><SpeakingPage /></RequireAuth>} />

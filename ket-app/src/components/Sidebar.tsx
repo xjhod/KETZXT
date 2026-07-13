@@ -16,6 +16,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { to: '/', label: '首页', icon: '🏠' },
+  { to: '/daily', label: '每日综合训练', icon: '🚀' },
   { to: '/vocabulary', label: '词汇学习', icon: '📚' },
   { to: '/grammar', label: '语法学习', icon: '📝' },
   { to: '/grammar-daily', label: '每日语法', icon: '📆' },
