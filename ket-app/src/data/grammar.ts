@@ -621,7 +621,7 @@ export const grammarG09: GrammarPoint = {
   id: 'G09',
   name: 'Superlative',
   nameZh: '最高级',
-  explanation: '最高级用来比较三个或以上的人或事物，表示"最..."。\n\n【结构】\n· 短形容词 + -est：the tallest, the biggest\n· 长形容词 + most：the most beautiful, the most expensive\n· 不规则：the best, the worst, the most, the least\n\n【注意】最高级前通常要加 the',
+  explanation: '最高级用来比较三个或以上的人或事物，表示"最..."。\n\n【结构】\n· 短形容词 + -est：the tallest, the biggest\n· 长形容词 + most / least：the most beautiful, the most expensive, the least expensive\n· 不规则：the best（good）, the worst（bad）, the farthest / furthest（far）\n\n【注意】最高级前通常要加 the',
   examples: [
     { en: 'He is the tallest in the class.', zh: '他是班里最高的。' },
     { en: 'This is the most delicious cake.', zh: '这是最美味的蛋糕。' },
@@ -1278,7 +1278,7 @@ export const grammarG18: GrammarPoint = {
   id: 'G18',
   name: 'Fixed Collocations and Phrasal Verbs',
   nameZh: '固定搭配与短语动词',
-  explanation: '固定搭配和短语动词是英语中的重要部分。\n\n【固定搭配】动词+介词/副词的固定组合\n· listen to：听...\n· look for：寻找\n· depend on：取决于\n\n【短语动词】动词+副词/介词，意思often与原来的动词不同\n· give up：放弃\n· look after：照顾\n· take off：起飞；脱掉\n· turn on/off：打开/关闭',
+  explanation: '固定搭配和短语动词是英语中的重要部分。\n\n【固定搭配】动词+介词/副词的固定组合\n· listen to：听...\n· look for：寻找\n· depend on：取决于\n\n【短语动词】动词+副词/介词，意思往往与原来的动词不同\n· give up：放弃\n· look after：照顾\n· take off：起飞；脱掉\n· turn on/off：打开/关闭',
   examples: [
     { en: 'I am looking for my keys.', zh: '我在找我的钥匙。' },
     { en: 'Can you look after my cat?', zh: '你能照顾我的猫吗？' },

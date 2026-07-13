@@ -45,7 +45,7 @@ export const CONFUSABLE_PAIRS: [string, string][] = [
   ['G01', 'G02'], // 一般现在（现在/总是） vs 一般过去（过去）
   ['G02', 'G04'], // 一般过去（过去发生） vs be going to（将来计划）
   ['G03', 'G04'], // 现在进行（此刻正在） vs be going to（打算/计划）
-  ['G08', 'G09'], // 比较级 vs 最高级
+  ['G12', 'G13'], // 时间介词 vs 方位介词
   ['G05', 'G02'], // 现在完成（与现在有关） vs 一般过去（纯过去）
   ['G06', 'G07'], // can（能力） vs must/should（必须/应该）
   ['G10', 'G17'], // 冠词 a/an/the vs 数量 some/any/much/many
@@ -61,7 +61,7 @@ export const CONTRAST_HINTS: Record<string, string> = {
   [pairKey('G01', 'G02')]: '看时间：单词 usually / always / every day 多用一般现在时；yesterday / last week / ago 多用一般过去时。',
   [pairKey('G02', 'G04')]: '看时间：已经发生的动作用一般过去时（went）；打算/计划要做的用 be going to（is going to go）。',
   [pairKey('G03', 'G04')]: '现在进行 = 此刻正在发生（is doing）；be going to = 已经决定、马上/将来要做（is going to do）。',
-  [pairKey('G08', 'G09')]: '比较两者用比较级 + than（taller than）；三者或以上选"最"用最高级 + the（the tallest）。',
+  [pairKey('G12', 'G13')]: '这两组都用 in / on / at，关键看修饰什么：说"时间"用 in July / on Monday / at 8 o\'clock；说"地点/方位"用 in Beijing / on the table / at school；方向用 to（去）/ from（从）。',
   [pairKey('G05', 'G02')]: '一般过去只讲过去（I saw him yesterday）；现在完成连接现在（I have seen him → 强调经历/结果，常配 ever/never/just）。',
   [pairKey('G06', 'G07')]: 'can = 能力/可以（I can swim）；must = 必须，should = 应该（You must stop / should study）。',
   [pairKey('G10', 'G17')]: '单数可数用 a/an（a book）；复数/不可数表"一些"用 some/any（some books / any water）。',
