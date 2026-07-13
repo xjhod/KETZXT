@@ -95,7 +95,7 @@ export function GrammarQuestionCard({
           <p
             className="text-lg text-gray-800 mb-4"
             dangerouslySetInnerHTML={{
-              __html: q.sentence.replace(
+              __html: q.sentence.replaceAll(
                 '____',
                 '<span class="inline-block w-24 border-b-2 border-blue-300 mx-1"></span>',
               ),
