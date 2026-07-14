@@ -131,6 +131,9 @@ export default function GrammarDailyPage() {
   // 混合测验正确率（用于判定是否"熟练"）
   const mixedCorrect = useRef(0);
   const mixedTotal = useRef(0);
+  // 额外练习本轮成绩（不写入主打卡战报）
+  const extraCorrect = useRef(0);
+  const extraTotal = useRef(0);
 
   // 离开页面/卸载时停止任何正在播放的跟读音频
   useEffect(() => () => stopAllAudio(), []);
@@ -174,6 +177,8 @@ export default function GrammarDailyPage() {
     setIsExtra(mode === 'extra');
     mixedCorrect.current = 0;
     mixedTotal.current = 0;
+    extraCorrect.current = 0;
+    extraTotal.current = 0;
     setSession(s);
     setPhaseIdx(0);
     setQIdx(0);
@@ -183,9 +188,14 @@ export default function GrammarDailyPage() {
 
   function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string) {
     dc.recordQuestion(sq.grammarId, correct);
-    dc.logAnswer(sq.grammarId, sq.purpose, correct);
-    // 仅主打卡记录已出题，供额外练习去重（额外练习本身不再写入 servedIds）
-    if (!isExtra) dc.markServed(sq.q.id);
+    // 仅主打卡写入战报明细与已出题记录；额外练习不污染今日战报
+    if (!isExtra) {
+      dc.logAnswer(sq.grammarId, sq.purpose, correct);
+      dc.markServed(sq.q.id);
+    } else {
+      extraCorrect.current += correct ? 1 : 0;
+      extraTotal.current += 1;
+    }
     const pType =
       sq.pType === 'fill' ? 'grammar_fill' : sq.pType === 'choice' ? 'grammar_choice' : 'grammar_correction';
     const point = getPoint(sq.grammarId);
@@ -486,11 +496,21 @@ export default function GrammarDailyPage() {
                 `，混合测验正确率 ${Math.round((mixedCorrect.current / mixedTotal.current) * 100)}%`}
             </p>
           )}
-          {dc.todayLog && dc.todayLog.date === today && <TodaySummary log={dc.todayLog} />}
+          {isExtra ? (
+            <div className="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+              <p className="text-sm text-indigo-800">
+                本轮额外练习：答对 <span className="font-bold">{extraCorrect.current}</span> / {extraTotal.current}
+              </p>
+              <p className="text-xs text-indigo-500 mt-1">题目已避开今日打卡，专练薄弱点。</p>
+            </div>
+          ) : (
+            dc.todayLog && dc.todayLog.date === today && <TodaySummary log={dc.todayLog} />
+          )}
           <button
             onClick={() => {
               setSession(null);
               setIsExtra(false);
+              setFinished(false);
             }}
             className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
