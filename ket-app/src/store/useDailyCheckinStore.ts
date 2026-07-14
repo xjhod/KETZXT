@@ -26,6 +26,7 @@ export interface TodayLog {
   date: string; // YYYY-MM-DD
   newPointId: string | null; // 今日主学的新语法点（额外练习可能为 null）
   items: TodayAnswer[];
+  servedIds: string[]; // 今日已出过的题目 id（主打卡），供额外练习去重
 }
 
 interface DailyCheckinState {
@@ -41,6 +42,7 @@ interface DailyCheckinState {
   recordQuestion: (grammarId: string, isCorrect: boolean) => void;
   logAnswer: (grammarId: string, phase: TodayAnswer['phase'], isCorrect: boolean) => void;
   setTodayNewPoint: (id: string | null) => void;
+  markServed: (id: string) => void; // 记录主打卡已出过的题目，供额外练习去重
   finishPoint: (grammarId: string, stageReached: number) => void;
   completeCheckin: (todayStr: string) => void;
   getNextNewPointId: () => string | null;
@@ -108,7 +110,7 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
           const base =
             state.todayLog && state.todayLog.date === t
               ? state.todayLog
-              : { date: t, newPointId: null, items: [] as TodayAnswer[] };
+              : { date: t, newPointId: null, items: [] as TodayAnswer[], servedIds: [] as string[] };
           return {
             todayLog: {
               ...base,
@@ -124,8 +126,20 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
           const base =
             state.todayLog && state.todayLog.date === t
               ? state.todayLog
-              : { date: t, newPointId: null, items: [] as TodayAnswer[] };
+              : { date: t, newPointId: null, items: [] as TodayAnswer[], servedIds: [] as string[] };
           return { todayLog: { ...base, newPointId: id } };
+        });
+      },
+
+      markServed: (id) => {
+        set((state) => {
+          const t = todayString();
+          const base =
+            state.todayLog && state.todayLog.date === t
+              ? state.todayLog
+              : { date: t, newPointId: null, items: [] as TodayAnswer[], servedIds: [] as string[] };
+          if (base.servedIds.includes(id)) return state;
+          return { todayLog: { ...base, servedIds: [...base.servedIds, id] } };
         });
       },
 

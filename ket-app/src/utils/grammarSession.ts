@@ -44,6 +44,12 @@ export interface GenInput {
   points: Record<string, PointProgress>;
   // 来自 progressStore.getWrongAnswers('grammar') 的 (grammarId, questionId)
   wrongList: { grammarId: string; questionId: string }[];
+  // 'checkin' 主打卡（默认）| 'extra' 额外练习（不推进路线图、去重不重复）
+  mode?: 'checkin' | 'extra';
+  // 额外练习时排除主打卡已出过的题目 id，防止重复出题
+  excludeIds?: Set<string>;
+  // 额外练习的焦点语法点（主打卡今日新点），避免额外练习"教新点"
+  focusPointId?: string | null;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -53,6 +59,22 @@ function shuffle<T>(arr: T[]): T[] {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+// 额外练习去重：排除主打卡已出过的题目
+function notExcluded(qid: string, exclude?: Set<string>): boolean {
+  return !exclude || !exclude.has(qid);
+}
+function shuffleFiltered(items: SessionQuestion[], exclude?: Set<string>): SessionQuestion[] {
+  return shuffle(items.filter((s) => notExcluded(s.q.id, exclude)));
+}
+// 所有已学点的题目（打乱并去重），用于额外练习复习兜底
+function weakPoolItems(points: Record<string, PointProgress>, exclude?: Set<string>): SessionQuestion[] {
+  const out: SessionQuestion[] = [];
+  for (const id of ROADMAP) {
+    if (points[id]?.introduced) out.push(...allOf(id));
+  }
+  return shuffleFiltered(out, exclude);
 }
 
 // 从某语法点取全部题目（含题型），用于抽样
@@ -96,31 +118,39 @@ function toSession(
 }
 
 export function generateSession(input: GenInput): DailySession {
-  const { points, wrongList } = input;
+  const { points, wrongList, mode = 'checkin', excludeIds, focusPointId } = input;
+  const ne = (id: string) => notExcluded(id, excludeIds);
 
-  // ---- 今日新点 ----
-  let newPointId: string | null = null;
-  for (const id of ROADMAP) {
-    if (!points[id]?.introduced) { newPointId = id; break; }
-  }
-  if (!newPointId) {
+  // ---- 今日新点 / 焦点 ----
+  let newPointId: string | null;
+  if (mode === 'extra') {
+    // 额外练习：锚定主打卡今日新点；缺失则取最近已学点；绝不"教新点"
+    newPointId =
+      (focusPointId && points[focusPointId]?.introduced ? focusPointId : null) ??
+      ROADMAP.filter((id) => points[id]?.introduced).slice(-1)[0] ??
+      ROADMAP[0];
+  } else {
+    newPointId = null;
     for (const id of ROADMAP) {
-      if ((points[id]?.stage ?? 0) < 4) { newPointId = id; break; }
+      if (!points[id]?.introduced) { newPointId = id; break; }
     }
-  }
-  // 若全部熟练，选第一个点做复习日
-  if (!newPointId) {
-    newPointId = ROADMAP[0];
+    if (!newPointId) {
+      for (const id of ROADMAP) {
+        if ((points[id]?.stage ?? 0) < 4) { newPointId = id; break; }
+      }
+    }
+    // 若全部熟练，选第一个点做复习日
+    if (!newPointId) newPointId = ROADMAP[0];
   }
 
-  // ---- ① 复习：间隔加权抽旧错点 ----
+  const validWrong = wrongList.filter((w) => getQuestionById(w.grammarId, w.questionId));
+
+  // ---- ① 复习：间隔加权抽旧错点（题数随错题量动态伸缩，3~5）----
   const reviewCandidates: { grammarId: string; qid: string; w: number }[] = [];
-  for (const w of wrongList) {
-    if (getQuestionById(w.grammarId, w.questionId)) {
-      const p = points[w.grammarId];
-      const weight = (p?.wrong ?? 1) + (p ? 5 - p.box : 4) + 1;
-      reviewCandidates.push({ grammarId: w.grammarId, qid: w.questionId, w: weight });
-    }
+  for (const w of validWrong) {
+    const p = points[w.grammarId];
+    const weight = (p?.wrong ?? 1) + (p ? 5 - p.box : 4) + 1;
+    reviewCandidates.push({ grammarId: w.grammarId, qid: w.questionId, w: weight });
   }
   // 错题不足时，用"低盒子 + 未熟练"的补充池
   if (reviewCandidates.length < 2) {
@@ -135,15 +165,26 @@ export function generateSession(input: GenInput): DailySession {
       }
     }
   }
-  const review = weightedPick(reviewCandidates, (c) => c.w, 3)
+  // 额外练习：先排除主打卡已出的题；若过滤后为空，回退到"所有已学点"去重池，避免重复刚错的题
+  const reviewPool = (() => {
+    if (mode !== 'extra') return reviewCandidates;
+    const filtered = reviewCandidates.filter((c) => ne(c.qid));
+    if (filtered.length) return filtered;
+    return weakPoolItems(points, excludeIds)
+      .slice(0, Math.min(5, Math.max(3, Math.ceil(validWrong.length / 2))))
+      .map((s) => ({ grammarId: s.grammarId, qid: s.q.id, w: 2 }));
+  })();
+  const reviewCount = Math.min(5, Math.max(3, Math.ceil(validWrong.length / 2)));
+  const review = weightedPick(reviewPool, (c) => c.w, reviewCount)
     .map((c) => toSession(c.grammarId, c.qid, 'review'))
     .filter((x): x is SessionQuestion => x !== null);
 
   // ---- ② 新点学习（归纳式）----
   let learn: LearnStep | null = null;
   if (newPointId && getPoint(newPointId)) {
-    const all = allOf(newPointId);
-    const sample = shuffle(all).slice(0, 2).map((s) => ({ ...s, purpose: 'learn' as const }));
+    const sample = shuffleFiltered(allOf(newPointId), excludeIds)
+      .slice(0, 2)
+      .map((s) => ({ ...s, purpose: 'learn' as const }));
     learn = { pointId: newPointId, point: getPoint(newPointId), questions: sample };
   }
 
@@ -153,8 +194,12 @@ export function generateSession(input: GenInput): DailySession {
     const partner = getPartner(newPointId);
     if (partner) {
       const hint = getContrastHint(newPointId, partner);
-      const fromNew = shuffle(allOf(newPointId)).slice(0, 2).map((s) => ({ ...s, purpose: 'contrast' as const }));
-      const fromPartner = shuffle(allOf(partner)).slice(0, 1).map((s) => ({ ...s, purpose: 'contrast' as const }));
+      const fromNew = shuffleFiltered(allOf(newPointId), excludeIds)
+        .slice(0, 2)
+        .map((s) => ({ ...s, purpose: 'contrast' as const }));
+      const fromPartner = shuffleFiltered(allOf(partner), excludeIds)
+        .slice(0, 1)
+        .map((s) => ({ ...s, purpose: 'contrast' as const }));
       contrast = { partnerId: partner, hint, questions: shuffle([...fromNew, ...fromPartner]) };
     }
   }
@@ -164,31 +209,51 @@ export function generateSession(input: GenInput): DailySession {
   if (newPointId) {
     const pq = GRAMMAR_QUESTIONS[newPointId];
     if (pq) {
-      const corr = shuffle(pq.correction).slice(0, 2).map((q) => ({
-        grammarId: newPointId!, q, pType: 'correction' as const, purpose: 'production' as const,
-      }));
+      const corr = shuffleFiltered(
+        pq.correction.map((q) => ({
+          grammarId: newPointId!,
+          q,
+          pType: 'correction' as const,
+          purpose: 'production' as const,
+        })),
+        excludeIds,
+      ).slice(0, 2);
       production = corr.length
         ? corr
-        : shuffle(pq.fill).slice(0, 2).map((q) => ({
-            grammarId: newPointId!, q, pType: 'fill' as const, purpose: 'production' as const,
-          }));
+        : shuffleFiltered(
+            pq.fill.map((q) => ({
+              grammarId: newPointId!,
+              q,
+              pType: 'fill' as const,
+              purpose: 'production' as const,
+            })),
+            excludeIds,
+          ).slice(0, 2);
     }
   }
 
   // ---- ⑤ 混合测验（穿插：新点 + 之前学过其他点）----
   const mixedPool: SessionQuestion[] = [];
   if (newPointId) {
-    mixedPool.push(...shuffle(allOf(newPointId)).slice(0, 2).map((s) => ({ ...s, purpose: 'mixed' as const })));
+    mixedPool.push(
+      ...shuffleFiltered(allOf(newPointId), excludeIds)
+        .slice(0, 2)
+        .map((s) => ({ ...s, purpose: 'mixed' as const })),
+    );
   }
-  const otherPoints = ROADMAP.filter((id) => id !== newPointId && (points[id]?.introduced || (points[id]?.stage ?? 0) >= 1));
+  const otherPoints = ROADMAP.filter(
+    (id) => id !== newPointId && (points[id]?.introduced || (points[id]?.stage ?? 0) >= 1),
+  );
   const otherSample = shuffle(otherPoints).slice(0, 3);
   for (const id of otherSample) {
-    const one = shuffle(allOf(id))[0];
+    const one = shuffleFiltered(allOf(id), excludeIds)[0];
     if (one) mixedPool.push({ ...one, purpose: 'mixed' });
   }
-  // 若混合池仍不足，用新点补足
+  // 若混合池仍不足，用新点补足（同样去重）
   if (mixedPool.length < 4 && newPointId) {
-    const extra = shuffle(allOf(newPointId)).slice(0, 4 - mixedPool.length).map((s) => ({ ...s, purpose: 'mixed' as const }));
+    const extra = shuffleFiltered(allOf(newPointId), excludeIds)
+      .slice(0, 4 - mixedPool.length)
+      .map((s) => ({ ...s, purpose: 'mixed' as const }));
     mixedPool.push(...extra);
   }
   const mixed = shuffle(mixedPool).slice(0, 5);

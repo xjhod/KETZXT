@@ -126,6 +126,7 @@ export default function GrammarDailyPage() {
   const [qIdx, setQIdx] = useState(0);
   const [revealRule, setRevealRule] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [isExtra, setIsExtra] = useState(false); // 是否为"额外练习"（不推进路线图/不重复出题）
 
   // 混合测验正确率（用于判定是否"熟练"）
   const mixedCorrect = useRef(0);
@@ -159,12 +160,18 @@ export default function GrammarDailyPage() {
     }
   }
 
-  function startSession() {
+  function startSession(mode: 'checkin' | 'extra' = 'checkin') {
     const wrongList = progress
       .getWrongAnswers('grammar')
       .map((r) => ({ grammarId: r.subjectId, questionId: r.questionId }));
-    const s = generateSession({ points: dc.points, wrongList });
-    dc.setTodayNewPoint(s.newPointId);
+    // 额外练习：排除主打卡今日已出过的题目，避免重复；焦点锚定主打卡新点
+    const excludeIds: Set<string> | undefined =
+      mode === 'extra' ? new Set(dc.todayLog?.servedIds ?? []) : undefined;
+    const focusPointId: string | null | undefined =
+      mode === 'extra' ? (dc.todayLog?.newPointId ?? null) : undefined;
+    const s = generateSession({ points: dc.points, wrongList, mode, excludeIds, focusPointId });
+    if (mode === 'checkin') dc.setTodayNewPoint(s.newPointId);
+    setIsExtra(mode === 'extra');
     mixedCorrect.current = 0;
     mixedTotal.current = 0;
     setSession(s);
@@ -177,6 +184,8 @@ export default function GrammarDailyPage() {
   function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string) {
     dc.recordQuestion(sq.grammarId, correct);
     dc.logAnswer(sq.grammarId, sq.purpose, correct);
+    // 仅主打卡记录已出题，供额外练习去重（额外练习本身不再写入 servedIds）
+    if (!isExtra) dc.markServed(sq.q.id);
     const pType =
       sq.pType === 'fill' ? 'grammar_fill' : sq.pType === 'choice' ? 'grammar_choice' : 'grammar_correction';
     const point = getPoint(sq.grammarId);
@@ -204,11 +213,13 @@ export default function GrammarDailyPage() {
     } else {
       // 进入下一阶段
       if (currentPhase === 'mixed') {
-        // 结算：标记今日新点进度 + 完成打卡
-        const acc = mixedTotal.current > 0 ? mixedCorrect.current / mixedTotal.current : 1;
-        const stageReached = acc >= 0.8 ? 4 : 2;
-        if (session?.newPointId) dc.finishPoint(session.newPointId, stageReached);
-        dc.completeCheckin(today);
+        // 结算：仅主打卡才推进路线图 + 完成打卡；额外练习只结束本轮
+        if (!isExtra) {
+          const acc = mixedTotal.current > 0 ? mixedCorrect.current / mixedTotal.current : 1;
+          const stageReached = acc >= 0.8 ? 4 : 2;
+          if (session?.newPointId) dc.finishPoint(session.newPointId, stageReached);
+          dc.completeCheckin(today);
+        }
         setFinished(true);
       }
       if (phaseIdx + 1 < phases.length) {
@@ -289,7 +300,7 @@ export default function GrammarDailyPage() {
               <p className="text-gray-500 mb-4">连续打卡 {dc.streak} 天，坚持得真好。可以再做一组额外复习巩固。</p>
               {dc.todayLog && dc.todayLog.date === today && <TodaySummary log={dc.todayLog} />}
               <button
-                onClick={startSession}
+                onClick={() => startSession('extra')}
                 className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 开始额外练习
@@ -462,7 +473,9 @@ export default function GrammarDailyPage() {
       {session && currentPhase === 'done' && (
         <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm text-center">
           <div className="text-5xl mb-3">🏆</div>
-          <h2 className="text-xl font-bold text-gray-800 mb-1">今日打卡完成！</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-1">
+            {isExtra ? '额外练习完成！' : '今日打卡完成！'}
+          </h2>
           <p className="text-gray-500 mb-1">
             连续打卡 <span className="font-medium text-orange-600">{dc.streak}</span> 天
           </p>
@@ -475,7 +488,10 @@ export default function GrammarDailyPage() {
           )}
           {dc.todayLog && dc.todayLog.date === today && <TodaySummary log={dc.todayLog} />}
           <button
-            onClick={() => setSession(null)}
+            onClick={() => {
+              setSession(null);
+              setIsExtra(false);
+            }}
             className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             返回首页
