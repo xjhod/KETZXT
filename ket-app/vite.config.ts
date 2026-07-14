@@ -2,10 +2,26 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'child_process'
+
+// 自动注入 Git commit 短哈希 + 构建时间，便于在手机上确认是否已更新到最新版
+function getGitHash(): string {
+  try {
+    return execSync('git rev-parse --short HEAD').toString().trim() || 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+const BUILD_HASH = getGitHash();
+const BUILD_TIME = new Date().toISOString();
 
 // https://vite.dev/config/
 export default defineConfig({
   base: '/KETZXT/',  // GitHub Pages 需要仓库名作为子路径
+  define: {
+    'import.meta.env.VITE_BUILD_HASH': JSON.stringify(BUILD_HASH),
+    'import.meta.env.VITE_BUILD_TIME': JSON.stringify(BUILD_TIME),
+  },
   plugins: [
     react(),
     tailwindcss(),

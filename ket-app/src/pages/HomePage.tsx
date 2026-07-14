@@ -239,6 +239,17 @@ export default function HomePage() {
         </div>
         <span className="text-gray-400 text-lg">›</span>
       </div>
+
+      {/* 版本信息：用于确认手机上是否已是新版（版本号变了=已更新，没变=仍是旧缓存） */}
+      <div className="text-center text-xs text-gray-400 mt-8 space-y-1">
+        <p>
+          版本 v{import.meta.env.VITE_BUILD_HASH}
+          {import.meta.env.VITE_BUILD_TIME ? ` · 构建 ${import.meta.env.VITE_BUILD_TIME.slice(0, 10)}` : ''}
+        </p>
+        <p className="text-gray-300">
+          若版本号未变化，说明仍是旧缓存，请关闭标签页重进或清除站点缓存
+        </p>
+      </div>
     </div>
   );
 }
