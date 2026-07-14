@@ -145,24 +145,26 @@ export function generateSession(input: GenInput): DailySession {
 
   const validWrong = wrongList.filter((w) => getQuestionById(w.grammarId, w.questionId));
 
-  // ---- ① 复习：间隔加权抽旧错点（题数随错题量动态伸缩，3~5）----
+  // ---- ① 复习：固定 5 题，间隔加权抽旧错点；错题不足则用"低盒子 + 未熟练"补满 ----
   const reviewCandidates: { grammarId: string; qid: string; w: number }[] = [];
   for (const w of validWrong) {
     const p = points[w.grammarId];
     const weight = (p?.wrong ?? 1) + (p ? 5 - p.box : 4) + 1;
     reviewCandidates.push({ grammarId: w.grammarId, qid: w.questionId, w: weight });
   }
-  // 错题不足时，用"低盒子 + 未熟练"的补充池
-  if (reviewCandidates.length < 2) {
+  // 错题不足 5 道时，用"低盒子 + 未熟练"补满到 5 题
+  if (reviewCandidates.length < 5) {
     for (const id of ROADMAP) {
       const p = points[id];
       if (p?.introduced && (p.stage ?? 0) < 4) {
-        const all = allOf(id);
-        if (all.length) {
-          const pick = shuffle(all)[0];
-          reviewCandidates.push({ grammarId: id, qid: pick.q.id, w: 5 - p.box + 1 });
+        for (const s of shuffle(allOf(id))) {
+          if (reviewCandidates.length >= 5) break;
+          if (!reviewCandidates.some((c) => c.grammarId === id && c.qid === s.q.id)) {
+            reviewCandidates.push({ grammarId: id, qid: s.q.id, w: 5 - p.box + 1 });
+          }
         }
       }
+      if (reviewCandidates.length >= 5) break;
     }
   }
   // 额外练习：先排除主打卡已出的题；若过滤后为空，回退到"所有已学点"去重池，避免重复刚错的题
@@ -170,11 +172,12 @@ export function generateSession(input: GenInput): DailySession {
     if (mode !== 'extra') return reviewCandidates;
     const filtered = reviewCandidates.filter((c) => ne(c.qid));
     if (filtered.length) return filtered;
-    return weakPoolItems(points, excludeIds)
-      .slice(0, Math.min(5, Math.max(3, Math.ceil(validWrong.length / 2))))
+    const extra = weakPoolItems(points, excludeIds)
+      .filter((s) => !filtered.some((c) => c.grammarId === s.grammarId && c.qid === s.q.id))
       .map((s) => ({ grammarId: s.grammarId, qid: s.q.id, w: 2 }));
+    return [...filtered, ...extra].slice(0, 5);
   })();
-  const reviewCount = Math.min(5, Math.max(3, Math.ceil(validWrong.length / 2)));
+  const reviewCount = 5; // 固定 5 题复习
   const review = weightedPick(reviewPool, (c) => c.w, reviewCount)
     .map((c) => toSession(c.grammarId, c.qid, 'review'))
     .filter((x): x is SessionQuestion => x !== null);

@@ -5,15 +5,6 @@ import { getCurrentUser } from '../utils/auth';
 
 const features = [
   {
-    title: '每日综合训练',
-    desc: '一次练齐 · 单词/语法/听力/阅读 · 弱项多练',
-    icon: '🚀',
-    to: '/daily',
-    color: 'from-indigo-400 to-indigo-600',
-    bg: 'bg-indigo-50',
-    border: 'border-indigo-100',
-  },
-  {
     title: '每日语法打卡',
     desc: '每天10分钟 · 语法稳步进阶',
     icon: '📆',
