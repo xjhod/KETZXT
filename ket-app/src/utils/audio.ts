@@ -46,11 +46,15 @@ export function isAndroidDevice(): boolean {
 
 /**
  * 是否允许在"文件播放失败"时回退浏览器 TTS。
- * 安卓 + 中国大陆：Web Speech TTS 后端走 Google 服务器，被墙不可用，
- * 回退只会无声 / 长时间挂起。因此安卓上禁用 TTS 回退，强制走预生成 mp3。
+ * 注意区分两个 API：
+ *  - speechSynthesis（TTS 朗读）：Android Chrome 调用设备「本地 TTS 引擎」
+ *    （Google TTS / 厂商引擎），离线可用，不被墙。
+ *  - SpeechRecognition（ASR 识别）：才走 Google 服务器，中国大陆被墙。
+ * 原实现把两者混为一谈、在安卓禁用 TTS 回退，导致 mp3 播放失败时彻底无声。
+ * 这里统一允许回退：mp3 正常时不触发，仅在 mp3 失败时兜底出声。
  */
 export function ttsFallbackAllowed(): boolean {
-  return !isAndroidDevice();
+  return true;
 }
 
 /** 拼接正确的音频文件 URL（适配 GitHub Pages 子路径） */
@@ -72,8 +76,16 @@ function getSharedAudio(): HTMLAudioElement | null {
   if (!sharedAudio) {
     sharedAudio = new Audio();
     sharedAudio.preload = 'auto';
+    // 安卓/iOS 内联播放，避免部分浏览器进入全屏/外部播放器
+    try { (sharedAudio as any).playsInline = true; } catch { /* ignore */ }
     try {
-      sharedAudio.setAttribute('style', 'display:none;position:absolute;');
+      // 不要用 display:none：部分安卓/国产浏览器（X5、UC、华为 WebView 等）
+      // 对渲染树外的 <audio> 不加载、不播放，导致点击无声。
+      // 改为移出视口 + 不可见，但保留在渲染树中，兼容性最好。
+      sharedAudio.setAttribute(
+        'style',
+        'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;'
+      );
       document.body.appendChild(sharedAudio);
     } catch {
       /* 无 document.body 等极端环境：不挂载也能 play()，忽略 */

@@ -128,10 +128,23 @@ export function useSpeechTranscriber(): UseSpeechTranscriberReturn {
 
   const stop = useCallback(() => {
     clearWatchdog();
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch (_) { /* ignore */ }
+    const rec = recognitionRef.current;
+    if (rec) {
+      try {
+        // 同 usePronunciationChecker：安卓上 stop() 常不触发 onend、麦克风释放不掉，
+        // 用 abort() 立即终止并释放资源，stop() 仅作 fallback。
+        rec.abort();
+      } catch (_) {
+        try { rec.stop(); } catch (_) { /* ignore */ }
+      }
     }
     setIsListening(false);
+    recognitionRef.current = null;
+    // 兜底看门狗：防止 abort 后个别 ROM 不触发 onend 而永久卡在"录音中"
+    watchdogRef.current = setTimeout(() => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    }, 800);
   }, []);
 
   const reset = useCallback(() => {

@@ -2,13 +2,14 @@
 // 用于短文精读每一段的"跟读"小喇叭。复用 audio.ts 的 playAudioEl（优先预生成 mp3，
 // 安卓可靠、自动适配 /KETZXT/ 子路径），支持常速 / 慢速(0.75x)跟读，卸载自动停。
 import { useState, useEffect, useRef } from 'react';
-import { audioFileUrl, playAudioEl, stopAllAudio } from '../utils/audio';
+import { audioFileUrl, playAudioEl, stopAllAudio, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 interface SentenceAudioProps {
   audioId: string;   // 音频 id，对应 public/audio/{audioId}.mp3
+  text?: string;     // 英文原文，用于 mp3 播放失败时的 TTS 兜底朗读（确保短文一定能出声）
 }
 
-export function SentenceAudio({ audioId }: SentenceAudioProps) {
+export function SentenceAudio({ audioId, text }: SentenceAudioProps) {
   const [playing, setPlaying] = useState<false | 'normal' | 'slow'>(false);
   const mounted = useRef(true);
 
@@ -26,7 +27,14 @@ export function SentenceAudio({ audioId }: SentenceAudioProps) {
       return;
     }
     setPlaying(mode);
-    await playAudioEl(audioFileUrl(audioId), mode === 'slow' ? 0.75 : 1);
+    const rate = mode === 'slow' ? 0.75 : 1;
+    const ok = await playAudioEl(audioFileUrl(audioId), rate);
+    // mp3 加载/播放失败（如个别 ROM 对隐藏 audio 不播放）时，回退系统 TTS 朗读英文原文
+    if (!ok && text && ttsFallbackAllowed()) {
+      await new Promise<void>((res) => {
+        speakText(text, { rate, onEnd: res });
+      });
+    }
     if (mounted.current) setPlaying(false);
   }
 

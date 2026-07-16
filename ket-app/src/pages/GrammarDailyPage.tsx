@@ -405,7 +405,7 @@ export default function GrammarDailyPage() {
                                 <span className="text-[15px] text-gray-800 leading-relaxed">{seg.en}</span>
                                 <div className="text-sm text-gray-400 mt-0.5">{seg.zh}</div>
                               </div>
-                              <SentenceAudio audioId={seg.audio} />
+                              <SentenceAudio audioId={seg.audio} text={seg.en} />
                             </div>
                             {seg.note && (
                               <div className="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5 leading-relaxed">

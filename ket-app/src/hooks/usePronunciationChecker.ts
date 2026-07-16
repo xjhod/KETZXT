@@ -234,10 +234,25 @@ export function usePronunciationChecker(): UsePronunciationCheckerReturn {
 
   const stopRecord = () => {
     clearWatchdog();
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch (_) { /* ignore */ }
+    const rec = recognitionRef.current;
+    if (rec) {
+      try {
+        // Android Chrome 上 recognition.stop() 常不触发 onend，导致实例悬挂、
+        // 麦克风一直占用、"点停止停不下来"。abort() 会立即终止并释放麦克风，
+        // 按规范触发 onend，是安卓上最可靠的停止方式；stop() 仅作 fallback。
+        rec.abort();
+      } catch (_) {
+        try { rec.stop(); } catch (_) { /* ignore */ }
+      }
     }
     setIsRecording(false);
+    recognitionRef.current = null;
+    // 兜底看门狗：个别 ROM 上 abort 后仍不触发 onend，短延时强制复位，
+    // 保证按钮一定能从"录音中"退出（麦克风真正释放）。
+    watchdogRef.current = setTimeout(() => {
+      setIsRecording(false);
+      recognitionRef.current = null;
+    }, 800);
   };
 
   const reset = () => {

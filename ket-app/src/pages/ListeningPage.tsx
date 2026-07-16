@@ -13,7 +13,8 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
 
 // ========== 优先播放预生成音频文件（已修复子路径 404），缺失时回退系统 TTS ==========
 function playAudioFile(id: string, fallbackText: string, rate = 0.9): Promise<void> {
-  // 安卓 + 国内：浏览器 TTS 不可用，禁用回退，避免无声 / 卡顿
+  // Android Chrome 的 speechSynthesis 走本地 TTS 引擎（离线可用，不被墙），
+  // 因此允许 mp3 失败时回退 TTS 朗读（被墙的是 SpeechRecognition/ASR）。
   const fallback = ttsFallbackAllowed() ? fallbackText : '';
   return new Promise((resolve) => {
     let settled = false;
