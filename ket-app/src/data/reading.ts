@@ -3,6 +3,8 @@
 // 包含 KET Reading Part 1–5 共 5 大题型
 // ============================================================
 
+import { part1Hard, part2Hard, part3ClozeHard, part3RCHard, part4TFHard, part5Hard } from './readingHard';
+
 // ==================== 类型定义 ====================
 
 /** Part 1: 看图配对 — 5 张图 + 8 个共享句子（A-H），为每张图选匹配的句子 */
@@ -945,6 +947,8 @@ export const part1Articles: Part1Article[] = [
       },
     ],
   },
+
+  ...part1Hard,
 ];
 
 export const part2Articles: Part2Article[] = [
@@ -2198,6 +2202,8 @@ export const part2Articles: Part2Article[] = [
     ],
     answers: [0, 1, 2, 3, 4],
   }
+,
+  ...part2Hard,
 ];
 
 export const part3ClozeArticles: Part3ClozeArticle[] = [  {
@@ -3619,7 +3625,9 @@ export const part3ClozeArticles: Part3ClozeArticle[] = [  {
     ],
     difficulty: 'easy',
     topic: '日常生活',
-  }];
+  },
+  ...part3ClozeHard,
+];
 
 // ==================== Part 3-2 数据 ====================
 
@@ -4818,6 +4826,8 @@ At the end of the project, the class had a small exhibition. Parents came to see
     difficulty: "medium",
     topic: "健康",
   },
+
+  ...part3RCHard,
 ];
 
 export const part4TFArticles: Part4TFArticle[] = [
@@ -6021,6 +6031,8 @@ export const part4TFArticles: Part4TFArticle[] = [
     difficulty: "medium",
     topic: "教育",
   },
+
+  ...part4TFHard,
 ];
 
 export const part5Articles: Part5Article[] = [
@@ -6444,6 +6456,8 @@ export const part5Articles: Part5Article[] = [
       { id: "p5-020-b10", position: 10, answer: "wonderful", hint: "very good", hintZh: "极好的", accept: ["great","amazing"] },
     ],
   },
+
+  ...part5Hard,
 ];
 
 export const allReadingArticles = [
