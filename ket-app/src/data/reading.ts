@@ -1025,7 +1025,7 @@ export const part2Articles: Part2Article[] = [
       "A shop selling pencils and sketchbooks.",
       "A magazine about famous writers."
     ],
-    answers: [4, 1, 2, 3, 0],
+    answers: [4, 5, 2, 3, 0],
   },
   {
     id: "p2-004",
