@@ -271,7 +271,7 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
     await playAudioFile(q.id, q.audioText, 0.9);
     setIsPlaying(false);
   };
-  useEffect(() => { setSelected(null); setSubmitted(false); playQuestion(); }, [idx]);
+  useEffect(() => { setSelected(null); setSubmitted(false); if (!isAndroidDevice()) playQuestion(); }, [idx]);
 
   const handleSubmit = () => {
     if (selected === null || !q) return;

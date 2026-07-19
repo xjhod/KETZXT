@@ -94,7 +94,41 @@ function getSharedAudio(): HTMLAudioElement | null {
   return sharedAudio;
 }
 
+// ========== 安卓 Chrome 音频解锁 ==========
+// 安卓 Chrome 要求音频播放必须由「用户手势」触发。部分机型在首次点击播放时
+// 会因音频上下文未被唤醒而偶发无声(需再点一次才响)。这里在应用启动即监听
+// 首次任意交互(点击/触摸)，用一段静音 wav 触发手势内播放来唤醒音频上下文，
+// 之后真实音频的 play() 即在已解锁状态下执行，根除首播无声。
+let audioUnlockArmed = false;
+let audioUnlocked = false;
+function armAudioUnlock(): void {
+  if (audioUnlockArmed || typeof document === 'undefined') return;
+  audioUnlockArmed = true;
+  const unlock = () => {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    try {
+      // 一段极短的静音 wav，仅用于触发手势内播放以唤醒音频上下文(不发出声音)
+      const silent = new Audio(
+        'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAD//w=='
+      );
+      silent.volume = 0;
+      const p = silent.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    } catch {
+      /* ignore */
+    }
+    document.removeEventListener('touchstart', unlock);
+    document.removeEventListener('mousedown', unlock);
+    document.removeEventListener('click', unlock);
+  };
+  document.addEventListener('touchstart', unlock, { passive: true });
+  document.addEventListener('mousedown', unlock);
+  document.addEventListener('click', unlock);
+}
+
 export function playAudioEl(src: string, rate = 1): Promise<boolean> {
+  armAudioUnlock(); // 确保首次交互已尝试唤醒音频上下文(安卓首播兜底)
   stopAllAudio(); // 先停掉上一段，避免叠音 / 离开后仍播放
   return new Promise((resolve) => {
     try {
@@ -210,3 +244,8 @@ export function speakText(
   currentTtsCancel = cancel; // 记录，便于 stopAllAudio 停掉
   return cancel;
 }
+
+// ========== 启动音频解锁监听 ==========
+// 应用加载即武装监听，等用户首次交互(点击/触摸)自动唤醒音频上下文，
+// 使安卓 Chrome 上的真实音频播放不再偶发无声。
+armAudioUnlock();
