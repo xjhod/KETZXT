@@ -507,7 +507,7 @@ export const part2Hard: Part2Article[] = [
       'A sports day.',
       'A garden tour.',
     ],
-    answers: [2, 1, 3, 0, 4],
+    answers: [2, 0, 3, 1, 4],
   },
 ];
 
