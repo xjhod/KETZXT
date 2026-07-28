@@ -5,7 +5,7 @@ import type { SpeakingPart1Question, SpeakingPart2Question } from '../types/spea
 import { getCurrentUser } from '../utils/auth';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
 import { useProgressStore } from '../store/useProgressStore';
-import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
+import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed, stopAllAudio } from '../utils/audio';
 
 // ========== 类型定义 ==========
 interface ScoreResult {
@@ -64,7 +64,7 @@ function scoreAnswer(transcript: string, keywords: string[]): ScoreResult {
 async function playModelAnswer(id: string, text: string): Promise<void> {
   const ok = await playAudioEl(audioFileUrl(id), 0.9);
   if (!ok && ttsFallbackAllowed()) {
-    // 预生成音频缺失/加载失败时，回退到浏览器内置 TTS（安卓+国内不可用，已禁用）
+    // 预生成音频缺失/加载失败时，回退到浏览器内置 TTS（speechSynthesis 走设备本地引擎，安卓可用、不被墙）
     speakText(text, { rate: 0.9, lang: 'en-US' });
   }
 }
@@ -208,6 +208,7 @@ export default function SpeakingPage() {
   // ========== 播放录音 ==========
   const playRecording = useCallback(() => {
     if (audioUrl) {
+      stopAllAudio(); // 先停掉正在播放的示范音频/TTS，避免叠音
       const audio = new Audio(audioUrl);
       audio.play();
     }
@@ -231,7 +232,7 @@ export default function SpeakingPage() {
     const questionText =
       activePart === 1
         ? (currentPart1.questionZh || currentPart1.question)
-        : (currentPart2.questions[0] || currentPart2.prompts[0] || q.id);
+        : (currentPart2.questions[0] || q.id);
 
     // 记录单题（用于错题本 / 答题历史）
     recordAnswer({
