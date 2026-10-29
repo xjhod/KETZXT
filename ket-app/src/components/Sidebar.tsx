@@ -22,6 +22,7 @@ const menuItems: MenuItem[] = [
   { to: '/reading', label: '阅读理解', icon: '📖' },
   { to: '/listening', label: '听力训练', icon: '🎧' },
   { to: '/speaking', label: '口语练习', icon: '🎤' },
+  { to: '/study-plan', label: '备考计划', icon: '🎯' },
   { to: '/statistics', label: '学习统计', icon: '📊' },
   { to: '/wrong', label: '错题本', icon: '📕' },
 ];

@@ -23,7 +23,7 @@ export function VoiceInputButton({
   // 将结果通知父组件
   useEffect(() => {
     if (result) {
-      onResult?.(result);
+      onResult?.({ score: result.score, transcript: result.recognizedText });
     }
   }, [result]);
 

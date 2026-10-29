@@ -1,5 +1,5 @@
 import LZString from 'lz-string';
-import type { User } from '../types/user';
+import type { User, SafeUser } from '../types/user';
 
 // ========== 用户存储键名 ==========
 export const USERS_KEY = 'ket-app-users';
@@ -65,7 +65,7 @@ export function register(name: string, password: string, passwordHint?: string):
  * 用户登录
  * @returns { success: boolean; message: string; user?: User }
  */
-export function login(name: string, password: string): { success: boolean; message: string; user?: User } {
+export function login(name: string, password: string): { success: boolean; message: string; user?: SafeUser } {
   // 验证输入
   if (!name || !password) {
     return { success: false, message: '请输入姓名和密码' };
@@ -95,7 +95,7 @@ export function login(name: string, password: string): { success: boolean; messa
  * 获取当前登录用户
  * @returns {User | null}
  */
-export function getCurrentUser(): User | null {
+export function getCurrentUser(): SafeUser | null {
   const data = localStorage.getItem(CURRENT_USER_KEY);
   return data ? JSON.parse(data) : null;
 }

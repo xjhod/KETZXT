@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY } from '../utils/auth';
-import type { User } from '../types/user';
 
 export default function LoginPage() {
   const navigate = useNavigate();

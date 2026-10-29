@@ -139,7 +139,7 @@ export function playAudioEl(src: string, rate = 1): Promise<boolean> {
       }
       el.playbackRate = rate;
       let settled = false;
-      const done = (ok: boolean) => {
+      const done = (ok: boolean = false) => {
         if (settled) return;
         settled = true;
         clearTimeout(wd);

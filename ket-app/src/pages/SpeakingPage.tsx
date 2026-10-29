@@ -1,8 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { speakingPart1, speakingPart2 } from '../data/speaking';
-import type { SpeakingPart1Question, SpeakingPart2Question } from '../types/speaking';
-import { getCurrentUser } from '../utils/auth';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
 import { useProgressStore } from '../store/useProgressStore';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed, stopAllAudio } from '../utils/audio';
@@ -116,13 +114,12 @@ function TranscriptPanel({
 // ========== 主组件 ==========
 export default function SpeakingPage() {
   const navigate = useNavigate();
-  const user = getCurrentUser();
   
   // 状态
   const [activePart, setActivePart] = useState<1 | 2>(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [showKeywords, setShowKeywords] = useState(false);

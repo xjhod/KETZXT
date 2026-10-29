@@ -327,7 +327,7 @@ export default function GrammarDailyPage() {
                 复习旧知识 → 学新语法 → 对比易混点 → 产出练习 → 混合测验
               </p>
               <button
-                onClick={startSession}
+                onClick={() => startSession()}
                 className="px-6 py-3 bg-blue-600 text-white rounded-xl text-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 开始今日打卡 →

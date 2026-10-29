@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
-import type { User } from '../types/user';
 
 interface HeaderProps {
   onMenuClick: () => void;

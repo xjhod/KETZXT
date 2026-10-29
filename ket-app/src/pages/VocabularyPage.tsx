@@ -4,86 +4,11 @@ import { allThemes, spellingQuestions, matchingQuestions, fillBlankQuestions } f
 import { useProgressStore } from '../store/useProgressStore';
 import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/usePronunciationChecker';
 import { AudioButton } from '../components/AudioButton';
-import { VoiceInputButton } from '../components/VoiceInputButton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 // ========== 常量 ==========
 const SESSION_SIZE = 10;
-
-// ========== 语音识别 Hook ==========
-function useSpeechRecognition() {
-  const [transcript, setTranscript] = useState('');
-  const [isListening, setIsListening] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const startListening = () => {
-    setError(null);
-
-    // 检查浏览器支持
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      setError('您的浏览器不支持语音识别，请使用 Chrome 浏览器。');
-      alert('⚠️ 您的浏览器不支持语音识别，请使用 Chrome 浏览器。');
-      return;
-    }
-
-    // 如果正在监听，先停止上一次
-    if ((window as any).__currentRecognition) {
-      try { (window as any).__currentRecognition.abort(); } catch (_) { /* ignore */ }
-    }
-
-    const recognition = new SR();
-    (window as any).__currentRecognition = recognition;
-
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.continuous = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onresult = (e: any) => {
-      const result = e.results[0]?.[0]?.transcript?.trim()?.toLowerCase();
-      if (result) {
-        setTranscript(result);
-      } else {
-        setError('未能识别到内容，请重试');
-      }
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      (window as any).__currentRecognition = null;
-    };
-
-    recognition.onerror = (e: any) => {
-      setIsListening(false);
-      (window as any).__currentRecognition = null;
-      const msgMap: Record<string, string> = {
-        'no-speech': '没有检测到声音，请大声清晰地朗读单词后重试',
-        'audio-capture': '找不到麦克风，请检查设备是否已连接',
-        'not-allowed': '麦克风权限被拒绝，请在浏览器地址栏左侧点击🔒图标允许麦克风访问',
-        'network': '网络错误，请检查网络连接后重试',
-        'aborted': '识别已取消',
-      };
-      const msg = msgMap[e.error] || `识别出错：${e.error || '未知错误'}`;
-      setError(msg);
-    };
-
-    try {
-      recognition.start();
-      setIsListening(true);
-      setTranscript('');
-    } catch (err) {
-      console.error('SpeechRecognition start error:', err);
-      setError('启动失败，请刷新页面后重试');
-      setIsListening(false);
-      (window as any).__currentRecognition = null;
-    }
-  };
-
-  return { transcript, isListening, startListening, setTranscript, speechError: error, clearError: () => setError(null) };
-}
 
 // ========== 结果总结页 ==========
 function SessionResult({ correct, total, onBack, onRetry }: { correct: number; total: number; onBack: () => void; onRetry: () => void }) {
@@ -323,7 +248,7 @@ function SpellingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   });
   const [idx, setIdx] = useState(0);
   const [result, setResult] = useState<'correct' | 'wrong' | null>(null);
-  const [playCount, setPlayCount] = useState(0);
+  const [, setPlayCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [transcript, setTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);

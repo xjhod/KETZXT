@@ -5,3 +5,6 @@ export interface User {
   passwordHint?: string; // 密码提示（可选）
   createdAt: string; // ISO 日期字符串
 }
+
+/** 剥离密码后的安全用户（本地存储与登录态实际持有的形态） */
+export type SafeUser = Omit<User, 'password' | 'passwordHint'>;

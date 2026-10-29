@@ -58,6 +58,15 @@ const features = [
     bg: 'bg-red-50',
     border: 'border-red-100',
   },
+  {
+    title: '备考计划',
+    desc: '1年四阶段 · 48周任务 · 写作优先',
+    icon: '🎯',
+    to: '/study-plan',
+    color: 'from-indigo-400 to-indigo-600',
+    bg: 'bg-indigo-50',
+    border: 'border-indigo-100',
+  },
 ];
 
 export default function HomePage() {

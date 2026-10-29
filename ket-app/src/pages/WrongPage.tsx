@@ -203,7 +203,7 @@ function WrongCard({ record, onRemove }: { record: AnswerRecord; onRemove: () =>
 
 export default function WrongPage() {
   const navigate = useNavigate();
-  const { getWrongAnswers, removeFromWrong, getModuleStats, reset, hasConsecutiveCorrect } = useProgressStore();
+  const { getWrongAnswers, removeFromWrong, getModuleStats, reset } = useProgressStore();
 
   const [activeModule, setActiveModule] = useState<ModuleType | 'all'>('all');
   const [showResetConfirm, setShowResetConfirm] = useState(false);

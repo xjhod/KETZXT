@@ -12,12 +12,12 @@ import WrongPage from './pages/WrongPage';
 import StatisticsPage from './pages/StatisticsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import StudyPlanPage from './pages/StudyPlanPage';
 import { getCurrentUser, logout, importFromUrlHash } from './utils/auth';
-import type { User } from './types/user';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactElement } from 'react';
 
 // ========== 认证保护组件 ==========
-function RequireAuth({ children }: { children: JSX.Element }) {
+function RequireAuth({ children }: { children: ReactElement }) {
   const user = getCurrentUser();
   const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 // ========== 公共路由组件（登录/注册页面，已登录则跳转首页） ==========
-function PublicRoute({ children }: { children: JSX.Element }) {
+function PublicRoute({ children }: { children: ReactElement }) {
   const user = getCurrentUser();
   const navigate = useNavigate();
 
@@ -108,6 +108,7 @@ function AppContent() {
             <Route path="/reading" element={<RequireAuth><ReadingPage /></RequireAuth>} />
             <Route path="/listening" element={<RequireAuth><ListeningPage /></RequireAuth>} />
             <Route path="/speaking" element={<RequireAuth><SpeakingPage /></RequireAuth>} />
+            <Route path="/study-plan" element={<RequireAuth><StudyPlanPage /></RequireAuth>} />
             <Route path="/wrong" element={<RequireAuth><WrongPage /></RequireAuth>} />
             <Route path="/statistics" element={<RequireAuth><StatisticsPage /></RequireAuth>} />
 
