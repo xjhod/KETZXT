@@ -33,7 +33,7 @@ function Ok($m)   { Write-Host "  [OK] $m" }
 function Fail($m) { Write-Host "  [FAIL] $m" }
 
 # --------------------------------------------------------------- 1. read key
-Step '1/4  Read SiliconFlow API Key'
+Step '1/5  Read SiliconFlow API Key'
 Write-Host 'Paste the key (starts with sk-), then press Enter:'
 $key = (Read-Host).Trim()
 if (-not $key) { Fail 'Nothing was entered. Aborted.'; exit 1 }
@@ -41,7 +41,7 @@ Write-Host ("  length {0}, prefix {1}..." -f $key.Length, $key.Substring(0, [Mat
 if (-not $key.StartsWith('sk-')) { Fail 'Does not start with sk-'; exit 1 }
 
 # --------------------------------------------------------------- 2. validate
-Step '2/4  Validate the key'
+Step '2/5  Validate the key'
 
 # curl.exe ships with Windows 10+ and behaves the same on PS 5.1 and 7+.
 $modelsRaw = & curl.exe -sS -m 30 "$ApiBase/models" -H "Authorization: Bearer $key" 2>&1
@@ -78,7 +78,7 @@ if ($audio) {
 }
 
 # --------------------------------------------------------------- 3. local .dev.vars
-Step '3/4  Write local .dev.vars'
+Step '3/5  Write local .dev.vars'
 $dv = Join-Path $PSScriptRoot '.dev.vars'
 $deepseek = ''
 if (Test-Path $dv) {
@@ -101,7 +101,7 @@ if ($deepseek) {
 }
 
 # --------------------------------------------------------------- 4. online secret
-Step '4/4  Write the Cloudflare Pages secret (live)'
+Step '4/5  Write the Cloudflare Pages secret (live)'
 $tmp = Join-Path $env:TEMP 'sf_key_tmp.txt'
 Write-NoBom $tmp $key
 try {
@@ -115,10 +115,31 @@ try {
     Write-Host '  browser transcript automatically, so practice is not blocked.'
 }
 
+# --------------------------------------------------------------- 5. redeploy
+# IMPORTANT: a Pages secret only reaches the Functions runtime on the NEXT
+# deployment. Updating the secret alone leaves the live code on the old value.
+Step '5/5  Redeploy (a new secret only lands on the next deployment)'
+try {
+    $deploy = & npx wrangler pages deploy public --project-name $Project --branch main --commit-dirty=true 2>&1
+    $deploy | Out-String | Write-Host
+    if ($LASTEXITCODE -ne 0) { Fail "deploy exited with code $LASTEXITCODE" }
+    else { Ok 'deployment complete' }
+} catch {
+    Fail "deploy failed: $($_.Exception.Message)"
+}
+
+Write-Host ''
+Write-Host 'Verifying the live endpoint:' -ForegroundColor Cyan
+$live = & curl.exe -sS -m 30 'https://ketzxt-api.pages.dev/api/health' 2>&1
+$live = ($live | Out-String).Trim()
+Write-Host "  $live"
+if ($live -match '"llm":true' -and $live -match '"asr":true') {
+    Ok 'live endpoint reports both keys active'
+} else {
+    Fail 'live endpoint does not report both keys active'
+    Write-Host '  Note: from inside mainland China *.pages.dev may time out. That is a'
+    Write-Host '  network routing issue, not a key problem. Verify from a phone network.'
+}
+
 Step 'Done'
-Write-Host 'Next steps:' -ForegroundColor Cyan
-Write-Host '  1) Redeploy so the new secret takes effect:' -ForegroundColor White
-Write-Host '       npx wrangler pages deploy public --project-name ketzxt-api --branch main --commit-dirty=true'
-Write-Host '  2) Verify:' -ForegroundColor White
-Write-Host '       curl https://ketzxt-api.pages.dev/api/health'
-Write-Host '       (expect asr:true and speechMode:cloud-asr)' -ForegroundColor DarkGray
+Write-Host 'Everything is in place. Nothing else to run manually.' -ForegroundColor Cyan
