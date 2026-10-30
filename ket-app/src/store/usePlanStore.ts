@@ -14,6 +14,26 @@ export interface DailyItemResult {
   correct: boolean;
 }
 
+export interface WritingPointResult {
+  label: string;
+  covered: boolean;
+  hitKeywords: string[];
+  hint: string;
+}
+
+export interface WritingGrade {
+  wordCount: number;
+  minWords: number;
+  wordCountOk: boolean;
+  points: WritingPointResult[];
+  pointsHit: number;
+  pointsTotal: number;
+  pointsPercent: number;
+  passed: boolean;
+  grammarIssues: { fragment: string; message: string; suggestion: string }[];
+  summary: string;
+}
+
 export interface DailyLog {
   date: string;              // 实际完成的日历日 YYYY-MM-DD
   setIndex: number;          // 完成的是第几套题（进度游标）
@@ -23,6 +43,8 @@ export interface DailyLog {
   totalCount: number;
   writingDone: boolean;
   writingWords: number;
+  /** 写作批改详情（可选：旧版本日志没有此字段） */
+  writingGrade?: WritingGrade;
   speakingDone: boolean;
   speakingPercent: number;  // 关键词覆盖率 0-100
   minutes: number;           // 用时（分钟）

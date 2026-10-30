@@ -10,6 +10,7 @@
 //  3) 可判分：每道客观题都能自动判分，答案必须能在数据里定位到
 
 import { studyPlan, type WeeklyTask, type SkillArea, type Phase } from './studyPlan.ts';
+import type { WritingPoint } from './writingGrader.ts';
 import { GRAMMAR_QUESTIONS, ROADMAP, getPoint } from './grammarRoadmap.ts';
 import { spellingQuestions, fillBlankQuestions } from './vocabulary.ts';
 import { part3RCArticles } from './reading.ts';
@@ -49,6 +50,8 @@ export interface WritingPrompt {
   minWords: number;
   /** 与题目场景匹配的模板（阶段不同会逐级撤除） */
   template: string;
+  /** 3 个要点的关键词配置（供写作批改做要点覆盖检测） */
+  points: WritingPoint[];
 }
 
 export interface WritingTask {
@@ -166,29 +169,89 @@ function pickN<T>(arr: T[], n: number, rng: () => number): T[] {
 
 export const WRITING_PROMPTS: WritingPrompt[] = [
   { id: 'w-p1-01', kind: 'email', prompt: '你生病了不能去上学。给老师写一封邮件（至少 25 词），说明情况，并问一个关于作业的问题。', requirement: '3 个内容点：表达歉意 / 说清不能上学的原因 / 问作业', minWords: 25,
-    template: 'Dear [Teacher],\nI am sorry I am ill today, so I cannot come to school. I have a [fever / headache]. Please could you tell me what homework I should do?\nThank you.\nBest wishes,\n[署名]' },
+    template: 'Dear [Teacher],\nI am sorry I am ill today, so I cannot come to school. I have a [fever / headache]. Please could you tell me what homework I should do?\nThank you.\nBest wishes,\n[署名]',
+    points: [
+      { label: "表达歉意", keywordGroups: [["sorry", "apologies", "apologise", "apologize"], ["ill", "sick", "unwell"]], hint: "用 sorry 说抱歉" },
+      { label: "说明不能上学的原因", keywordGroups: [["ill", "sick", "fever", "headache", "cold", "flu", "cannot come", "can't come", "cannot go to school"]], hint: "写明生病的情况（如 I have a fever）" },
+      { label: "问作业", keywordGroups: [["homework", "home work", "what work", "assignment", "task", "lesson"], ["could you tell me", "can you tell me", "please tell me", "could you please", "do you know"]], hint: "问老师作业（what homework...）" },
+    ] },
   { id: 'w-p1-02', kind: 'email', prompt: '你打算这个周末参加学校组织的环保活动。给朋友写一封邮件（至少 25 词），说说活动时间、地点和你要做的事。', requirement: '3 个内容点：活动名称 / 时间地点 / 你负责的部分', minWords: 25,
-    template: 'Hi [Name],\nWe are having a [school clean-up day] this weekend. It starts at [9 o\'clock] at [the school gate]. I am going to [collect rubbish / plant trees]. Would you like to come?\nSee you soon,\n[署名]' },
+    template: 'Hi [Name],\nWe are having a [school clean-up day] this weekend. It starts at [9 o\'clock] at [the school gate]. I am going to [collect rubbish / plant trees]. Would you like to come?\nSee you soon,\n[署名]',
+    points: [
+      { label: "活动名称", keywordGroups: [["clean-up", "clean up", "cleaning", "environment", "green", "rubbish", "recycling", "plant trees"]], hint: "写出活动名称（clean-up day / environment...）" },
+      { label: "时间地点", keywordGroups: [["saturday", "sunday", "weekend"], ["oclock", "o'clock", "am", "pm", "morning", "afternoon"]], hint: "写清时间和地点" },
+      { label: "你负责的部分", keywordGroups: [["i am going to", "i'll", "i will", "i am doing", "i want to", "going to collect", "going to plant"]], hint: "写你负责做什么" },
+    ] },
   { id: 'w-p1-03', kind: 'email', prompt: '你的朋友要来看你。给他/她写一封邮件（至少 25 词），告诉他怎么走、你家附近有什么可以玩。', requirement: '3 个内容点：怎么到 / 附近有什么 / 什么时候到', minWords: 25,
-    template: 'Hi [Name],\nCome to my house on [Saturday] at [2 o\'clock]. Take the [number 12] bus and get off at [the museum]. There is a [big park] near my house, and we can [play football / go to the cinema].\nSee you,\n[署名]' },
+    template: 'Hi [Name],\nCome to my house on [Saturday] at [2 o\'clock]. Take the [number 12] bus and get off at [the museum]. There is a [big park] near my house, and we can [play football / go to the cinema].\nSee you,\n[署名]',
+    points: [
+      { label: "怎么到", keywordGroups: [["bus", "train", "car", "bike", "underground", "metro", "subway", "walk", "taxi"]], hint: "写怎么来（bus / on foot...）" },
+      { label: "附近有什么", keywordGroups: [["park", "museum", "cinema", "swimming pool", "library", "playground", "shop", "mall", "zoo", "beach", "near my house", "near my home"]], hint: "写附近有什么可玩的" },
+      { label: "什么时候到", keywordGroups: [["saturday", "sunday", "weekend", "tomorrow"], ["oclock", "o'clock", "am", "pm"]], hint: "写什么时候到" },
+    ] },
   { id: 'w-p1-04', kind: 'email', prompt: '你不能去参加学校的野餐了。给老师写一封邮件（至少 25 词），解释原因并问什么时候会有下一次。', requirement: '3 个内容点：不能去的原因 / 表达遗憾 / 问下次时间', minWords: 25,
-    template: 'Dear [Teacher],\nI am sorry I cannot come to the school picnic on [Friday]. I [have a dentist appointment / am going to my cousin\'s birthday]. Will there be another picnic later?\nThank you,\n[署名]' },
+    template: 'Dear [Teacher],\nI am sorry I cannot come to the school picnic on [Friday]. I [have a dentist appointment / am going to my cousin\'s birthday]. Will there be another picnic later?\nThank you,\n[署名]',
+    points: [
+      { label: "不能去的原因", keywordGroups: [["dentist", "doctor", "ill", "sick", "appointment", "birthday", "family", "uncle", "aunt", "cousin", "football match", "trip"]], hint: "写明原因" },
+      { label: "表达遗憾", keywordGroups: [["sorry", "unfortunately", "regret", "disappointed", "sad", "unhappy"]], hint: "表达遗憾" },
+      { label: "问下次时间", keywordGroups: [["will there be", "another", "next time", "when will", "is there another"]], hint: "问下次什么时候" },
+    ] },
   { id: 'w-p1-05', kind: 'email', prompt: '你在学校丢了外套。给老师写一封邮件（至少 25 词），说明外套是什么样子的，并请老师帮你找找。', requirement: '3 个内容点：外套的样子 / 丢失的时间和地点 / 请老师帮忙', minWords: 25,
-    template: 'Dear [Teacher],\nI lost my coat at school yesterday. It is [blue] with [a hood] and my name is on the inside. I left it in [the sports hall]. Could you please look for it?\nThank you,\n[署名]' },
+    template: 'Dear [Teacher],\nI lost my coat at school yesterday. It is [blue] with [a hood] and my name is on the inside. I left it in [the sports hall]. Could you please look for it?\nThank you,\n[署名]',
+    points: [
+      { label: "外套的样子", keywordGroups: [["blue", "black", "red", "green", "grey", "gray", "white", "yellow", "brown", "pink"], ["hood", "hat", "collar", "button", "pocket", "sleeve", "stripe", "fancy", "school uniform"]], hint: "写外套的样子（颜色/款式）" },
+      { label: "丢失的时间和地点", keywordGroups: [["yesterday", "this morning", "today", "at school", "hall", "playground", "lost it"]], hint: "写什么时候在哪丢的" },
+      { label: "请老师帮忙", keywordGroups: [["could you please", "can you please", "please help", "look for it", "find it", "help me find", "can you find"]], hint: "请老师帮忙找" },
+    ] },
   { id: 'w-p1-06', kind: 'email', prompt: '你下周要搬到新家。给同学写一封邮件（至少 25 词），说说新住在哪、有什么变化。', requirement: '3 个内容点：新地址 / 离学校多远 / 有什么变化', minWords: 25,
-    template: 'Hi [Name],\nI am moving to a new house next week. We live at [number 8, Green Street] now. It is [ten minutes] from school by bike. There is a [big garden] behind the house. Write to me at my new address!\n[署名]' },
+    template: 'Hi [Name],\nI am moving to a new house next week. We live at [number 8, Green Street] now. It is [ten minutes] from school by bike. There is a [big garden] behind the house. Write to me at my new address!\n[署名]',
+    points: [
+      { label: "新地址", keywordGroups: [["moving", "move", "new house", "new home", "new address", "live at", "live in"]], hint: "写新地址" },
+      { label: "离学校多远", keywordGroups: [["minutes", "far", "near", "close", "by bike", "by bus", "by car", "walk"]], hint: "写离学校多远" },
+      { label: "有什么变化", keywordGroups: [["garden", "bigger", "smaller", "new room", "bedroom", "kitchen", "playground", "now i can"]], hint: "写有什么变化" },
+    ] },
   { id: 'w-p1-07', kind: 'email', prompt: '你想加入学校的机器人俱乐部。给老师写一封邮件（至少 25 词），说明你想参加，并说你会做什么。', requirement: '3 个内容点：想参加 / 为什么想参加 / 你会负责什么', minWords: 25,
-    template: 'Dear [Teacher],\nI would like to join the robot club. I [love science / am good at maths] and I want to learn more about [programming]. I can [look after the new robots / make the club website].\nThank you,\n[署名]' },
+    template: 'Dear [Teacher],\nI would like to join the robot club. I [love science / am good at maths] and I want to learn more about [programming]. I can [look after the new robots / make the club website].\nThank you,\n[署名]',
+    points: [
+      { label: "想参加", keywordGroups: [["would like to join", "want to join", "like to join", "would like to be", "can i join", "sign up"]], hint: "写明想参加" },
+      { label: "为什么想参加", keywordGroups: [["love science", "good at", "interested in", "like programming", "like robots", "am good at maths", "am good at math", "enjoy", "favourite", "favorite"]], hint: "写为什么想参加" },
+      { label: "你会负责什么", keywordGroups: [["look after", "make the", "help with", "build", "design", "program", "i can", "responsible for", "organise", "organize"]], hint: "写你会负责什么" },
+    ] },
   { id: 'w-p1-08', kind: 'email', prompt: '你昨晚没做作业。给老师写一封邮件（至少 25 词），解释原因并保证以后会按时交。', requirement: '3 个内容点：道歉 / 原因 / 保证', minWords: 25,
-    template: 'Dear [Teacher],\nI am sorry I did not do my homework last night. I [watched a film / helped my mum]. I will do my homework on time from now on. Can I hand it in tomorrow?\nThank you,\n[署名]' },
+    template: 'Dear [Teacher],\nI am sorry I did not do my homework last night. I [watched a film / helped my mum]. I will do my homework on time from now on. Can I hand it in tomorrow?\nThank you,\n[署名]',
+    points: [
+      { label: "道歉", keywordGroups: [["sorry", "apologise", "apologize", "apologies"]], hint: "道歉" },
+      { label: "原因", keywordGroups: [["watched a film", "watched tv", "helped my mum", "helped my mom", "went to bed", "was busy", "playing", "football practice", "had a party", "internet", "too tired"]], hint: "写明原因" },
+      { label: "保证", keywordGroups: [["on time", "tomorrow", "from now on", "i will", "promise", "won't", "will not forget", "hand it in"]], hint: "保证以后按时交" },
+    ] },
   { id: 'w-p2-01', kind: 'story', prompt: '写一篇短故事（至少 35 词）：一个孩子在学校捡到一样东西，后来发生了一件事。', requirement: '3 个内容点：开头 / 经过 / 结尾', minWords: 35,
-    template: 'One day, [Ben] found a [wallet] in the school playground. He [gave it to the teacher / took it to the office]. Then [the owner came back / the teacher called his mum]. Everyone was very [happy].' },
+    template: 'One day, [Ben] found a [wallet] in the school playground. He [gave it to the teacher / took it to the office]. Then [the owner came back / the teacher called his mum]. Everyone was very [happy].',
+    points: [
+      { label: "开头", keywordGroups: [["one day", "once upon a time", "yesterday", "last week", "at school", "in the playground", "in the corridor"]], hint: "开头交代时间和地点" },
+      { label: "经过", keywordGroups: [["found", "picked up", "saw", "wallet", "watch", "pencil case", "key", "book", "bag", "glasses", "money", "lost property"]], hint: "写捡到了什么、怎么处理的" },
+      { label: "结尾", keywordGroups: [["gave it to", "took it to", "the teacher", "the office", "owner came", "found the owner", "called his mum", "called her mum", "happy", "glad"]], hint: "写结尾（结果/感受）" },
+    ] },
   { id: 'w-p2-02', kind: 'story', prompt: '写一篇短故事（至少 35 词）：一个孩子在放学路上遇到一点麻烦，最后是怎么解决的。', requirement: '3 个内容点：开头 / 遇到麻烦 / 解决方式', minWords: 35,
-    template: 'On the way home, [Lily] [lost her bag / dropped her phone]. She [looked for it / asked a policeman for help]. At last she [found it in the grass / got it back]. She was very [relieved].' },
+    template: 'On the way home, [Lily] [lost her bag / dropped her phone]. She [looked for it / asked a policeman for help]. At last she [found it in the grass / got it back]. She was very [relieved].',
+    points: [
+      { label: "开头", keywordGroups: [["on the way home", "walking home", "on my way", "after school", "home from school"]], hint: "开头交代场景" },
+      { label: "遇到麻烦", keywordGroups: [["lost", "dropped", "forgot", "left", "bag", "phone", "book", "wallet", "fell", "rain", "broke", "flat tyre", "flat tire", "dog"]], hint: "写遇到什么麻烦" },
+      { label: "解决方式", keywordGroups: [["found it", "got it back", "asked", "policeman", "police officer", "helped", "someone", "mum", "mom", "dad", "friend", "relieved", "at last", "finally"]], hint: "写怎么解决的" },
+    ] },
   { id: 'w-p2-03', kind: 'story', prompt: '写一篇短故事（至少 35 词）：一个孩子第一次自己做某件事，结果学到了什么。', requirement: '3 个内容点：开头 / 尝试与困难 / 明白的道理', minWords: 35,
-    template: '[Sam] decided to [cook dinner / ride a bike] for the first time. At first he [made a mess / fell over]. Then he [tried again / asked for help]. Finally he [learned that practice helps / felt proud].' },
+    template: '[Sam] decided to [cook dinner / ride a bike] for the first time. At first he [made a mess / fell over]. Then he [tried again / asked for help]. Finally he [learned that practice helps / felt proud].',
+    points: [
+      { label: "开头", keywordGroups: [["decided", "wanted to", "first time", "one day"]], hint: "开头（谁决定做什么）" },
+      { label: "尝试与困难", keywordGroups: [["at first", "made a mess", "fell over", "burnt", "was difficult", "was hard", "could not", "couldn't", "failed", "tried"]], hint: "写过程中的困难" },
+      { label: "明白的道理", keywordGroups: [["finally", "learned", "learnt", "understood", "realised", "realized", "felt proud", "proud", "practice", "practise", "keep trying", "never give up"]], hint: "写明白的道理/感受" },
+    ] },
   { id: 'w-p2-04', kind: 'story', prompt: '写一篇短故事（至少 35 词）：一个新同学来到班里，大家是怎么对待他的。', requirement: '3 个内容点：开头 / 大家的反应 / 结尾', minWords: 35,
-    template: 'A new boy called [Tom] came to our class last Monday. He [did not speak to anyone / looked unhappy]. So we [gave him a seat / showed him our classroom]. After that he [smiled / joined our game].' },
+    template: 'A new boy called [Tom] came to our class last Monday. He [did not speak to anyone / looked unhappy]. So we [gave him a seat / showed him our classroom]. After that he [smiled / joined our game].',
+    points: [
+      { label: "开头", keywordGroups: [["new boy", "new girl", "new student", "new classmate", "came to our class", "joined our class", "called tom", "called max"]], hint: "开头（新同学是谁）" },
+      { label: "大家的反应", keywordGroups: [["did not speak", "was quiet", "looked unhappy", "lonely", "no one", "nobody", "sat alone", "was shy", "was nervous", "we said hello", "we talked", "welcomed"]], hint: "写大家怎么对待他" },
+      { label: "结尾", keywordGroups: [["smiled", "joined", "played", "made friends", "happy", "glad", "now he", "now she", "next week", "after that", "began to talk"]], hint: "写结尾（后来的变化）" },
+    ] },
 ];
 
 // ========== 上下文解析 ==========

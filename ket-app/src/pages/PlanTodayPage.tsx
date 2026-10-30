@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { buildDailySet, dateKey, diffDays, judgeText, keywordCoverage, type DailyItem, type DailySet } from '../data/dailyPlan';
+import { gradeWriting, countWords } from '../data/writingGrader';
 import { usePlanStore } from '../store/usePlanStore';
 import { useProgressStore, type ModuleType } from '../store/useProgressStore';
 import { AudioButton } from '../components/AudioButton';
@@ -14,12 +15,6 @@ const AREA_META: Record<string, { label: string; color: string; bg: string }> = 
   listening: { label: '听力', color: 'text-orange-600',   bg: 'bg-orange-50 border-orange-100' },
   speaking:  { label: '口语', color: 'text-green-600',    bg: 'bg-green-50 border-green-100' },
 };
-
-function countWords(text: string): number {
-  const t = text.trim();
-  if (!t) return 0;
-  return t.split(/\s+/).filter(Boolean).length;
-}
 
 export default function PlanTodayPage() {
   const navigate = useNavigate();
@@ -58,6 +53,14 @@ export default function PlanTodayPage() {
   const todayLog = logs[todayKey];
   // 今天刚做完当前这套 → 今日已完成（若当天先做完又跳过，setIndex 不等于 cursor-1，仍视为未完成）
   const doneToday = Boolean(todayLog && todayLog.setIndex === cursor - 1);
+
+  // 写作批改报告：提交时算好存在 log 里；刷新后从 log 读回（保证结果不丢）
+  const writingReport = submitted
+    ? (todayLog?.writingGrade ??
+      (set_.writing
+        ? gradeWriting(writingText, set_.writing.prompt.minWords, set_.writing.prompt.points)
+        : undefined))
+    : undefined;
 
   const streak = getStreak(todayKey);
   const completedDays = getCompletedCount();
@@ -118,8 +121,14 @@ export default function PlanTodayPage() {
     }
 
     const writingWords = countWords(writingText);
-    const writingDone = Boolean(set_.writing) && writingWords >= (set_.writing?.prompt.minWords ?? 0);
     const cov = set_.speaking ? keywordCoverage(speakingText, set_.speaking.keywords) : null;
+
+    // 写作批改：词数 + 3 个要点覆盖 + 语法可疑点（纯规则，不判错只提示）
+    const writingGrade = set_.writing
+      ? gradeWriting(writingText, set_.writing.prompt.minWords, set_.writing.prompt.points)
+      : undefined;
+    // 「达标」= 词数够 且 3 个要点全覆盖（不再只看词数——凑词不算过关）
+    const writingDone = writingGrade ? writingGrade.passed : false;
 
     completeDay({
       date: todayKey,
@@ -130,6 +139,7 @@ export default function PlanTodayPage() {
       totalCount: objectiveItems.length,
       writingDone,
       writingWords,
+      writingGrade,
       speakingDone: Boolean(set_.speaking && cov && cov.percent >= 60),
       speakingPercent: cov?.percent ?? 0,
       minutes,
@@ -214,7 +224,11 @@ export default function PlanTodayPage() {
         <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-4">
           <p className="text-sm text-green-700 font-medium">
             ✅ 今天已完成：客观题 {todayLog.correctCount}/{todayLog.totalCount} 正确
-            {todayLog.writingDone ? '，写作已完成' : ''}
+            {todayLog.writingGrade
+              ? `，写作要点 ${todayLog.writingGrade.pointsHit}/${todayLog.writingGrade.pointsTotal}`
+              : todayLog.writingDone
+                ? '，写作已完成'
+                : ''}
             {todayLog.speakingDone ? '，口语已完成' : ''}
           </p>
           <p className="text-xs text-green-600 mt-1">可以重做今天的题组（会覆盖今日记录）。</p>
@@ -298,10 +312,73 @@ export default function PlanTodayPage() {
             </span>
             {submitted && (
               <span className={`text-xs font-medium ${todayLog?.writingDone ? 'text-green-600' : 'text-orange-500'}`}>
-                {todayLog?.writingDone ? '✅ 已达标' : '⚠️ 未达词数要求'}
+                {todayLog?.writingDone
+                  ? '✅ 已达标（要点全覆盖）'
+                  : writingReport && !writingReport.wordCountOk
+                    ? `⚠️ 还差 ${writingReport.minWords - writingReport.wordCount} 词`
+                    : '⚠️ 要点未写全'}
               </span>
             )}
           </div>
+
+          {/* ========== 写作批改结果 ========== */}
+          {submitted && writingReport && (
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-bold text-gray-600">📝 写作批改</p>
+                <span
+                  className={`text-xs font-bold px-2 py-0.5 rounded ${
+                    writingReport.passed
+                      ? 'bg-green-100 text-green-700'
+                      : writingReport.pointsHit === writingReport.pointsTotal
+                        ? 'bg-yellow-100 text-yellow-700'
+                        : 'bg-orange-100 text-orange-700'
+                  }`}
+                >
+                  要点 {writingReport.pointsHit}/{writingReport.pointsTotal}（{writingReport.pointsPercent}%）
+                </span>
+              </div>
+
+              <p className="text-xs text-gray-600 mb-2">{writingReport.summary}</p>
+
+              {/* 要点逐项 */}
+              <div className="space-y-1 mb-2">
+                {writingReport.points.map((pt) => (
+                  <div key={pt.label} className="flex items-start gap-1.5 text-xs">
+                    <span className={pt.covered ? 'text-green-600' : 'text-orange-500'}>
+                      {pt.covered ? '✅' : '❌'}
+                    </span>
+                    <span className={pt.covered ? 'text-gray-600' : 'text-orange-700'}>
+                      {pt.label}
+                      {pt.covered && pt.hitKeywords.length > 0 && (
+                        <span className="text-gray-400">（写到了 {pt.hitKeywords.join(' / ')}）</span>
+                      )}
+                      {!pt.covered && <span className="text-orange-500"> —— {pt.hint}</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* 语法可疑点：只提示不判错 */}
+              {writingReport.grammarIssues.length > 0 && (
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-xs text-amber-700 hover:underline">
+                    ⚠️ 有 {writingReport.grammarIssues.length} 处可能要检查一下
+                  </summary>
+                  <div className="mt-1.5 space-y-1">
+                    {writingReport.grammarIssues.map((g, i) => (
+                      <div key={i} className="text-xs bg-amber-50 border border-amber-100 rounded p-1.5">
+                        <p className="text-gray-700">
+                          <span className="font-medium">{g.fragment}</span> —— {g.message}
+                        </p>
+                        <p className="text-gray-500 mt-0.5">💡 {g.suggestion}</p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -402,6 +479,11 @@ export default function PlanTodayPage() {
           <p className="text-sm text-gray-500 mb-3">
             客观题正确率{' '}
             {todayLog.totalCount ? Math.round((todayLog.correctCount / todayLog.totalCount) * 100) : 0}%
+            {writingReport
+              ? ` · 写作要点 ${writingReport.pointsHit}/${writingReport.pointsTotal}`
+              : todayLog.writingWords > 0
+                ? ` · 写作 ${todayLog.writingWords} 词`
+                : ''}
             {todayLog.speakingPercent > 0 ? ` · 口语关键词覆盖 ${todayLog.speakingPercent}%` : ''}
             {todayLog.minutes > 0 ? ` · 用时 ${todayLog.minutes} 分钟` : ''}
           </p>
