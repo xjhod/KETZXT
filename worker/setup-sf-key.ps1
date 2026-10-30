@@ -1,19 +1,17 @@
-# 一次性脚本：校验并配置 SiliconFlow API Key
+# One-shot helper: validate and configure the SiliconFlow API Key
 #
-# 为什么需要这个脚本：
-#   Key 如果经过聊天窗口传递，可能因截图 OCR 认错字符、或被宿主的密钥保护机制改写，
-#   导致「明明是对的 Key 却报 Token is invalid」。
-#   在你自己的终端里粘贴原 Key，可以绕过整条中间链路 —— 终端 -> wrangler 直达。
+# Why this script exists:
+#   A key that travels through a chat window can be corrupted in two ways:
+#     1. OCR of a screenshot may mis-read one character (l/1, 0/o, v/y ...)
+#     2. The host replaces real key strings in tool arguments with placeholders
+#   Pasting the key in YOUR OWN terminal avoids both.
 #
-# 用法（PowerShell）：
+# Usage (PowerShell 5.1 or 7+):
 #   cd C:\Users\Rywl0\WorkBuddy\KETZXT-fresh\worker
 #   powershell -ExecutionPolicy Bypass -File .\setup-sf-key.ps1
 #
-# 脚本做 4 件事，任何一步失败会停下并明确报告：
-#   1. 验证 Key 有效性（models 端点 + 真实英语音频 ASR 转写）
-#   2. 写入本地 .dev.vars（供 wrangler pages dev 使用）
-#   3. 写入 Cloudflare Pages Secret（线上生效）
-#   4. 打印前端需要确认的信息
+# All output is plain ASCII on purpose: Windows PowerShell 5.1 reads .ps1
+# files as ANSI unless they carry a BOM, so non-ASCII text breaks parsing.
 
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
@@ -22,55 +20,67 @@ $ApiBase  = 'https://api.siliconflow.cn/v1'
 $Project  = 'ketzxt-api'
 $AsrModel = 'FunAudioLLM/SenseVoiceSmall'
 
-function Step($msg) { Write-Host "`n=== $msg ===" -ForegroundColor Cyan }
-function Ok($msg)   { Write-Host "  [OK] $msg" -ForegroundColor Green }
-function Fail($msg) { Write-Host "  [FAIL] $msg" -ForegroundColor Red }
+# Write a file as UTF-8 WITHOUT BOM.
+# PowerShell 5.1's "Set-Content -Encoding utf8" adds a BOM, which would end up
+# glued to the first key name and break wrangler's env parsing.
+function Write-NoBom([string]$Path, [string]$Content) {
+    $enc = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($Path, $Content, $enc)
+}
 
-# ---------------------------------------------------------------- 1. 读取 Key
-Step '1/4  读取 SiliconFlow API Key'
-Write-Host '请粘贴 Key（形如 sk-...，粘贴后直接回车）' -ForegroundColor Yellow
+function Step($m) { Write-Host ''; Write-Host "=== $m ===" }
+function Ok($m)   { Write-Host "  [OK] $m" }
+function Fail($m) { Write-Host "  [FAIL] $m" }
+
+# --------------------------------------------------------------- 1. read key
+Step '1/4  Read SiliconFlow API Key'
+Write-Host 'Paste the key (starts with sk-), then press Enter:'
 $key = (Read-Host).Trim()
-if (-not $key) { Fail '没有读到内容，已中止'; exit 1 }
-Write-Host ("  长度 {0}，前缀 {1}..." -f $key.Length, $key.Substring(0, [Math]::Min(8, $key.Length)))
-if (-not $key.StartsWith('sk-')) { Fail '不是 sk- 开头的 Key'; exit 1 }
+if (-not $key) { Fail 'Nothing was entered. Aborted.'; exit 1 }
+Write-Host ("  length {0}, prefix {1}..." -f $key.Length, $key.Substring(0, [Math]::Min(8, $key.Length)))
+if (-not $key.StartsWith('sk-')) { Fail 'Does not start with sk-'; exit 1 }
 
-# ---------------------------------------------------------------- 2. 验证
-Step '2/4  验证 Key 有效性'
-try {
-    $h = @{ Authorization = "Bearer $key" }
-    $models = Invoke-RestMethod -Uri "$ApiBase/models" -Headers $h -TimeoutSec 30
-    Ok "models 端点通过（可用模型 {0} 个）" -f $models.data.Count
-} catch {
-    Fail "models 端点失败：$($_.Exception.Message)"
-    Fail '该 Key 在 SiliconFlow 服务端不被认可。请到控制台确认：'
-    Write-Host '     1) 实名认证状态（未实名 = 无法调用任何模型）' -ForegroundColor Yellow
-    Write-Host '     2) API 密钥列表里该 Key 是否为「启用」状态' -ForegroundColor Yellow
-    Write-Host '     3) 创建 Key 时是否误填了 IP 白名单' -ForegroundColor Yellow
+# --------------------------------------------------------------- 2. validate
+Step '2/4  Validate the key'
+
+# curl.exe ships with Windows 10+ and behaves the same on PS 5.1 and 7+.
+$modelsRaw = & curl.exe -sS -m 30 "$ApiBase/models" -H "Authorization: Bearer $key" 2>&1
+$modelsRaw = ($modelsRaw | Out-String)
+if ($modelsRaw -match '"data"\s*:\s*\[') {
+    $count = ([regex]::Matches($modelsRaw, '"id"\s*:')).Count
+    Ok "models endpoint passed (about $count models listed)"
+} else {
+    Fail "models endpoint failed: $($modelsRaw.Trim())"
+    Fail 'The server does not accept this key. Check these in the SiliconFlow console:'
+    Write-Host '     1) Real-name verification status (unverified = no model calls allowed)'
+    Write-Host '     2) Whether the key row shows as Enabled (not Disabled)'
+    Write-Host '     3) Whether an IP whitelist was set when the key was created'
     exit 1
 }
 
-# 用项目自带的真实教材音频测 ASR（比合成音更能说明问题）
-$audio = Get-ChildItem -Path '..\ket-app\public\audio\*.mp3' -ErrorAction SilentlyContinue | Select-Object -First 1
+# Real English audio from the project (a synthetic tone proves much less).
+$audio = Get-ChildItem -Path (Join-Path $PSScriptRoot '..\ket-app\public\audio\*.mp3') -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($audio) {
-    try {
-        $form = @{
-            file   = Get-Item $audio.FullName
-            model  = $AsrModel
-            language = 'en'
-        }
-        $r = Invoke-RestMethod -Uri "$ApiBase/audio/transcriptions" -Method Post -Headers $h -Form $form -TimeoutSec 60
-        if ($r.text) { Ok "ASR 转写通过 -> `"$($r.text)`"" } else { Fail "ASR 返回空文本（Key 有效但没识别出内容）" }
-    } catch {
-        Fail "ASR 转写失败：$($_.Exception.Message)"
+    $asrRaw = & curl.exe -sS -m 60 -X POST "$ApiBase/audio/transcriptions" `
+        -H "Authorization: Bearer $key" `
+        -F "file=@$($audio.FullName)" -F "model=$AsrModel" -F "language=en" 2>&1
+    $asrRaw = ($asrRaw | Out-String)
+    $txt = ''
+    if ($asrRaw -match '"text"\s*:\s*"([^"]*)"') { $txt = $Matches[1] }
+    if ($txt) {
+        Ok "ASR transcription passed -> $txt"
+    } else {
+        Write-Host "  [WARN] ASR returned no text: $($asrRaw.Trim())"
+        Write-Host '         Key is valid, but check that the model and quota are available.'
     }
 } else {
-    Write-Host '  [跳过] 没找到测试音频（不影响 Key 有效性结论）' -ForegroundColor DarkGray
+    Write-Host '  [SKIP] no test audio found (does not affect the key verdict)'
 }
 
-# ---------------------------------------------------------------- 3. 本地 .dev.vars
-Step '3/4  写入本地 .dev.vars'
-$deepseek = ''
+# --------------------------------------------------------------- 3. local .dev.vars
+Step '3/4  Write local .dev.vars'
 $dv = Join-Path $PSScriptRoot '.dev.vars'
+$deepseek = ''
 if (Test-Path $dv) {
     $line = Get-Content $dv | Where-Object { $_ -like 'DEEPSEEK_API_KEY=*' } | Select-Object -First 1
     if ($line) { $deepseek = ($line -split '=', 2)[1] }
@@ -83,27 +93,32 @@ if (-not $deepseek) {
     }
 }
 if ($deepseek) {
-    Set-Content -Path $dv -Value "DEEPSEEK_API_KEY=$deepseek`nSILICONFLOW_API_KEY=$key" -Encoding utf8
-    Ok "已写入 .dev.vars（DeepSeek Key 一并保留）"
+    Write-NoBom $dv ("DEEPSEEK_API_KEY=$deepseek`nSILICONFLOW_API_KEY=$key`n")
+    Ok '.dev.vars written (DeepSeek key preserved, no BOM)'
 } else {
-    Set-Content -Path $dv -Value "SILICONFLOW_API_KEY=$key" -Encoding utf8
-    Ok "已写入 .dev.vars（未找到 DeepSeek Key，可稍后单独补）"
+    Write-NoBom $dv ("SILICONFLOW_API_KEY=$key`n")
+    Ok '.dev.vars written (DeepSeek key not found, add it later)'
 }
 
-# ---------------------------------------------------------------- 4. 线上 Secret
-Step '4/4  写入 Cloudflare Pages Secret（线上生效）'
+# --------------------------------------------------------------- 4. online secret
+Step '4/4  Write the Cloudflare Pages secret (live)'
+$tmp = Join-Path $env:TEMP 'sf_key_tmp.txt'
+Write-NoBom $tmp $key
 try {
-    $key | npx wrangler pages secret put SILICONFLOW_API_KEY --project-name $Project 2>&1 | Out-String | Write-Host
-    Ok "线上 Secret 已更新（项目 $Project）"
+    $cmd = "npx wrangler pages secret put SILICONFLOW_API_KEY --project-name $Project < `"$tmp`""
+    cmd /c $cmd
+    Remove-Item $tmp -ErrorAction SilentlyContinue
+    Ok "live secret updated (project $Project)"
 } catch {
-    Fail "写入线上 Secret 失败：$($_.Exception.Message)"
-    Write-Host '  线上仍是旧值 —— 口语的云端转写会自动降级到浏览器识别，不影响做题。' -ForegroundColor Yellow
+    Fail "Could not update the live secret: $($_.Exception.Message)"
+    Write-Host '  The old value stays online. Speaking scoring will fall back to the'
+    Write-Host '  browser transcript automatically, so practice is not blocked.'
 }
 
-Step '完成'
-Write-Host '接下来：' -ForegroundColor Cyan
-Write-Host '  1) 重新部署（让新 Secret 生效）：' -ForegroundColor White
+Step 'Done'
+Write-Host 'Next steps:' -ForegroundColor Cyan
+Write-Host '  1) Redeploy so the new secret takes effect:' -ForegroundColor White
 Write-Host '       npx wrangler pages deploy public --project-name ketzxt-api --branch main --commit-dirty=true'
-Write-Host '  2) 验证线上：' -ForegroundColor White
+Write-Host '  2) Verify:' -ForegroundColor White
 Write-Host '       curl https://ketzxt-api.pages.dev/api/health'
-Write-Host '  （预期 asr:true / speechMode:cloud-asr）' -ForegroundColor DarkGray
+Write-Host '       (expect asr:true and speechMode:cloud-asr)' -ForegroundColor DarkGray
