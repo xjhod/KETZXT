@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { studyPlan } from '../data/studyPlan';
 import type { SkillArea, WeekPlan } from '../data/studyPlan';
+import { dateKey } from '../data/dailyPlan';
+import { usePlanStore } from '../store/usePlanStore';
 
 const areaMeta: Record<SkillArea, { label: string; color: string; bg: string }> = {
   reading:   { label: '阅读', color: 'text-purple-600', bg: 'bg-purple-50 border-purple-100' },
@@ -15,6 +18,16 @@ export default function StudyPlanPage() {
   const [month, setMonth] = useState(1);
   const [week, setWeek] = useState(1);
   const current: WeekPlan | undefined = studyPlan.weeks.find((w) => w.month === month && w.week === week);
+
+  const navigate = useNavigate();
+  const todayKey = dateKey(new Date());
+  const startDate = usePlanStore((s) => s.startDate);
+  const ensureStartDate = usePlanStore((s) => s.ensureStartDate);
+  const setStartDate = usePlanStore((s) => s.setStartDate);
+  const getStreak = usePlanStore((s) => s.getStreak);
+  const getCompletedCount = usePlanStore((s) => s.getCompletedCount);
+  const isDone = usePlanStore((s) => s.isDone);
+  const effectiveStart = startDate ?? todayKey;
 
   const areas: SkillArea[] = ['reading', 'writing', 'listening', 'speaking'];
 
@@ -31,6 +44,37 @@ export default function StudyPlanPage() {
               <p className="text-xs text-indigo-100">{areaMeta[a].label}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 今日执行入口 */}
+      <div className="bg-white rounded-2xl shadow p-4 border border-orange-200">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <p className="font-bold text-gray-800">📌 今日备考</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              按计划自动出题 · 客观题判分 + 写作/口语任务 · 完成后自动打卡
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              起始日 {effectiveStart} · 已完成 {getCompletedCount()} 天 · 连续 {getStreak(todayKey)} 天
+              {isDone(todayKey) ? ' · ✅ 今天已完成' : ''}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={effectiveStart}
+              onChange={(e) => {
+                if (!e.target.value) return;
+                ensureStartDate(todayKey);
+                setStartDate(e.target.value);
+              }}
+              className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-600"
+            />
+            <button onClick={() => navigate('/plan-today')} className="btn-primary text-sm whitespace-nowrap">
+              开始今日备考 →
+            </button>
+          </div>
         </div>
       </div>
 

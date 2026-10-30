@@ -59,6 +59,15 @@ const features = [
     border: 'border-red-100',
   },
   {
+    title: '今日备考',
+    desc: '按计划出题 · 每日一练 · 自动打卡',
+    icon: '📌',
+    to: '/plan-today',
+    color: 'from-orange-400 to-red-500',
+    bg: 'bg-orange-50',
+    border: 'border-orange-100',
+  },
+  {
     title: '备考计划',
     desc: '1年四阶段 · 48周任务 · 写作优先',
     icon: '🎯',

@@ -13,6 +13,7 @@ import StatisticsPage from './pages/StatisticsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import StudyPlanPage from './pages/StudyPlanPage';
+import PlanTodayPage from './pages/PlanTodayPage';
 import { getCurrentUser, logout, importFromUrlHash } from './utils/auth';
 import { useState, useEffect, type ReactElement } from 'react';
 
@@ -108,6 +109,7 @@ function AppContent() {
             <Route path="/reading" element={<RequireAuth><ReadingPage /></RequireAuth>} />
             <Route path="/listening" element={<RequireAuth><ListeningPage /></RequireAuth>} />
             <Route path="/speaking" element={<RequireAuth><SpeakingPage /></RequireAuth>} />
+            <Route path="/plan-today" element={<RequireAuth><PlanTodayPage /></RequireAuth>} />
             <Route path="/study-plan" element={<RequireAuth><StudyPlanPage /></RequireAuth>} />
             <Route path="/wrong" element={<RequireAuth><WrongPage /></RequireAuth>} />
             <Route path="/statistics" element={<RequireAuth><StatisticsPage /></RequireAuth>} />

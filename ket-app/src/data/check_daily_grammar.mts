@@ -1,6 +1,6 @@
-import * as G from '../data/grammar';
-import * as R from '../data/grammarRoadmap';
-import * as RD from '../data/grammarReading';
+import * as G from '../data/grammar.ts'';
+import * as R from '../data/grammarRoadmap.ts'';
+import * as RD from '../data/grammarReading.ts'';
 
 const points = G.allGrammarPoints as Array<{
   id: string; name: string; nameZh: string;

@@ -23,7 +23,7 @@ import {
   g18Fill, g18Choice, g18Correction,
   g19Fill, g19Choice, g19Correction,
   g20Fill, g20Choice, g20Correction,
-} from './grammar';
+} from './grammar.ts';
 import type {
   GrammarPoint,
   GrammarFillQuestion,

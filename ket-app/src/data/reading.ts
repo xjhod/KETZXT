@@ -3,7 +3,7 @@
 // 包含 KET Reading Part 1–5 共 5 大题型
 // ============================================================
 
-import { part1Hard, part2Hard, part3ClozeHard, part3RCHard, part4TFHard, part5Hard } from './readingHard';
+import { part1Hard, part2Hard, part3ClozeHard, part3RCHard, part4TFHard, part5Hard } from './readingHard.ts';
 
 // ==================== 类型定义 ====================
 

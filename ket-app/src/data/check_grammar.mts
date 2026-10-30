@@ -1,4 +1,4 @@
-import * as G from '../data/grammar';
+import * as G from '../data/grammar.ts'';
 
 const all = G as Record<string, unknown>;
 const names = Object.keys(all);

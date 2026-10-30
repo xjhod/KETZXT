@@ -1,5 +1,5 @@
 // 结构性校验：加载 reading.ts 全部 6 类题型，检查答案硬错误
-import * as R from './reading';
+import * as R from './reading.ts'';
 const { part1Articles, part2Articles, part3ClozeArticles, part3RCArticles, part4TFArticles, part5Articles } = R;
 
 type P = string[];
