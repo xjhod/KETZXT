@@ -22,6 +22,17 @@ export default defineConfig({
     'import.meta.env.VITE_BUILD_HASH': JSON.stringify(BUILD_HASH),
     'import.meta.env.VITE_BUILD_TIME': JSON.stringify(BUILD_TIME),
   },
+  server: {
+    // 本地开发时把 /llm 代理到 wrangler dev（默认 8787 端口）
+    // 生产环境走 VITE_LLM_API_BASE 指向的 Worker 公网地址
+    proxy: {
+      '/llm': {
+        target: process.env.LLM_DEV_TARGET || 'http://127.0.0.1:8787',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/llm/, ''),
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),

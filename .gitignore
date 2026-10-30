@@ -26,3 +26,16 @@ count_*.js
 # Ignore OS files
 .DS_Store
 Thumbs.db
+
+# ---- API Key / 本地密钥（绝对不能提交）----
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+worker/.dev.vars
+worker/.env
+
+# ---- Worker (Cloudflare) ----
+worker/node_modules/
+worker/.wrangler/
+worker/.dev.vars*

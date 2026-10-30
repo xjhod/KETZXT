@@ -4,6 +4,13 @@ import { speakingPart1, speakingPart2 } from '../data/speaking';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
 import { useProgressStore } from '../store/useProgressStore';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed, stopAllAudio } from '../utils/audio';
+import {
+  fetchLlmStatus,
+  gradeSpeechWithLLM,
+  blobToBase64,
+  type LlmStatus,
+  type LlmSpeechResult,
+} from '../utils/llm';
 
 // ========== 类型定义 ==========
 interface ScoreResult {
@@ -119,9 +126,13 @@ export default function SpeakingPage() {
   const [activePart, setActivePart] = useState<1 | 2>(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
-  const [, setAudioBlob] = useState<Blob | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
+  // AI 口语评分（可选增强）：不可用时降级到上面的关键词评分
+  const [llmStatus, setLlmStatus] = useState<LlmStatus>({ available: false, llm: false, asr: false });
+  const [llmSpeech, setLlmSpeech] = useState<LlmSpeechResult | null>(null);
+  const [llmScoring, setLlmScoring] = useState(false);
   const [showKeywords, setShowKeywords] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [manualText, setManualText] = useState('');
@@ -184,6 +195,7 @@ export default function SpeakingPage() {
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
       setScoreResult(null); // 清除之前的评分
+      setLlmSpeech(null);   // 清除旧的 AI 评分
       transcriber.start();  // 启动真实语音识别（与录音并行）
     } catch (err) {
       console.error('无法访问麦克风：', err);
@@ -191,6 +203,15 @@ export default function SpeakingPage() {
     }
   }, [activePart, currentIndex, currentPart1, transcriber]);
   
+  // 探一次后端可用性：决定要不要显示「AI 评分」入口
+  useEffect(() => {
+    let alive = true;
+    fetchLlmStatus().then((s) => {
+      if (alive) setLlmStatus(s);
+    });
+    return () => { alive = false; };
+  }, []);
+
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
@@ -212,6 +233,45 @@ export default function SpeakingPage() {
   }, [audioUrl]);
   
   // ========== 评分 ==========
+  /**
+   * AI 口语评分：把录音发给后端 → ASR 转文字 → LLM 按 KET A2 口语标准评分。
+   * 失败时保持原有 scoreResult（关键词评分）不变，功能不降级。
+   */
+  const handleAiScore = useCallback(async () => {
+    if (!audioBlob || llmScoring) return;
+    setLlmScoring(true);
+    try {
+      const audioBase64 = await blobToBase64(audioBlob);
+      const isPart1 = activePart === 1;
+      const q = isPart1 ? currentPart1 : currentPart2;
+      const questionText = isPart1
+        ? (currentPart1.questionZh || currentPart1.question)
+        : (currentPart2.questions[0] || q.id);
+      const keywords = isPart1 ? currentPart1.keywords : currentPart2.keywords;
+
+      const res = await gradeSpeechWithLLM({
+        audioBase64,
+        mimeType: audioBlob.type || 'audio/webm',
+        question: questionText,
+        keywords,
+        modelAnswer: isPart1 ? currentPart1.modelAnswer : undefined,
+        // 浏览器自带的识别结果：服务端没配云端 ASR 时用它兜底
+        browserTranscript: transcript || manualText || '',
+      });
+
+      if (!res.ok) {
+        console.warn('[LLM] 口语评分降级：', res.reason);
+        return;
+      }
+      setLlmSpeech(res.data);
+    } catch (e) {
+      console.warn('[LLM] 口语评分异常，降级：', e);
+    } finally {
+      setLlmScoring(false);
+    }
+  }, [audioBlob, llmScoring, activePart, currentPart1, currentPart2, transcript, manualText]);
+
+
   const handleScore = useCallback(() => {
     const answer = (transcript || manualText).trim();
     if (!answer) {
@@ -425,6 +485,93 @@ export default function SpeakingPage() {
         </div>
         
         {/* 评分结果 */}
+        {/* ========== AI 口语评分（可选增强） ========== */}
+        {(audioUrl || audioBlob) && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
+            {!llmSpeech ? (
+              <button
+                onClick={handleAiScore}
+                disabled={llmScoring || !llmStatus.available || !audioBlob}
+                className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {llmScoring
+                  ? '🤖 AI 评分中…（转写 + 评分，约 10 秒）'
+                  : llmStatus.available
+                    ? '🤖 让 AI 评分（发音转写 + 内容/语法/流利度）'
+                    : '🤖 AI 评分暂不可用（已用关键词评分）'}
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold text-purple-700">🤖 AI 口语评分</p>
+                  <div className="flex gap-2">
+                    {[
+                      { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
+                      { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
+                      { l: '流利', v: llmSpeech.fluencyScore, c: 'text-orange-600' },
+                      { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
+                    ].map((s) => (
+                      <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
+                    ))}
+                    <span className="text-xs font-bold text-purple-700">综合 {llmSpeech.score}</span>
+                  </div>
+                </div>
+
+                {llmSpeech.transcript && (
+                  <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
+                    <p className="font-medium text-gray-700 mb-1">
+                      🎤 识别到的内容
+                      {llmSpeech.asrSource === 'browser' && (
+                        <span className="text-orange-500 font-normal">
+                          （浏览器识别，可能有误；识别不准时语法判断也会受影响）
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-gray-600">{llmSpeech.transcript}</p>
+                  </div>
+                )}
+
+                {llmSpeech.feedback && (
+                  <div className="text-xs bg-purple-50 border border-purple-100 rounded p-2">
+                    <p className="font-medium text-purple-800 mb-1">总体评价</p>
+                    <p className="text-gray-700">{llmSpeech.feedback}</p>
+                  </div>
+                )}
+
+                {llmSpeech.grammarIssues.length > 0 && (
+                  <div className="text-xs bg-amber-50 border border-amber-100 rounded p-2">
+                    <p className="font-medium text-amber-800 mb-1">⚠️ 语法问题</p>
+                    {llmSpeech.grammarIssues.map((g, i) => (
+                      <p key={i} className="text-gray-700 mt-0.5">· {g}</p>
+                    ))}
+                  </div>
+                )}
+
+                {llmSpeech.suggestions.length > 0 && (
+                  <div className="text-xs bg-green-50 border border-green-100 rounded p-2">
+                    <p className="font-medium text-green-800 mb-1">💡 改进建议</p>
+                    {llmSpeech.suggestions.map((s, i) => (
+                      <p key={i} className="text-gray-700 mt-0.5">{i + 1}. {s}</p>
+                    ))}
+                  </div>
+                )}
+
+                {llmSpeech.sampleAnswer && (
+                  <details className="text-xs">
+                    <summary className="cursor-pointer text-purple-700 hover:underline">
+                      查看示范回答
+                    </summary>
+                    <p className="text-gray-700 bg-gray-50 border border-gray-200 rounded p-2 mt-1">
+                      {llmSpeech.sampleAnswer}
+                    </p>
+                  </details>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+
         {scoreResult && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h4 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
@@ -675,6 +822,93 @@ export default function SpeakingPage() {
           />
 
           {/* 评分结果 */}
+        {/* ========== AI 口语评分（可选增强） ========== */}
+        {(audioUrl || audioBlob) && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
+            {!llmSpeech ? (
+              <button
+                onClick={handleAiScore}
+                disabled={llmScoring || !llmStatus.available || !audioBlob}
+                className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {llmScoring
+                  ? '🤖 AI 评分中…（转写 + 评分，约 10 秒）'
+                  : llmStatus.available
+                    ? '🤖 让 AI 评分（发音转写 + 内容/语法/流利度）'
+                    : '🤖 AI 评分暂不可用（已用关键词评分）'}
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold text-purple-700">🤖 AI 口语评分</p>
+                  <div className="flex gap-2">
+                    {[
+                      { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
+                      { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
+                      { l: '流利', v: llmSpeech.fluencyScore, c: 'text-orange-600' },
+                      { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
+                    ].map((s) => (
+                      <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
+                    ))}
+                    <span className="text-xs font-bold text-purple-700">综合 {llmSpeech.score}</span>
+                  </div>
+                </div>
+
+                {llmSpeech.transcript && (
+                  <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
+                    <p className="font-medium text-gray-700 mb-1">
+                      🎤 识别到的内容
+                      {llmSpeech.asrSource === 'browser' && (
+                        <span className="text-orange-500 font-normal">
+                          （浏览器识别，可能有误；识别不准时语法判断也会受影响）
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-gray-600">{llmSpeech.transcript}</p>
+                  </div>
+                )}
+
+                {llmSpeech.feedback && (
+                  <div className="text-xs bg-purple-50 border border-purple-100 rounded p-2">
+                    <p className="font-medium text-purple-800 mb-1">总体评价</p>
+                    <p className="text-gray-700">{llmSpeech.feedback}</p>
+                  </div>
+                )}
+
+                {llmSpeech.grammarIssues.length > 0 && (
+                  <div className="text-xs bg-amber-50 border border-amber-100 rounded p-2">
+                    <p className="font-medium text-amber-800 mb-1">⚠️ 语法问题</p>
+                    {llmSpeech.grammarIssues.map((g, i) => (
+                      <p key={i} className="text-gray-700 mt-0.5">· {g}</p>
+                    ))}
+                  </div>
+                )}
+
+                {llmSpeech.suggestions.length > 0 && (
+                  <div className="text-xs bg-green-50 border border-green-100 rounded p-2">
+                    <p className="font-medium text-green-800 mb-1">💡 改进建议</p>
+                    {llmSpeech.suggestions.map((s, i) => (
+                      <p key={i} className="text-gray-700 mt-0.5">{i + 1}. {s}</p>
+                    ))}
+                  </div>
+                )}
+
+                {llmSpeech.sampleAnswer && (
+                  <details className="text-xs">
+                    <summary className="cursor-pointer text-purple-700 hover:underline">
+                      查看示范回答
+                    </summary>
+                    <p className="text-gray-700 bg-gray-50 border border-gray-200 rounded p-2 mt-1">
+                      {llmSpeech.sampleAnswer}
+                    </p>
+                  </details>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+
           {scoreResult && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h4 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">

@@ -5,6 +5,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { buildDailySet, dateKey, diffDays, judgeText, keywordCoverage, type DailyItem, type DailySet } from '../data/dailyPlan';
 import { gradeWriting, countWords } from '../data/writingGrader';
+import {
+  fetchLlmStatus,
+  gradeWritingWithLLM,
+  type LlmStatus,
+  type LlmWritingResult,
+} from '../utils/llm';
 import { usePlanStore } from '../store/usePlanStore';
 import { useProgressStore, type ModuleType } from '../store/useProgressStore';
 import { AudioButton } from '../components/AudioButton';
@@ -24,6 +30,10 @@ export default function PlanTodayPage() {
   const [speakingText, setSpeakingText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [startTime] = useState(() => Date.now());
+  // LLM 增强批改状态（不可用时自动降级到规则层，不影响做题）
+  const [llmStatus, setLlmStatus] = useState<LlmStatus>({ available: false, llm: false, asr: false });
+  const [llmWriting, setLlmWriting] = useState<LlmWritingResult | null>(null);
+  const [llmWritingLoading, setLlmWritingLoading] = useState(false);
 
   const startDate = usePlanStore((s) => s.startDate);
   const ensureStartDate = usePlanStore((s) => s.ensureStartDate);
@@ -39,6 +49,15 @@ export default function PlanTodayPage() {
   useEffect(() => {
     ensureStartDate(todayKey);
   }, [ensureStartDate, todayKey]);
+
+  // 启动时探一次后端：决定要不要显示「AI 深度批改」入口
+  useEffect(() => {
+    let alive = true;
+    fetchLlmStatus().then((s) => {
+      if (alive) setLlmStatus(s);
+    });
+    return () => { alive = false; };
+  }, []);
 
   const effectiveStart = startDate ?? todayKey;
   // 进度式：出题索引来自「推进游标」而不是日历日期 —— 没做完明天还是同一套
@@ -148,6 +167,31 @@ export default function PlanTodayPage() {
     setFrozenIndex(activeIndex);
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  /**
+   * AI 深度批改（可选增强）：在规则层结果之上叠加 LLM 的内容/语言评估。
+   * 失败时 llmWriting 保持 null —— 规则层结果照常展示，功能不降级。
+   */
+  const handleLlmGrade = async () => {
+    if (!set_.writing || llmWritingLoading) return;
+    setLlmWritingLoading(true);
+    try {
+      const result = await gradeWritingWithLLM({
+        text: writingText,
+        prompt: set_.writing.prompt.prompt,
+        requirement: set_.writing.prompt.requirement,
+        kind: set_.writing.prompt.kind,
+        minWords: set_.writing.prompt.minWords,
+        pointsCovered: writingReport?.points.map((pt) => ({
+          label: pt.label,
+          covered: pt.covered,
+        })),
+      });
+      setLlmWriting(result);
+    } finally {
+      setLlmWritingLoading(false);
+    }
   };
 
   /** 跳过本套：推进游标但不记完成（防止某一套卡住永远做不完） */
@@ -357,6 +401,80 @@ export default function PlanTodayPage() {
                     </span>
                   </div>
                 ))}
+              </div>
+
+              {/* ========== AI 深度批改（可选增强） ========== */}
+              <div className="mt-3 pt-2 border-t border-dashed border-gray-200">
+                {!llmWriting && (
+                  <button
+                    onClick={handleLlmGrade}
+                    disabled={llmWritingLoading || !llmStatus.available}
+                    className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {llmWritingLoading
+                      ? '🤖 AI 批改中…'
+                      : llmStatus.available
+                        ? '🤖 让 AI 再批一次（内容切题度 / 语言质量 / 逻辑）'
+                        : '🤖 AI 批改暂不可用（已用本地规则批改）'}
+                  </button>
+                )}
+
+                {llmWriting && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-purple-700">🤖 AI 深度批改</p>
+                      <div className="flex gap-1.5">
+                        {[
+                          { label: '内容', v: llmWriting.contentScore, c: 'text-blue-600' },
+                          { label: '语言', v: llmWriting.languageScore, c: 'text-green-600' },
+                          { label: '综合', v: llmWriting.overallScore, c: 'text-purple-600' },
+                        ].map((s) => (
+                          <span key={s.label} className={`text-[11px] font-bold ${s.c}`}>
+                            {s.label} {s.v}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {llmWriting.contentComments.length > 0 && (
+                      <div className="text-xs bg-blue-50 border border-blue-100 rounded p-2">
+                        <p className="font-medium text-blue-800 mb-1">内容点评</p>
+                        {llmWriting.contentComments.map((c2, i) => (
+                          <p key={i} className="text-gray-700 mt-0.5">· {c2}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {llmWriting.languageComments.length > 0 && (
+                      <div className="text-xs bg-green-50 border border-green-100 rounded p-2">
+                        <p className="font-medium text-green-800 mb-1">语言点评</p>
+                        {llmWriting.languageComments.map((c2, i) => (
+                          <p key={i} className="text-gray-700 mt-0.5">· {c2}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {llmWriting.suggestions.length > 0 && (
+                      <div className="text-xs bg-purple-50 border border-purple-100 rounded p-2">
+                        <p className="font-medium text-purple-800 mb-1">💡 改进建议</p>
+                        {llmWriting.suggestions.map((s, i) => (
+                          <p key={i} className="text-gray-700 mt-0.5">{i + 1}. {s}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {llmWriting.betterVersion && (
+                      <details className="text-xs">
+                        <summary className="cursor-pointer text-purple-700 hover:underline">
+                          查看参考改写（同样内容，写得更好）
+                        </summary>
+                        <p className="text-gray-700 bg-gray-50 border border-gray-200 rounded p-2 mt-1 whitespace-pre-line">
+                          {llmWriting.betterVersion}
+                        </p>
+                      </details>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* 语法可疑点：只提示不判错 */}
