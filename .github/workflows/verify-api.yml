@@ -4,6 +4,12 @@ name: 线上 API 巡检
 # 用途：从 GitHub runner（境外网络）真实调用线上 Cloudflare Pages Functions，
 #       验证 API Key 是否生效、业务链路是否通。
 #       本机直连 *.pages.dev 在国内会被干扰，无法作为验证依据。
+#
+# 覆盖三层：
+#   1. health          —— Key 是否注入（llm / asr / speechMode）
+#   2. 写作批改        —— DeepSeek 链路 + 业务返回
+#   3. 口语评分        —— 真实音频 -> 云端 ASR -> LLM 四维评分
+#                          （仓库自带 2268 个教材音频，用其中一个做真实样本）
 
 on:
   workflow_dispatch:
@@ -15,22 +21,26 @@ on:
 
 jobs:
   verify:
-    name: 验证 health + 写作批改
+    name: 验证 health / 写作 / 口语
     runs-on: ubuntu-latest
     steps:
+      - name: 检出仓库（取真实教材音频做 ASR 样本）
+        uses: actions/checkout@v4
+
       - name: 健康检查
         run: |
           BASE="${{ github.event.inputs.base }}"
-          echo "基址: $BASE"
+          echo "base: $BASE"
           curl -sS -m 30 "$BASE/api/health" | tee /tmp/health.json
           echo ""
-          echo "--- 判定 ---"
           python3 - <<'PY'
           import json
           d = json.load(open('/tmp/health.json'))
-          print('llm(DeepSeek) :', d.get('llm'))
+          print('llm(DeepSeek)  :', d.get('llm'))
           print('asr(SiliconFlow):', d.get('asr'))
-          print('转写模式      :', d.get('speechMode'))
+          print('speechMode      :', d.get('speechMode'))
+          assert d.get('llm') is True, 'DeepSeek key not injected'
+          print('PASS: DeepSeek key injected')
           PY
 
       - name: 写作批改实测
@@ -53,24 +63,32 @@ jobs:
           import json
           d = json.load(open('/tmp/grade.json'))
           if not d.get('ok'):
-              print('❌ 失败:', d.get('error'))
-              raise SystemExit(1)
-          print('✅ 内容', d.get('contentScore'), '| 语言', d.get('languageScore'), '| 综合', d.get('overallScore'))
+              print('FAIL:', d.get('error')); raise SystemExit(1)
+          print('PASS: 内容', d.get('contentScore'), '| 语言', d.get('languageScore'),
+                '| 综合', d.get('overallScore'))
           for s in (d.get('suggestions') or [])[:3]:
-              print('   建议:', s)
+              print('   ', s)
           PY
 
-      - name: 口语评分实测（模拟 ASR 不可用时的降级）
+      - name: 口语评分实测（真实音频 -> 云端 ASR -> LLM）
         run: |
           BASE="${{ github.event.inputs.base }}"
-          cat > /tmp/speech.json <<'EOF'
-          {
-            "browserTranscript": "Hello, my name is Ben. I am ten years old. I like playing football with my friends. I very like football.",
-            "question": "What is your name and what do you like doing?",
-            "keywords": ["name", "like", "football", "friends"]
-          }
-          EOF
-          curl -sS -m 60 -X POST "$BASE/api/grade-speech" \
+          MP3=$(ls ket-app/public/audio/*.mp3 | head -1)
+          echo "sample audio: $MP3"
+          # 转成浏览器录音格式（webm/opus），与前端 MediaRecorder 输出一致
+          ffmpeg -y -loglevel error -i "$MP3" -c:a libopus -b:a 32k -ar 16000 -ac 1 /tmp/sample.webm
+          python3 - <<'PY'
+          import base64, json
+          b64 = base64.b64encode(open('/tmp/sample.webm','rb').read()).decode()
+          json.dump({
+              'audioBase64': b64,
+              'mimeType': 'audio/webm',
+              'question': 'What is the boy doing?',
+              'keywords': ['boy', 'playing', 'football', 'park'],
+          }, open('/tmp/speech.json','w'))
+          print('request body ready, b64 chars:', len(b64))
+          PY
+          curl -sS -m 90 -X POST "$BASE/api/grade-speech" \
             -H "Content-Type: application/json" \
             --data-binary @/tmp/speech.json | tee /tmp/speech-res.json
           echo ""
@@ -78,9 +96,19 @@ jobs:
           import json
           d = json.load(open('/tmp/speech-res.json'))
           if not d.get('ok'):
-              print('❌ 失败:', d.get('error'))
-              raise SystemExit(1)
-          print('✅ 转写模式:', d.get('asrSource'), '| 综合', d.get('score'), '| 语法', d.get('grammarScore'))
+              print('FAIL:', d.get('error')); raise SystemExit(1)
+          src = d.get('asrSource')
+          print('PASS: asrSource =', src,
+                '| 综合', d.get('score'),
+                '| 内容', d.get('contentScore'),
+                '| 语法', d.get('grammarScore'),
+                '| 流利', d.get('fluencyScore'),
+                '| 词汇', d.get('vocabularyScore'))
+          print('   transcript:', d.get('transcript'))
           for g in (d.get('grammarIssues') or [])[:3]:
-              print('   语法:', g)
+              print('   grammar:', g)
+          if src != 'cloud-asr':
+              print('WARN: fell back to browser transcript (cloud ASR key may be invalid)')
+              raise SystemExit(2)
+          print('PASS: cloud ASR is live')
           PY
