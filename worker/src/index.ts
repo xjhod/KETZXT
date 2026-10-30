@@ -386,48 +386,58 @@ function toStringArray(v: unknown): string[] {
 
 // ========== 路由 ==========
 
+/**
+ * 统一的请求处理（Workers 与 Pages Functions 共用）。
+ * 抽成独立函数是为了让两种部署目标复用同一份业务逻辑。
+ */
+export async function handleRequest(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
+
+  // 健康检查：前端启动时用来判断「LLM 服务是否可用」
+  if (url.pathname === '/api/health' || url.pathname.endsWith('/api/health')) {
+    return json({
+      ok: true,
+      llm: Boolean(env.DEEPSEEK_API_KEY),
+      asr: Boolean(env.SILICONFLOW_API_KEY),
+      // cloud-asr = 云端转写；browser = 降级用浏览器识别结果
+      speechMode: env.SILICONFLOW_API_KEY ? 'cloud-asr' : 'browser',
+      model: 'deepseek-chat',
+      asrModel: 'FunAudioLLM/SenseVoiceSmall',
+      runtime: 'worker',
+    });
+  }
+
+  if (request.method !== 'POST') {
+    return error('Method Not Allowed', 405);
+  }
+
+  try {
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return error('请求体不是合法 JSON');
+    }
+
+    if (url.pathname.endsWith('/api/grade-writing')) {
+      return await handleWriting(body as WritingRequest, env);
+    }
+    if (url.pathname.endsWith('/api/grade-speech')) {
+      return await handleSpeech(body as SpeechRequest, env);
+    }
+    return error('未知接口', 404);
+  } catch (e) {
+    return error(`内部错误：${(e as Error).message}`, 500);
+  }
+}
+
+/** Cloudflare Workers 部署入口 */
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: CORS_HEADERS });
-    }
-
-    // 健康检查：前端启动时用来判断「LLM 服务是否可用」
-    if (url.pathname === '/api/health') {
-      return json({
-        ok: true,
-        llm: Boolean(env.DEEPSEEK_API_KEY),
-        asr: Boolean(env.SILICONFLOW_API_KEY),
-        // cloud-asr = 云端转写；browser = 降级用浏览器识别结果
-        speechMode: env.SILICONFLOW_API_KEY ? 'cloud-asr' : 'browser',
-        model: 'deepseek-chat',
-        asrModel: 'FunAudioLLM/SenseVoiceSmall',
-      });
-    }
-
-    if (request.method !== 'POST') {
-      return error('Method Not Allowed', 405);
-    }
-
-    try {
-      let body: unknown;
-      try {
-        body = await request.json();
-      } catch {
-        return error('请求体不是合法 JSON');
-      }
-
-      if (url.pathname === '/api/grade-writing') {
-        return await handleWriting(body as WritingRequest, env);
-      }
-      if (url.pathname === '/api/grade-speech') {
-        return await handleSpeech(body as SpeechRequest, env);
-      }
-      return error('未知接口', 404);
-    } catch (e) {
-      return error(`内部错误：${(e as Error).message}`, 500);
-    }
+    return handleRequest(request, env);
   },
 };
