@@ -2,9 +2,12 @@ name = "ketzxt-llm"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
 
-# API Key 通过 `wrangler secret put` 注入，不写在这里：
-#   wrangler secret put DEEPSEEK_API_KEY
-#   wrangler secret put SILICONFLOW_API_KEY
+# Pages 部署用的静态资源目录（public/ 只有一个占位页，API 全在 functions/）
+pages_build_output_dir = "public"
+
+# API Key 通过 `wrangler pages secret put` 注入，不写在这里：
+#   wrangler pages secret put DEEPSEEK_API_KEY --project-name ketzxt-api
+#   wrangler pages secret put SILICONFLOW_API_KEY --project-name ketzxt-api
 
 [observability]
 enabled = true
