@@ -75,14 +75,27 @@ jobs:
           BASE="${{ github.event.inputs.base }}"
           MP3=$(ls ket-app/public/audio/*.mp3 | head -1)
           echo "sample audio: $MP3"
-          # 转成浏览器录音格式（webm/opus），与前端 MediaRecorder 输出一致
-          ffmpeg -y -loglevel error -i "$MP3" -c:a libopus -b:a 32k -ar 16000 -ac 1 /tmp/sample.webm
-          python3 - <<'PY'
-          import base64, json
-          b64 = base64.b64encode(open('/tmp/sample.webm','rb').read()).decode()
+          # 转成浏览器录音格式（webm/opus），与前端 MediaRecorder 输出一致。
+          # ubuntu runner 不自带 ffmpeg，需要先装；装不上就退回 mp3 直传。
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            echo "installing ffmpeg..."
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg || true
+          fi
+          if command -v ffmpeg >/dev/null 2>&1; then
+            ffmpeg -y -loglevel error -i "$MP3" -c:a libopus -b:a 32k -ar 16000 -ac 1 /tmp/sample.webm
+            SAMPLE=/tmp/sample.webm; MIME=audio/webm
+            echo "using webm/opus (browser MediaRecorder format)"
+          else
+            cp "$MP3" /tmp/sample.mp3
+            SAMPLE=/tmp/sample.mp3; MIME=audio/mpeg
+            echo "ffmpeg unavailable, falling back to mp3"
+          fi
+          SAMPLE="$SAMPLE" MIME="$MIME" python3 - <<'PY'
+          import base64, json, os
+          b64 = base64.b64encode(open(os.environ['SAMPLE'],'rb').read()).decode()
           json.dump({
               'audioBase64': b64,
-              'mimeType': 'audio/webm',
+              'mimeType': os.environ['MIME'],
               'question': 'What is the boy doing?',
               'keywords': ['boy', 'playing', 'football', 'park'],
           }, open('/tmp/speech.json','w'))
