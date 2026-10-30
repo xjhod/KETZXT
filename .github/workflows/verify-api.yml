@@ -1,0 +1,86 @@
+name: 线上 API 巡检
+
+# 手动触发：gh workflow run verify-api.yml
+# 用途：从 GitHub runner（境外网络）真实调用线上 Cloudflare Pages Functions，
+#       验证 API Key 是否生效、业务链路是否通。
+#       本机直连 *.pages.dev 在国内会被干扰，无法作为验证依据。
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'API 基址（留空用线上默认）'
+        required: false
+        default: 'https://ketzxt-api.pages.dev'
+
+jobs:
+  verify:
+    name: 验证 health + 写作批改
+    runs-on: ubuntu-latest
+    steps:
+      - name: 健康检查
+        run: |
+          BASE="${{ github.event.inputs.base }}"
+          echo "基址: $BASE"
+          curl -sS -m 30 "$BASE/api/health" | tee /tmp/health.json
+          echo ""
+          echo "--- 判定 ---"
+          python3 - <<'PY'
+          import json
+          d = json.load(open('/tmp/health.json'))
+          print('llm(DeepSeek) :', d.get('llm'))
+          print('asr(SiliconFlow):', d.get('asr'))
+          print('转写模式      :', d.get('speechMode'))
+          PY
+
+      - name: 写作批改实测
+        run: |
+          BASE="${{ github.event.inputs.base }}"
+          cat > /tmp/body.json <<'EOF'
+          {
+            "text": "Dear Teacher, I am sorry I am ill today, so I cannot come to school. I have a fever. Please could you tell me what homework I should do? Thank you. Best wishes, Ben",
+            "prompt": "你生病了不能去上学。给老师写一封邮件（至少 25 词），说明情况，并问一个关于作业的问题。",
+            "requirement": "3 个内容点：表达歉意 / 说清不能上学的原因 / 问作业",
+            "kind": "email",
+            "minWords": 25
+          }
+          EOF
+          curl -sS -m 60 -X POST "$BASE/api/grade-writing" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/body.json | tee /tmp/grade.json
+          echo ""
+          python3 - <<'PY'
+          import json
+          d = json.load(open('/tmp/grade.json'))
+          if not d.get('ok'):
+              print('❌ 失败:', d.get('error'))
+              raise SystemExit(1)
+          print('✅ 内容', d.get('contentScore'), '| 语言', d.get('languageScore'), '| 综合', d.get('overallScore'))
+          for s in (d.get('suggestions') or [])[:3]:
+              print('   建议:', s)
+          PY
+
+      - name: 口语评分实测（模拟 ASR 不可用时的降级）
+        run: |
+          BASE="${{ github.event.inputs.base }}"
+          cat > /tmp/speech.json <<'EOF'
+          {
+            "browserTranscript": "Hello, my name is Ben. I am ten years old. I like playing football with my friends. I very like football.",
+            "question": "What is your name and what do you like doing?",
+            "keywords": ["name", "like", "football", "friends"]
+          }
+          EOF
+          curl -sS -m 60 -X POST "$BASE/api/grade-speech" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/speech.json | tee /tmp/speech-res.json
+          echo ""
+          python3 - <<'PY'
+          import json
+          d = json.load(open('/tmp/speech-res.json'))
+          if not d.get('ok'):
+              print('❌ 失败:', d.get('error'))
+              raise SystemExit(1)
+          print('✅ 转写模式:', d.get('asrSource'), '| 综合', d.get('score'), '| 语法', d.get('grammarScore'))
+          for g in (d.get('grammarIssues') or [])[:3]:
+              print('   语法:', g)
+          PY
