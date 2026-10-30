@@ -133,7 +133,10 @@ npx wrangler deploy
 
 ```bash
 # 终端 1：起 Worker（.dev.vars 里放 Key）
-cd worker && npx wrangler dev
+cd worker && npx wrangler pages dev public --port 8787
+
+# 注意：Pages 项目必须用 `wrangler pages dev`，用 `wrangler dev` 会报
+# "It looks like you've run a Workers-specific command in a Pages project."
 
 # 终端 2：起前端（/llm 已配代理，自动转发到 127.0.0.1:8787）
 cd ket-app && npx vite

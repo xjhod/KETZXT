@@ -1,5 +1,15 @@
-name = "ketzxt-llm"
-main = "src/index.ts"
+# Cloudflare Pages 项目配置（不是 Workers —— workers.dev 在国内被干扰）
+#
+# ⚠️ Pages 与 Workers 的配置互斥：
+#   - Workers 用 `main` 指向入口文件
+#   - Pages 用 `pages_build_output_dir` 指向静态资源目录
+#   两者**不能同时存在**，否则 wrangler 直接报错：
+#   "Configuration file cannot contain both "main" and "pages_build_output_dir""
+#
+# 本项目走 Pages 部署，因此**不写 main**：
+# Pages Functions 的入口是 functions/api/[[path]].ts，它 import 了 src/index.ts，
+# wrangler 打包 functions 时会自动把 src/index.ts 一起 bundle 进来，无需 main 声明。
+name = "ketzxt-api"
 compatibility_date = "2026-10-01"
 
 # Pages 部署用的静态资源目录（public/ 只有一个占位页，API 全在 functions/）
