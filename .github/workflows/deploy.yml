@@ -36,6 +36,9 @@ jobs:
         run: cd ket-app && npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          # LLM 后端地址（Cloudflare Pages Functions）。这是地址不是密钥，可安全注入。
+          # 未配置 secret 时前端会走 /llm 同域路径 —— AI 批改自动降级为不可用，不影响做题。
+          VITE_LLM_API_BASE: ${{ secrets.VITE_LLM_API_BASE }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
