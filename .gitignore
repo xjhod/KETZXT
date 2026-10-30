@@ -28,12 +28,16 @@ count_*.js
 Thumbs.db
 
 # ---- API Key / 本地密钥（绝对不能提交）----
+# 注意：只忽略真正的密钥文件，*.example 是示例模板（无密钥）应当入库
 .dev.vars
 .dev.vars.*
 .env
-.env.*
+.env.local
+.env.*.local
 worker/.dev.vars
 worker/.env
+ket-app/.env.local
+ket-app/.env.production.local
 
 # ---- Worker (Cloudflare) ----
 worker/node_modules/
