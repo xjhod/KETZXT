@@ -43,3 +43,6 @@ ket-app/.env.production.local
 worker/node_modules/
 worker/.wrangler/
 worker/.dev.vars*
+
+# ---- Pages 部署产物（占位页，部署时生成）----
+worker/public/
