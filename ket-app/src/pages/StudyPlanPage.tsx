@@ -26,6 +26,7 @@ export default function StudyPlanPage() {
   const setStartDate = usePlanStore((s) => s.setStartDate);
   const getStreak = usePlanStore((s) => s.getStreak);
   const getCompletedCount = usePlanStore((s) => s.getCompletedCount);
+  const cursor = usePlanStore((s) => s.cursor);
   const isDone = usePlanStore((s) => s.isDone);
   const effectiveStart = startDate ?? todayKey;
 
@@ -56,8 +57,11 @@ export default function StudyPlanPage() {
               按计划自动出题 · 客观题判分 + 写作/口语任务 · 完成后自动打卡
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              起始日 {effectiveStart} · 已完成 {getCompletedCount()} 天 · 连续 {getStreak(todayKey)} 天
+              起始日 {effectiveStart} · 已完成 {getCompletedCount()} 套 · 连续 {getStreak(todayKey)} 天
               {isDone(todayKey) ? ' · ✅ 今天已完成' : ''}
+            </p>
+            <p className="text-xs text-blue-500 mt-1">
+              当前在第 {cursor + 1} 套 · 第 {Math.floor(cursor / 7) + 1} 周第 {(cursor % 7) + 1} 天
             </p>
           </div>
           <div className="flex items-center gap-2">

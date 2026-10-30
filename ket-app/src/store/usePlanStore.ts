@@ -1,6 +1,8 @@
 // ========== 备考计划执行状态 ==========
 // 负责：
 //  - 计划起始日（第一次打开「今日备考」时锚定为当天，可在计划页重设）
+//  - 推进游标 cursor：已推进到第几套题（= 当前该做的套索引）
+//    · 进度式推进：只有「做完」或「跳过」才推进，没做完明天还是同一套（不浪费）
 //  - 每日完成记录（题组判分结果、写作/口语完成情况、用时）
 //  - 连续完成天数、总完成率（供计划页与首页展示）
 import { create } from 'zustand';
@@ -13,7 +15,8 @@ export interface DailyItemResult {
 }
 
 export interface DailyLog {
-  date: string;              // YYYY-MM-DD
+  date: string;              // 实际完成的日历日 YYYY-MM-DD
+  setIndex: number;          // 完成的是第几套题（进度游标）
   itemIds: string[];         // 当日客观题 id 列表
   results: DailyItemResult[];
   correctCount: number;
@@ -28,15 +31,22 @@ export interface DailyLog {
 
 interface PlanState {
   startDate: string | null;
+  /** 推进游标：已完成（或跳过）的套数，即下一个该做的套索引 */
+  cursor: number;
   logs: Record<string, DailyLog>;
+  /** 被跳过的套（date -> setIndex），跳过后不算完成、连续天数会断 */
+  skips: Record<string, number>;
 
   // actions
   ensureStartDate: (todayKey: string) => string;
   setStartDate: (date: string) => void;
   getLog: (date: string) => DailyLog | undefined;
-  saveLog: (log: DailyLog) => void;
+  /** 做完一套：记录 + 推进游标 */
+  completeDay: (log: DailyLog) => void;
+  /** 跳过当前套：推进游标但不记完成（防卡死用） */
+  skipDay: (date: string, setIndex: number) => void;
   isDone: (date: string) => boolean;
-  /** 连续完成天数（从今天或昨天往前数） */
+  /** 连续完成天数（按日历日连续，从今天或昨天往前数；跳过会断） */
   getStreak: (todayKey: string) => number;
   /** 已完成天数 */
   getCompletedCount: () => number;
@@ -49,7 +59,9 @@ export const usePlanStore = create<PlanState>()(
   persist(
     (set, get) => ({
       startDate: null,
+      cursor: 0,
       logs: {},
+      skips: {},
 
       ensureStartDate: (todayKey) => {
         const cur = get().startDate;
@@ -58,11 +70,22 @@ export const usePlanStore = create<PlanState>()(
         return todayKey;
       },
 
-      setStartDate: (date) => set({ startDate: date }),
+      // 重设起始日 = 重开计划（清空进度与游标）
+      setStartDate: (date) => set({ startDate: date, cursor: 0, logs: {}, skips: {} }),
 
       getLog: (date) => get().logs[date],
 
-      saveLog: (log) => set((state) => ({ logs: { ...state.logs, [log.date]: log } })),
+      completeDay: (log) =>
+        set((state) => ({
+          logs: { ...state.logs, [log.date]: log },
+          cursor: Math.max(state.cursor, log.setIndex + 1),
+        })),
+
+      skipDay: (date, setIndex) =>
+        set((state) => ({
+          skips: { ...state.skips, [date]: setIndex },
+          cursor: Math.max(state.cursor, setIndex + 1),
+        })),
 
       isDone: (date) => Boolean(get().logs[date]),
 
@@ -92,7 +115,7 @@ export const usePlanStore = create<PlanState>()(
 
       getCompletedDates: () => Object.keys(get().logs).sort(),
 
-      reset: () => set({ logs: {} }),
+      reset: () => set({ cursor: 0, logs: {}, skips: {} }),
     }),
     {
       name: 'ket-plan-v1',

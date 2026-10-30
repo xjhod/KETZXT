@@ -121,6 +121,13 @@ export function diffDays(from: string, to: string): number {
   return Math.round((b - a) / 86400000);
 }
 
+/** 在某个日期上加 n 天，返回 YYYY-MM-DD */
+export function addDays(key: string, n: number): string {
+  const d = parseDate(key);
+  d.setDate(d.getDate() + n);
+  return dateKey(d);
+}
+
 /** 字符串 → 32 位种子 */
 function seedFrom(str: string): number {
   let h = 2166136261;
@@ -188,8 +195,11 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
 
 const WEEK_COUNT = studyPlan.weeks.length; // 48
 
-export function resolveContext(startDate: string, todayKey: string): DailyContext {
-  const dayIndex = diffDays(startDate, todayKey);
+/**
+ * 进度式解析：dayIndex 是「已完成套数」（= 当前该做的套索引），不是日历天数。
+ * 所以今天没做完 → 明天还是同一套题（不浪费），语法点推进也跟实际掌握同步。
+ */
+export function resolveContext(startDate: string, dayIndex: number): DailyContext {
   const totalWeeks = WEEK_COUNT;
   const finished = dayIndex >= totalWeeks * 7;
   const clamped = Math.max(0, Math.min(dayIndex, totalWeeks * 7 - 1));
@@ -200,7 +210,7 @@ export function resolveContext(startDate: string, todayKey: string): DailyContex
   const phase = studyPlan.phases.find((p) => p.id === weekPlan.phase) ?? studyPlan.phases[0];
   const tasks = weekPlan.tasks.filter((t) => t.day === dayOfWeek);
   return {
-    dateStr: todayKey,
+    dateStr: addDays(startDate, clamped),   // 计划日（起始日 + 第几天），用于展示
     startDate,
     dayIndex,
     weekIndex,
@@ -338,9 +348,10 @@ function buildSpeakingTask(rng: () => number): SpeakingTask | undefined {
 
 // ========== 组装 ==========
 
-export function buildDailySet(startDate: string, todayKey: string): DailySet {
-  const context = resolveContext(startDate, todayKey);
-  const rng = makeRng(seedFrom(`${startDate}#${todayKey}`));
+export function buildDailySet(startDate: string, dayIndex: number): DailySet {
+  const context = resolveContext(startDate, dayIndex);
+  // 种子只跟"第几套"有关：同一套题永远相同，与是哪一天做的无关
+  const rng = makeRng(seedFrom(`${startDate}#${dayIndex}`));
 
   const items: DailyItem[] = [];
   items.push(...buildGrammarItems(rng, context.dayIndex));
@@ -349,7 +360,7 @@ export function buildDailySet(startDate: string, todayKey: string): DailySet {
   const areas = new Set(context.tasks.map((t) => t.area));
   if (areas.has('reading')) items.push(...buildReadingItems(rng));
 
-  const set: DailySet = { dateStr: todayKey, context, items };
+  const set: DailySet = { dateStr: context.dateStr, context, items };
 
   if (areas.has('writing')) set.writing = buildWritingTask(context);
   if (areas.has('speaking')) set.speaking = buildSpeakingTask(rng);

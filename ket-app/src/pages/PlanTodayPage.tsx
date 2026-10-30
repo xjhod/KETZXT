@@ -3,7 +3,7 @@
 // 判分结果写入 useProgressStore（错题本 + 学习统计），完成记录写入 usePlanStore。
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { buildDailySet, dateKey, judgeText, keywordCoverage, type DailyItem, type DailySet } from '../data/dailyPlan';
+import { buildDailySet, dateKey, diffDays, judgeText, keywordCoverage, type DailyItem, type DailySet } from '../data/dailyPlan';
 import { usePlanStore } from '../store/usePlanStore';
 import { useProgressStore, type ModuleType } from '../store/useProgressStore';
 import { AudioButton } from '../components/AudioButton';
@@ -33,7 +33,9 @@ export default function PlanTodayPage() {
   const startDate = usePlanStore((s) => s.startDate);
   const ensureStartDate = usePlanStore((s) => s.ensureStartDate);
   const logs = usePlanStore((s) => s.logs);
-  const saveLog = usePlanStore((s) => s.saveLog);
+  const cursor = usePlanStore((s) => s.cursor);
+  const completeDay = usePlanStore((s) => s.completeDay);
+  const skipDay = usePlanStore((s) => s.skipDay);
   const getStreak = usePlanStore((s) => s.getStreak);
   const getCompletedCount = usePlanStore((s) => s.getCompletedCount);
   const recordAnswer = useProgressStore((s) => s.recordAnswer);
@@ -44,12 +46,18 @@ export default function PlanTodayPage() {
   }, [ensureStartDate, todayKey]);
 
   const effectiveStart = startDate ?? todayKey;
+  // 进度式：出题索引来自「推进游标」而不是日历日期 —— 没做完明天还是同一套
+  // frozenIndex：提交后冻结在刚做完的那套，避免游标推进导致题目当场换掉
+  const [frozenIndex, setFrozenIndex] = useState<number | null>(null);
+  const activeIndex = frozenIndex ?? cursor;
   const set_: DailySet = useMemo(
-    () => buildDailySet(effectiveStart, todayKey),
-    [effectiveStart, todayKey]
+    () => buildDailySet(effectiveStart, activeIndex),
+    [effectiveStart, activeIndex]
   );
   const ctx = set_.context;
   const todayLog = logs[todayKey];
+  // 今天刚做完当前这套 → 今日已完成（若当天先做完又跳过，setIndex 不等于 cursor-1，仍视为未完成）
+  const doneToday = Boolean(todayLog && todayLog.setIndex === cursor - 1);
 
   const streak = getStreak(todayKey);
   const completedDays = getCompletedCount();
@@ -113,8 +121,9 @@ export default function PlanTodayPage() {
     const writingDone = Boolean(set_.writing) && writingWords >= (set_.writing?.prompt.minWords ?? 0);
     const cov = set_.speaking ? keywordCoverage(speakingText, set_.speaking.keywords) : null;
 
-    saveLog({
+    completeDay({
       date: todayKey,
+      setIndex: activeIndex,
       itemIds: objectiveItems.map((i) => i.id),
       results: results.map((r) => ({ id: r.item.id, correct: r.correct })),
       correctCount,
@@ -126,12 +135,25 @@ export default function PlanTodayPage() {
       minutes,
       completedAt: new Date().toISOString(),
     });
+    setFrozenIndex(activeIndex);
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  /** 跳过本套：推进游标但不记完成（防止某一套卡住永远做不完） */
+  const handleSkip = () => {
+    if (submitted) return;
+    skipDay(todayKey, activeIndex);
+    setFrozenIndex(null);
+    setAnswers({});
+    setWritingText('');
+    setSpeakingText('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // ========== 未开始 / 已结束 ==========
-  if (ctx.dayIndex < 0) {
+  // 进度式下 dayIndex 就是游标（不会为负）；未开始看的是起始日是否在未来
+  if (startDate && diffDays(todayKey, startDate) > 0) {
     return (
       <div className="text-center py-16">
         <p className="text-4xl mb-3">📅</p>
@@ -166,6 +188,9 @@ export default function PlanTodayPage() {
               第 {ctx.month} 月第 {ctx.weekInMonth} 周 · {ctx.phase.name} · {ctx.tasks.length} 项任务 ·{' '}
               {ctx.tasks.reduce((n, t) => n + t.minutes, 0)} 分钟
             </p>
+            <p className="text-xs text-blue-500 mt-1">
+              第 {activeIndex + 1} 套 · 做不完明天还是这套（做完或跳过后才推进）
+            </p>
           </div>
           <div className="text-right shrink-0">
             <p className="text-2xl font-bold text-orange-500">🔥 {streak}</p>
@@ -185,7 +210,7 @@ export default function PlanTodayPage() {
       </div>
 
       {/* ========== 已完成提示 ========== */}
-      {todayLog && !submitted && (
+      {doneToday && !submitted && (
         <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-4">
           <p className="text-sm text-green-700 font-medium">
             ✅ 今天已完成：客观题 {todayLog.correctCount}/{todayLog.totalCount} 正确
@@ -350,6 +375,13 @@ export default function PlanTodayPage() {
               已答 {answeredCount}/{objectiveItems.length} 题
               {set_.writing ? ` · 写作 ${countWords(writingText)} 词` : ''}
             </div>
+            <button
+              onClick={handleSkip}
+              className="text-xs text-gray-400 hover:text-gray-600 px-2 py-2 shrink-0"
+              title="跳过本套，直接进入下一套（不计入连续打卡）"
+            >
+              跳过本套
+            </button>
             <button
               onClick={handleSubmit}
               disabled={answeredCount < objectiveItems.length}
