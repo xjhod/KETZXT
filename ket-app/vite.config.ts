@@ -33,6 +33,19 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        advancedChunks: {
+          groups: [
+            // 题库数据（源码 79%）单独成 chunk：主 bundle 变小，首屏解析快；
+            // chunk 仍会被 precache，离线可用性不受影响。
+            { name: 'data', test: /[\\/]src[\\/]data[\\/]/ },
+          ],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -52,6 +65,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // 主 bundle 约 2.1MB（题库数据占了源码 79%），超过 workbox 默认的 2MiB 限制
+        // 会导致它「不会被预缓存」—— 离线时站点直接打不开，且 build 以退出码 1 结束（CI 变红）。
+        // 这里放宽到 4MiB：题库必须离线可用（孩子可能在没网的地方做题）。
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         // 口语配图（public/speaking/*.png，10 张共 12MB，单张最大 1.1MB）
         // 不进 precache：precache 是「装 SW 时全量预下载」，12MB 会拖慢首次安装、
         // 浪费流量。改为下面的 runtimeCaching 按需缓存。

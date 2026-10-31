@@ -2,6 +2,13 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { speakingPart1, speakingPart2 } from '../data/speaking';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
+import {
+  startRecording as startRecorderCapture,
+  recorderHint,
+  detectRecorderCapability,
+  type RecorderCapability,
+  type RecorderHandle,
+} from '../utils/recorder';
 import { useProgressStore } from '../store/useProgressStore';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed, stopAllAudio } from '../utils/audio';
 import {
@@ -136,6 +143,9 @@ export default function SpeakingPage() {
   const [showKeywords, setShowKeywords] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [manualText, setManualText] = useState('');
+  // 录音环境：能力探测 + 实际使用的录音方式 + 给用户看的提示
+  const [recorderCap, setRecorderCap] = useState<RecorderCapability>('mediarecorder');
+  const [recorderNote, setRecorderNote] = useState('');
 
   // 真实语音识别（Web Speech API，无需大模型）
   const transcriber = useSpeechTranscriber();
@@ -152,9 +162,8 @@ export default function SpeakingPage() {
   // 当前 Part 的题量（一轮题数）
   const TOTAL = activePart === 1 ? speakingPart1.length : speakingPart2.length;
   
-  // 录音相关
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<BlobPart[]>([]);
+  // 录音相关（用兼容层，MediaRecorder 不可用时自动降级到 Web Audio）
+  const recorderHandleRef = useRef<RecorderHandle | null>(null);
   
   // 当前题目
   const currentPart1 = speakingPart1[currentIndex % speakingPart1.length];
@@ -162,44 +171,26 @@ export default function SpeakingPage() {
   
   // ========== 录音功能 ==========
   const startRecording = useCallback(async () => {
+    setRecorderNote(recorderHint());
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // 兼容不同浏览器支持的录音格式（部分国产浏览器不支持 audio/webm）
-      let mimeType = '';
-      const candidateTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
-      if (typeof MediaRecorder !== 'undefined' && typeof MediaRecorder.isTypeSupported === 'function') {
-        for (const t of candidateTypes) {
-          if (MediaRecorder.isTypeSupported(t)) { mimeType = t; break; }
-        }
-      }
-      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-      audioChunksRef.current = [];
-      
-      recorder.ondataavailable = (e: BlobEvent) => {
-        if (e.data.size > 0) {
-          audioChunksRef.current.push(e.data);
-        }
-      };
-      
-      recorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        setAudioBlob(blob);
-        
-        // 创建播放 URL
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
-        // 真实识别结果由 transcriber 提供，不再使用模拟转录
-      };
-      
-      recorder.start();
-      mediaRecorderRef.current = recorder;
+      // 兼容层：优先 MediaRecorder，失败自动降级到 Web Audio（录成 WAV）
+      const handle = await startRecorderCapture();
+      recorderHandleRef.current = handle;
+      setRecorderCap(handle === null ? 'none' : detectRecorderCapability());
       setIsRecording(true);
       setScoreResult(null); // 清除之前的评分
       setLlmSpeech(null);   // 清除旧的 AI 评分
-      transcriber.start();  // 启动真实语音识别（与录音并行）
+      // 浏览器自带识别在国产安卓上必然失败，这里失败不影响录音（云端 ASR 兜底）
+      transcriber.start();
     } catch (err) {
       console.error('无法访问麦克风：', err);
-      alert('无法访问麦克风。请确保已授予麦克风权限。');
+      const msg = (err as Error)?.message || '';
+      setRecorderNote(
+        msg.includes('不支持录音')
+          ? `${msg}。国产手机建议把网页「添加到主屏幕」后再打开，或换用系统自带浏览器。`
+          : '无法访问麦克风。请检查浏览器权限设置（国产手机还需在系统设置里允许网页使用麦克风）。'
+      );
+      alert('无法开始录音：' + (msg || '未知原因'));
     }
   }, [activePart, currentIndex, currentPart1, transcriber]);
   
@@ -212,13 +203,30 @@ export default function SpeakingPage() {
     return () => { alive = false; };
   }, []);
 
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+  const stopRecording = useCallback(async () => {
+    const handle = recorderHandleRef.current;
+    if (handle && isRecording) {
       setIsRecording(false);
-      
-      // 停止所有音轨
-      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      try {
+        const { blob, capability } = await handle.stop();
+        recorderHandleRef.current = null;
+        setRecorderCap(capability);
+        // 边界：微信内置浏览器等环境下 MediaRecorder 可能不报错却录不到声音，
+        // 表现为 blob 几乎为空。这种情况要明确告诉用户，而不是让 AI 评分报「转写失败」。
+        if (blob.size < 1000) {
+          setRecorderNote(
+            '这次没有录到声音（部分浏览器会静默失败）。请重试，或改用下面的键盘输入 —— ' +
+            '用键盘输入同样能得到 AI 的语法与内容批改。'
+          );
+          return;
+        }
+        setAudioBlob(blob);
+        // 创建播放 URL
+        const url = URL.createObjectURL(blob);
+        setAudioUrl(url);
+      } catch (e) {
+        console.error('录音结束失败：', e);
+      }
     }
     transcriber.stop(); // 停止语音识别，保留最终转录文本
   }, [isRecording, transcriber]);
@@ -238,10 +246,13 @@ export default function SpeakingPage() {
    * 失败时保持原有 scoreResult（关键词评分）不变，功能不降级。
    */
   const handleAiScore = useCallback(async () => {
-    if (!audioBlob || llmScoring) return;
+    // 关键：录音不可用时（国产浏览器）允许「只提交文字」也能评分 ——
+    // 只要有 transcript 或手动输入的文字，后端就能做语法/内容评分，不强依赖音频。
+    const textOnly = (transcript || manualText).trim();
+    if ((!audioBlob && !textOnly) || llmScoring) return;
     setLlmScoring(true);
     try {
-      const audioBase64 = await blobToBase64(audioBlob);
+      const audioBase64 = audioBlob ? await blobToBase64(audioBlob) : undefined;
       const isPart1 = activePart === 1;
       const q = isPart1 ? currentPart1 : currentPart2;
       const questionText = isPart1
@@ -251,11 +262,12 @@ export default function SpeakingPage() {
 
       const res = await gradeSpeechWithLLM({
         audioBase64,
-        mimeType: audioBlob.type || 'audio/webm',
+        mimeType: audioBlob?.type || 'audio/wav',
         question: questionText,
         keywords,
         modelAnswer: isPart1 ? currentPart1.modelAnswer : undefined,
-        // 浏览器自带的识别结果：服务端没配云端 ASR 时用它兜底
+        // 浏览器自带的识别结果；国产浏览器上它必然为空，
+        // 此时用手输的文字兜底（服务端直接基于文字评分，不需要音频）
         browserTranscript: transcript || manualText || '',
       });
 
@@ -444,6 +456,19 @@ export default function SpeakingPage() {
             </p>
           </div>
 
+          {/* 录音环境提示：国产浏览器/微信内置时给出可操作建议 */}
+          {recorderNote && (
+            <div className="mt-3 text-xs bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-2.5 text-amber-800 dark:text-amber-200">
+              <p className="font-medium mb-0.5">🎙 录音环境提示</p>
+              <p>{recorderNote}</p>
+              {recorderCap === 'none' && (
+                <p className="mt-1 text-amber-700 dark:text-amber-300">
+                  提示：即使不能录音，也可以在下面用键盘输入回答，AI 依然能给出语法与内容批改。
+                </p>
+              )}
+            </div>
+          )}
+
           {/* 手动输入（语音识别不可用时的替代方案）*/}
           <div className="w-full mt-2">
             <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -491,11 +516,13 @@ export default function SpeakingPage() {
             {!llmSpeech ? (
               <button
                 onClick={handleAiScore}
-                disabled={llmScoring || !llmStatus.available || !audioBlob}
+                disabled={llmScoring || !llmStatus.available || (!audioBlob && !(transcript || manualText).trim())}
                 className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {llmScoring
                   ? '🤖 AI 评分中…（转写 + 评分，约 10 秒）'
+                  : !audioBlob && (transcript || manualText).trim()
+                    ? '🤖 让 AI 评分（按你输入的文字评分）'
                   : llmStatus.available
                     ? '🤖 让 AI 评分（发音转写 + 内容/语法/流利度）'
                     : '🤖 AI 评分暂不可用（已用关键词评分）'}
@@ -782,6 +809,19 @@ export default function SpeakingPage() {
             </p>
           </div>
 
+          {/* 录音环境提示：国产浏览器/微信内置时给出可操作建议 */}
+          {recorderNote && (
+            <div className="mt-3 text-xs bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-2.5 text-amber-800 dark:text-amber-200">
+              <p className="font-medium mb-0.5">🎙 录音环境提示</p>
+              <p>{recorderNote}</p>
+              {recorderCap === 'none' && (
+                <p className="mt-1 text-amber-700 dark:text-amber-300">
+                  提示：即使不能录音，也可以在下面用键盘输入回答，AI 依然能给出语法与内容批改。
+                </p>
+              )}
+            </div>
+          )}
+
           {/* 手动输入（语音识别不可用时的替代方案）*/}
           <div className="w-full mt-2">
             <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -828,11 +868,13 @@ export default function SpeakingPage() {
             {!llmSpeech ? (
               <button
                 onClick={handleAiScore}
-                disabled={llmScoring || !llmStatus.available || !audioBlob}
+                disabled={llmScoring || !llmStatus.available || (!audioBlob && !(transcript || manualText).trim())}
                 className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {llmScoring
                   ? '🤖 AI 评分中…（转写 + 评分，约 10 秒）'
+                  : !audioBlob && (transcript || manualText).trim()
+                    ? '🤖 让 AI 评分（按你输入的文字评分）'
                   : llmStatus.available
                     ? '🤖 让 AI 评分（发音转写 + 内容/语法/流利度）'
                     : '🤖 AI 评分暂不可用（已用关键词评分）'}
