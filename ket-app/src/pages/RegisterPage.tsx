@@ -12,7 +12,7 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -40,9 +40,10 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    // 模拟网络延迟
-    setTimeout(() => {
-      const result = register(name, password, passwordHint.trim());
+    // 密码哈希用 PBKDF2（10 万次迭代），这一步本身要几十到一百多毫秒，
+    // 所以这里不再叠加人为的 setTimeout 延迟。
+    try {
+      const result = await register(name, password, passwordHint.trim());
 
       if (result.success) {
         setSuccess(result.message + ' 正在跳转到登录页面...');
@@ -53,9 +54,11 @@ export default function RegisterPage() {
       } else {
         setError(result.message);
       }
-
+    } catch (err) {
+      setError('注册失败：' + String(err));
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   return (

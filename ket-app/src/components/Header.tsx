@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
+import { syncPush, syncPull, isCloudConnected, isCurrentUserSynced, clearCredentials } from '../utils/sync';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -10,14 +11,44 @@ interface HeaderProps {
 
 export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncHint, setSyncHint] = useState('');
   const navigate = useNavigate();
   const currentUser = getCurrentUser();
   const userList = getUserList().filter(u => u.id !== currentUser?.id);
+  const cloudOn = isCloudConnected() && isCurrentUserSynced();
 
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
     navigate('/login', { replace: true });
+  };
+
+  /** 手动同步：先拉取云端合并，再把合并结果上传 */
+  const handleSync = async () => {
+    if (syncing) return;
+    setSyncing(true);
+    setSyncHint('');
+    try {
+      const pull = await syncPull();
+      if (!pull.ok) {
+        setSyncHint(pull.message);
+        return;
+      }
+      const push = await syncPush();
+      setSyncHint(push.ok ? (pull.merged ? `已同步 ${pull.merged} 条` : '已同步') : push.message);
+      setTimeout(() => setSyncHint(''), 3000);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  /** 解除本机与云端的绑定（不影响云端已存的数据） */
+  const handleUnlinkCloud = () => {
+    if (!confirm('解除本机与云端的绑定？云端已保存的数据不会被删除。')) return;
+    clearCredentials();
+    setShowUserMenu(false);
+    window.location.reload();
   };
 
   const handleSwitchUser = () => {
@@ -67,6 +98,35 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
 
         <span className="text-sm text-gray-400 dark:text-gray-500 hidden md:inline">Phase 1 Demo</span>
 
+        {/* 云端同步按钮 */}
+        {currentUser && (
+          <button
+            onClick={handleSync}
+            disabled={syncing || !cloudOn}
+            className={`p-2 rounded-lg transition-colors text-lg ${
+              !cloudOn
+                ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                : syncing
+                  ? 'text-blue-400 animate-pulse'
+                  : 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
+            }`}
+            title={
+              cloudOn
+                ? syncing ? '同步中...' : '点击同步到云端'
+                : '未连接云端，请在登录页连接'
+            }
+          >
+            ☁️
+          </button>
+        )}
+
+        {/* 同步结果提示 */}
+        {syncHint && (
+          <span className="text-xs text-blue-600 dark:text-blue-400 whitespace-nowrap hidden sm:inline">
+            {syncHint}
+          </span>
+        )}
+
         {/* 用户头像/菜单 */}
         {currentUser && (
           <div className="relative">
@@ -115,6 +175,15 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
                       </div>
                     ))}
                   </div>
+                )}
+
+                {isCloudConnected() && (
+                  <button
+                    onClick={handleUnlinkCloud}
+                    className="w-full text-left px-4 py-2 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-t border-gray-100 dark:border-gray-700"
+                  >
+                    🔌 解除本机云端绑定
+                  </button>
                 )}
 
                 <button

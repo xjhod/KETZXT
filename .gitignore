@@ -44,5 +44,15 @@ worker/node_modules/
 worker/.wrangler/
 worker/.dev.vars*
 
+# ---- EdgeOne Pages (后端) ----
+edgeone/node_modules/
+edgeone/.edgeone/
+edgeone/.env*
+# 部署产物与临时文件
+edgeone/*.zip
+edgeone/c*.txt
+edgeone/cookies.txt
+edgeone/big.json
+
 # ---- Pages 部署产物（占位页，部署时生成）----
 worker/public/

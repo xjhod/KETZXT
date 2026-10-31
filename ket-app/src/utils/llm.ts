@@ -8,8 +8,10 @@
  */
 
 // 后端地址：默认读 VITE_LLM_API_BASE；没配就用同域 /llm（可在反代或本地开发时用）
+// 注意：import.meta.env 在非 Vite 运行时（如 Node 验证脚本）不存在，用可选链兜底。
+const envBag = (import.meta as any)?.env ?? {};
 const BASE =
-  (import.meta.env.VITE_LLM_API_BASE as string | undefined)?.replace(/\/$/, '') || '/llm';
+  (envBag.VITE_LLM_API_BASE as string | undefined)?.replace(/\/$/, '') || '/llm';
 
 const TIMEOUT_MS = 45_000;
 

@@ -1,5 +1,6 @@
 import LZString from 'lz-string';
 import type { User, SafeUser } from '../types/user';
+import { generateSalt, hashPassword, safeEqual } from './crypto';
 
 // ========== 用户存储键名 ==========
 export const USERS_KEY = 'ket-app-users';
@@ -24,9 +25,15 @@ function saveUsers(users: User[]): void {
 
 /**
  * 注册新用户
+ *
+ * 密码只存 PBKDF2 派生哈希，不存明文。
  * @returns { success: boolean; message: string }
  */
-export function register(name: string, password: string, passwordHint?: string): { success: boolean; message: string } {
+export async function register(
+  name: string,
+  password: string,
+  passwordHint?: string
+): Promise<{ success: boolean; message: string }> {
   // 验证输入
   if (!name || !password) {
     return { success: false, message: '请输入姓名和密码' };
@@ -46,11 +53,15 @@ export function register(name: string, password: string, passwordHint?: string):
     return { success: false, message: '该用户名已存在，请使用其他姓名' };
   }
 
-  // 创建新用户（密码明文存储，方便忘记密码时查看）
+  // 派生哈希（这一步故意慢，是 PBKDF2 的设计目的）
+  const salt = generateSalt();
+  const hash = await hashPassword(password, salt);
+
   const newUser: User = {
     id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     name: name.trim(),
-    password: password, // 直接存储明文密码
+    salt,
+    hash,
     passwordHint: passwordHint || '',
     createdAt: new Date().toISOString(),
   };
@@ -63,9 +74,16 @@ export function register(name: string, password: string, passwordHint?: string):
 
 /**
  * 用户登录
- * @returns { success: boolean; message: string; user?: User }
+ *
+ * 兼容旧版本：本机可能还存着明文密码的老账号（password 字段，无 salt/hash）。
+ * 遇到这种账号时按明文比对，成功后**顺手升级**为哈希格式。
+ *
+ * @returns { success: boolean; message: string; user?: SafeUser }
  */
-export function login(name: string, password: string): { success: boolean; message: string; user?: SafeUser } {
+export async function login(
+  name: string,
+  password: string
+): Promise<{ success: boolean; message: string; user?: SafeUser }> {
   // 验证输入
   if (!name || !password) {
     return { success: false, message: '请输入姓名和密码' };
@@ -79,16 +97,42 @@ export function login(name: string, password: string): { success: boolean; messa
     return { success: false, message: '用户不存在' };
   }
 
-  // 验证密码（明文比较）
-  if (user.password !== password) {
-    return { success: false, message: '密码错误' };
+  if (isLegacyUser(user)) {
+    // 旧格式：明文比对
+    if (user.password !== password) {
+      return { success: false, message: '密码错误' };
+    }
+    // 升级为哈希格式
+    const salt = generateSalt();
+    const hash = await hashPassword(password, salt);
+    user.salt = salt;
+    user.hash = hash;
+    delete user.password;
+    saveUsers(users);
+  } else {
+    // 新格式：哈希比对
+    const hash = await hashPassword(password, user.salt);
+    if (!safeEqual(hash, user.hash)) {
+      return { success: false, message: '密码错误' };
+    }
   }
 
-  // 保存当前登录用户（不保存密码）
-  const { password: _, passwordHint: __, ...safeUser } = user;
+  // 保存当前登录用户（不保存密码与哈希）
+  const safeUser = toSafeUser(user);
   localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
 
   return { success: true, message: '登录成功！', user: safeUser };
+}
+
+/** 判断是否为旧版明文密码账号 */
+function isLegacyUser(u: User): boolean {
+  return typeof (u as any).password === 'string' && !u.hash;
+}
+
+/** 剥离密码/哈希后的安全用户 */
+export function toSafeUser(u: User): SafeUser {
+  const { password: _, passwordHint: __, salt: ___, hash: ____, ...rest } = u as any;
+  return rest as SafeUser;
 }
 
 /**
@@ -132,11 +176,14 @@ export function getRegisteredUsers(): Array<{ id: string; name: string; createdA
 }
 
 /**
- * 忘记密码 - 获取密码提示或直接获取密码
+ * 忘记密码 - 获取密码提示
+ *
+ * ⚠️ 旧版本会直接返回明文密码。密码改成哈希后**无法再反推原文**，
+ * 因此这里只返回提示。若用户连提示都没有，只能重置账号（见 deleteUser）。
  * @param name 用户名
- * @returns { success: boolean; message: string; hint?: string; password?: string }
+ * @returns { success: boolean; message: string; hint?: string }
  */
-export function forgotPassword(name: string): { success: boolean; message: string; hint?: string; password?: string } {
+export function forgotPassword(name: string): { success: boolean; message: string; hint?: string } {
   const users = getUsers();
   const user = users.find(u => u.name.toLowerCase() === name.trim().toLowerCase());
 
@@ -144,13 +191,19 @@ export function forgotPassword(name: string): { success: boolean; message: strin
     return { success: false, message: '用户不存在' };
   }
 
-  // 如果有密码提示，返回提示
   if (user.passwordHint) {
     return { success: true, message: '密码提示', hint: user.passwordHint };
   }
 
-  // 如果没有提示，直接返回密码（因为同一台设备使用）
-  return { success: true, message: '您的密码是', password: user.password };
+  // 旧账号的密码提示默认等于密码本身（历史数据），直接给出
+  if (isLegacyUser(user)) {
+    return { success: true, message: '密码提示', hint: user.passwordHint || user.password };
+  }
+
+  return {
+    success: false,
+    message: '该账号没有设置密码提示。密码已加密存储无法找回，请删除账号后重新注册。',
+  };
 }
 
 /**
@@ -212,8 +265,10 @@ export function importUsersFromSync(syncData: string): { success: boolean; messa
     let importedCount = 0;
 
     for (const importedUser of importedUsers) {
-      // 验证数据格式
-      if (!importedUser.id || !importedUser.name || !importedUser.password) {
+      // 验证数据格式：必须能通过密码校验（哈希格式）或旧版明文格式
+      const valid = importedUser.id && importedUser.name &&
+        (importedUser.hash || (importedUser as any).password);
+      if (!valid) {
         continue;
       }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY } from '../utils/auth';
+import { syncLogin, isCloudConnected } from '../utils/sync';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -14,6 +15,14 @@ export default function LoginPage() {
   const [forgotName, setForgotName] = useState('');
   const [forgotResult, setForgotResult] = useState<{ success: boolean; message: string; hint?: string; password?: string } | null>(null);
 
+  // 云端同步相关
+  const [cloudName, setCloudName] = useState('');
+  const [cloudPassword, setCloudPassword] = useState('');
+  const [cloudBusy, setCloudBusy] = useState(false);
+  const [cloudMessage, setCloudMessage] = useState('');
+  const [cloudOk, setCloudOk] = useState(false);
+  const [cloudConnected, setCloudConnected] = useState(isCloudConnected());
+
   // 调试相关
   const [showDebug, setShowDebug] = useState(false);
   const [debugInfo, setDebugInfo] = useState<{ users: string[]; url: string; storageAvailable: boolean } | null>(null);
@@ -23,24 +32,52 @@ export default function LoginPage() {
   const [syncUrl, setSyncUrl] = useState('');
   const [syncMessage, setSyncMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    // 模拟网络延迟（提升用户体验）
-    setTimeout(() => {
-      const result = login(name, password);
-      
+    try {
+      // 密码校验走 PBKDF2（10 万次迭代），需要等待
+      const result = await login(name, password);
+
       if (result.success && result.user) {
         // 登录成功，跳转到首页
         navigate('/');
       } else {
         setError(result.message);
       }
-      
+    } catch (err) {
+      setError('登录失败：' + String(err));
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  // ========== 云端同步（跨设备） ==========
+  const handleCloudLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCloudMessage('');
+    setCloudOk(false);
+    if (!cloudName.trim() || !cloudPassword) {
+      setCloudMessage('请填写用户名和密码');
+      return;
+    }
+    setCloudBusy(true);
+    try {
+      const res = await syncLogin(cloudName.trim(), cloudPassword);
+      setCloudMessage(res.message);
+      setCloudOk(res.ok);
+      if (res.ok) {
+        setCloudConnected(true);
+        // 同步完成，直接进入应用
+        setTimeout(() => navigate('/'), 800);
+      }
+    } catch (err) {
+      setCloudMessage('同步失败：' + String(err));
+    } finally {
+      setCloudBusy(false);
+    }
   };
 
   const handleForgotPassword = (e: React.FormEvent) => {
@@ -186,12 +223,6 @@ export default function LoginPage() {
               <p className="font-semibold mb-2">✅ {forgotResult.message}</p>
               {forgotResult.hint && (
                 <p className="mt-2">💡 <span className="font-medium">密码提示：</span>{forgotResult.hint}</p>
-              )}
-              {forgotResult.password && (
-                <div className="mt-3 p-3 bg-white rounded border border-green-300">
-                  <p className="text-sm text-gray-600 mb-1">您的密码是：</p>
-                  <p className="text-2xl font-bold text-green-600 font-mono">{forgotResult.password}</p>
-                </div>
               )}
             </div>
           )}
@@ -346,13 +377,70 @@ export default function LoginPage() {
           )}
         </div>
 
+        {/* 云端同步（推荐：多设备自动同步学习进度） */}
+        <div className="mt-6 p-4 bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="text-sm font-bold text-indigo-800">☁️ 云端同步（多设备）</h3>
+            {cloudConnected && (
+              <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">
+                已连接
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-indigo-600 mb-3">
+            在这台设备上用同一个用户名和密码登录，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步。
+          </p>
+
+          {cloudMessage && (
+            <div
+              className={`mb-3 p-2 rounded-lg text-xs ${
+                cloudOk
+                  ? 'bg-green-50 border border-green-200 text-green-700'
+                  : 'bg-red-50 border border-red-200 text-red-700'
+              }`}
+            >
+              {cloudOk ? '✅' : '❌'} {cloudMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleCloudLogin} className="space-y-2">
+            <input
+              type="text"
+              value={cloudName}
+              onChange={(e) => setCloudName(e.target.value)}
+              className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              placeholder="用户名"
+              autoComplete="username"
+            />
+            <input
+              type="password"
+              value={cloudPassword}
+              onChange={(e) => setCloudPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              placeholder="密码"
+              autoComplete="current-password"
+            />
+            <button
+              type="submit"
+              disabled={cloudBusy}
+              className={`w-full py-2 px-4 rounded-lg text-white text-sm font-semibold transition ${
+                cloudBusy
+                  ? 'bg-indigo-300 cursor-not-allowed'
+                  : 'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800'
+              }`}
+            >
+              {cloudBusy ? '同步中...' : cloudConnected ? '重新同步' : '连接云端并同步'}
+            </button>
+          </form>
+        </div>
+
         {/* 跨设备同步按钮 */}
         <div className="mt-4 text-center">
           <button
             onClick={handleGenerateSyncUrl}
             className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
           >
-            📱 跨设备同步账号
+            📱 跨设备同步账号（不联网方式）
           </button>
         </div>
 
