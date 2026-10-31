@@ -14,6 +14,7 @@ import {
 import { usePlanStore } from '../store/usePlanStore';
 import { useProgressStore, type ModuleType } from '../store/useProgressStore';
 import { AudioButton } from '../components/AudioButton';
+import { playAudioWithFallback } from '../utils/audio';
 
 const AREA_META: Record<string, { label: string; color: string; bg: string }> = {
   reading:   { label: '阅读', color: 'text-purple-600',   bg: 'bg-purple-50 border-purple-100' },
@@ -547,17 +548,6 @@ export default function PlanTodayPage() {
         );
       })()}
 
-      {/* ========== 听力任务 ========== */}
-      {set_.listening && (
-        <div className="bg-white rounded-2xl shadow p-4 mb-4">
-          <h3 className="font-bold text-gray-700 mb-1">🎧 听力任务</h3>
-          <p className="text-xs text-gray-500 mb-2">{set_.listening.hint}</p>
-          <button onClick={() => navigate('/listening')} className="btn-primary text-sm">
-            进入听力模块 →
-          </button>
-        </div>
-      )}
-
       {/* ========== 提交 ========== */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center gap-3 z-10">
         {submitted ? (
@@ -646,6 +636,19 @@ function ItemCard({
 }) {
   const isChoice = Array.isArray(item.options) && item.options.length > 0;
   const correct = submitted && judgeText(value, item.answer);
+  const isListening = item.kind === 'listening_p1';
+  const [playing, setPlaying] = useState(false);
+
+  // 听力：播放预生成 mp3，失败自动回退系统 TTS（Android 本地引擎，离线可用）
+  const handlePlay = async () => {
+    if (playing) return;
+    setPlaying(true);
+    try {
+      await playAudioWithFallback(item.id, item.audioText ?? '', 0.85);
+    } finally {
+      setPlaying(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow p-4">
@@ -654,7 +657,28 @@ function ItemCard({
         <span className="text-[11px] text-gray-400">{item.title}</span>
       </div>
 
-      <p className="text-sm text-gray-800 mb-2 whitespace-pre-line">{item.prompt}</p>
+      {/* Part1 是「看图选句」：描述由图片区呈现，这里不重复显示题干 */}
+      {!isListening || !item.imageEmoji ? (
+        <p className="text-sm text-gray-800 mb-2 whitespace-pre-line">{item.prompt}</p>
+      ) : null}
+
+      {isListening && (
+        <div className="mb-2">
+          <button
+            onClick={handlePlay}
+            disabled={playing}
+            className="px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-700 text-xs font-medium hover:bg-blue-100 disabled:opacity-60"
+          >
+            {playing ? '🔊 播放中…（可重听）' : '🔊 播放音频'}
+          </button>
+          {item.imageEmoji && (
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-3xl leading-none">{item.imageEmoji}</span>
+              {item.imageDesc && <span className="text-xs text-gray-600">{item.imageDesc}</span>}
+            </div>
+          )}
+        </div>
+      )}
 
       {item.kind === 'vocab_spelling' && (
         <div className="mb-2">
@@ -710,6 +734,12 @@ function ItemCard({
         <p className="text-xs text-gray-500 mt-2">
           {correct ? '✅ 正确' : `❌ 正确答案：${item.answer}`}
           {item.explanation ? ` · ${item.explanation}` : ''}
+        </p>
+      )}
+
+      {submitted && isListening && item.transcript && (
+        <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded mt-1.5">
+          原文：{item.transcript}
         </p>
       )}
     </div>

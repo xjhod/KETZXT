@@ -64,6 +64,44 @@ export function audioFileUrl(id: string): string {
 }
 
 /**
+ * 播放题库预生成音频（public/audio/<id>.mp3），失败时回退系统 TTS。
+ *
+ * 为什么要有 TTS 兜底：Android Chrome 的 speechSynthesis 走本地引擎
+ * （离线可用、不被墙），所以 mp3 加载失败时用 TTS 朗读原文即可，
+ * 真正被墙的是 SpeechRecognition / ASR。
+ *
+ * @param id 题目 id，音频文件名为 <id>.mp3
+ * @param fallbackText 音频原文（缺失时的 TTS 兜底文本）
+ * @param rate 语速
+ * @returns 播放结束时 resolve（无论成功、失败还是走了 TTS 兜底）
+ */
+export function playAudioWithFallback(
+  id: string,
+  fallbackText: string,
+  rate = 0.9
+): Promise<void> {
+  const fallback = ttsFallbackAllowed() ? fallbackText : '';
+  return new Promise((resolve) => {
+    let settled = false;
+    const once = () => {
+      if (!settled) {
+        settled = true;
+        resolve();
+      }
+    };
+    playAudioEl(audioFileUrl(id), rate).then((ok) => {
+      if (ok) {
+        once();
+      } else if (fallback) {
+        speakText(fallback, { rate, onEnd: once });
+      } else {
+        once();
+      }
+    });
+  });
+}
+
+/**
  * 通过 <audio> 元素播放（文件或音频 URL）。
  * 始终会在 ended / error / 超时(30s) 之一时 resolve，绝不永久挂起。
  * @returns true=正常播放结束, false=出错（可据此回退 TTS）

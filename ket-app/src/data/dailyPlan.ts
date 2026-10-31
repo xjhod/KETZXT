@@ -14,6 +14,7 @@ import type { WritingPoint } from './writingGrader.ts';
 import { GRAMMAR_QUESTIONS, ROADMAP, getPoint } from './grammarRoadmap.ts';
 import { spellingQuestions, fillBlankQuestions } from './vocabulary.ts';
 import { part3RCArticles } from './reading.ts';
+import { getListeningSetsByPart } from './listening.ts';
 import { speakingPart1 } from './speaking.ts';
 
 // ========== 类型 ==========
@@ -24,13 +25,14 @@ export type DailyItemKind =
   | 'grammar_correction'
   | 'vocab_spelling'
   | 'vocab_fill'
-  | 'reading_choice';
+  | 'reading_choice'
+  | 'listening_p1';
 
 export interface DailyItem {
   id: string;
   kind: DailyItemKind;
   area: SkillArea;
-  module: 'grammar' | 'vocabulary' | 'reading';
+  module: 'grammar' | 'vocabulary' | 'reading' | 'listening';
   title: string;
   prompt: string;
   options?: string[];
@@ -40,6 +42,13 @@ export interface DailyItem {
   subjectId: string;
   subjectName: string;
   exerciseType: string;
+  /** 听力：音频原文。既是播放内容，也是 mp3 缺失时的 TTS 兜底文本 */
+  audioText?: string;
+  /** 听力 Part1：图片提示 */
+  imageEmoji?: string;
+  imageDesc?: string;
+  /** 听力：原文（答完后展示） */
+  transcript?: string;
 }
 
 export interface WritingPrompt {
@@ -71,14 +80,6 @@ export interface SpeakingTask {
   modelAnswer: string;
 }
 
-export interface ListeningTask {
-  title: string;
-  titleZh: string;
-  part: number;
-  setId: string;
-  hint: string;
-}
-
 export interface DailyContext {
   dateStr: string;
   startDate: string;
@@ -100,7 +101,6 @@ export interface DailySet {
   items: DailyItem[];      // 客观题组
   writing?: WritingTask;
   speaking?: SpeakingTask;
-  listening?: ListeningTask;
 }
 
 // ========== 工具 ==========
@@ -333,6 +333,90 @@ function buildGrammarItems(rng: () => number, dayIndex: number): DailyItem[] {
   return items;
 }
 
+// ========== 听力 ==========
+
+/**
+ * 听力知识点标签。
+ * 题库目前没有更细的知识点标注，先按 Part 建立粒度 ——
+ * 这已经比「套题 ID」聚合度高得多（50 套 -> 5 个知识点），
+ * 而且同一知识点下有 50 道题，画像能算出稳定的掌握度。
+ * 将来题库补了 skillTag，直接替换这里即可。
+ */
+const LISTENING_SKILL: Record<number, { id: string; name: string }> = {
+  1: { id: 'listening.picture', name: '听力·图音匹配' },
+  2: { id: 'listening.monologue', name: '听力·独白填空' },
+  3: { id: 'listening.longconv', name: '听力·长对话' },
+  4: { id: 'listening.picchoice', name: '听力·图片选择' },
+  5: { id: 'listening.notes', name: '听力·笔记填空' },
+};
+
+/**
+ * 把各 Part 的题目统一适配成可自动判分的 DailyItem。
+ * Part1 是「看图选句」、Part3 是「长对话三选一」、Part4 是「短对话配图」，
+ * 三者都有 options + 单字母 answer，可以直接进客观题判分链路。
+ * Part2/Part5 是填空题（答案为字符串），结构不同，暂不走这条路径。
+ */
+function adaptListeningQuestion(part: number, q: any, set: any): DailyItem | null {
+  const skill = LISTENING_SKILL[part];
+  if (!skill || !Array.isArray(q.options) || !q.answer) return null;
+
+  const options = (q.options as any[]).map((o) =>
+    typeof o === 'string' ? o : `${o.emoji ?? ''} ${o.desc ?? ''}`.trim(),
+  );
+
+  // 关键：answer 必须存「选项文本」而不是字母。
+  // 既有题库（语法 choice / 阅读 choice）都是这个约定 ——
+  // ItemCard 用 `opt === item.answer` 判高亮，handleSubmit 用 judgeText(user, item.answer) 判对错，
+  // 而用户选的是选项文本。若这里存 'A'，每道题都会被判错。
+  const ansIdx = q.answer.charCodeAt(0) - 65;
+  const answerText = options[ansIdx];
+  if (!answerText) return null;
+
+  let prompt = '';
+  let imageEmoji: string | undefined;
+  let imageDesc: string | undefined;
+  if (part === 1) {
+    imageEmoji = q.imageEmoji;
+    imageDesc = q.imageDesc;
+    prompt = q.imageDesc ?? '看图选出你听到的句子';
+  } else {
+    prompt = q.question ?? '';
+  }
+
+  return {
+    id: q.id,
+    kind: 'listening_p1',
+    area: 'listening',
+    module: 'listening',
+    title: `听力 · ${skill.name}`,
+    prompt,
+    options,
+    answer: answerText,
+    explanation: q.explanation,
+    subjectId: skill.id,
+    subjectName: skill.name,
+    exerciseType: `listening_part${part}`,
+    audioText: q.audioText ?? set.transcript ?? set.conversationAudio ?? '',
+    imageEmoji,
+    imageDesc,
+    transcript: part === 1 ? q.transcript : set.transcript,
+  };
+}
+
+/** 从指定 Part 抽一套听力题的若干道（确定性：rng 与日期绑定，同一套永远相同） */
+function buildListeningItems(rng: () => number, part: number, count = 3): DailyItem[] {
+  const sets = getListeningSetsByPart(part) as any[];
+  if (!sets.length) return [];
+  const set = sets[Math.floor(rng() * sets.length)];
+  const picked = pickN((set.questions ?? []) as any[], count, rng);
+  const out: DailyItem[] = [];
+  for (const q of picked) {
+    const item = adaptListeningQuestion(part, q, set);
+    if (item) out.push(item);
+  }
+  return out;
+}
+
 function buildVocabItems(rng: () => number): DailyItem[] {
   const items: DailyItem[] = [];
   const spelling = pickN(spellingQuestions, 3, rng);
@@ -427,14 +511,11 @@ export function buildDailySet(startDate: string, dayIndex: number): DailySet {
 
   if (areas.has('writing')) set.writing = buildWritingTask(context);
   if (areas.has('speaking')) set.speaking = buildSpeakingTask(rng);
+  // 听力：按备考阶段选 Part（1 图音匹配 -> 3 长对话 -> 4 图片选择），
+  // 抽 3 道进客观题组 —— 这样它和语法/词汇一样会被自动判分、进错题本、计入今日完成。
   if (areas.has('listening')) {
-    set.listening = {
-      title: '听力训练',
-      titleZh: '听力：KET Part',
-      part: context.month <= 3 ? 1 : context.month <= 7 ? 3 : 4,
-      setId: '',
-      hint: '按计划完成 1 套听力并归类错题（可跳转听力模块）',
-    };
+    const part = context.month <= 3 ? 1 : context.month <= 7 ? 3 : 4;
+    items.push(...buildListeningItems(rng, part));
   }
   return set;
 }
