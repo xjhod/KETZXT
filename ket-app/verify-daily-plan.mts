@@ -110,10 +110,24 @@ for (let d = 0; d < 14; d++) {
   if (areas.has('reading') && !kindsOf(s).has('reading_choice')) bad(`第${d}套 有阅读任务但无阅读题`);
   if (areas.has('writing') && !s.writing) bad(`第${d}套 有写作任务但无写作卡`);
   if (areas.has('speaking') && !s.speaking) bad(`第${d}套 有口语任务但无口语卡`);
-  if (areas.has('listening') && !s.listening) bad(`第${d}套 有听力任务但无听力卡`);
+  // 听力已从「独立卡片」改为并入客观题组（DailyItem.kind = 'listening_p1'）
+  if (areas.has('listening') && !kindsOf(s).has('listening_p1')) bad(`第${d}套 有听力任务但无听力题`);
   if (areas.has('writing')) areaMatched++;
 }
 console.log(`  14 套任务→题组映射正常（其中 ${areaMatched} 套含写作任务）`);
+
+// ---------- 4b. 听力每天都有 ----------
+console.log('=== 听力每天都有 ===');
+let lisDays = 0;
+for (let d = 0; d < 60; d++) {
+  const s = buildDailySet(START, d);
+  const n = s.items.filter((i) => i.kind === 'listening_p1').length;
+  if (n === 0) bad(`第${d}套 没有听力题（听力应每天都有）`);
+  else if (n !== 3) bad(`第${d}套 听力 ${n} 道，应为 3 道`);
+  else lisDays++;
+}
+if (lisDays === 60) console.log('  60 套全部含听力，每套 3 道 ✓');
+else console.log(`  ${lisDays}/60 套含听力`);
 
 // ---------- 5. 写作题与判分工具 ----------
 console.log('=== 写作题库与判分函数 ===');

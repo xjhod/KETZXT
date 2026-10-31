@@ -403,11 +403,32 @@ function adaptListeningQuestion(part: number, q: any, set: any): DailyItem | nul
   };
 }
 
-/** 从指定 Part 抽一套听力题的若干道（确定性：rng 与日期绑定，同一套永远相同） */
-function buildListeningItems(rng: () => number, part: number, count = 3): DailyItem[] {
+/**
+ * 每个备考阶段的听力 Part 配置：主 Part 占 2/3 天，辅 Part 占 1/3 天。
+ * 三个 Part 都是选择题型（可自动判分），难度递增：Part1 图音匹配 < Part3 长对话 < Part4 图片选择。
+ */
+function listeningPartsForMonth(month: number): { primary: number; secondary: number } {
+  if (month <= 3) return { primary: 1, secondary: 3 };   // 打基础：图音匹配为主
+  if (month <= 7) return { primary: 3, secondary: 1 };   // 分项突破：长对话为主
+  return { primary: 4, secondary: 3 };                   // 套题冲刺：图片选择为主
+}
+
+/**
+ * 抽一套听力题的若干道。
+ *
+ * 套题选择用**无状态确定性轮换**（步长 3 与 10 互质）：
+ *   - 10 天内把该 Part 的 10 套全部用完，分布完全均匀
+ *   - 纯函数、无需历史状态，且家长可反推「第几天该练哪套」
+ * 不用随机抽取的原因：随机会有长尾（实测某套被用 66 次），
+ * 而且「今天练哪套」不可预期，不利于排查与复盘。
+ *
+ * 同一套里选哪 3 道题仍用 rng（与「第几天」绑定，同一套永远抽到同样的题）。
+ */
+function buildListeningItems(rng: () => number, part: number, dayIndex: number, count = 3): DailyItem[] {
   const sets = getListeningSetsByPart(part) as any[];
   if (!sets.length) return [];
-  const set = sets[Math.floor(rng() * sets.length)];
+  const setIdx = (dayIndex * 3 + part) % sets.length;
+  const set = sets[setIdx];
   const picked = pickN((set.questions ?? []) as any[], count, rng);
   const out: DailyItem[] = [];
   for (const q of picked) {
@@ -511,12 +532,13 @@ export function buildDailySet(startDate: string, dayIndex: number): DailySet {
 
   if (areas.has('writing')) set.writing = buildWritingTask(context);
   if (areas.has('speaking')) set.speaking = buildSpeakingTask(rng);
-  // 听力：按备考阶段选 Part（1 图音匹配 -> 3 长对话 -> 4 图片选择），
-  // 抽 3 道进客观题组 —— 这样它和语法/词汇一样会被自动判分、进错题本、计入今日完成。
-  if (areas.has('listening')) {
-    const part = context.month <= 3 ? 1 : context.month <= 7 ? 3 : 4;
-    items.push(...buildListeningItems(rng, part));
-  }
+  // 听力：每天都练（KET 听力是最重要的两项之一）。
+  // Part 按备考阶段分主辅轮换：主 Part 占 2/3 天、辅 Part 占 1/3 天，
+  // 避免整个月锁死在一个 Part 上、也避免难度忽高忽低。
+  // 抽 3 道进客观题组 —— 和语法/词汇一样自动判分、进错题本、计入今日完成。
+  const { primary, secondary } = listeningPartsForMonth(context.month);
+  const part = dayIndex % 3 === 2 ? secondary : primary;
+  items.push(...buildListeningItems(rng, part, dayIndex));
   return set;
 }
 
