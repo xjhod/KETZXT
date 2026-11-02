@@ -47,6 +47,9 @@ export function error(message: string, status = 400): Response {
   return json({ ok: false, error: message }, status);
 }
 
+/** LLM 调用超时上限（毫秒）。超时会抛错，前端据此降级到本地规则引擎。 */
+const LLM_TIMEOUT_MS = 40_000;
+
 /** 统一的 LLM 调用（DeepSeek OpenAI 兼容接口） */
 export async function callLLM(
   apiKey: string,
@@ -54,23 +57,37 @@ export async function callLLM(
   user: string,
   maxTokens = 800
 ): Promise<string> {
-  const resp = await fetch('https://api.deepseek.com/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: system },
-        { role: 'user', content: user },
-      ],
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      response_format: { type: 'json_object' },
-    }),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
+  let resp: Response;
+  try {
+    resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user },
+        ],
+        max_tokens: maxTokens,
+        temperature: 0.3,
+        response_format: { type: 'json_object' },
+      }),
+      signal: controller.signal,
+    });
+  } catch (e) {
+    const err = e as Error;
+    if (err.name === 'AbortError') {
+      throw new Error(`DeepSeek 超时（${LLM_TIMEOUT_MS / 1000}s 无响应）`);
+    }
+    throw new Error(`DeepSeek 请求失败：${err.message}`);
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!resp.ok) {
     const text = await resp.text();
@@ -241,6 +258,16 @@ const SPEECH_SYSTEM = `你是 KET（A2）英语口语的评分老师，对象是
   "sampleAnswer": "一段更好的示范回答（英文）"
 }`;
 
+/**
+ * ASR（语音转文字）超时上限（毫秒）。
+ *
+ * 为什么必须有：实测硅基的 /audio/transcriptions 端点会**长时间无响应**
+ * （同一 key 的 chat 接口正常，说明是该端点自身排队/过载）。
+ * 不设超时的话，请求会一直挂到 Cloud Functions 的 120s 平台上限 ——
+ * 既白等用户，又白烧平台配额。设 25s 后快速失败并降级到浏览器识别结果。
+ */
+const ASR_TIMEOUT_MS = 25_000;
+
 export async function transcribe(
   apiKey: string,
   audioBase64: string,
@@ -262,11 +289,25 @@ export async function transcribe(
   form.append('model', 'FunAudioLLM/SenseVoiceSmall');
   form.append('language', 'en');
 
-  const resp = await fetch('https://api.siliconflow.cn/v1/audio/transcriptions', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}` },
-    body: form,
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ASR_TIMEOUT_MS);
+  let resp: Response;
+  try {
+    resp = await fetch('https://api.siliconflow.cn/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}` },
+      body: form,
+      signal: controller.signal,
+    });
+  } catch (e) {
+    const err = e as Error;
+    if (err.name === 'AbortError') {
+      throw new Error(`SiliconFlow ASR 超时（${ASR_TIMEOUT_MS / 1000}s 无响应）`);
+    }
+    throw new Error(`SiliconFlow ASR 请求失败：${err.message}`);
+  } finally {
+    clearTimeout(timer);
+  }
   if (!resp.ok) {
     const t = await resp.text();
     throw new Error(`SiliconFlow ${resp.status}: ${t.slice(0, 300)}`);
