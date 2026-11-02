@@ -14,7 +14,6 @@ import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed, stopAllAudio 
 import {
   fetchLlmStatus,
   gradeSpeechWithLLM,
-  blobToBase64,
   type LlmStatus,
   type LlmSpeechResult,
 } from '../utils/llm';
@@ -140,6 +139,8 @@ export default function SpeakingPage() {
   const [llmStatus, setLlmStatus] = useState<LlmStatus>({ available: false, llm: false, asr: false });
   const [llmSpeech, setLlmSpeech] = useState<LlmSpeechResult | null>(null);
   const [llmScoring, setLlmScoring] = useState(false);
+  /** AI 评分失败的原因（给用户看的提示，null 表示没有错误） */
+  const [llmError, setLlmError] = useState<string | null>(null);
   const [showKeywords, setShowKeywords] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [manualText, setManualText] = useState('');
@@ -242,17 +243,17 @@ export default function SpeakingPage() {
   
   // ========== 评分 ==========
   /**
-   * AI 口语评分：把录音发给后端 → ASR 转文字 → LLM 按 KET A2 口语标准评分。
+   * AI 口语评分：把识别到的文字发给云端 LLM，按 KET A2 口语标准评分。
+   *
+   * ⚠️ 云服务没有音频模型，转写（ASR）依赖浏览器自带识别或用户手动输入。
+   *    国产浏览器上浏览器识别必然为空 —— 此时必须走「手动输入」路径。
    * 失败时保持原有 scoreResult（关键词评分）不变，功能不降级。
    */
   const handleAiScore = useCallback(async () => {
-    // 关键：录音不可用时（国产浏览器）允许「只提交文字」也能评分 ——
-    // 只要有 transcript 或手动输入的文字，后端就能做语法/内容评分，不强依赖音频。
     const textOnly = (transcript || manualText).trim();
-    if ((!audioBlob && !textOnly) || llmScoring) return;
+    if (!textOnly || llmScoring) return;
     setLlmScoring(true);
     try {
-      const audioBase64 = audioBlob ? await blobToBase64(audioBlob) : undefined;
       const isPart1 = activePart === 1;
       const q = isPart1 ? currentPart1 : currentPart2;
       const questionText = isPart1
@@ -261,27 +262,27 @@ export default function SpeakingPage() {
       const keywords = isPart1 ? currentPart1.keywords : currentPart2.keywords;
 
       const res = await gradeSpeechWithLLM({
-        audioBase64,
-        mimeType: audioBlob?.type || 'audio/wav',
         question: questionText,
         keywords,
         modelAnswer: isPart1 ? currentPart1.modelAnswer : undefined,
         // 浏览器自带的识别结果；国产浏览器上它必然为空，
         // 此时用手输的文字兜底（服务端直接基于文字评分，不需要音频）
-        browserTranscript: transcript || manualText || '',
+        browserTranscript: textOnly,
       });
 
       if (!res.ok) {
         console.warn('[LLM] 口语评分降级：', res.reason);
+        setLlmError(res.reason);
         return;
       }
+      setLlmError('');
       setLlmSpeech(res.data);
     } catch (e) {
       console.warn('[LLM] 口语评分异常，降级：', e);
     } finally {
       setLlmScoring(false);
     }
-  }, [audioBlob, llmScoring, activePart, currentPart1, currentPart2, transcript, manualText]);
+  }, [llmScoring, activePart, currentPart1, currentPart2, transcript, manualText]);
 
 
   const handleScore = useCallback(() => {
@@ -511,22 +512,25 @@ export default function SpeakingPage() {
         
         {/* 评分结果 */}
         {/* ========== AI 口语评分（可选增强） ========== */}
-        {(audioUrl || audioBlob) && (
+        {(audioUrl || audioBlob || (transcript || manualText).trim()) && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
             {!llmSpeech ? (
-              <button
-                onClick={handleAiScore}
-                disabled={llmScoring || !llmStatus.available || (!audioBlob && !(transcript || manualText).trim())}
-                className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {llmScoring
-                  ? '🤖 AI 评分中…（转写 + 评分，约 10 秒）'
-                  : !audioBlob && (transcript || manualText).trim()
-                    ? '🤖 让 AI 评分（按你输入的文字评分）'
-                  : llmStatus.available
-                    ? '🤖 让 AI 评分（发音转写 + 内容/语法/流利度）'
-                    : '🤖 AI 评分暂不可用（已用关键词评分）'}
-              </button>
+              <>
+                <button
+                  onClick={handleAiScore}
+                  disabled={llmScoring || !llmStatus.available || !(transcript || manualText).trim()}
+                  className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {llmScoring
+                    ? '🤖 AI 评分中…（约 10 秒）'
+                    : !llmStatus.available
+                      ? '🤖 AI 评分暂不可用（已用关键词评分）'
+                    : '🤖 让 AI 评分（按你输入的文字评分）'}
+                </button>
+                {llmError && (
+                  <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
+                )}
+              </>
             ) : (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -863,22 +867,25 @@ export default function SpeakingPage() {
 
           {/* 评分结果 */}
         {/* ========== AI 口语评分（可选增强） ========== */}
-        {(audioUrl || audioBlob) && (
+        {(audioUrl || audioBlob || (transcript || manualText).trim()) && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
             {!llmSpeech ? (
-              <button
-                onClick={handleAiScore}
-                disabled={llmScoring || !llmStatus.available || (!audioBlob && !(transcript || manualText).trim())}
-                className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {llmScoring
-                  ? '🤖 AI 评分中…（转写 + 评分，约 10 秒）'
-                  : !audioBlob && (transcript || manualText).trim()
-                    ? '🤖 让 AI 评分（按你输入的文字评分）'
-                  : llmStatus.available
-                    ? '🤖 让 AI 评分（发音转写 + 内容/语法/流利度）'
-                    : '🤖 AI 评分暂不可用（已用关键词评分）'}
-              </button>
+              <>
+                <button
+                  onClick={handleAiScore}
+                  disabled={llmScoring || !llmStatus.available || !(transcript || manualText).trim()}
+                  className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {llmScoring
+                    ? '🤖 AI 评分中…（约 10 秒）'
+                    : !llmStatus.available
+                      ? '🤖 AI 评分暂不可用（已用关键词评分）'
+                    : '🤖 让 AI 评分（按你输入的文字评分）'}
+                </button>
+                {llmError && (
+                  <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
+                )}
+              </>
             ) : (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">

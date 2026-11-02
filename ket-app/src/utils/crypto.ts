@@ -44,7 +44,9 @@ export async function hashPassword(password: string, salt: string): Promise<stri
   const bits = await crypto.subtle.deriveBits(
     {
       name: 'PBKDF2',
-      salt: base64ToBytes(salt),
+      // 显式构造 ArrayBuffer 视图：TS 的 Uint8Array<ArrayBufferLike> 与
+      // BufferSource 要求的 ArrayBufferView<ArrayBuffer> 泛型不兼容
+      salt: new Uint8Array(base64ToBytes(salt)) as unknown as BufferSource,
       iterations: ITERATIONS,
       hash: 'SHA-256',
     },

@@ -111,6 +111,10 @@ export async function login(
     saveUsers(users);
   } else {
     // 新格式：哈希比对
+    // salt/hash 理论上都存在（注册时写入），但类型上可选 —— 缺任一说明数据损坏
+    if (!user.salt || !user.hash) {
+      return { success: false, message: '账号数据异常，请重新注册' };
+    }
     const hash = await hashPassword(password, user.salt);
     if (!safeEqual(hash, user.hash)) {
       return { success: false, message: '密码错误' };

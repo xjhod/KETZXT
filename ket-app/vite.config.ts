@@ -15,9 +15,17 @@ function getGitHash(): string {
 const BUILD_HASH = getGitHash();
 const BUILD_TIME = new Date().toISOString();
 
+// 部署基路径。
+//   GitHub Pages    -> /KETZXT/（仓库名作为子路径）
+//   WorkBuddy 域名 -> /（根路径）
+// 用环境变量切换，两个平台都能构建：
+//   VITE_BASE_PATH=/KETZXT/  npm run build   （GitHub Pages）
+//   VITE_BASE_PATH=/          npm run build   （WorkBuddy）
+const BASE_PATH = process.env.VITE_BASE_PATH ?? '/KETZXT/';
+
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/KETZXT/',  // GitHub Pages 需要仓库名作为子路径
+  base: BASE_PATH,  // 部署基路径（GitHub Pages 子路径 / WorkBuddy 根路径）
   define: {
     'import.meta.env.VITE_BUILD_HASH': JSON.stringify(BUILD_HASH),
     'import.meta.env.VITE_BUILD_TIME': JSON.stringify(BUILD_TIME),
@@ -60,8 +68,10 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/KETZXT/',           // ✅ 修复：匹配 base 路径
-        start_url: '/KETZXT/',       // ✅ 修复：匹配 base 路径
+        // scope / start_url 必须与 base 路径一致，否则 Service Worker 注册范围不对，
+        // PWA 装到桌面后打不开（旧版硬编码 /KETZXT/，迁到 WorkBuddy 根路径会失效）
+        scope: BASE_PATH,
+        start_url: BASE_PATH,
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],

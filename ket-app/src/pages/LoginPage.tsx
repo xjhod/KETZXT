@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY } from '../utils/auth';
-import { syncLogin, isCloudConnected } from '../utils/sync';
+import { syncNow, isCloudConnected } from '../utils/sync';
+import { sendPhoneOtp, signInWithPhoneOtp } from '../utils/cloudAuth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -16,8 +17,9 @@ export default function LoginPage() {
   const [forgotResult, setForgotResult] = useState<{ success: boolean; message: string; hint?: string; password?: string } | null>(null);
 
   // 云端同步相关
-  const [cloudName, setCloudName] = useState('');
-  const [cloudPassword, setCloudPassword] = useState('');
+  const [cloudPhone, setCloudPhone] = useState('');
+  const [cloudCode, setCloudCode] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const [cloudBusy, setCloudBusy] = useState(false);
   const [cloudMessage, setCloudMessage] = useState('');
   const [cloudOk, setCloudOk] = useState(false);
@@ -55,26 +57,53 @@ export default function LoginPage() {
   };
 
   // ========== 云端同步（跨设备） ==========
-  const handleCloudLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  /** 发送手机验证码 */
+  const handleSendOtp = async () => {
     setCloudMessage('');
     setCloudOk(false);
-    if (!cloudName.trim() || !cloudPassword) {
-      setCloudMessage('请填写用户名和密码');
+    if (!cloudPhone.trim()) {
+      setCloudMessage('请先填写手机号');
       return;
     }
     setCloudBusy(true);
     try {
-      const res = await syncLogin(cloudName.trim(), cloudPassword);
+      const res = await sendPhoneOtp(cloudPhone.trim());
       setCloudMessage(res.message);
+      setCloudOk(res.ok);
+      if (res.ok) setOtpSent(true);
+    } catch (err) {
+      setCloudMessage('发送失败：' + String(err));
+    } finally {
+      setCloudBusy(false);
+    }
+  };
+
+  /** 验证码登录 + 首次同步 */
+  const handleCloudLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCloudMessage('');
+    setCloudOk(false);
+    if (!cloudPhone.trim() || !cloudCode.trim()) {
+      setCloudMessage('请填写手机号和验证码');
+      return;
+    }
+    setCloudBusy(true);
+    try {
+      const auth = await signInWithPhoneOtp(cloudPhone.trim(), cloudCode.trim());
+      setCloudMessage(auth.message);
+      setCloudOk(auth.ok);
+      if (!auth.ok) return;
+
+      // 登录成功 -> 立刻做一次完整同步（拉取 + 合并 + 上传）
+      const res = await syncNow();
+      setCloudMessage(res.ok ? `云端已连接，${res.message}` : `已登录，但同步失败：${res.message}`);
       setCloudOk(res.ok);
       if (res.ok) {
         setCloudConnected(true);
-        // 同步完成，直接进入应用
-        setTimeout(() => navigate('/'), 800);
+        setTimeout(() => navigate('/'), 1000);
       }
     } catch (err) {
-      setCloudMessage('同步失败：' + String(err));
+      setCloudMessage('连接失败：' + String(err));
     } finally {
       setCloudBusy(false);
     }
@@ -96,7 +125,6 @@ export default function LoginPage() {
         success: true,
         message: result.message,
         hint: result.hint,
-        password: result.password,
       });
     } else {
       setError(result.message);
@@ -388,7 +416,8 @@ export default function LoginPage() {
             )}
           </div>
           <p className="text-xs text-indigo-600 mb-3">
-            在这台设备上用同一个用户名和密码登录，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步。
+            用手机号接收验证码即可连接云端。连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步。
+            换设备时用同一个手机号登录，进度自动拉回。
           </p>
 
           {cloudMessage && (
@@ -404,21 +433,35 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleCloudLogin} className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="tel"
+                value={cloudPhone}
+                onChange={(e) => setCloudPhone(e.target.value)}
+                className="flex-1 px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                placeholder="手机号"
+                inputMode="numeric"
+                maxLength={11}
+                autoComplete="tel"
+              />
+              <button
+                type="button"
+                onClick={handleSendOtp}
+                disabled={cloudBusy || otpSent}
+                className="px-3 py-2 rounded-lg text-sm font-semibold border border-indigo-300 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {cloudBusy ? '发送中…' : otpSent ? '已发送' : '获取验证码'}
+              </button>
+            </div>
             <input
               type="text"
-              value={cloudName}
-              onChange={(e) => setCloudName(e.target.value)}
+              value={cloudCode}
+              onChange={(e) => setCloudCode(e.target.value)}
               className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-              placeholder="用户名"
-              autoComplete="username"
-            />
-            <input
-              type="password"
-              value={cloudPassword}
-              onChange={(e) => setCloudPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-              placeholder="密码"
-              autoComplete="current-password"
+              placeholder="短信验证码"
+              inputMode="numeric"
+              maxLength={8}
+              autoComplete="one-time-code"
             />
             <button
               type="submit"
@@ -429,7 +472,7 @@ export default function LoginPage() {
                   : 'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800'
               }`}
             >
-              {cloudBusy ? '同步中...' : cloudConnected ? '重新同步' : '连接云端并同步'}
+              {cloudBusy ? '连接中...' : cloudConnected ? '重新连接并同步' : '连接云端并同步'}
             </button>
           </form>
         </div>

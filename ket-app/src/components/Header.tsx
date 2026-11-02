@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
-import { syncPush, syncPull, isCloudConnected, isCurrentUserSynced, clearCredentials } from '../utils/sync';
+import { syncNow, isCloudConnected, markCloudConnected } from '../utils/sync';
+import { signOutCloud } from '../utils/cloudAuth';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -16,7 +17,7 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   const navigate = useNavigate();
   const currentUser = getCurrentUser();
   const userList = getUserList().filter(u => u.id !== currentUser?.id);
-  const cloudOn = isCloudConnected() && isCurrentUserSynced();
+  const cloudOn = isCloudConnected();
 
   const handleLogout = () => {
     logout();
@@ -24,19 +25,14 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     navigate('/login', { replace: true });
   };
 
-  /** 手动同步：先拉取云端合并，再把合并结果上传 */
+  /** 手动同步：拉取云端合并后，把合并结果回传（保证云端是完整状态） */
   const handleSync = async () => {
     if (syncing) return;
     setSyncing(true);
     setSyncHint('');
     try {
-      const pull = await syncPull();
-      if (!pull.ok) {
-        setSyncHint(pull.message);
-        return;
-      }
-      const push = await syncPush();
-      setSyncHint(push.ok ? (pull.merged ? `已同步 ${pull.merged} 条` : '已同步') : push.message);
+      const res = await syncNow();
+      setSyncHint(res.ok ? (res.merged ? `已同步 ${res.merged} 条` : '已同步') : res.message);
       setTimeout(() => setSyncHint(''), 3000);
     } finally {
       setSyncing(false);
@@ -44,9 +40,10 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   };
 
   /** 解除本机与云端的绑定（不影响云端已存的数据） */
-  const handleUnlinkCloud = () => {
+  const handleUnlinkCloud = async () => {
     if (!confirm('解除本机与云端的绑定？云端已保存的数据不会被删除。')) return;
-    clearCredentials();
+    await signOutCloud();
+    markCloudConnected(false);
     setShowUserMenu(false);
     window.location.reload();
   };

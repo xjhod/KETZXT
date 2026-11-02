@@ -1,5 +1,5 @@
 /**
- * 跨设备同步客户端
+ * 跨设备同步客户端（走 WorkBuddy 云数据库）
  *
  * 场景（用户原话）：自己用，可能 2 个小孩、多台移动端，要求简单。
  *
@@ -8,37 +8,38 @@
  *      数据量小（几千条答题记录也就几百 KB），整包让冲突处理变得可预测。
  *   2. **合并而非覆盖** —— 下载云端数据后与本地合并再上传，
  *      避免「另一台设备刚做的题被这台旧数据冲掉」。
- *   3. **服务端不存明文密码** —— 只传 PBKDF2 派生哈希 + 盐。
- *   4. **失败不阻塞使用** —— 网络不通时所有同步接口返回失败原因，
+ *   3. **服务端不存明文密码** —— 本地 kid 账号用 PBKDF2 派生哈希存储；
+ *      云端身份走 WorkBuddy 账号（手机号验证码），不涉及本地密码。
+ *   4. **失败不阻塞使用** —— 网络不通或未登录时同步失败并给出原因，
  *      应用继续本地可用，不影响做题。
+ *
+ * 身份的两层（刻意分开）：
+ *   · 本地 kid 账号：决定这台设备上「当前是哪个孩子在用」（离线也能用）
+ *   · 云端 WorkBuddy 账号：决定「这台设备连到云端的哪份数据」
+ *   两者独立 —— 家长用一个云端账号即可同步所有孩子的进度（每个孩子的数据
+ *   按 device_id 分行存放）。
  */
 
-import { getUsers, getCurrentUser } from './auth';
-import { hashPassword } from './crypto';
+import { getCurrentUser } from './auth';
+import { cloud } from './cloud';
+import { getCloudSession } from './cloudAuth';
 import { useProgressStore } from '../store/useProgressStore';
 import { usePlanStore } from '../store/usePlanStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
 
-// 后端地址：与 AI 批改共用同一个 EdgeOne Pages 项目。
-// 约定与 utils/llm.ts 保持一致 —— BASE 是「API 源站根」，具体路径里再带 /api：
-//   VITE_LLM_API_BASE=https://xxx.edgeone.app  ->  https://xxx.edgeone.app/api/sync
-// 未配置时走同源（前端与后端同域部署的场景）。
-// 注意：import.meta.env 在非 Vite 运行时（如 Node 验证脚本）不存在，用可选链兜底。
-const envBag = (import.meta as any)?.env ?? {};
-const SYNC_BASE =
-  (envBag.VITE_SYNC_API_BASE as string | undefined)?.replace(/\/$/, '') ||
-  (envBag.VITE_LLM_API_BASE as string | undefined)?.replace(/\/$/, '') ||
-  '';
-const TIMEOUT_MS = 20_000;
+/** 云端同步表名 */
+const TABLE = 'sync_payloads';
 
-/** 云端账号凭据（存本地，供后续 push 时复用） */
-const CREDENTIALS_KEY = 'ket-sync-credentials';
+/** 本机设备标识（用于在云端区分同一账号下的不同设备/孩子数据） */
+const DEVICE_ID_KEY = 'ket-sync-device-id';
 
-interface Credentials {
-  userId: string;
-  name: string;
-  salt: string;
-  hash: string;
+function getDeviceId(): string {
+  let id = localStorage.getItem(DEVICE_ID_KEY);
+  if (!id) {
+    id = `dev_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    localStorage.setItem(DEVICE_ID_KEY, id);
+  }
+  return id;
 }
 
 /** 同步包的负载结构 */
@@ -56,26 +57,6 @@ export interface SyncStatus {
   /** 本次同步拉回并合并的记录条数 */
   merged?: number;
   updatedAt?: string;
-}
-
-// ========== 凭据管理 ==========
-
-export function getCredentials(): Credentials | null {
-  const raw = localStorage.getItem(CREDENTIALS_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as Credentials;
-  } catch {
-    return null;
-  }
-}
-
-function saveCredentials(c: Credentials): void {
-  localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(c));
-}
-
-export function clearCredentials(): void {
-  localStorage.removeItem(CREDENTIALS_KEY);
 }
 
 // ========== 打包 / 解包 ==========
@@ -170,7 +151,8 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
         logs[date] = log;
         mergedCount++;
       }
-    }    const skips = { ...local.skips, ...(rp.skips || {}) };
+    }
+    const skips = { ...local.skips, ...(rp.skips || {}) };
     usePlanStore.setState({
       // 起始日取较早的那个（谁先开始算谁的）
       startDate: pickEarlier(local.startDate, rp.startDate),
@@ -232,201 +214,139 @@ function pickLater(a: string | null | undefined, b: string | null | undefined): 
   return a > b ? a : b;
 }
 
-// ========== 网络请求 ==========
+// ========== 云端读写 ==========
 
-async function postSync(body: unknown): Promise<{ ok: true; data: any } | { ok: false; reason: string }> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-  try {
-    const resp = await fetch(`${SYNC_BASE}/api/sync`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-    const text = await resp.text();
-    let json: any = null;
-    try {
-      json = JSON.parse(text);
-    } catch {
-      return { ok: false, reason: `服务端返回非 JSON（HTTP ${resp.status}）` };
+/** 读本设备在云端的同步行 */
+async function readCloudRow(): Promise<{ id: number; payload: any; updated_at: string } | null> {
+  const { data, error } = await cloud.database
+    .from(TABLE)
+    .select('id, payload, updated_at')
+    .eq('device_id', getDeviceId())
+    .order('updated_at', { ascending: false })
+    .limit(1);
+
+  if (error) throw new Error(error.message || '读取云端数据失败');
+  const row = (data as any[])?.[0];
+  return row ? { id: row.id, payload: row.payload, updated_at: row.updated_at } : null;
+}
+
+/** 写入本设备在云端的同步行（存在则更新，否则插入） */
+async function writeCloudRow(payload: SyncPayload): Promise<string> {
+  const deviceId = getDeviceId();
+  const user = getCurrentUser();
+  const ownerName = user?.name ?? null;
+
+  const existing = await readCloudRow();
+
+  if (existing) {
+    const { data, error } = await cloud.database
+      .from(TABLE)
+      .update({ payload, owner_name: ownerName, updated_at: new Date().toISOString() })
+      .eq('id', existing.id)
+      .select();
+    if (error) throw new Error(error.message || '更新云端数据失败');
+    const affected = Array.isArray(data) ? data : [];
+    if (affected.length === 0) {
+      throw new Error('云端更新未生效（可能被权限拦截）');
     }
-    if (!resp.ok || json?.ok === false) {
-      return { ok: false, reason: json?.error || `HTTP ${resp.status}` };
-    }
-    return { ok: true, data: json };
-  } catch (e) {
-    const err = e as Error;
-    if (err.name === 'AbortError') return { ok: false, reason: '请求超时' };
-    return { ok: false, reason: err.message || '网络错误' };
-  } finally {
-    clearTimeout(timer);
+    return existing.updated_at;
   }
+
+  const { data, error } = await cloud.database
+    .from(TABLE)
+    .insert({ payload, device_id: deviceId, owner_name: ownerName })
+    .select();
+  if (error) throw new Error(error.message || '写入云端数据失败');
+  const affected = Array.isArray(data) ? data : [];
+  if (affected.length === 0) {
+    throw new Error('云端写入未生效（可能被权限拦截）');
+  }
+  return (affected[0] as any)?.updated_at ?? new Date().toISOString();
 }
 
 // ========== 对外接口 ==========
 
-/**
- * 云端登录 —— 用「用户名 + 密码」在云端找回/创建账号。
- *
- * 两阶段握手（与服务端约定）：
- *   阶段1：用用户名换取服务端持有的**权威盐**
- *   阶段2：用「权威盐 + 密码」派生哈希，提交认证
- *
- * 为什么必须两阶段：PBKDF2 的盐是账号级而非设备级。
- * 若每台设备各自生成盐，派生出的哈希必然不同，服务端无法校验，
- * 也就无法做到「同一个账号在多台设备登录」。
- *
- * @param name 用户名
- * @param password 明文密码（只在内存中用于派生哈希，不落盘、不上传）
- */
-export async function syncLogin(name: string, password: string): Promise<SyncStatus> {
-  const local = getUsers().find(u => u.name.toLowerCase() === name.trim().toLowerCase());
-  if (!local) {
-    return { ok: false, message: '本机没有这个账号，请先在本机注册' };
-  }
+/** 当前是否已连接云端（已登录 WorkBuddy 账号） */
+export function isCloudConnected(): boolean {
+  return localStorage.getItem('ket-cloud-signed-in') === '1';
+}
 
-  // ---------- 阶段1：换权威盐 ----------
-  const stage1 = await postSync({ op: 'login', name: name.trim() });
-  if (!stage1.ok) {
-    return { ok: false, message: stage1.reason };
-  }
-
-  const serverSalt: string = stage1.data?.salt || '';
-  const needsRegister = Boolean(stage1.data?.needsRegister);
-
-  // 账号已存在：必须用服务端给的盐；新账号则用本地账号的盐（没有就现生成）
-  let salt = serverSalt;
-  if (!salt) {
-    salt = local.salt || generateSaltFallback();
-  }
-  if (!needsRegister && serverSalt && local.salt && local.salt !== serverSalt) {
-    // 本地盐与服务端不一致（多设备场景），以服务端为准，并回写本地
-    local.salt = serverSalt;
-    saveUsersLocal();
-  }
-
-  // ---------- 阶段2：派生并认证 ----------
-  const hash = await hashPassword(password, salt);
-  // 同步回写本地账号的哈希，保证下次本机登录仍可用
-  local.salt = salt;
-  local.hash = hash;
-  delete (local as any).password;
-  saveUsersLocal();
-
-  const res = await postSync({
-    op: 'login',
-    name: name.trim(),
-    hash,
-    salt,
-  });
-
-  if (!res.ok) {
-    return { ok: false, message: res.reason };
-  }
-
-  const d = res.data;
-  const creds: Credentials = {
-    userId: d.userId,
-    name: d.name,
-    salt: d.salt,
-    hash,
-  };
-  saveCredentials(creds);
-
-  // 合并云端数据
-  const merged = mergePayload(d.payload);
-
-  // 合并后把完整数据回传，保证云端是最新的完整状态
-  const push = await postSync({
-    op: 'push',
-    userId: creds.userId,
-    hash: creds.hash,
-    salt: creds.salt,
-    payload: packPayload(),
-  });
-
-  if (!push.ok) {
-    return { ok: false, message: `已登录但上传失败：${push.reason}` };
-  }
-
-  return {
-    ok: true,
-    message: d.created ? '云端账号已创建' : '同步完成',
-    merged,
-    updatedAt: push.data?.updatedAt,
-  };
+/** 标记本机已连接云端（会话本身由 SDK 管理，这里只做 UI 用的快速判断） */
+export function markCloudConnected(connected: boolean): void {
+  if (connected) localStorage.setItem('ket-cloud-signed-in', '1');
+  else localStorage.removeItem('ket-cloud-signed-in');
 }
 
 /**
- * 上传本地数据（需先 syncLogin 过）
- */
-export async function syncPush(): Promise<SyncStatus> {
-  const creds = getCredentials();
-  if (!creds) {
-    return { ok: false, message: '尚未连接云端，请先在「同步」里登录' };
-  }
-  const res = await postSync({
-    op: 'push',
-    userId: creds.userId,
-    hash: creds.hash,
-    salt: creds.salt,
-    payload: packPayload(),
-  });
-  if (!res.ok) return { ok: false, message: res.reason };
-  return { ok: true, message: '已上传', updatedAt: res.data?.updatedAt };
-}
-
-/**
- * 拉取云端数据并合并到本地
+ * 拉取云端数据并合并到本地。
+ *
+ * 前置：已登录云端账号（WorkBuddy Auth）。
  */
 export async function syncPull(): Promise<SyncStatus> {
-  const creds = getCredentials();
-  if (!creds) {
-    return { ok: false, message: '尚未连接云端，请先在「同步」里登录' };
+  const session = await getCloudSession();
+  if (!session) {
+    return { ok: false, message: '未连接云端，请先在「同步」里用手机号连接' };
   }
-  // 已持有凭据，直接带哈希请求（服务端会校验），不需要两阶段握手
-  const res = await postSync({
-    op: 'login',
-    name: creds.name,
-    hash: creds.hash,
-    salt: creds.salt,
-  });
-  if (!res.ok) return { ok: false, message: res.reason };
-  const merged = mergePayload(res.data?.payload);
-  return {
-    ok: true,
-    message: merged > 0 ? `已同步 ${merged} 条新记录` : '已是最新',
-    merged,
-    updatedAt: res.data?.updatedAt,
-  };
+  try {
+    const row = await readCloudRow();
+    if (!row) {
+      return { ok: true, message: '云端还没有这台设备的数据，将上传本地数据', merged: 0 };
+    }
+    const merged = mergePayload(row.payload);
+    markCloudConnected(true);
+    return {
+      ok: true,
+      message: merged > 0 ? `已同步 ${merged} 条新记录` : '已是最新',
+      merged,
+      updatedAt: row.updated_at,
+    };
+  } catch (e) {
+    return { ok: false, message: `拉取失败：${(e as Error).message}` };
+  }
 }
 
-/** 当前是否已连接云端 */
-export function isCloudConnected(): boolean {
-  return getCredentials() !== null;
+/**
+ * 上传本地数据（合并云端已有内容后回传，保证云端是完整状态）。
+ */
+export async function syncPush(): Promise<SyncStatus> {
+  const session = await getCloudSession();
+  if (!session) {
+    return { ok: false, message: '未连接云端，请先在「同步」里用手机号连接' };
+  }
+  try {
+    // 先拉一次合并，避免用旧数据覆盖云端
+    const row = await readCloudRow();
+    if (row) mergePayload(row.payload);
+
+    const updatedAt = await writeCloudRow(packPayload());
+    markCloudConnected(true);
+    return { ok: true, message: '已上传', updatedAt };
+  } catch (e) {
+    return { ok: false, message: `上传失败：${(e as Error).message}` };
+  }
 }
 
-/** 当前登录用户是否与云端账号一致 */
-export function isCurrentUserSynced(): boolean {
-  const cur = getCurrentUser();
-  const creds = getCredentials();
-  if (!cur || !creds) return false;
-  return creds.name.toLowerCase() === cur.name.toLowerCase();
-}
-
-// ========== 内部工具 ==========
-
-function saveUsersLocal(): void {
-  // 复用 auth.ts 的存储键，避免出现两份用户数据
-  const users = getUsers();
-  localStorage.setItem('ket-app-users', JSON.stringify(users));
-}
-
-function generateSaltFallback(): string {
-  const bytes = new Uint8Array(16);
-  crypto.getRandomValues(bytes);
-  let binary = '';
-  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
+/**
+ * 完整同步：拉取 + 合并 + 上传。
+ * 首次连接云端时用它把本机数据推上去。
+ */
+export async function syncNow(): Promise<SyncStatus> {
+  const session = await getCloudSession();
+  if (!session) {
+    return { ok: false, message: '未连接云端，请先在「同步」里用手机号连接' };
+  }
+  try {
+    const row = await readCloudRow();
+    const merged = row ? mergePayload(row.payload) : 0;
+    const updatedAt = await writeCloudRow(packPayload());
+    markCloudConnected(true);
+    return {
+      ok: true,
+      message: merged > 0 ? `已同步 ${merged} 条新记录` : '同步完成',
+      merged,
+      updatedAt,
+    };
+  } catch (e) {
+    return { ok: false, message: `同步失败：${(e as Error).message}` };
+  }
 }
