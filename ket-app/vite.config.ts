@@ -18,10 +18,58 @@ const BUILD_TIME = new Date().toISOString();
 // 部署基路径。
 //   GitHub Pages    -> /KETZXT/（仓库名作为子路径）
 //   WorkBuddy 域名 -> /（根路径）
-// 用环境变量切换，两个平台都能构建：
-//   VITE_BASE_PATH=/KETZXT/  npm run build   （GitHub Pages）
-//   VITE_BASE_PATH=/          npm run build   （WorkBuddy）
-const BASE_PATH = process.env.VITE_BASE_PATH ?? '/KETZXT/';
+//
+// ⚠️ Windows + Git Bash 的坑：MSYS 会把命令行传入的 "/" 当路径分隔符，
+// 自动转换成 Git 安装目录（实测 VITE_BASE_PATH=/KETZXT/ 变成了
+// "<PortableGit>/KETZXT/"），base 因此写进产物，页面所有资源 404。
+// MSYS_NO_PATHCONV=1 也救不了 —— 它会让脚本路径同时失效。
+//
+// → 解法：base 优先从 .env 文件读（不受 shell 参数转换影响），
+//   环境变量只作兜底；两者都不可信时退回默认的 /KETZXT/。
+//   部署前用 `echo BASE_PATH=/ > .env.local` 指定目标平台。
+import { readFileSync, existsSync } from 'fs';
+
+function readBaseFromEnvFile(): string | null {
+  for (const f of ['.env.local', '.env.production.local', '.env.production', '.env']) {
+    if (!existsSync(f)) continue;
+    try {
+      const m = readFileSync(f, 'utf8').match(/^\s*BASE_PATH\s*=\s*(.+?)\s*$/m);
+      if (m) return m[1].trim().replace(/^["']|["']$/g, '');
+    } catch {
+      /* 读不到就跳过 */
+    }
+  }
+  return null;
+}
+
+function resolveBasePath(): string {
+  // 1) 首选 .env 文件里的 BASE_PATH（不受 MSYS 参数转换影响）
+  const fromFile = readBaseFromEnvFile();
+  // 2) 其次环境变量（BASE_PATH 优先于 VITE_BASE_PATH）
+  const raw = fromFile ?? process.env.BASE_PATH ?? process.env.VITE_BASE_PATH ?? '/KETZXT/';
+  if (!raw) return '/';
+  console.warn(`[vite] base 路径 = ${raw}${fromFile ? '（来自 .env 文件）' : ''}`);
+
+  // 3) MSYS 转换后的产物形如 "C:/.../PortableGit/KETZXT/"
+  //    尾部才是真正的 base，剥掉前缀还原
+  if (/^[A-Za-z]:[\\/]/.test(raw)) {
+    const m = raw.match(/PortableGit[\\/](.*)$/);
+    const restored = m && m[1] ? '/' + m[1].replace(/\\/g, '/') : '/';
+    console.warn(`[vite] 检测到 MSYS 路径转换，已还原为 ${restored}`);
+    return normalizeBase(restored);
+  }
+  return normalizeBase(raw);
+}
+
+function normalizeBase(raw: string): string {
+  let b = raw.trim().replace(/\\/g, '/');
+  if (!b) return '/';
+  if (!b.startsWith('/')) b = '/' + b;
+  if (!b.endsWith('/')) b = b + '/';
+  return b;
+}
+
+const BASE_PATH = resolveBasePath();
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -40,6 +88,15 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/llm/, ''),
       },
     },
+    // 云服务反向代理会用域名访问，必须监听 0.0.0.0 并放行 Host 检查，
+    // 否则 Vite 报 "Blocked request. This host is not allowed."
+    host: '0.0.0.0',
+    allowedHosts: true,
+  },
+  preview: {
+    // 同上：生产预览服务也要监听 0.0.0.0 并放行 Host
+    host: '0.0.0.0',
+    allowedHosts: true,
   },
   build: {
     rolldownOptions: {
