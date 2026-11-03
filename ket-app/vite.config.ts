@@ -24,16 +24,34 @@ const BUILD_TIME = new Date().toISOString();
 // "<PortableGit>/KETZXT/"），base 因此写进产物，页面所有资源 404。
 // MSYS_NO_PATHCONV=1 也救不了 —— 它会让脚本路径同时失效。
 //
-// → 解法：base 优先从 .env 文件读（不受 shell 参数转换影响），
-//   环境变量只作兜底；两者都不可信时退回默认的 /KETZXT/。
-//   部署前用 `echo BASE_PATH=/ > .env.local` 指定目标平台。
+// → 解法：base 一律从**文件**读（Node 读文件不经过 shell，不受影响）：
+//   1. base-path.txt        —— 仓库内的目标平台配置（部署用）
+//   2. .env 文件的 BASE_PATH —— 本地临时覆盖
+//   3. 环境变量              —— 兜底（CI 在 Linux 上没有这个问题）
 import { readFileSync, existsSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
-function readBaseFromEnvFile(): string | null {
-  for (const f of ['.env.local', '.env.production.local', '.env.production', '.env']) {
-    if (!existsSync(f)) continue;
+// vite.config.ts 所在目录（用绝对路径，避免 cwd 不确定导致读不到文件）
+const APP_DIR = dirname(fileURLToPath(import.meta.url));
+
+function readBaseFromFile(): string | null {
+  // base-path.txt：仓库里直接指定部署平台（部署脚本会读它）
+  const target = join(APP_DIR, 'base-path.txt');
+  if (existsSync(target)) {
     try {
-      const m = readFileSync(f, 'utf8').match(/^\s*BASE_PATH\s*=\s*(.+?)\s*$/m);
+      const v = readFileSync(target, 'utf8').trim();
+      if (v) return v;
+    } catch {
+      /* 读不到就跳过 */
+    }
+  }
+  // .env 文件系列：本地临时覆盖
+  for (const f of ['.env.local', '.env.production.local', '.env.production', '.env']) {
+    const p = join(APP_DIR, f);
+    if (!existsSync(p)) continue;
+    try {
+      const m = readFileSync(p, 'utf8').match(/^\s*BASE_PATH\s*=\s*(.+?)\s*$/m);
       if (m) return m[1].trim().replace(/^["']|["']$/g, '');
     } catch {
       /* 读不到就跳过 */
@@ -43,12 +61,12 @@ function readBaseFromEnvFile(): string | null {
 }
 
 function resolveBasePath(): string {
-  // 1) 首选 .env 文件里的 BASE_PATH（不受 MSYS 参数转换影响）
-  const fromFile = readBaseFromEnvFile();
+  // 1) 首选文件（不受 MSYS 参数转换影响）
+  const fromFile = readBaseFromFile();
   // 2) 其次环境变量（BASE_PATH 优先于 VITE_BASE_PATH）
   const raw = fromFile ?? process.env.BASE_PATH ?? process.env.VITE_BASE_PATH ?? '/KETZXT/';
   if (!raw) return '/';
-  console.warn(`[vite] base 路径 = ${raw}${fromFile ? '（来自 .env 文件）' : ''}`);
+  console.warn(`[vite] base 路径 = ${raw}${fromFile ? '（来自文件）' : ''}`);
 
   // 3) MSYS 转换后的产物形如 "C:/.../PortableGit/KETZXT/"
   //    尾部才是真正的 base，剥掉前缀还原
