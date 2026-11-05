@@ -32,15 +32,23 @@ jobs:
       - name: Install dependencies
         run: cd ket-app && npm ci --ignore-scripts || npm install --ignore-scripts
 
+      - name: Write base path file
+        run: printf '/KETZXT/\n' > ${{ runner.temp }}/base-path.txt
+
+      # 用 build:cloud 而不是 npm run build —— 前者会：
+      #   1) 读 BASE_PATH_FILE 指定的 base（绕开 shell 参数转换）
+      #   2) 构建后校验产物资源路径，base 写错就直接以非 0 退出
+      # base 写错会导致线上资源全 404，而 vite 构建日志里看不出来
+      # （vite 会静默兜底），所以这道闸门是必须的。
       - name: Build
-        run: cd ket-app && npm run build
+        run: cd ket-app && npm run build:cloud
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-          # 部署基路径。GitHub Pages 用仓库名子路径。
-          # vite.config.ts 优先读 .env 文件里的 BASE_PATH（不受 Windows MSYS
-          # 路径转换影响），环境变量作为兜底。CI 上没有 .env.local，
-          # 所以这里必须显式指定，否则会沿用默认值。
-          VITE_BASE_PATH: /KETZXT/
+          # ⚠️ 必须显式指定：仓库里的 base-path.txt 是 "/"（云服务域名用）。
+          # build-cloud.mjs 优先读 BASE_PATH_FILE，否则退回 base-path.txt；
+          # 不覆盖的话会构建出根路径产物，
+          # 线上 https://xjhod.github.io/KETZXT/ 的资源全部 404。
+          BASE_PATH_FILE: ${{ runner.temp }}/base-path.txt
           # LLM 后端地址（Cloudflare Pages Functions）。这是地址不是密钥，可安全注入。
           # 未配置 secret 时前端会走 /llm 同域路径 —— AI 批改自动降级为不可用，不影响做题。
           VITE_LLM_API_BASE: ${{ secrets.VITE_LLM_API_BASE }}

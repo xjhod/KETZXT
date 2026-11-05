@@ -36,23 +36,41 @@ import { fileURLToPath } from 'url';
 const APP_DIR = dirname(fileURLToPath(import.meta.url));
 
 function readBaseFromFile(): string | null {
-  // base-path.txt：仓库里直接指定部署平台（部署脚本会读它）
-  const target = join(APP_DIR, 'base-path.txt');
-  if (existsSync(target)) {
+  // 读取优先级（必须与 scripts/build-cloud.mjs 一致）：
+  //   1. BASE_PATH_FILE 环境变量 —— 部署时显式指定（CI 用它覆盖）
+  //   2. .env.local                —— build-cloud 脚本写的值
+  //   3. base-path.txt             —— 仓库内默认部署平台
+  //
+  // ⚠️ build-cloud.mjs **不读 .env.local**（那是它写出去的输出文件，
+  //    读回来会读到上次的残留值）。所以这里的 .env.local 只可能是
+  //    本次构建刚写的，或开发者手动放的临时值。
+
+  // 1) BASE_PATH_FILE
+  if (process.env.BASE_PATH_FILE && existsSync(process.env.BASE_PATH_FILE)) {
     try {
-      const v = readFileSync(target, 'utf8').trim();
+      const v = readFileSync(process.env.BASE_PATH_FILE, 'utf8').trim();
       if (v) return v;
     } catch {
       /* 读不到就跳过 */
     }
   }
-  // .env 文件系列：本地临时覆盖
+  // 2) .env 文件系列（.env.local 优先）
   for (const f of ['.env.local', '.env.production.local', '.env.production', '.env']) {
     const p = join(APP_DIR, f);
     if (!existsSync(p)) continue;
     try {
       const m = readFileSync(p, 'utf8').match(/^\s*BASE_PATH\s*=\s*(.+?)\s*$/m);
       if (m) return m[1].trim().replace(/^["']|["']$/g, '');
+    } catch {
+      /* 读不到就跳过 */
+    }
+  }
+  // 3) base-path.txt —— 仓库默认
+  const target = join(APP_DIR, 'base-path.txt');
+  if (existsSync(target)) {
+    try {
+      const v = readFileSync(target, 'utf8').trim();
+      if (v) return v;
     } catch {
       /* 读不到就跳过 */
     }

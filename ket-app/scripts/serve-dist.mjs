@@ -19,7 +19,12 @@ import { readFile, stat } from 'fs/promises';
 import { join, extname, normalize } from 'path';
 import { fileURLToPath } from 'url';
 
-const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '..', 'dist');
+const APP_DIR = join(fileURLToPath(new URL('.', import.meta.url)), '..');
+// 静态根目录：可用 BUILD_OUT_DIR 指定（与 build-cloud.mjs 的输出一致），
+// C 盘空间紧张时可以指到别的盘。
+const ROOT = process.env.BUILD_OUT_DIR
+  ? join(process.env.BUILD_OUT_DIR, '')
+  : join(APP_DIR, 'dist');
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = '0.0.0.0';
 

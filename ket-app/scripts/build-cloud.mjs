@@ -18,33 +18,67 @@
  *   3. 校验产物路径确实是预期的（防止 base 又被写错，线上全 404）
  */
 
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
 
 const APP_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-// base 来源：BASE_PATH_FILE 指向一个只含 base 的文本文件
-// （云平台部署时可以预先放好这个文件；默认读 base-path.txt）
-const BASE_FILE = process.env.BASE_PATH_FILE || join(APP_DIR, 'base-path.txt');
+// 构建输出目录：可用 BUILD_OUT_DIR 指定到别的盘。
+// C 盘空间紧张时（构建会写几百 MB 临时文件），指到 E 盘更稳。
+// ⚠️ vite 的 --outDir 是相对项目根解析的，所以这里统一转成相对路径。
+const OUT_DIR_ABS = process.env.BUILD_OUT_DIR || join(APP_DIR, 'dist');
+const OUT_DIR_REL = OUT_DIR_ABS.startsWith(APP_DIR)
+  ? OUT_DIR_ABS.slice(APP_DIR.length).replace(/^[\\/]+/, '')
+  : OUT_DIR_ABS;
+
+// base 来源优先级（必须与 vite.config.ts 完全一致，否则两边算出来的
+// base 不一样，产物路径校验会误报）：
+//   1. BASE_PATH_FILE 环境变量 —— 部署时显式指定（CI 用它覆盖）
+//   2. base-path.txt             —— 仓库内默认
+//
+// ⚠️ 这里**不读 .env.local** —— 它是本脚本写出去的输出文件（给 vite 传值用），
+//    如果把它当输入读回来，就会读到上一次的残留值（实测：仓库 default 是 "/"
+//    但上一次 CI 模拟写了 "/KETZXT/"，下一次构建就被带跑了）。
+//    .env.local 只在 vite.config.ts 那一侧参与读取。
 let BASE = '/';
-if (existsSync(BASE_FILE)) {
-  BASE = readFileSync(BASE_FILE, 'utf8').trim();
+let baseSource = '(default)';
+
+if (process.env.BASE_PATH_FILE && existsSync(process.env.BASE_PATH_FILE)) {
+  BASE = readFileSync(process.env.BASE_PATH_FILE, 'utf8').trim();
+  baseSource = process.env.BASE_PATH_FILE;
+} else {
+  const repoFile = join(APP_DIR, 'base-path.txt');
+  if (existsSync(repoFile)) {
+    BASE = readFileSync(repoFile, 'utf8').trim();
+    baseSource = repoFile;
+  }
 }
+
+if (!BASE) BASE = '/';
 if (!BASE.startsWith('/')) BASE = '/' + BASE;
 if (!BASE.endsWith('/')) BASE = BASE + '/';
 
-console.log(`[build-cloud] base 路径 = ${BASE}（来源: ${BASE_FILE}）`);
+console.log(`[build-cloud] base 路径 = ${BASE}（来源: ${baseSource}）`);
 
-// 1) 写 .env.local —— vite.config.ts 优先读它，不受 shell 参数转换影响
+// 1) 写 .env.local —— vite.config.ts 读它来拿 base，不受 shell 参数转换影响
+//    （BASE_PATH_FILE 在子进程里会被清掉，见下方 childEnv）
 writeFileSync(join(APP_DIR, '.env.local'), `BASE_PATH=${BASE}\n`, 'utf8');
 
 // 2) 构建
-const r = spawnSync('npx', ['vite', 'build'], {
+//    BASE_PATH_FILE 在子进程里要清掉：vite.config.ts 的优先级里它最高，
+//    而这里已经把确定的 base 写进 .env.local 了。让 vite 以 .env.local 为准，
+//    两边算出来的 base 保证一致。
+const childEnv = { ...process.env, NODE_OPTIONS: '--max-old-space-size=4096' };
+delete childEnv.BASE_PATH_FILE;
+delete childEnv.BASE_PATH;
+delete childEnv.VITE_BASE_PATH;
+
+const r = spawnSync('npx', ['vite', 'build', '--outDir', OUT_DIR_REL], {
   cwd: APP_DIR,
   stdio: 'inherit',
-  env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=4096' },
+  env: childEnv,
   shell: true,
 });
 if (r.status !== 0) {
@@ -53,7 +87,7 @@ if (r.status !== 0) {
 }
 
 // 3) 校验产物：资源路径必须以 base 开头
-const indexPath = join(APP_DIR, 'dist', 'index.html');
+const indexPath = join(OUT_DIR_ABS, 'index.html');
 if (!existsSync(indexPath)) {
   console.error('[build-cloud] dist/index.html 不存在');
   process.exit(1);
