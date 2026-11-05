@@ -336,32 +336,46 @@ export function importFromUrlHash(): { success: boolean; message: string; import
 }
 
 // ========== 默认测试账号（预置，避免每次更新部署后都要重新注册） ==========
-const SEED_USERS: User[] = [
-  {
-    id: 'user_seed_1234',
-    name: '1234',
-    password: '123456',
-    passwordHint: '123456',
-    createdAt: '2026-07-09T00:00:00.000Z',
-  },
-];
+/**
+ * 测试账号单一数据源：登录页"一键登录测试账号"按钮与启动时 seed 共用，
+ * 改密码只需改这里一处。
+ */
+export const DEFAULT_TEST_ACCOUNT = {
+  id: 'user_seed_1234',
+  name: '1234',
+  password: '123456',
+  passwordHint: '123456',
+  createdAt: '2026-07-09T00:00:00.000Z',
+};
+
+const SEED_USERS: User[] = [DEFAULT_TEST_ACCOUNT];
 
 /**
- * 预置默认测试账号：若测试账号不存在则自动写入 localStorage。
- * 应用启动时（本模块被 import 时）自动执行一次，避免每次更新部署后都要重新注册。
- * 仅按 name 查重追加，不会覆盖用户已有的账号，也不会重复写入。
+ * 预置默认测试账号，并保证其凭据始终为 DEFAULT_TEST_ACCOUNT 的值。
+ * - 账号不存在 -> 写入。
+ * - 账号已存在（可能残留了旧密码 / 被手动改过 / 从别处导入）-> 强制对齐
+ *   name/password/passwordHint，避免"源码是 1234/123456，但某台设备登不进、
+ *   只能重新注册"的情况。
+ * 应用启动时（本模块被 import 时）自动执行一次。
  */
 export function seedDefaultUsers(): void {
   const users = getUsers();
   let changed = false;
   for (const seed of SEED_USERS) {
-    if (!users.some((u) => u.name.toLowerCase() === seed.name.toLowerCase())) {
-      users.push(seed);
+    const idx = users.findIndex((u) => u.id === seed.id);
+    if (idx === -1) {
+      users.push({ ...seed });
       changed = true;
+    } else {
+      const u = users[idx];
+      if (u.name !== seed.name || u.password !== seed.password || u.passwordHint !== seed.passwordHint) {
+        users[idx] = { ...u, name: seed.name, password: seed.password, passwordHint: seed.passwordHint };
+        changed = true;
+      }
     }
   }
   if (changed) saveUsers(users);
 }
 
-// 应用启动即确保测试账号存在（纯前端 localStorage，无后端，故启动时 seed）
+// 应用启动即确保测试账号存在且凭据正确（纯前端 localStorage，无后端，故启动时 seed）
 seedDefaultUsers();

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY } from '../utils/auth';
+import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY, DEFAULT_TEST_ACCOUNT } from '../utils/auth';
 import { syncNow, isCloudConnected } from '../utils/sync';
 import { sendPhoneOtp, signInWithPhoneOtp } from '../utils/cloudAuth';
 
@@ -51,6 +51,24 @@ export default function LoginPage() {
       }
     } catch (err) {
       setError('登录失败：' + String(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 一键登录测试账号（开发/演示用，避免每次更新部署都要重新注册）
+  const handleTestLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const result = await login(DEFAULT_TEST_ACCOUNT.name, DEFAULT_TEST_ACCOUNT.password);
+      if (result.success && result.user) {
+        navigate('/');
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError('测试账号登录失败：' + String(err));
     } finally {
       setLoading(false);
     }
@@ -370,6 +388,16 @@ export default function LoginPage() {
             {loading ? '登录中...' : '🚀 登录'}
           </button>
         </form>
+
+        {/* 测试账号一键登录（开发/演示用，避免每次更新部署都要重新注册） */}
+        <button
+          type="button"
+          onClick={handleTestLogin}
+          disabled={loading}
+          className="w-full mt-3 py-2.5 px-4 rounded-lg text-indigo-700 font-semibold text-sm border border-indigo-300 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition disabled:opacity-50"
+        >
+          ⚡ 测试账号一键登录（{DEFAULT_TEST_ACCOUNT.name} / {DEFAULT_TEST_ACCOUNT.password}）
+        </button>
 
         {/* 忘记密码 & 注册链接 */}
         <div className="mt-6 text-center space-y-3">
