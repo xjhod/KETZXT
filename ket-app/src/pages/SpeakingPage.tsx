@@ -539,7 +539,6 @@ export default function SpeakingPage() {
                     {[
                       { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
                       { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
-                      { l: '流利', v: llmSpeech.fluencyScore, c: 'text-orange-600' },
                       { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
                     ].map((s) => (
                       <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
@@ -552,11 +551,9 @@ export default function SpeakingPage() {
                   <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
                     <p className="font-medium text-gray-700 mb-1">
                       🎤 识别到的内容
-                      {llmSpeech.asrSource === 'browser' && (
-                        <span className="text-orange-500 font-normal">
-                          （浏览器识别，可能有误；识别不准时语法判断也会受影响）
-                        </span>
-                      )}
+                      <span className="text-gray-500 font-normal">
+                        （评分基于你输入/转写的文字，不评估发音、语调与流利度）
+                      </span>
                     </p>
                     <p className="text-gray-600">{llmSpeech.transcript}</p>
                   </div>
@@ -894,7 +891,6 @@ export default function SpeakingPage() {
                     {[
                       { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
                       { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
-                      { l: '流利', v: llmSpeech.fluencyScore, c: 'text-orange-600' },
                       { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
                     ].map((s) => (
                       <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
@@ -907,11 +903,9 @@ export default function SpeakingPage() {
                   <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
                     <p className="font-medium text-gray-700 mb-1">
                       🎤 识别到的内容
-                      {llmSpeech.asrSource === 'browser' && (
-                        <span className="text-orange-500 font-normal">
-                          （浏览器识别，可能有误；识别不准时语法判断也会受影响）
-                        </span>
-                      )}
+                      <span className="text-gray-500 font-normal">
+                        （评分基于你输入/转写的文字，不评估发音、语调与流利度）
+                      </span>
                     </p>
                     <p className="text-gray-600">{llmSpeech.transcript}</p>
                   </div>
@@ -1121,8 +1115,8 @@ export default function SpeakingPage() {
       <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
         <p className="text-sm text-yellow-800 dark:text-yellow-300">
           💡 <strong>提示：</strong> 
-          已接入浏览器内置语音识别（Web Speech API），需要联网才能将你的口语实时转为文字并自动评分。
-          建议使用 Chrome 或 Edge 浏览器，并在弹窗中允许麦克风权限。标准答案播放使用预生成音频（手机/电脑发音一致）。
+          评分基于你输入或转写的文字内容（评内容、语法、词汇），不评发音与语调。
+          可点「开始录音」让浏览器把你说的话转成文字，部分国产手机浏览器识别可能不可用，此时直接在下方输入框打字也能评分。标准答案播放使用预生成音频（手机/电脑发音一致）。
         </p>
       </div>
     </div>

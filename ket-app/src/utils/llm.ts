@@ -29,15 +29,12 @@ export interface LlmWritingResult {
   betterVersion: string;
 }
 
-/** 口语评分结果 */
+/** 口语评分结果（基于文字内容评分，不含发音/语调/流利度） */
 export interface LlmSpeechResult {
-  /** cloud-asr = 云端转写；browser = 用浏览器识别结果或用户手动输入 */
-  asrSource?: 'cloud-asr' | 'browser';
   transcript: string;
   score: number;
   contentScore: number;
   grammarScore: number;
-  fluencyScore: number;
   vocabularyScore: number;
   feedback: string;
   grammarIssues: string[];
@@ -254,21 +251,23 @@ const SPEECH_SYSTEM = `你是 KET（A2）英语口语的评分老师，对象是
 评分原则：
 1. 内容：是否回答了问题、是否用到了关键信息。
 2. 语法：句子结构是否有明显错误（错误要指出并给正确说法）。
-3. 流畅度：句子是否完整、衔接是否自然。
-4. 词汇：是否够用、是否有误用。
-5. 评分不要过于苛刻：只要意思能被理解，就应给出鼓励性的分数。
+3. 词汇：是否够用、是否有误用。
+4. 评分不要过于苛刻：只要意思能被理解，就应给出鼓励性的分数。
+
+⚠️ 重要前提：你只看到学生**输入或转写的文字**，听不到真实发音、语调与流利度。
+因此不要凭空给出"流利度""发音"类分数，也不要在建议里假定学生说得快慢或结巴。
+只基于文字内容评价内容、语法、词汇即可。
 
 必须输出的 JSON 结构：
 {
   "score": 0-100,              // 综合分（60 分视为达标）
   "contentScore": 0-100,       // 内容
   "grammarScore": 0-100,       // 语法
-  "fluencyScore": 0-100,       // 流利度
   "vocabularyScore": 0-100,    // 词汇
-  "transcript": "你从录音中识别出的原文",
+  "transcript": "你收到的学生回答原文",
   "feedback": "一段话总体评价（中文，2-3 句）",
-  "grammarIssues": ["具体语法错误：学生说的原句 -> 正确说法"],
-  "suggestions": ["2-4 条口语改进建议（中文，具体可操作）"],
+  "grammarIssues": ["具体语法错误：学生原句 -> 正确说法"],
+  "suggestions": ["2-4 条口语改进建议（中文，具体可操作，聚焦内容/语法/词汇）"],
   "sampleAnswer": "一段更好的示范回答（英文）"
 }`;
 
@@ -322,7 +321,6 @@ ${browserText}
     score: number;
     contentScore: number;
     grammarScore: number;
-    fluencyScore: number;
     vocabularyScore: number;
     transcript: string;
     feedback: string;
@@ -338,13 +336,11 @@ ${browserText}
   return {
     ok: true,
     data: {
-      asrSource: 'browser',
       transcript:
         typeof parsed.transcript === 'string' && parsed.transcript ? parsed.transcript : browserText,
       score: clampScore(parsed.score),
       contentScore: clampScore(parsed.contentScore),
       grammarScore: clampScore(parsed.grammarScore),
-      fluencyScore: clampScore(parsed.fluencyScore),
       vocabularyScore: clampScore(parsed.vocabularyScore),
       feedback: typeof parsed.feedback === 'string' ? parsed.feedback : '',
       grammarIssues: toStringArray(parsed.grammarIssues),
