@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY, DEFAULT_TEST_ACCOUNT } from '../utils/auth';
+import { rehydrateAllStores } from '../store/rehydrateStores';
 import { syncNow, isCloudConnected } from '../utils/sync';
 import { sendPhoneOtp, signInWithPhoneOtp } from '../utils/cloudAuth';
 
@@ -49,6 +50,8 @@ export default function LoginPage() {
       const result = await login(name, password);
 
       if (result.success && result.user) {
+        // 登录成功：先把三个学习 store 从「当前用户」分片重新载入，再进首页
+        await rehydrateAllStores();
         // 登录成功，跳转到首页
         navigate('/');
       } else {
@@ -68,6 +71,7 @@ export default function LoginPage() {
     try {
       const result = await login(DEFAULT_TEST_ACCOUNT.name, DEFAULT_TEST_ACCOUNT.password);
       if (result.success && result.user) {
+        await rehydrateAllStores();
         navigate('/');
       } else {
         setError(result.message);

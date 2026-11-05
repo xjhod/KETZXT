@@ -6,8 +6,9 @@
 //  - 每日完成记录（题组判分结果、写作/口语完成情况、用时）
 //  - 连续完成天数、总完成率（供计划页与首页展示）
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { dateKey, diffDays } from '../data/dailyPlan';
+import userScopedStorage from './userScopedStorage';
 
 export interface DailyItemResult {
   id: string;
@@ -140,7 +141,8 @@ export const usePlanStore = create<PlanState>()(
       reset: () => set({ cursor: 0, logs: {}, skips: {} }),
     }),
     {
-      name: 'ket-plan-v1',
+      name: 'ket-plan-v1', // 实际按当前用户隔离为 ket-plan-v1:<uid>
+      storage: createJSONStorage(() => userScopedStorage),
     }
   )
 );

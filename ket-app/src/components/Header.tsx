@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
 import { syncNow, isCloudConnected, markCloudConnected } from '../utils/sync';
 import { signOutCloud } from '../utils/cloudAuth';
+import { rehydrateAllStores } from '../store/rehydrateStores';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -19,9 +20,10 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   const userList = getUserList().filter(u => u.id !== currentUser?.id);
   const cloudOn = isCloudConnected();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout();
     setShowUserMenu(false);
+    await rehydrateAllStores(); // 清空内存中上一个用户的数据（载入 guest/空）
     navigate('/login', { replace: true });
   };
 
@@ -48,8 +50,11 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     window.location.reload();
   };
 
-  const handleSwitchUser = () => {
+  const handleSwitchUser = async () => {
     setShowUserMenu(false);
+    // 先退出当前用户，否则 PublicRoute 会因"已登录"把 /login 弹回首页
+    logout();
+    await rehydrateAllStores(); // 清空上一个用户的内存数据
     navigate('/login', { replace: true });
   };
 

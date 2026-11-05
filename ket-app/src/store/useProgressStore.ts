@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import userScopedStorage from './userScopedStorage';
 
 // ========================
 // 数据类型定义
@@ -224,7 +225,8 @@ export const useProgressStore = create<ProgressStore>()(
       reset: () => set({ answerRecords: [], sessionRecords: [] }),
     }),
     {
-      name: 'ket-progress-v1', // localStorage key
+      name: 'ket-progress-v1', // localStorage key（实际按当前用户隔离为 ket-progress-v1:<uid>）
+      storage: createJSONStorage(() => userScopedStorage),
     }
   )
 );

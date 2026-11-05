@@ -3,8 +3,9 @@
 //  - 各语法点的学习进度（introduced / stage / 正确错误数 / Leitner 盒子）
 //  - 连续打卡 streak、日历热力图数据、每日完成判定
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { ROADMAP } from '../data/grammarRoadmap';
+import userScopedStorage from './userScopedStorage';
 
 export interface PointProgress {
   grammarId: string;
@@ -189,7 +190,8 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
       reset: () => set({ points: {}, streak: 0, lastCheckinDate: null, checkinDates: [] }),
     }),
     {
-      name: 'ket-daily-checkin-v1',
+      name: 'ket-daily-checkin-v1', // 实际按当前用户隔离为 ket-daily-checkin-v1:<uid>
+      storage: createJSONStorage(() => userScopedStorage),
     }
   )
 );
