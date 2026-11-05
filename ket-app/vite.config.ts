@@ -115,8 +115,8 @@ export default defineConfig({
     'import.meta.env.VITE_BUILD_TIME': JSON.stringify(BUILD_TIME),
   },
   server: {
-    // 本地开发时把 /llm 代理到 wrangler dev（默认 8787 端口）
-    // 生产环境走 VITE_LLM_API_BASE 指向的 Worker 公网地址
+    // 历史遗留：早期 Cloudflare Worker 后端的本地调试代理（wrangler dev，默认 8787）。
+    // 现网 AI 批改走 WorkBuddy 云服务 SDK，不经过 /llm；此代理仅老版本本地调试用，可安全移除。
     proxy: {
       '/llm': {
         target: process.env.LLM_DEV_TARGET || 'http://127.0.0.1:8787',

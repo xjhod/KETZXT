@@ -30,7 +30,13 @@ export const cloud = createWorkBuddyCloud<Database>({
   publishableKey: CLOUD_PUBLISHABLE_KEY,
 });
 
-/** 云服务是否可用（当前域名是否为受支持的 Origin） */
+/**
+ * 旧版「云服务是否可用」判断：要求当前域名等于 CLOUD_ENDPOINT 的 Origin。
+ *
+ * ⚠️ 依据是已被推翻的 403 结论（见 config/cloud.ts 说明），2026-11-03 实测两个 Origin 均正常。
+ * 本函数目前**没有任何调用方**（仅 probeCloudStatus 内部引用），保留只为兼容，
+ * 不要据此禁用任何功能；若将来要启用探测，请改为真实 HTTP 探测而非 Origin 硬判断。
+ */
 export function isCloudOriginSupported(): boolean {
   if (typeof window === 'undefined') return false;
   return window.location.origin === new URL(CLOUD_ENDPOINT).origin;
@@ -68,7 +74,9 @@ export async function probeCloudStatus(): Promise<CloudStatus> {
     message: '',
   };
 
-  // 当前页面 Origin 不匹配时，云服务一定 403，直接说明原因，省一次无谓请求
+  // ⚠️ 下面这个提前返回依据的是已被推翻的 403 结论（详见 config/cloud.ts）。
+  // 整段 probeCloudStatus 目前无调用方；若将来启用，必须先删掉这段 Origin 门禁，
+  // 改为直接发起真实探测，否则会把 GitHub Pages 站点误判为「云服务不可用」。
   if (!status.originOk) {
     status.message = '云服务要求在专用域名下使用（当前域名不匹配）';
     return status;

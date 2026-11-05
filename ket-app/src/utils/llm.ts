@@ -48,6 +48,7 @@ export interface LlmSpeechResult {
 export interface LlmStatus {
   available: boolean;
   llm: boolean;
+  /** 云端语音转写是否可用。云服务无音频模型，恒为 false；口语评分只基于文本 */
   asr: boolean;
   /** 不可用时的原因（给用户看） */
   reason?: string;
@@ -150,7 +151,9 @@ export async function fetchLlmStatus(): Promise<LlmStatus> {
     if (!model) {
       return { available: false, llm: false, asr: false, reason: '云服务无可用模型' };
     }
-    return { available: true, llm: true, asr: true };
+    // asr 固定为 false：云服务 33 个模型里没有音频模型，不具备云端语音转写能力。
+    // 口语评分只能基于浏览器识别结果或用户手动输入的文字（见 gradeSpeechWithLLM）。
+    return { available: true, llm: true, asr: false };
   } catch (e) {
     return { available: false, llm: false, asr: false, reason: (e as Error).message };
   }

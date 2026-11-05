@@ -22,9 +22,14 @@ export const CLOUD_PUBLISHABLE_KEY =
   'wbpk_j3Hgo6D41WQ58UC9E2EvFR_RjzAaByqoNiPOprHVzdVxIql0YaQLO3s';
 
 /**
- * 云服务 Origin 白名单。
+ * 云服务数据面域名常量（保留给需要拼接口地址的场景）。
  *
- * 实测：服务端做 **Origin 精确匹配** —— 用别的 Origin（如 GitHub Pages）调用会返回
- * HTTP 403。所以前端必须部署在 CLOUD_ENDPOINT 对应的域名上，云服务才可用。
+ * ⚠️ 旧结论「服务端做 Origin 精确匹配，GitHub Pages 调用会 403、必须部署在本域名」
+ * 已被 2026-11-03 用真实 SDK 逐模块实测推翻：
+ * `ketzxt.app.workbuddy.host` 与 `xjhod.github.io` 两个 Origin
+ * 在模型列表 / LLM 对话 / 认证 / 数据库上**全部正常**。
+ * 因此部署到本域名不是功能前提，GitHub Pages 站点同样可用云服务。
+ *
+ * 注意：本常量仅表示数据面域名，不要拿它做「当前 Origin 是否受支持」的门禁判断。
  */
 export const CLOUD_ORIGIN = 'https://ketzxt.app.workbuddy.host';
