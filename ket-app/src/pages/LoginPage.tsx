@@ -34,6 +34,11 @@ export default function LoginPage() {
   const [syncUrl, setSyncUrl] = useState('');
   const [syncMessage, setSyncMessage] = useState('');
 
+  // 测试账号一键登录按钮：默认隐藏，仅当 URL 带 ?debug=1 时显示（避免交付给家长时界面露出测试入口）
+  const [showTestLogin] = useState(
+    () => new URLSearchParams(window.location.search).get('debug') === '1'
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -389,15 +394,17 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* 测试账号一键登录（开发/演示用，避免每次更新部署都要重新注册） */}
-        <button
-          type="button"
-          onClick={handleTestLogin}
-          disabled={loading}
-          className="w-full mt-3 py-2.5 px-4 rounded-lg text-indigo-700 font-semibold text-sm border border-indigo-300 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition disabled:opacity-50"
-        >
-          ⚡ 测试账号一键登录（{DEFAULT_TEST_ACCOUNT.name} / {DEFAULT_TEST_ACCOUNT.password}）
-        </button>
+        {/* 测试账号一键登录（默认隐藏，仅 URL 带 ?debug=1 时显示；开发/演示用，避免每次更新部署都要重新注册） */}
+        {showTestLogin && (
+          <button
+            type="button"
+            onClick={handleTestLogin}
+            disabled={loading}
+            className="w-full mt-3 py-2.5 px-4 rounded-lg text-indigo-700 font-semibold text-sm border border-indigo-300 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition disabled:opacity-50"
+          >
+            ⚡ 测试账号一键登录（{DEFAULT_TEST_ACCOUNT.name} / {DEFAULT_TEST_ACCOUNT.password}）
+          </button>
+        )}
 
         {/* 忘记密码 & 注册链接 */}
         <div className="mt-6 text-center space-y-3">
