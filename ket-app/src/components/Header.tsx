@@ -4,6 +4,7 @@ import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
 import { syncNow, isCloudConnected, markCloudConnected } from '../utils/sync';
 import { signOutCloud } from '../utils/cloudAuth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
+import { clearUserShards } from '../store/userScopedStorage';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -62,6 +63,7 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     if (confirm(`确定要删除用户"${userName}"吗？删除后数据无法恢复！`)) {
       const result = deleteUser(userId, currentUser?.id || '');
       if (result.success) {
+        clearUserShards(userId); // 一并清掉该用户的本地学习数据分片
         alert(result.message);
         setShowUserMenu(false);
         // 如果删除成功，刷新用户列表
