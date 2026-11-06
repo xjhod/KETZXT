@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
-import { syncNow, isCloudConnected, markCloudConnected } from '../utils/sync';
-import { signOutCloud } from '../utils/cloudAuth';
+import { syncNow } from '../utils/sync';
+import { isCloudConnected, unlinkCloud } from '../utils/cloudAuth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
 import { clearUserShards } from '../store/userScopedStorage';
 
@@ -45,8 +45,7 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   /** 解除本机与云端的绑定（不影响云端已存的数据） */
   const handleUnlinkCloud = async () => {
     if (!confirm('解除本机与云端的绑定？云端已保存的数据不会被删除。')) return;
-    await signOutCloud();
-    markCloudConnected(false);
+    await unlinkCloud();
     setShowUserMenu(false);
     window.location.reload();
   };

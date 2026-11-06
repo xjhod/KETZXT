@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login, hasRegisteredUsers, forgotPassword, getRegisteredUsers, generateSyncUrl, importFromUrlHash, USERS_KEY, DEFAULT_TEST_ACCOUNT } from '../utils/auth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
-import { syncNow, isCloudConnected } from '../utils/sync';
-import { sendPhoneOtp, signInWithPhoneOtp } from '../utils/cloudAuth';
+import { syncNow } from '../utils/sync';
+import { sendCloudOtp, verifyCloudOtp, isCloudConnected } from '../utils/cloudAuth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,7 +18,9 @@ export default function LoginPage() {
   const [forgotResult, setForgotResult] = useState<{ success: boolean; message: string; hint?: string; password?: string } | null>(null);
 
   // 云端同步相关
+  const [cloudMode, setCloudMode] = useState<'phone' | 'email'>('phone');
   const [cloudPhone, setCloudPhone] = useState('');
+  const [cloudEmail, setCloudEmail] = useState('');
   const [cloudCode, setCloudCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [cloudBusy, setCloudBusy] = useState(false);
@@ -84,17 +86,21 @@ export default function LoginPage() {
   };
 
   // ========== 云端同步（跨设备） ==========
-  /** 发送手机验证码 */
+  /** 发送验证码（手机号或邮箱，由 cloudMode 决定） */
   const handleSendOtp = async () => {
     setCloudMessage('');
     setCloudOk(false);
-    if (!cloudPhone.trim()) {
-      setCloudMessage('请先填写手机号');
+    const target = cloudMode === 'phone' ? cloudPhone.trim() : cloudEmail.trim();
+    if (!target) {
+      setCloudMessage(cloudMode === 'phone' ? '请先填写手机号' : '请先填写邮箱');
       return;
     }
     setCloudBusy(true);
     try {
-      const res = await sendPhoneOtp(cloudPhone.trim());
+      const res =
+        cloudMode === 'phone'
+          ? await sendCloudOtp({ phone: target })
+          : await sendCloudOtp({ email: target });
       setCloudMessage(res.message);
       setCloudOk(res.ok);
       if (res.ok) setOtpSent(true);
@@ -110,13 +116,14 @@ export default function LoginPage() {
     e.preventDefault();
     setCloudMessage('');
     setCloudOk(false);
-    if (!cloudPhone.trim() || !cloudCode.trim()) {
-      setCloudMessage('请填写手机号和验证码');
+    const target = cloudMode === 'phone' ? cloudPhone.trim() : cloudEmail.trim();
+    if (!target || !cloudCode.trim()) {
+      setCloudMessage(cloudMode === 'phone' ? '请填写手机号和验证码' : '请填写邮箱和验证码');
       return;
     }
     setCloudBusy(true);
     try {
-      const auth = await signInWithPhoneOtp(cloudPhone.trim(), cloudCode.trim());
+      const auth = await verifyCloudOtp(cloudCode.trim());
       setCloudMessage(auth.message);
       setCloudOk(auth.ok);
       if (!auth.ok) return;
@@ -455,8 +462,8 @@ export default function LoginPage() {
             )}
           </div>
           <p className="text-xs text-indigo-600 mb-3">
-            用手机号接收验证码即可连接云端。连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步。
-            换设备时用同一个手机号登录，进度自动拉回。
+            用手机号或邮箱接收验证码即可连接云端。连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步。
+            一个手机号/邮箱对应一个小孩，换设备时用同一个账号登录，进度自动拉回。
           </p>
 
           {cloudMessage && (
@@ -471,17 +478,60 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* 手机号 / 邮箱 切换 */}
+          <div className="flex gap-1 mb-2 p-1 bg-white/70 rounded-lg border border-indigo-200">
+            <button
+              type="button"
+              onClick={() => { setCloudMode('phone'); setOtpSent(false); }}
+              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
+                cloudMode === 'phone' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
+              }`}
+            >
+              📱 手机号
+            </button>
+            <button
+              type="button"
+              onClick={() => { setCloudMode('email'); setOtpSent(false); }}
+              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
+                cloudMode === 'email' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
+              }`}
+            >
+              ✉️ 邮箱
+            </button>
+          </div>
+
           <form onSubmit={handleCloudLogin} className="space-y-2">
-            <div className="flex gap-2">
+            {cloudMode === 'phone' ? (
               <input
                 type="tel"
                 value={cloudPhone}
                 onChange={(e) => setCloudPhone(e.target.value)}
-                className="flex-1 px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
                 placeholder="手机号"
                 inputMode="numeric"
                 maxLength={11}
                 autoComplete="tel"
+              />
+            ) : (
+              <input
+                type="email"
+                value={cloudEmail}
+                onChange={(e) => setCloudEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                placeholder="邮箱地址"
+                autoComplete="email"
+              />
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={cloudCode}
+                onChange={(e) => setCloudCode(e.target.value)}
+                className="flex-1 px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                placeholder={cloudMode === 'phone' ? '短信验证码' : '邮件验证码'}
+                inputMode="numeric"
+                maxLength={8}
+                autoComplete="one-time-code"
               />
               <button
                 type="button"
@@ -492,16 +542,6 @@ export default function LoginPage() {
                 {cloudBusy ? '发送中…' : otpSent ? '已发送' : '获取验证码'}
               </button>
             </div>
-            <input
-              type="text"
-              value={cloudCode}
-              onChange={(e) => setCloudCode(e.target.value)}
-              className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-              placeholder="短信验证码"
-              inputMode="numeric"
-              maxLength={8}
-              autoComplete="one-time-code"
-            />
             <button
               type="submit"
               disabled={cloudBusy}

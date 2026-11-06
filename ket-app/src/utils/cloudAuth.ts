@@ -2,16 +2,27 @@
  * 云端账号（WorkBuddy Auth）—— 跨设备同步的身份基础
  *
  * 为什么需要它：
- *   云数据库的 RLS 用 `auth.uid()` 做行级隔离，也就是说「谁能读自己的同步数据」
- *   取决于登录身份。本地那套 kid 用户名/密码是**离线**用的账号体系，
- *   云端则用 WorkBuddy 账号（手机号验证码登录）作为身份 —— 两者是不同维度的事：
+ *   云数据库的 RLS 用 `auth.uid()` 做行级隔离，即「谁能读自己的同步数据」取决于
+ *   登录身份。本地那套 kid 用户名/密码是**离线**账号体系；云端则用 WorkBuddy 账号
+ *   （手机号 / 邮箱验证码）作为身份 —— 两者是不同维度：
  *     · 本地 kid 账号：决定这台设备上「当前是哪个孩子在用」
  *     · 云端账号：决定「这台设备连到云端的哪份数据」
  *
- * 家长实际体验：换手机 / 换平板时，输一次手机号验证码，就把孩子的进度拉回来。
+ * 注册与登录统一走 `sendOtp` + `verifyOtp` 两步流程：
+ *   - 家长/新用户输入手机号或邮箱 → sendOtp 发码（上游区分新老用户，返回 isExistingUser）
+ *   - 输入验证码 → verifyOtp（带上 isExistingUser），由 SDK 决定走登录还是自动注册
+ *   - 无需自建后台发码，新手机号/邮箱首次验码即自动建号
+ *
+ * 登录成功后：建一个本地镜像用户（id=云端 uid，无密码），复用现有分片存储；
+ * 标记本机已连云端，记录 linked uid，并 rehydrate 三个学习 store。
  */
 
 import { cloud } from './cloud';
+import { upsertCloudUser } from './auth';
+import { rehydrateAllStores } from '../store/rehydrateStores';
+
+const SIGNED_IN_KEY = 'ket-cloud-signed-in';
+const LINKED_UID_KEY = 'ket-cloud-linked-uid';
 
 /** 云端登录状态 */
 export interface CloudAccount {
@@ -30,12 +41,22 @@ export interface CloudAuthStatus {
   message: string;
 }
 
+/** OTP 流程中间态：发码返回的 challenge，验码时要用 */
+interface PendingChallenge {
+  verificationId: string;
+  isExistingUser: boolean;
+  /** 发码时用的标识（手机号或邮箱），验码必须传回同一个 */
+  identifier: string;
+}
+
+let pendingChallenge: PendingChallenge | null = null;
+
 /** 当前会话（没有会话返回 null） */
 export async function getCloudSession(): Promise<CloudAccount | null> {
   try {
     const { data, error } = await cloud.auth.getSession();
     if (error || !data) return null;
-    // getSession() 返回的 data 本身就是 CloudSession（不是 { session } 包装）
+    // getSession() 返回的 data 本身是 CloudSession（不是 { session } 包装）
     const session: any = data;
     const user: any = session?.user ?? {};
     const uid = user?.id ?? user?.sub ?? session?.user_id ?? null;
@@ -59,77 +80,166 @@ export async function getCloudAuthStatus(): Promise<CloudAuthStatus> {
   return {
     signedIn: false,
     account: null,
-    message: '未连接云端：输入手机号接收验证码即可连接，多台设备间自动同步',
+    message: '未连接云端：输入手机号或邮箱接收验证码即可连接，多台设备间自动同步',
   };
 }
 
-/** OTP 流程中间态：发码返回的 challenge，验码时要用 */
-let pendingChallenge: any = null;
+/** 本机是否已连接云端（会话本身由 SDK 管理，这里只做 UI 用的快速判断） */
+export function isCloudConnected(): boolean {
+  return localStorage.getItem(SIGNED_IN_KEY) === '1';
+}
+
+/** 标记本机已连接云端 */
+export function markCloudConnected(connected: boolean): void {
+  if (connected) localStorage.setItem(SIGNED_IN_KEY, '1');
+  else localStorage.removeItem(SIGNED_IN_KEY);
+}
+
+/** 记录当前云端账号的 uid（与本地镜像用户 id 一致） */
+export function setCloudLinkedUid(uid: string): void {
+  if (uid) localStorage.setItem(LINKED_UID_KEY, uid);
+}
+
+/** 读取当前云端账号的 uid */
+export function getCloudLinkedUid(): string | null {
+  return localStorage.getItem(LINKED_UID_KEY);
+}
+
+/** 清除云端账号 uid 记录 */
+export function clearCloudLinkedUid(): void {
+  localStorage.removeItem(LINKED_UID_KEY);
+}
 
 /**
- * 发送手机验证码。
+ * 发送验证码（手机号或邮箱二选一）。
  *
- * 走 `signInWithOtp`（gotrue 风格）：它同时完成「发码」并返回一个带
- * `verify()` 的 challenge，验码时直接 challenge.verify({ token }) 即可，
- * 新用户会自动注册，不需要先注册再登录。
+ * 走 `sendOtp`：它只发码并返回一个 `verificationId`，上游同时给出
+ * `isExistingUser`（决定验码后走登录还是注册，由 SDK 处理，本端不猜）。
  *
- * @param phone 手机号（11 位中国大陆手机号）
+ * @returns { ok, message, verificationId?, isExistingUser? }
  */
-export async function sendPhoneOtp(phone: string): Promise<{
+export async function sendCloudOtp(input: {
+  phone?: string;
+  email?: string;
+}): Promise<{
   ok: boolean;
   message: string;
+  verificationId?: string;
+  isExistingUser?: boolean;
 }> {
-  const trimmed = phone.trim();
-  if (!/^1[3-9]\d{9}$/.test(trimmed)) {
-    return { ok: false, message: '请输入正确的 11 位手机号' };
+  const phone = (input.phone ?? '').trim();
+  const email = (input.email ?? '').trim();
+
+  let identifier: string;
+  let creds: any;
+  if (phone) {
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+      return { ok: false, message: '请输入正确的 11 位手机号' };
+    }
+    identifier = phone;
+    creds = { phone };
+  } else if (email) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { ok: false, message: '请输入正确的邮箱地址' };
+    }
+    identifier = email;
+    // 邮件验证码场景：带一个本应用落地地址（已注册域名，避免服务端 400）
+    creds = { email, emailRedirectTo: window.location.origin + import.meta.env.BASE_URL };
+  } else {
+    return { ok: false, message: '请填写手机号或邮箱' };
   }
+
   try {
-    const res = await cloud.auth.signInWithOtp({ phone: trimmed });
+    const res = await cloud.auth.sendOtp(creds);
     if (res?.error) {
       return { ok: false, message: `发送失败：${res.error.message || '未知错误'}` };
     }
-    const challenge = (res as any)?.data;
-    if (!challenge?.verify) {
+    const challenge: any = res?.data;
+    if (!challenge?.verificationId) {
       return { ok: false, message: '发送失败：服务端未返回可用的验证码流程' };
     }
-    pendingChallenge = challenge;
-    return { ok: true, message: '验证码已发送，请查收短信' };
+    pendingChallenge = {
+      verificationId: String(challenge.verificationId),
+      isExistingUser: Boolean(challenge.isExistingUser),
+      identifier,
+    };
+    return {
+      ok: true,
+      message: phone
+        ? '验证码已发送，请查收短信'
+        : '验证码已发送，请查收邮件（若收不到请检查垃圾箱）',
+      verificationId: pendingChallenge.verificationId,
+      isExistingUser: pendingChallenge.isExistingUser,
+    };
   } catch (e) {
     return { ok: false, message: `发送失败：${(e as Error).message}` };
   }
 }
 
 /**
- * 用手机号 + 验证码登录（新手机号会自动注册）。
+ * 用验证码登录（新用户会自动注册）。
+ *
+ * 验码走 `verifyOtp`，其入参里的 `isExistingUser` 来自发码结果，
+ * 由 SDK 决定是登录还是注册 —— 本端无需先试登录再试注册。
  */
-export async function signInWithPhoneOtp(
-  phone: string,
-  token: string
-): Promise<{ ok: boolean; message: string; account?: CloudAccount }> {
-  const trimmed = phone.trim();
-  const code = token.trim();
-  if (!/^1[3-9]\d{9}$/.test(trimmed)) {
-    return { ok: false, message: '请输入正确的手机号' };
-  }
+export async function verifyCloudOtp(token: string): Promise<{
+  ok: boolean;
+  message: string;
+  account?: CloudAccount;
+  isNewUser?: boolean;
+}> {
+  const code = (token ?? '').trim();
   if (!code) {
     return { ok: false, message: '请输入验证码' };
   }
-  if (!pendingChallenge?.verify) {
+  if (!pendingChallenge) {
     return { ok: false, message: '请先点击「获取验证码」' };
   }
+  const { verificationId, isExistingUser, identifier } = pendingChallenge;
   try {
-    const res = await pendingChallenge.verify({ token: code });
+    const params: any = { verificationId, token: code, isExistingUser };
+    // 验码必须传回与发码一致的标识（手机号或邮箱）
+    if (identifier.includes('@')) params.email = identifier;
+    else params.phone = identifier;
+
+    const res = await cloud.auth.verifyOtp(params);
     if (res?.error) {
-      return { ok: false, message: `登录失败：${res.error.message || '验证码错误'}` };
+      pendingChallenge = null;
+      return { ok: false, message: `验证失败：${res.error.message || '验证码错误'}` };
     }
     pendingChallenge = null;
-    const account = await getCloudSession();
-    if (!account) {
+
+    const session: any = res.data; // CloudSession
+    const user: any = session?.user ?? {};
+    const uid = String(user?.id ?? user?.sub ?? '');
+    if (!uid) {
       return { ok: false, message: '登录未生效，请重试' };
     }
-    return { ok: true, message: '云端已连接', account };
+
+    const displayName =
+      user?.name ?? user?.phone ?? user?.email ?? uid;
+
+    // 建本地镜像用户（id=云端 uid，无密码），并设为当前用户
+    upsertCloudUser(uid, displayName);
+    // 标记本机已连云端 + 记录 linked uid
+    markCloudConnected(true);
+    setCloudLinkedUid(uid);
+    // 让三个学习 store 立即切到新身份的分片
+    await rehydrateAllStores();
+
+    const account: CloudAccount = {
+      userId: uid,
+      name: displayName,
+      identifier: user?.phone ?? user?.email ?? null,
+    };
+    return {
+      ok: true,
+      message: isExistingUser ? '云端已连接' : '注册成功，云端已连接',
+      account,
+      isNewUser: !isExistingUser,
+    };
   } catch (e) {
-    return { ok: false, message: `登录失败：${(e as Error).message}` };
+    return { ok: false, message: `验证失败：${(e as Error).message}` };
   }
 }
 
@@ -140,4 +250,15 @@ export async function signOutCloud(): Promise<void> {
   } catch {
     /* 忽略：即使后端失败也要清掉本地状态 */
   }
+}
+
+/** 解除本机与云端的绑定（不影响云端已存的数据） */
+export async function unlinkCloud(): Promise<void> {
+  try {
+    await cloud.auth.signOut();
+  } catch {
+    /* 忽略：即使后端失败也要清掉本地状态 */
+  }
+  markCloudConnected(false);
+  clearCloudLinkedUid();
 }

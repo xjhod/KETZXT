@@ -16,13 +16,13 @@
  * 身份的两层（刻意分开）：
  *   · 本地 kid 账号：决定这台设备上「当前是哪个孩子在用」（离线也能用）
  *   · 云端 WorkBuddy 账号：决定「这台设备连到云端的哪份数据」
- *   两者独立 —— 家长用一个云端账号即可同步所有孩子的进度（每个孩子的数据
- *   按 device_id 分行存放）。
+ *   两者独立 —— 家长用一个云端账号即可同步所有孩子的进度（一个手机号/邮箱对应一个小孩，云端数据按 owner_id = 云端 uid 分区；
+ *   同一小孩换设备登录后落到同一份云端数据，进度自动拉回。device_id 仅作诊断列保留）。
  */
 
 import { getCurrentUser } from './auth';
 import { cloud } from './cloud';
-import { getCloudSession } from './cloudAuth';
+import { getCloudSession, markCloudConnected } from './cloudAuth';
 import { useProgressStore } from '../store/useProgressStore';
 import { usePlanStore } from '../store/usePlanStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
@@ -216,12 +216,16 @@ function pickLater(a: string | null | undefined, b: string | null | undefined): 
 
 // ========== 云端读写 ==========
 
-/** 读本设备在云端的同步行 */
+/** 读本账号（owner_id = 云端 uid）在云端的同步行 */
 async function readCloudRow(): Promise<{ id: number; payload: any; updated_at: string } | null> {
+  const session = await getCloudSession();
+  const ownerId = session?.userId;
+  if (!ownerId) throw new Error('未连接云端');
+
   const { data, error } = await cloud.database
     .from(TABLE)
     .select('id, payload, updated_at')
-    .eq('device_id', getDeviceId())
+    .eq('owner_id', ownerId)
     .order('updated_at', { ascending: false })
     .limit(1);
 
@@ -265,17 +269,8 @@ async function writeCloudRow(payload: SyncPayload): Promise<string> {
 }
 
 // ========== 对外接口 ==========
-
-/** 当前是否已连接云端（已登录 WorkBuddy 账号） */
-export function isCloudConnected(): boolean {
-  return localStorage.getItem('ket-cloud-signed-in') === '1';
-}
-
-/** 标记本机已连接云端（会话本身由 SDK 管理，这里只做 UI 用的快速判断） */
-export function markCloudConnected(connected: boolean): void {
-  if (connected) localStorage.setItem('ket-cloud-signed-in', '1');
-  else localStorage.removeItem('ket-cloud-signed-in');
-}
+// 注：isCloudConnected / markCloudConnected 已迁至 cloudAuth.ts（云端会话与
+// 本机标记同属一处管理），此处仅从 cloudAuth 导入后复用，不再本地定义。
 
 /**
  * 拉取云端数据并合并到本地。
