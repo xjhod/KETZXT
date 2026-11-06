@@ -20,7 +20,7 @@
 import { cloud } from './cloud';
 import { upsertCloudUser } from './auth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
-import { CLOUD_PUBLISHABLE_KEY } from '../config/cloud';
+import { CLOUD_ENDPOINT, CLOUD_PUBLISHABLE_KEY } from '../config/cloud';
 
 const SIGNED_IN_KEY = 'ket-cloud-signed-in';
 const LINKED_UID_KEY = 'ket-cloud-linked-uid';
@@ -141,32 +141,65 @@ export async function sendCloudOtp(input: {
   const email = (input.email ?? '').trim();
 
   let identifier: string;
-  let creds: any;
   if (phone) {
     if (!/^1[3-9]\d{9}$/.test(phone)) {
       return { ok: false, message: '请输入正确的 11 位手机号' };
     }
     identifier = phone;
-    creds = { phone };
   } else if (email) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return { ok: false, message: '请输入正确的邮箱地址' };
     }
     identifier = email;
-    // 邮件验证码场景：带一个本应用落地地址（已注册域名，避免服务端 400）
-    creds = { email, emailRedirectTo: window.location.origin + import.meta.env.BASE_URL };
   } else {
     return { ok: false, message: '请填写手机号或邮箱' };
   }
 
   try {
-    const res = await cloud.auth.sendOtp(creds);
-    if (res?.error) {
-      // 邮箱渠道：服务端走「魔法链接」模式，sendOtp 响应不含 verification_id，
-      // SDK 会误报 "provider returned no verification_id"。但邮件其实已发出，
-      // 用户需点邮件里的链接跳回本应用完成登录 —— 这里当作「已发送」处理。
-      const errMsg = res.error.message || '';
-      if (email && /verification_id/i.test(errMsg)) {
+    let challenge: { verificationId: string; isExistingUser: boolean };
+
+    if (phone) {
+      // 手机：走 SDK 正常 OTP（后端返回 verification_id + 发短信）
+      const res = await cloud.auth.sendOtp({ phone });
+      if (res?.error) {
+        return { ok: false, message: `发送失败：${res.error.message || '未知错误'}` };
+      }
+      const c: any = res?.data;
+      if (!c?.verificationId) {
+        return { ok: false, message: '发送失败：服务端未返回可用的验证码流程' };
+      }
+      challenge = {
+        verificationId: String(c.verificationId),
+        isExistingUser: Boolean(c.isExistingUser),
+      };
+    } else {
+      // 邮箱：直接命中 /v1/verification，请求体与手机同构（用 email 替代 phone_number、
+      // 同样带 target:'ANY'），让后端像手机一样回传 verification_id 并发送「数字验证码」，
+      // 彻底绕开 SDK 默认的 usage:'email' 魔法链接分支（它不发 verification_id，
+      // 导致客户端无法走验码登录）。之后完全复用手机的 verifyOtp 链路。
+      const res = await fetch(`${CLOUD_ENDPOINT}/v1/verification`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-wb-webapp-access-key': CLOUD_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ email, target: 'ANY' }),
+      });
+      let payload: any = null;
+      try {
+        payload = await res.json();
+      } catch {
+        /* 响应体非 JSON 时忽略，下面按失败处理 */
+      }
+      if (!res.ok || !payload || typeof payload !== 'object') {
+        const msg =
+          (payload && (payload.message || payload.error)) || `发送失败（HTTP ${res.status}）`;
+        return { ok: false, message: String(msg) };
+      }
+      const verificationId =
+        typeof payload.verification_id === 'string' ? payload.verification_id : '';
+      if (!verificationId) {
+        // 兜底：后端仍走魔法链接、未回传 verification_id —— 降级为「去邮件点链接」
         return {
           ok: true,
           magicLink: true,
@@ -174,15 +207,15 @@ export async function sendCloudOtp(input: {
             '登录链接已发送到邮箱，请查收邮件并点击"确认登录"按钮完成登录（若收件箱没有，请检查垃圾箱）',
         };
       }
-      return { ok: false, message: `发送失败：${errMsg || '未知错误'}` };
+      challenge = {
+        verificationId,
+        isExistingUser: Boolean(payload.is_user === true),
+      };
     }
-    const challenge: any = res?.data;
-    if (!challenge?.verificationId) {
-      return { ok: false, message: '发送失败：服务端未返回可用的验证码流程' };
-    }
+
     pendingChallenge = {
-      verificationId: String(challenge.verificationId),
-      isExistingUser: Boolean(challenge.isExistingUser),
+      verificationId: challenge.verificationId,
+      isExistingUser: challenge.isExistingUser,
       identifier,
     };
     return {
