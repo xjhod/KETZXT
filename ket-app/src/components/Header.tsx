@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser, logout, getUserList, deleteUser } from '../utils/auth';
+import { getCurrentUser, logout } from '../utils/auth';
 import { syncNow } from '../utils/sync';
 import { isCloudConnected, unlinkCloud } from '../utils/cloudAuth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
-import { clearUserShards } from '../store/userScopedStorage';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -18,10 +17,10 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   const [syncHint, setSyncHint] = useState('');
   const navigate = useNavigate();
   const currentUser = getCurrentUser();
-  const userList = getUserList().filter(u => u.id !== currentUser?.id);
   const cloudOn = isCloudConnected();
 
   const handleLogout = async () => {
+    await unlinkCloud(); // 先解绑云端登录态（不触发 reload）
     logout();
     setShowUserMenu(false);
     await rehydrateAllStores(); // 清空内存中上一个用户的数据（载入 guest/空）
@@ -39,37 +38,6 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
       setTimeout(() => setSyncHint(''), 3000);
     } finally {
       setSyncing(false);
-    }
-  };
-
-  /** 解除本机与云端的绑定（不影响云端已存的数据） */
-  const handleUnlinkCloud = async () => {
-    if (!confirm('解除本机与云端的绑定？云端已保存的数据不会被删除。')) return;
-    await unlinkCloud();
-    setShowUserMenu(false);
-    window.location.reload();
-  };
-
-  const handleSwitchUser = async () => {
-    setShowUserMenu(false);
-    // 先退出当前用户，否则 PublicRoute 会因"已登录"把 /login 弹回首页
-    logout();
-    await rehydrateAllStores(); // 清空上一个用户的内存数据
-    navigate('/login', { replace: true });
-  };
-
-  const handleDeleteUser = (userId: string, userName: string) => {
-    if (confirm(`确定要删除用户"${userName}"吗？删除后数据无法恢复！`)) {
-      const result = deleteUser(userId, currentUser?.id || '');
-      if (result.success) {
-        clearUserShards(userId); // 一并清掉该用户的本地学习数据分片
-        alert(result.message);
-        setShowUserMenu(false);
-        // 如果删除成功，刷新用户列表
-        window.location.reload();
-      } else {
-        alert(result.message);
-      }
     }
   };
 
@@ -148,46 +116,6 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
                   <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{currentUser.name}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">当前用户</p>
                 </div>
-
-                {userList.length > 0 && (
-                  <button
-                    onClick={handleSwitchUser}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    🔄 切换用户
-                  </button>
-                )}
-
-                {/* 其他用户管理（删除）*/}
-                {userList.length > 0 && (
-                  <div className="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                    <p className="px-4 py-1 text-xs text-gray-400 dark:text-gray-500">其他用户</p>
-                    {userList.map(u => (
-                      <div key={u.id} className="flex items-center justify-between px-4 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{u.name}</span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteUser(u.id, u.name);
-                          }}
-                          className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                          title="删除此用户"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {isCloudConnected() && (
-                  <button
-                    onClick={handleUnlinkCloud}
-                    className="w-full text-left px-4 py-2 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors border-t border-gray-100 dark:border-gray-700"
-                  >
-                    🔌 解除本机云端绑定
-                  </button>
-                )}
 
                 <button
                   onClick={handleLogout}

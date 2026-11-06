@@ -61,14 +61,3 @@ export default userScopedStorage;
 
 // 三个 store 的持久化基础键名（单一数据源，供清理/校验使用）
 export const STORE_BASE_KEYS = ['ket-progress-v1', 'ket-plan-v1', 'ket-daily-checkin-v1'];
-
-/**
- * 删除某用户的全部本地分片数据（用于删除账号时彻底清理其学习记录）。
- * 实际键为 `${base}:${userId}`，覆盖进度/计划/打卡三个分片。
- */
-export function clearUserShards(userId: string): void {
-  if (!userId) return;
-  for (const base of STORE_BASE_KEYS) {
-    localStorage.removeItem(`${base}:${userId}`);
-  }
-}

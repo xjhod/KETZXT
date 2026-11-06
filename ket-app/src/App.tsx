@@ -11,10 +11,9 @@ import SpeakingPage from './pages/SpeakingPage';
 import WrongPage from './pages/WrongPage';
 import StatisticsPage from './pages/StatisticsPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import StudyPlanPage from './pages/StudyPlanPage';
 import PlanTodayPage from './pages/PlanTodayPage';
-import { getCurrentUser, logout, importFromUrlHash } from './utils/auth';
+import { getCurrentUser } from './utils/auth';
 import { useState, useEffect, type ReactElement } from 'react';
 
 // ========== 认证保护组件 ==========
@@ -60,7 +59,6 @@ function AppContent() {
     const saved = localStorage.getItem('ket-theme');
     return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (isDark) {
@@ -70,22 +68,6 @@ function AppContent() {
     }
     localStorage.setItem('ket-theme', isDark ? 'dark' : 'light');
   }, [isDark]);
-
-  // 处理跨设备同步（从 URL Hash 导入用户）
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash.startsWith('#sync=')) {
-      // 导入用户
-      const result = importFromUrlHash();
-      if (result.success && result.imported > 0) {
-        // 如果当前已登录，先登出并跳转到登录页
-        if (getCurrentUser()) {
-          logout();
-          navigate('/login', { replace: true });
-        }
-      }
-    }
-  }, [navigate]);
 
   return (
     <div className={`flex min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -99,7 +81,6 @@ function AppContent() {
           <Routes>
             {/* 公开路由（未登录可访问） */}
             <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-            <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
             {/* 受保护路由（需要登录） */}
             <Route path="/" element={<RequireAuth><HomePage /></RequireAuth>} />
