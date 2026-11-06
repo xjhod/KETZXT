@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [cloudBusy, setCloudBusy] = useState(false);
   const [cloudMessage, setCloudMessage] = useState('');
   const [cloudOk, setCloudOk] = useState(false);
+  const [magicLink, setMagicLink] = useState(false);
   const [cloudConnected, setCloudConnected] = useState(isCloudConnected());
 
   /** 发送验证码（手机号或邮箱，由 cloudMode 决定） */
@@ -33,7 +34,14 @@ export default function LoginPage() {
           : await sendCloudOtp({ email: target });
       setCloudMessage(res.message);
       setCloudOk(res.ok);
-      if (res.ok) setOtpSent(true);
+      if (res.ok) {
+        if (res.magicLink) {
+          // 邮箱魔法链接模式：不发验证码，提示去邮件点链接
+          setMagicLink(true);
+        } else {
+          setOtpSent(true);
+        }
+      }
     } catch (err) {
       setCloudMessage('发送失败：' + String(err));
     } finally {
@@ -118,7 +126,7 @@ export default function LoginPage() {
           <div className="flex gap-1 mb-2 p-1 bg-white/70 rounded-lg border border-indigo-200">
             <button
               type="button"
-              onClick={() => { setCloudMode('phone'); setOtpSent(false); }}
+              onClick={() => { setCloudMode('phone'); setOtpSent(false); setMagicLink(false); }}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
                 cloudMode === 'phone' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
               }`}
@@ -127,7 +135,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => { setCloudMode('email'); setOtpSent(false); }}
+              onClick={() => { setCloudMode('email'); setOtpSent(false); setMagicLink(false); }}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
                 cloudMode === 'email' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
               }`}
@@ -136,6 +144,33 @@ export default function LoginPage() {
             </button>
           </div>
 
+          {magicLink ? (
+            <div className="space-y-3">
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+                <p className="font-semibold mb-1">📧 登录链接已发送到邮箱</p>
+                <p>
+                  我们已把登录链接发送到 <span className="font-medium">{cloudEmail || '你的邮箱'}</span>。
+                  请打开邮件，点击其中的「确认登录」按钮，即可在本设备完成云端登录并同步学习进度。
+                </p>
+                <p className="mt-2 text-green-700/80">
+                  若收件箱没有，请检查垃圾邮件箱，或稍后重新获取。点击链接后会自动跳转回本应用并完成登录。
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setCloudMode('phone');
+                  setOtpSent(false);
+                  setMagicLink(false);
+                  setCloudMessage('');
+                  setCloudOk(false);
+                }}
+                className="w-full py-2 px-4 rounded-lg text-sm font-semibold border border-indigo-300 text-indigo-700 bg-white hover:bg-indigo-50"
+              >
+                改用手机号验证码登录
+              </button>
+            </div>
+          ) : (
           <form onSubmit={handleCloudLogin} className="space-y-2">
             {cloudMode === 'phone' ? (
               <input
@@ -190,6 +225,7 @@ export default function LoginPage() {
               {cloudBusy ? '连接中...' : cloudConnected ? '重新连接并同步' : '连接云端并同步'}
             </button>
           </form>
+          )}
         </div>
       </div>
     </div>

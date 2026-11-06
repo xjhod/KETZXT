@@ -20,9 +20,17 @@
 import { cloud } from './cloud';
 import { upsertCloudUser } from './auth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
+import { CLOUD_PUBLISHABLE_KEY } from '../config/cloud';
 
 const SIGNED_IN_KEY = 'ket-cloud-signed-in';
 const LINKED_UID_KEY = 'ket-cloud-linked-uid';
+
+/**
+ * SDK 持久化云端会话的 localStorage key（与 SDK 内部 SessionStore 一致：
+ * `workbuddy-cloud.session.<publishableKey>`）。邮箱魔法链接回调时，SDK 自身没有
+ * 对应的「完成登录」API，这里需要 best-effort 直接写入这个 key 来重建会话。
+ */
+const SESSION_STORAGE_KEY = `workbuddy-cloud.session.${CLOUD_PUBLISHABLE_KEY}`;
 
 /** 云端登录状态 */
 export interface CloudAccount {
@@ -124,6 +132,8 @@ export async function sendCloudOtp(input: {
 }): Promise<{
   ok: boolean;
   message: string;
+  /** 邮箱渠道为「魔法链接」模式时返回 true：邮件已发，需点链接完成登录 */
+  magicLink?: boolean;
   verificationId?: string;
   isExistingUser?: boolean;
 }> {
@@ -152,7 +162,19 @@ export async function sendCloudOtp(input: {
   try {
     const res = await cloud.auth.sendOtp(creds);
     if (res?.error) {
-      return { ok: false, message: `发送失败：${res.error.message || '未知错误'}` };
+      // 邮箱渠道：服务端走「魔法链接」模式，sendOtp 响应不含 verification_id，
+      // SDK 会误报 "provider returned no verification_id"。但邮件其实已发出，
+      // 用户需点邮件里的链接跳回本应用完成登录 —— 这里当作「已发送」处理。
+      const errMsg = res.error.message || '';
+      if (email && /verification_id/i.test(errMsg)) {
+        return {
+          ok: true,
+          magicLink: true,
+          message:
+            '登录链接已发送到邮箱，请查收邮件并点击"确认登录"按钮完成登录（若收件箱没有，请检查垃圾箱）',
+        };
+      }
+      return { ok: false, message: `发送失败：${errMsg || '未知错误'}` };
     }
     const challenge: any = res?.data;
     if (!challenge?.verificationId) {
@@ -261,4 +283,162 @@ export async function unlinkCloud(): Promise<void> {
   }
   markCloudConnected(false);
   clearCloudLinkedUid();
+}
+
+/**
+ * 完成云端登录的本地收尾：建本地镜像用户、标记已连接、记 uid、切分片。
+ * verifyCloudOtp（手机验证码）与 restoreCloudSession（邮箱魔法链接回调）共用。
+ */
+async function finishCloudSignIn(account: CloudAccount): Promise<void> {
+  upsertCloudUser(account.userId, account.name ?? account.userId);
+  markCloudConnected(true);
+  setCloudLinkedUid(account.userId);
+  await rehydrateAllStores();
+}
+
+/** 解码 base64url（兼容 UTF-8，如中文昵称） */
+function base64UrlDecode(str: string): string {
+  const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+/**
+ * 从 URL 的 hash / query 读取隐式授权令牌（邮箱魔法链接回调大概率走这个）。
+ * Gotrue 风格的魔法链接点击后，服务端会重定向回 emailRedirectTo 并在 URL 的
+ * fragment / query 里带上 access_token / refresh_token / expires_in。
+ */
+function readImplicitGrantFromUrl(): {
+  accessToken: string;
+  refreshToken?: string;
+  expiresIn?: number;
+  exp?: number;
+  sub: string;
+  name?: string | null;
+  avatarUrl?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  raw?: Record<string, unknown>;
+} | null {
+  const fromHash = (() => {
+    const h = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
+    // 去掉 HashRouter 可能遗留的前导斜杠（如 #/access_token=...）
+    return new URLSearchParams(h.replace(/^\/+/, ''));
+  })();
+  const fromSearch = new URLSearchParams(window.location.search);
+  const params = fromHash.has('access_token')
+    ? fromHash
+    : fromSearch.has('access_token')
+      ? fromSearch
+      : null;
+  if (!params) return null;
+  const accessToken = params.get('access_token');
+  if (!accessToken) return null;
+  const refreshToken = params.get('refresh_token') ?? undefined;
+  const expiresInRaw = params.get('expires_in');
+  const expiresIn = expiresInRaw ? Number(expiresInRaw) : undefined;
+
+  let claims: Record<string, unknown> = {};
+  try {
+    const part = accessToken.split('.')[1];
+    if (part) claims = JSON.parse(base64UrlDecode(part));
+  } catch {
+    claims = {};
+  }
+  const sub = claims.sub ?? claims.user_id;
+  if (!sub || typeof sub !== 'string') return null;
+  return {
+    accessToken,
+    refreshToken,
+    expiresIn: typeof expiresIn === 'number' && !Number.isNaN(expiresIn) ? expiresIn : undefined,
+    exp: typeof claims.exp === 'number' ? claims.exp : undefined,
+    sub,
+    name: (claims.name as string) ?? (claims.nickname as string) ?? null,
+    avatarUrl: (claims.avatar_url as string) ?? (claims.picture as string) ?? null,
+    email: (claims.email as string) ?? null,
+    phone: (claims.phone_number as string) ?? (claims.phone as string) ?? null,
+    raw: claims,
+  };
+}
+
+/** 清掉 URL 里的 auth 令牌/参数，避免污染 HashRouter 路由（保留 sharecode 等业务参数） */
+function cleanAuthParamsFromUrl(): void {
+  try {
+    const sp = new URLSearchParams(window.location.search);
+    ['code', 'state', 'provider', 'provider_id', 'access_token', 'refresh_token', 'expires_in', 'token_type'].forEach(
+      (k) => sp.delete(k),
+    );
+    const search = sp.toString();
+    const newUrl = window.location.pathname + (search ? `?${search}` : '') + '#/';
+    history.replaceState(null, '', newUrl);
+  } catch {
+    /* 忽略：清不掉也不影响登录 */
+  }
+}
+
+/**
+ * 应用启动时恢复云端会话，并处理邮箱魔法链接回调。
+ *
+ * 流程：
+ *   1) 已有会话（普通回访）→ 直接复用；
+ *   2) best-effort：从 URL 读隐式授权令牌（邮箱魔法链接点开后的回调）。
+ *      SDK 自身没有提供处理邮箱魔法链接的 API，这里自行解析 JWT 并重建 SDK 的
+ *      localStorage 会话（key = `workbuddy-cloud.session.<publishableKey>`），
+ *      使之能被 getCloudSession 读到；
+ *   3) 仍未恢复 → 正常未登录。
+ *
+ * 返回 true 表示已恢复 / 建立了云端会话（并已建好本地镜像用户）。
+ */
+export async function restoreCloudSession(): Promise<boolean> {
+  // 1) 已有会话（普通回访），直接复用
+  const existing = await getCloudSession();
+  if (existing) {
+    await finishCloudSignIn(existing);
+    return true;
+  }
+
+  // 2) best-effort：从 URL 读隐式授权令牌（邮箱魔法链接回调）
+  const token = readImplicitGrantFromUrl();
+  if (token) {
+    try {
+      // 计算过期时间：优先用 expires_in；没有 refreshToken 时强制给 1 小时，
+      // 避免 SDK 的 ensure() 因「即将过期且无 refreshToken」直接 abandon 会话。
+      let expiresAt: number;
+      if (token.refreshToken && token.expiresIn && token.expiresIn > 0) {
+        expiresAt = Date.now() + token.expiresIn * 1000;
+      } else if (token.exp && token.exp > 0) {
+        expiresAt = token.exp * 1000;
+      } else {
+        expiresAt = Date.now() + 3600_000;
+      }
+      const stored = {
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken ?? '',
+        expiresAt,
+        user: {
+          id: token.sub,
+          name: token.name ?? null,
+          avatarUrl: token.avatarUrl ?? null,
+          isAnonymous: false,
+          email: token.email ?? null,
+          phone: token.phone ?? null,
+          raw: token.raw ?? {},
+        },
+      };
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(stored));
+      cleanAuthParamsFromUrl();
+    } catch {
+      /* 重建失败则当作未登录 */
+    }
+    const restored = await getCloudSession();
+    if (restored) {
+      await finishCloudSignIn(restored);
+      return true;
+    }
+  }
+
+  // 3) 仍未恢复，正常未登录
+  return false;
 }

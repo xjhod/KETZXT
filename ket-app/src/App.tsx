@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage';
 import StudyPlanPage from './pages/StudyPlanPage';
 import PlanTodayPage from './pages/PlanTodayPage';
 import { getCurrentUser } from './utils/auth';
+import { restoreCloudSession } from './utils/cloudAuth';
 import { useState, useEffect, type ReactElement } from 'react';
 
 // ========== 认证保护组件 ==========
@@ -59,6 +60,25 @@ function AppContent() {
     const saved = localStorage.getItem('ket-theme');
     return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
+  // 启动恢复云端会话（含邮箱魔法链接回调）未完成前，不渲染路由，
+  // 避免被路由守卫误弹回登录页、或魔法链接落地后无法建会话。
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await restoreCloudSession();
+      } catch {
+        /* 恢复失败不影响渲染未登录态 */
+      } finally {
+        if (!cancelled) setAuthReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (isDark) {
@@ -68,6 +88,10 @@ function AppContent() {
     }
     localStorage.setItem('ket-theme', isDark ? 'dark' : 'light');
   }, [isDark]);
+
+  if (!authReady) {
+    return null;
+  }
 
   return (
     <div className={`flex min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
