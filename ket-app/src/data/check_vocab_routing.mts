@@ -8,7 +8,12 @@ import {
   splitMorphemes,
   type WordAnalysis,
 } from '../utils/wordChunks';
-import type { Word } from '../types';
+import type { VocabBox, VocabWordProgress, Word } from '../types';
+import {
+  buildPlacementSample, buildTodayQueue, buildPassage, themeCounts,
+  isDictationCorrect, REVIEW_PER_DAY, NEW_PER_DAY,
+} from '../utils/vocabSession';
+import { applyDictation, emptyProgress, addDays } from '../utils/vocabSchedule';
 
 const words: Word[] = allThemes.flatMap((t) => t.words);
 
@@ -63,7 +68,72 @@ console.log('SAMPLE_A', JSON.stringify(sample(byRoute.A)));
 console.log('SAMPLE_B', JSON.stringify(sample(byRoute.B)));
 console.log('SAMPLE_C', JSON.stringify(sample(byRoute.C)));
 
+// ---- 会话调度 / 记忆判据实跑 ----
+console.log('=== SESSION / SCHEDULE CHECK ===');
+const themeIds = allThemes.map((t) => t.id);
+const dupThemes = themeIds.filter((id, i) => themeIds.indexOf(id) !== i);
+console.log('DUPLICATE_THEME_IDS', dupThemes.length, JSON.stringify([...new Set(dupThemes)].slice(0, 10)));
+
+const placement = buildPlacementSample();
+const placementThemes = new Set(placement.map((x) => x.themeId)).size;
+console.log('PLACEMENT_SIZE', placement.length, 'THEMES_COVERED', placementThemes,
+  'UNIQUE_WORDS', new Set(placement.map((x) => x.word.id)).size);
+
+const d0 = '2026-11-07';
+const q0 = buildTodayQueue({ words: {}, currentThemeId: 'T01', today: d0 });
+console.log('EMPTY_REVIEW', q0.review.length, 'EMPTY_FRESH', q0.fresh.length,
+  'FRESH_REMAINING', q0.freshRemaining, 'CURRENT_THEME', q0.currentThemeId);
+
+const prog: Record<string, VocabWordProgress> = {};
+const picks = allThemes.slice(0, 5).flatMap((t) => t.words.slice(0, 3).map((w) => ({ w, t })));
+picks.forEach(({ w, t }, i) => {
+  const p = emptyProgress(w.id, t.id, analyzeWord(w).route, '2026-11-01');
+  prog[w.id] = {
+    ...p, status: 'learning',
+    box: ((i % 5) + 1) as VocabBox,
+    dueAt: i < 3 ? '2026-11-03' : d0,
+    lastSeen: '2026-11-01',
+  };
+});
+const q1 = buildTodayQueue({ words: prog, currentThemeId: 'T01', today: d0 });
+console.log('DUE_TOTAL', q1.dueTotal, 'REVIEW_PICKED', q1.review.length,
+  'REVIEW_THEMES', new Set(q1.review.map((x) => x.themeId)).size);
+
+const passage = buildPassage(q0.fresh);
+console.log('PASSAGE_SENTENCES', passage.sentences.length, 'BLANK_ANSWER', passage.blankAnswer);
+console.log('DICT_CASE_OK', isDictationCorrect('  Mother ', 'mother'),
+  'DICT_WRONG_OK', !isDictationCorrect('mothre', 'mother'));
+console.log('THEME_COUNTS_SUM', (() => {
+  const c = themeCounts(allThemes[0], {}, d0);
+  return c.fresh + c.learning + c.mastered === c.total;
+})());
+
+// 按真实到期节奏连做 5 次听写：应在第 4 次达到掌握判据
+let state = emptyProgress('test-word', 'T01', 'A', d0);
+let day = d0;
+const trail: string[] = [];
+for (let i = 0; i < 5; i++) {
+  const r = applyDictation(state, true, day);
+  state = r.next;
+  trail.push(`${day}:b${r.boxBefore}->b${r.boxAfter},due=${state.dueAt},streak=${state.streak},${state.status}`);
+  day = state.dueAt;
+}
+console.log('MASTER_TRAIL', JSON.stringify(trail));
+const wrong = applyDictation(state, false, day);
+console.log('WRONG_RESET', `b${wrong.boxAfter}`, `streak=${wrong.next.streak}`,
+  `due=${wrong.next.dueAt}`, wrong.next.status);
+console.log('ADD_DAYS_MONTH_BOUNDARY', addDays('2026-11-30', 1));
+
 const failures: string[] = [];
+if (placement.length !== 20 || new Set(placement.map((x) => x.word.id)).size !== 20) failures.push('placement sample must be 20 unique words');
+if (placementThemes < 10) failures.push('placement sample not spread across themes');
+if (q0.review.length !== 0 || q0.fresh.length !== NEW_PER_DAY) failures.push('empty-state queue mismatch');
+if (q1.review.length !== Math.min(REVIEW_PER_DAY, q1.dueTotal)) failures.push('review cap mismatch');
+if (passage.sentences.length !== q0.fresh.length || !passage.blankAnswer) failures.push('passage build failed');
+if (!isDictationCorrect('  Mother ', 'mother') || isDictationCorrect('mothre', 'mother')) failures.push('dictation normalize failed');
+if (!trail.some((t) => t.includes('mastered'))) failures.push('mastery never reached after spaced correct answers');
+if (wrong.boxAfter !== 1 || wrong.next.streak !== 0 || wrong.next.dueAt !== day) failures.push('wrong-answer reset failed');
+if (addDays('2026-11-30', 1) !== '2026-12-01') failures.push('addDays month boundary failed');
 if (byRoute.A.length + byRoute.B.length + byRoute.C.length !== words.length) failures.push('route total mismatch');
 if (notRestorable.length) failures.push('chunks not restorable: ' + notRestorable.slice(0, 5).map((a) => a.en).join(','));
 if (badA.length) failures.push('A route violates mono/2+ chunks: ' + badA.slice(0, 5).map((a) => a.en).join(','));

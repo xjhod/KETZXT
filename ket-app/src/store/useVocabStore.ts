@@ -17,47 +17,16 @@ import type {
   VocabBox,
   VocabRoute,
   VocabWordProgress,
-  VocabWordStatus,
 } from '../types';
+import {
+  applyDictation, emptyProgress, addDays, BOX_INTERVAL_DAYS,
+} from '../utils/vocabSchedule';
 
-/** 各盒子的复习间隔（天）。Box 1 答错当天再来；Box 5 掌握后 15 天回看 */
-export const BOX_INTERVAL_DAYS: Record<VocabBox, number> = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 15 };
-
-export const MASTER_STREAK = 2;
-export const MASTER_MIN_DAYS = 7;
-
-export function todayString(d = new Date()): string {
-  const y = d.getFullYear();
-  const m = `${d.getMonth() + 1}`.padStart(2, '0');
-  const day = `${d.getDate()}`.padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
-export function addDays(dateStr: string, days: number): string {
-  const d = new Date(`${dateStr}T00:00:00`);
-  d.setDate(d.getDate() + days);
-  return todayString(d);
-}
-
-export function daysBetween(a: string | null, b: string): number {
-  if (!a) return 0;
-  const da = new Date(`${a}T00:00:00`).getTime();
-  const db = new Date(`${b}T00:00:00`).getTime();
-  return Math.round((db - da) / 86400000);
-}
-
-function emptyProgress(
-  wordId: string,
-  themeId: string,
-  route: VocabRoute,
-  today: string
-): VocabWordProgress {
-  return {
-    wordId, themeId, route,
-    box: 1, dueAt: today, streak: 0, right: 0, wrong: 0,
-    lastSeen: null, firstLearnedAt: null, status: 'new',
-  };
-}
+// 日期/间隔/判据统一放在 vocabSchedule（纯函数、可 Node 实跑），此处只做 re-export
+export {
+  BOX_INTERVAL_DAYS, MASTER_STREAK, MASTER_MIN_DAYS,
+  todayString, addDays, daysBetween,
+} from '../utils/vocabSchedule';
 
 export interface DictationOutcome {
   boxBefore: VocabBox;
@@ -113,28 +82,13 @@ export const useVocabStore = create<VocabState>()(
       },
 
       recordDictation: (wordId, themeId, route, correct, today) => {
-        const prev = get().words[wordId] ?? emptyProgress(wordId, themeId, route, today);
-        const boxBefore = prev.box;
-        const boxAfter: VocabBox = correct ? (Math.min(5, prev.box + 1) as VocabBox) : 1;
-        const streak = correct ? prev.streak + 1 : 0;
-        const firstLearnedAt = prev.firstLearnedAt ?? today;
-        const mastered =
-          correct && boxAfter === 5 && streak >= MASTER_STREAK &&
-          daysBetween(firstLearnedAt, today) >= MASTER_MIN_DAYS;
-        const status: VocabWordStatus = mastered ? 'mastered' : 'learning';
-        const next: VocabWordProgress = {
-          ...prev,
-          themeId: prev.themeId || themeId,
-          route: prev.route || route,
-          box: boxAfter,
-          dueAt: addDays(today, BOX_INTERVAL_DAYS[boxAfter]),
-          streak,
-          right: prev.right + (correct ? 1 : 0),
-          wrong: prev.wrong + (correct ? 0 : 1),
-          lastSeen: today,
-          firstLearnedAt,
-          status,
+        const base = get().words[wordId] ?? emptyProgress(wordId, themeId, route, today);
+        const prev: VocabWordProgress = {
+          ...base,
+          themeId: base.themeId || themeId,
+          route: base.route || route,
         };
+        const { boxBefore, boxAfter, mastered, next } = applyDictation(prev, correct, today);
         set((state) => ({ words: { ...state.words, [wordId]: next } }));
         return { boxBefore, boxAfter, mastered, correct };
       },

@@ -2,6 +2,10 @@ import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { allThemes, spellingQuestions, matchingQuestions, fillBlankQuestions } from '../data/vocabulary';
 import { useProgressStore } from '../store/useProgressStore';
+import { useVocabStore, todayString } from '../store/useVocabStore';
+import { themeCounts, buildTodayQueue } from '../utils/vocabSession';
+import type { VocabularyTheme, VocabWordProgress } from '../types';
+import VocabToday from './VocabToday';
 import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/usePronunciationChecker';
 import { AudioButton } from '../components/AudioButton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -736,16 +740,104 @@ function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () =>
   );
 }
 
+// ========== 主题卡（三态计数 + 继续学习 + 自由练习折叠）==========
+function ThemeCard({
+  theme, words, today, isCurrent, onStart, onPractice, onRequeue,
+}: {
+  theme: VocabularyTheme;
+  words: Record<string, VocabWordProgress>;
+  today: string;
+  isCurrent: boolean;
+  onStart: () => void;
+  onPractice: (m: 'cards' | 'spelling' | 'matching' | 'fillblank') => void;
+  onRequeue: (wordId: string) => void;
+}) {
+  const c = themeCounts(theme, words, today);
+  const statusText = (id: string) => {
+    const s = words[id]?.status;
+    return s === 'mastered' ? '已掌握' : s === 'learning' ? '学习中' : '未学';
+  };
+  return (
+    <div className={`card ${isCurrent ? 'ring-2 ring-blue-300' : ''}`}>
+      <div className="flex items-center gap-3 mb-2">
+        <span className="text-2xl">{theme.icon}</span>
+        <div>
+          <h4 className="font-semibold text-gray-800">{theme.nameZh}</h4>
+          <p className="text-xs text-gray-400">{theme.name} · {theme.words.length} 词</p>
+        </div>
+      </div>
+      <div className="flex gap-3 text-xs mb-3">
+        <span className="text-gray-500">未学 <b>{c.fresh}</b></span>
+        <span className="text-blue-600">学习中 <b>{c.learning}</b></span>
+        <span className="text-green-600">已掌握 <b>{c.mastered}</b></span>
+        {c.due > 0 && <span className="text-amber-600">待复习 <b>{c.due}</b></span>}
+      </div>
+      <button onClick={onStart} className="btn-primary w-full text-sm">
+        {isCurrent ? '▶ 继续学习' : '▶ 设为当前主题并学习'}
+      </button>
+
+      <details className="mt-3">
+        <summary className="text-xs text-gray-500 cursor-pointer">自由练习（不计入掌握判定）</summary>
+        <div className="flex gap-2 flex-wrap mt-2">
+          <button onClick={() => onPractice('cards')} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100">🃏 学卡片</button>
+          <button onClick={() => onPractice('spelling')} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">🎤 拼写</button>
+          <button onClick={() => onPractice('matching')} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">🔗 匹配</button>
+          <button onClick={() => onPractice('fillblank')} className="text-xs bg-orange-50 text-orange-700 px-2 py-1 rounded hover:bg-orange-100">✏️ 填空</button>
+        </div>
+        <details className="mt-2">
+          <summary className="text-xs text-gray-400 cursor-pointer">查看词表状态（前 40 词，可手动重排）</summary>
+          <div className="mt-2 max-h-56 overflow-y-auto">
+            {theme.words.slice(0, 40).map((w) => (
+              <div key={w.id} className="flex items-center justify-between gap-2 text-xs py-1 border-b border-gray-100">
+                <span className="truncate"><b>{w.en}</b> <span className="text-gray-400">{w.zh}</span></span>
+                <span className="flex items-center gap-2 shrink-0">
+                  <span className="text-gray-400">{statusText(w.id)}</span>
+                  <button
+                    disabled={!words[w.id]}
+                    onClick={() => onRequeue(w.id)}
+                    className="text-blue-500 hover:text-blue-700 disabled:text-gray-300"
+                    title="把这个词重新排进今天的队列"
+                  >重排</button>
+                </span>
+              </div>
+            ))}
+          </div>
+          {theme.words.length > 40 && <p className="text-xs text-gray-400 mt-1">仅显示前 40 词</p>}
+        </details>
+      </details>
+    </div>
+  );
+}
+
 // ========== 主页面 ==========
-type VocMode = 'list' | 'cards' | 'spelling' | 'matching' | 'fillblank';
+type VocMode = 'list' | 'today' | 'cards' | 'spelling' | 'matching' | 'fillblank';
 
 export default function VocabularyPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<VocMode>('list');
   const [themeId, setThemeId] = useState<string>('');
 
-  // 如果没有选择主题，阻止进入练习页面，自动弹回主题列表
-  if (!themeId && mode !== 'list') {
+  const words = useVocabStore((s) => s.words);
+  const placementDone = useVocabStore((s) => s.placementDone);
+  const currentThemeId = useVocabStore((s) => s.currentThemeId);
+  const setCurrentTheme = useVocabStore((s) => s.setCurrentTheme);
+  const requeueWord = useVocabStore((s) => s.requeueWord);
+  const today = useMemo(() => todayString(), []);
+  const activeThemeId = currentThemeId || allThemes[0].id;
+  const todayQueue = useMemo(
+    () => buildTodayQueue({ words, currentThemeId: activeThemeId, today }),
+    [words, activeThemeId, today]
+  );
+  const activeTheme = allThemes.find((t) => t.id === activeThemeId) ?? allThemes[0];
+  const isDoneToday = useVocabStore((s) => s.isDoneToday(today));
+
+  const startToday = (theme?: string) => {
+    if (theme) setCurrentTheme(theme);
+    setMode('today');
+  };
+
+  // 如果没有选择主题，阻止进入练习页面，自动弹回主题列表（今日词汇不需要预设主题）
+  if (!themeId && mode !== 'list' && mode !== 'today') {
     // 使用 useEffect 在下次渲染前安全地将 mode 重置为 'list'
     // 本次渲染直接返回提示页面（不调用 setState）
     return (
@@ -758,6 +850,7 @@ export default function VocabularyPage() {
     );
   }
 
+  if (mode === 'today') return <ErrorBoundary><VocabToday onBack={() => setMode('list')} /></ErrorBoundary>;
   if (mode === 'cards') return <ErrorBoundary><WordCards themeId={themeId} onBack={() => setMode('list')} /></ErrorBoundary>;
   if (mode === 'spelling') return <ErrorBoundary><SpellingPractice themeId={themeId} onBack={() => setMode('list')} /></ErrorBoundary>;
   if (mode === 'matching') return <ErrorBoundary><MatchingPractice themeId={themeId} onBack={() => setMode('list')} /></ErrorBoundary>;
@@ -772,9 +865,31 @@ export default function VocabularyPage() {
         </button>
       </div>
       <h2 className="text-xl font-bold text-gray-800 mb-1">📚 词汇学习</h2>
-      <p className="text-sm text-gray-400 mb-6">选择主题开始学习，支持语音拼写练习</p>
+      <p className="text-sm text-gray-400 mb-4">按主题学词；到期复习自动跨主题排队，听写是唯一的掌握判据</p>
 
-      {/* 功能选择 */}
+      {/* 今日词汇：跨天队列入口 */}
+      <div className="card mb-6 bg-gradient-to-br from-blue-50 to-white">
+        <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+          <h3 className="text-lg font-bold text-gray-800">📅 今日词汇</h3>
+          {isDoneToday && <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">今天已完成一轮</span>}
+        </div>
+        <div className="flex gap-4 flex-wrap text-sm mb-3">
+          <span className="text-amber-700">待复习 <b>{todayQueue.review.length}</b> 题<span className="text-xs text-gray-400">（共 {todayQueue.dueTotal} 词到期）</span></span>
+          <span className="text-green-700">新词 <b>{todayQueue.fresh.length}</b> 个</span>
+          <span className="text-gray-500">当前主题：<b>{activeTheme.nameZh}</b></span>
+        </div>
+        {!placementDone && (
+          <p className="text-xs text-amber-600 mb-2">第一次进入会先做 20 词入场测，认识的词直接跳过首学。</p>
+        )}
+        <button onClick={() => startToday()} className="btn-primary">开始今日学习 →</button>
+        <p className="text-xs text-gray-400 mt-2">
+          复习 8 题 + 新词 6 个 + 一段主题例句短文；每轮约 10–12 分钟。
+          掌握 = Box 5 + 连续 2 次听写正确 + 间隔 ≥ 7 天。
+        </p>
+      </div>
+
+      {/* 功能选择：以下四项为自由练习，不计入掌握判定 */}
+      <p className="text-xs text-gray-400 mb-2">下方为自由练习，不计入掌握判定；也可以用每个主题卡里的折叠入口。</p>
       <div className="flex gap-2 mb-6 flex-wrap">
         {[
           { m: 'list' as VocMode, label: '📂 主题列表' },
@@ -800,21 +915,16 @@ export default function VocabularyPage() {
       {/* 主题网格 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {allThemes.map((theme) => (
-          <div key={theme.id} className="card">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl">{theme.icon}</span>
-              <div>
-                <h4 className="font-semibold text-gray-800">{theme.nameZh}</h4>
-                <p className="text-xs text-gray-400">{theme.name} · {theme.words.length} 词</p>
-              </div>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <button onClick={() => { setThemeId(theme.id); setMode('cards'); }} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100">🃏 学卡片</button>
-              <button onClick={() => { setThemeId(theme.id); setMode('spelling'); }} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">🎤 拼写</button>
-              <button onClick={() => { setThemeId(theme.id); setMode('matching'); }} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">🔗 匹配</button>
-              <button onClick={() => { setThemeId(theme.id); setMode('fillblank'); }} className="text-xs bg-orange-50 text-orange-700 px-2 py-1 rounded hover:bg-orange-100">✏️ 填空</button>
-            </div>
-          </div>
+          <ThemeCard
+            key={theme.id}
+            theme={theme}
+            words={words}
+            today={today}
+            isCurrent={theme.id === activeThemeId}
+            onStart={() => startToday(theme.id)}
+            onPractice={(m) => { setThemeId(theme.id); setMode(m); }}
+            onRequeue={(wordId) => requeueWord(wordId, today)}
+          />
         ))}
       </div>
     </div>
