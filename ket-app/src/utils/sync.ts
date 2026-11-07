@@ -4,7 +4,7 @@
  * 场景（用户原话）：自己用，可能 2 个小孩、多台移动端，要求简单。
  *
  * 设计取舍：
- *   1. **整包同步**，不做细粒度增量 —— 三个 store 打包成一份 JSON 传上去。
+ *   1. **整包同步**，不做细粒度增量 —— 四个 store 打包成一份 JSON 传上去。
  *      数据量小（几千条答题记录也就几百 KB），整包让冲突处理变得可预测。
  *   2. **合并而非覆盖** —— 下载云端数据后与本地合并再上传，
  *      避免「另一台设备刚做的题被这台旧数据冲掉」。
@@ -26,6 +26,7 @@ import { getCloudSession, markCloudConnected } from './cloudAuth';
 import { useProgressStore } from '../store/useProgressStore';
 import { usePlanStore } from '../store/usePlanStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
+import { useVocabStore } from '../store/useVocabStore';
 
 /** 云端同步表名 */
 const TABLE = 'sync_payloads';
@@ -47,6 +48,8 @@ export interface SyncPayload {
   progress: unknown;
   plan: unknown;
   checkin: unknown;
+  /** 词汇记忆进度（盒子/到期日/三态） */
+  vocab: unknown;
   /** 客户端打包时间，用于判断新旧 */
   packedAt: string;
 }
@@ -61,12 +64,13 @@ export interface SyncStatus {
 
 // ========== 打包 / 解包 ==========
 
-/** 把三个 store 的持久化数据打包 */
+/** 把四个 store 的持久化数据打包 */
 export function packPayload(): SyncPayload {
   return {
     progress: useProgressStore.getState(),
     plan: usePlanStore.getState(),
     checkin: useDailyCheckinStore.getState(),
+    vocab: useVocabStore.getState(),
     packedAt: new Date().toISOString(),
   };
 }
@@ -81,6 +85,9 @@ export function packPayload(): SyncPayload {
  *   - checkin.points：按语法点合并，right/wrong 取较大值，stage 取较大值
  *   - checkin.checkinDates：并集
  *   - checkin.streak / lastCheckinDate：取较新的
+ *   - vocab.words：按 wordId 合并，lastSeen 较新的一方整条胜出
+ *     （box/dueAt/streak 是同一份状态，必须整条取，不能字段级取 max 否则会自相矛盾）
+ *   - vocab.placementDone：任一方已完成即视为完成
  */
 export function mergePayload(remote: Partial<SyncPayload> | null | undefined): number {
   if (!remote) return 0;
@@ -196,6 +203,35 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
       streak: Math.max(local.streak, rp.streak || 0),
       lastCheckinDate: pickLater(local.lastCheckinDate, rp.lastCheckinDate) ?? local.lastCheckinDate,
       checkinDates: dates,
+    } as any);
+  }
+
+  // ---- vocab ----
+  if (remote.vocab) {
+    const rv = remote.vocab as {
+      words?: Record<string, any>;
+      currentThemeId?: string;
+      placementDone?: boolean;
+      placementAt?: string | null;
+      lastSessionDate?: string | null;
+    };
+    const local = useVocabStore.getState();
+    const merged: Record<string, any> = { ...local.words };
+    for (const [id, p] of Object.entries(rv.words || {})) {
+      if (!p?.wordId) continue;
+      const cur = merged[id];
+      // 整条按 lastSeen 取新，保证 box / dueAt / streak / status 是同一版本
+      if (!cur || String(p.lastSeen || '') > String(cur.lastSeen || '')) {
+        merged[id] = { ...p, wordId: id };
+        mergedCount++;
+      }
+    }
+    useVocabStore.setState({
+      words: merged,
+      currentThemeId: local.currentThemeId || rv.currentThemeId || '',
+      placementDone: local.placementDone || Boolean(rv.placementDone),
+      placementAt: pickLater(local.placementAt, rv.placementAt),
+      lastSessionDate: pickLater(local.lastSessionDate, rv.lastSessionDate),
     } as any);
   }
 

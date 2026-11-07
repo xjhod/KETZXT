@@ -246,3 +246,34 @@ export interface ListeningPart5Set extends ListeningSet {
   notes: ListeningPart5Note[];
   transcript: string;       // 完整原文
 }
+
+// ========== 词汇记忆调度（2026-11-07 改造）==========
+// 注意：本文件已有旧版 WordProgress（拼写正确数统计），保留不动，新体系另起名字。
+
+/** Leitner 盒子：1 最密（当天/隔天），5 最疏 */
+export type VocabBox = 1 | 2 | 3 | 4 | 5;
+export type VocabWordStatus = 'new' | 'learning' | 'mastered';
+/** 复习听写的提示层级：1 给字母块，2 给音标+播放，3 只给音频 */
+export type VocabHintLevel = 1 | 2 | 3;
+/** 首次结构路由，与 utils/wordChunks 的 WordRoute 同值（此处内联避免类型循环） */
+export type VocabRoute = 'A' | 'B' | 'C';
+
+export interface VocabWordProgress {
+  /** 主键：词库 wordId。主题 ID 在词库里有重复，只当分组标签 */
+  wordId: string;
+  themeId: string;
+  route: VocabRoute;
+  box: VocabBox;
+  /** 下次到期日 YYYY-MM-DD */
+  dueAt: string;
+  /** 连续听写正确次数 */
+  streak: number;
+  right: number;
+  wrong: number;
+  lastSeen: string | null;
+  firstLearnedAt: string | null;
+  status: VocabWordStatus;
+}
+
+/** 首次入场测的三档自评 */
+export type PlacementChoice = 'known' | 'unsure' | 'unknown';

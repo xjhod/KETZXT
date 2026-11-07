@@ -1,5 +1,5 @@
 // ========== 按当前登录用户隔离的 persist 存储层 ==========
-// 让三个学习 store（进度/计划/打卡）在单台设备上按账号分片：
+// 让四个学习 store（进度/计划/打卡/词汇）在单台设备上按账号分片：
 //   实际 localStorage 键 = `${name}:${uid}`
 // 登录 A 账号就读写 A 的分片，登录 B 就读写 B 的分片，互不串。
 //
@@ -59,5 +59,10 @@ export const userScopedStorage: StateStorage = {
 
 export default userScopedStorage;
 
-// 三个 store 的持久化基础键名（单一数据源，供清理/校验使用）
-export const STORE_BASE_KEYS = ['ket-progress-v1', 'ket-plan-v1', 'ket-daily-checkin-v1'];
+// 四个 store 的持久化基础键名（单一数据源，供清理/校验使用）
+export const STORE_BASE_KEYS = [
+  'ket-progress-v1',
+  'ket-plan-v1',
+  'ket-daily-checkin-v1',
+  'ket-vocab-v1',
+];
