@@ -69,27 +69,66 @@ function pickVerificationId(payload: any): string | null {
   return walk(payload, 0);
 }
 
-/** 直连发码端点，保留原始响应体。
- *  SDK 的 sendOtp 对邮箱分支会在缺 verification_id 时直接 fail() 并丢掉响应，
- *  这里自己发一次，才能拿到（可能藏在别的字段里的）验证码凭据。 */
+function snippet(v: unknown): string {
+  try {
+    const s = typeof v === 'string' ? v : (JSON.stringify(v) ?? '');
+    return s.slice(0, 300);
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * 发码并保留原始响应体。
+ *
+ * ⚠️ 真实地址是 `/.cloud/auth/v1/verification`：SDK 的 auth baseUrl =
+ * `config.endpoint + CLOUD_MODULE_PATHS.auth`（`/.cloud/auth`）。早期版本裸拼
+ * `${CLOUD_ENDPOINT}/v1/verification`，请求落到托管层的 SPA 回退页、返回 HTML，
+ * `res.json()` 解析失败 → 诊断显示 `HTTP 200[]`，一个字段都拿不到。
+ *
+ * 优先复用 SDK 的 auth.request（自动拼前缀 + 注入 publishableKey 与会话头），
+ * 拿不到该方法时再用带正确前缀的裸 fetch 兜底。
+ */
 async function postVerificationRaw(
   body: Record<string, unknown>,
-): Promise<{ status: number; payload: any }> {
-  const res = await fetch(`${CLOUD_ENDPOINT}/v1/verification`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-wb-webapp-access-key': CLOUD_PUBLISHABLE_KEY,
-    },
-    body: JSON.stringify(body),
-  });
-  let payload: any = null;
-  try {
-    payload = await res.json();
-  } catch {
-    payload = null;
+): Promise<{ status: number; payload: any; raw: string }> {
+  const auth: any = cloud.auth as any;
+  if (auth && typeof auth.request === 'function') {
+    try {
+      const res = await auth.request('/v1/verification', { method: 'POST', body });
+      if (res?.error) {
+        return {
+          status: Number(res.error?.status) || 0,
+          payload: null,
+          raw: String(res.error?.message ?? ''),
+        };
+      }
+      const payload = res?.data ?? null;
+      return { status: 200, payload, raw: snippet(payload) };
+    } catch (e) {
+      return { status: 0, payload: null, raw: String((e as Error).message ?? e) };
+    }
   }
-  return { status: res.status, payload };
+  try {
+    const res = await fetch(`${CLOUD_ENDPOINT}/.cloud/auth/v1/verification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-wb-webapp-access-key': CLOUD_PUBLISHABLE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    const text = await res.text();
+    let payload: any = null;
+    try {
+      payload = text ? JSON.parse(text) : null;
+    } catch {
+      payload = null;
+    }
+    return { status: res.status, payload, raw: text.slice(0, 300) };
+  } catch (e) {
+    return { status: 0, payload: null, raw: String((e as Error).message ?? e) };
+  }
 }
 
 /** 云端登录状态 */
@@ -289,26 +328,28 @@ export async function sendCloudOtp(input: {
       // 并丢弃响应体，导致拿不到验码必需的凭据；此前拿邮件链接里的 env_id 顶替，
       // 后端报 "malformed jwt: expected 3 parts got 1"（env_id 不是 JWT）。
       //
-      // ⚠️ email_redirect_to 必须是已登记的线上域名，不能用 window.location.origin：
-      // 本地预览 origin = http://127.0.0.1:5173 会回 "not a registered domain"。
-      const redirectTo = `${CLOUD_ENDPOINT}/`;
-      // 先走当前线上邮件模板（链接带 verificationCode），拿不到 JWT 再退到
-      // 与手机同构的 {email, target:'ANY'}。只有前者失败才会发第二封邮件。
+      // 实测（正确地址 /.cloud/auth/v1/verification）：
+      //   {email, target:'ANY'}                     → {verification_id:<JWT>, expires_in:600}
+      //   {email, target:'ANY', email_redirect_to}  → {expires_in:600}   ← 带回跳就切魔法链接、不给 JWT
+      //   {email, usage:'email', email_redirect_to} → {expires_in:600}   ← SDK 一直误报 no verification_id 的原因
+      // 结论：**绝不能带 email_redirect_to**；后端会用默认登记地址生成邮件链接。
+      // 也与手机同构（phone_number + target:'ANY'），拿到的 JWT 可直接喂给 verifyOtp。
       const attempts: Array<Record<string, unknown>> = [
-        { email, usage: 'email', email_redirect_to: redirectTo },
         { email, target: 'ANY' },
+        { email, usage: 'email', target: 'ANY' }, // 兜底，同样不带 redirect
       ];
       let jwt = '';
       let isUser = false;
       const diag: string[] = [];
       for (const body of attempts) {
-        const { status, payload } = await postVerificationRaw(body);
+        const { status, payload, raw } = await postVerificationRaw(body);
         const keys =
           payload && typeof payload === 'object'
             ? Object.keys(payload).join(',')
             : String(payload ?? '').slice(0, 60);
-        diag.push(`HTTP ${status}[${keys}]`);
-        if (status >= 400) continue;
+        // 带上响应体片段：一次区分「后端真的返回空」与「又被回退成 HTML 页面」
+        diag.push(`HTTP ${status}[${keys}] ${raw.slice(0, 120)}`);
+        if (status >= 400 || status === 0) continue;
         const found = pickVerificationId(payload);
         if (found) {
           jwt = found;
@@ -339,7 +380,7 @@ export async function sendCloudOtp(input: {
     };
     persistChallenge(pendingChallenge);
     const emailHint =
-      '验证码已发送：请复制邮件里「确认邮箱并登录」按钮的链接网址，把其中 verificationCode= 后的 6 位数字填到下方，再点「连接云端并同步」。请在同一浏览器内完成；若在同一浏览器点开邮件链接，应用也会自动登录。若收到两封邮件，请用最后一封';
+      '验证码已发送，请查收邮件：正文若有 6 位数字验证码请直接填入下方；若只有「确认邮箱并登录」按钮，请复制按钮的链接网址，取其中 verificationCode= 后的 6 位数字填入。再点「连接云端并同步」（请在同一浏览器内完成）';
     return {
       ok: true,
       message: phone ? '验证码已发送，请查收短信' : appendLocalPreviewHint(emailHint),
@@ -364,7 +405,17 @@ async function runVerifyOtp(params: {
   isExistingUser: boolean;
 }): Promise<{ ok: boolean; message: string; account?: CloudAccount; isNewUser?: boolean }> {
   try {
-    const res = await cloud.auth.verifyOtp(params as any);
+    // 发码响应不带 is_user，isExistingUser 恒为 false（走注册）。已有账号复登时后端会
+    // 明确报「已存在」，此时改走登录重试一次 —— 只在错误文案明确时才重试，不掩盖其它错误。
+    let existing = params.isExistingUser;
+    let res = await cloud.auth.verifyOtp({ ...params, isExistingUser: existing } as any);
+    if (res?.error && !existing) {
+      const msg = String((res.error as any)?.message ?? '');
+      if (/already|exist|已存在|已被注册|user_exists/i.test(msg)) {
+        existing = true;
+        res = await cloud.auth.verifyOtp({ ...params, isExistingUser: true } as any);
+      }
+    }
     if (res?.error) {
       const e: any = res.error;
       // 带上 kind / status，邮箱链接验码失败时登录页会把后端原始错误显示出来，便于定位
@@ -397,9 +448,9 @@ async function runVerifyOtp(params: {
     };
     return {
       ok: true,
-      message: params.isExistingUser ? '云端已连接' : '注册成功，云端已连接',
+      message: existing ? '云端已连接' : '注册成功，云端已连接',
       account,
-      isNewUser: !params.isExistingUser,
+      isNewUser: !existing,
     };
   } catch (e) {
     return { ok: false, message: `验证失败：${(e as Error).message}` };
