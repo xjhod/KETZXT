@@ -69,15 +69,6 @@ function pickVerificationId(payload: any): string | null {
   return walk(payload, 0);
 }
 
-function snippet(v: unknown): string {
-  try {
-    const s = typeof v === 'string' ? v : (JSON.stringify(v) ?? '');
-    return s.slice(0, 300);
-  } catch {
-    return '';
-  }
-}
-
 /**
  * 发码并保留原始响应体。
  *
@@ -86,31 +77,18 @@ function snippet(v: unknown): string {
  * `${CLOUD_ENDPOINT}/v1/verification`，请求落到托管层的 SPA 回退页、返回 HTML，
  * `res.json()` 解析失败 → 诊断显示 `HTTP 200[]`，一个字段都拿不到。
  *
- * 优先复用 SDK 的 auth.request（自动拼前缀 + 注入 publishableKey 与会话头），
- * 拿不到该方法时再用带正确前缀的裸 fetch 兜底。
+ * 统一用裸 fetch：这条路径已在线上用 curl 实测（带 x-wb-webapp-access-key 即可
+ * 返回 verification_id JWT）。不再依赖 SDK 内部 request 的返回结构 —— 后者把
+ * status 硬编码成 200、且 raw 可能为空，会把真实失败伪装成 `HTTP 200[]`。
  */
 async function postVerificationRaw(
   body: Record<string, unknown>,
 ): Promise<{ status: number; payload: any; raw: string }> {
-  const auth: any = cloud.auth as any;
-  if (auth && typeof auth.request === 'function') {
-    try {
-      const res = await auth.request('/v1/verification', { method: 'POST', body });
-      if (res?.error) {
-        return {
-          status: Number(res.error?.status) || 0,
-          payload: null,
-          raw: String(res.error?.message ?? ''),
-        };
-      }
-      const payload = res?.data ?? null;
-      return { status: 200, payload, raw: snippet(payload) };
-    } catch (e) {
-      return { status: 0, payload: null, raw: String((e as Error).message ?? e) };
-    }
-  }
+  // 托管层分享门：页面 URL 带 sharecode 才稳定放行，API 请求一并带上更保险
+  const sc = new URLSearchParams(window.location.search).get('sharecode') || 'ILJMMGGVHE';
+  const url = `${CLOUD_ENDPOINT}/.cloud/auth/v1/verification?sharecode=${encodeURIComponent(sc)}`;
   try {
-    const res = await fetch(`${CLOUD_ENDPOINT}/.cloud/auth/v1/verification`, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -130,6 +108,9 @@ async function postVerificationRaw(
     return { status: 0, payload: null, raw: String((e as Error).message ?? e) };
   }
 }
+
+/** 当前构建标识：诊断信息带上它，才能一眼分辨用户是否跑着旧版缓存 */
+const BUILD_TAG = String((import.meta.env as any).VITE_BUILD_HASH ?? 'unknown').slice(0, 7);
 
 /** 云端登录状态 */
 export interface CloudAccount {
@@ -358,10 +339,11 @@ export async function sendCloudOtp(input: {
         }
       }
       if (!jwt) {
-        // 带上两次响应的字段清单，便于一次定位后端到底把凭据放在哪
+        // 带上两次响应的字段清单 + 构建版本：一次区分「后端真的没给凭据」与
+        // 「用户手机仍跑着旧版 PWA 缓存」（旧版诊断不会带 BUILD_TAG 和响应体片段）
         return {
           ok: false,
-          message: `发送失败：服务端未返回可用的验证码凭据（${diag.join(' / ')}）。请把这行提示原文发给我`,
+          message: `发送失败：服务端未返回可用的验证码凭据（${diag.join(' / ')}）。版本 ${BUILD_TAG}，请把这行提示原文发给我`,
         };
       }
       // 记住邮箱，邮件链接回跳后登录页自动回填

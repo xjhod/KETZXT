@@ -24,6 +24,42 @@ if (typeof window !== 'undefined') {
   });
 }
 
+// ========== PWA 缓存自愈 ==========
+// 线上部署新版本后，旧的 Service Worker 可能仍返回 precache 里的旧 index.html / 旧 JS，
+// 用户会连续几轮都跑在旧代码上（典型症状：报错文字始终一模一样）。
+//
+// 思路：用一次普通 fetch（mode 非 navigate，不会被 workbox 的 NavigationRoute 拦截）
+// 拉取线上最新 HTML，比对主 bundle 文件名；不一致就注销所有 SW、清空 Cache Storage
+// 并重载，强制跳到线上最新版。版本一致时不做任何事，不影响离线使用。
+async function forceUpdateIfStale(): Promise<void> {
+  if (!('serviceWorker' in navigator) || !window.caches) return;
+  try {
+    const current = Array.from(
+      document.querySelectorAll<HTMLScriptElement>('script[type="module"][src]'),
+    )
+      .map((s) => s.src.split('/').pop() ?? '')
+      .find((name) => /^index-.*\.js$/.test(name));
+    if (!current) return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('__vcheck', String(Date.now())); // 同时保留 sharecode 等业务参数
+    const res = await fetch(url.toString(), { cache: 'no-store', headers: { Accept: 'text/html' } });
+    if (!res.ok) return;
+    const html = await res.text();
+    const match = html.match(/src="[^"]*\/assets\/(index-[^"]+\.js)"/);
+    if (!match || match[1] === current) return;
+
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map((r) => r.unregister().catch(() => false)));
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+    window.location.reload();
+  } catch {
+    // 检查失败（离线 / 边缘拦截）不影响正常使用
+  }
+}
+void forceUpdateIfStale();
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

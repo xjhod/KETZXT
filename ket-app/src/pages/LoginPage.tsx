@@ -10,6 +10,10 @@ import {
   takeEmailPrefill,
 } from '../utils/cloudAuth';
 
+// 构建标识：显示出来便于确认手机是否跑着最新版（PWA 旧缓存是反复失败的常见原因）
+const BUILD_HASH = String((import.meta.env as any).VITE_BUILD_HASH ?? 'unknown').slice(0, 7);
+const BUILD_TIME = String((import.meta.env as any).VITE_BUILD_TIME ?? '').slice(0, 16).replace('T', ' ');
+
 export default function LoginPage() {
   const navigate = useNavigate();
   // 邮件「确认邮箱并登录」按钮回跳时，取出链接里带回的验证码 / 邮箱预填
@@ -93,6 +97,23 @@ export default function LoginPage() {
     setOtpSent(false);
     setCloudMessage('');
     setCloudOk(false);
+  };
+
+  /** 一键跳出旧版 PWA 缓存：注销 Service Worker + 清空 Cache Storage 后重载 */
+  const handleHardRefresh = async () => {
+    try {
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.unregister().catch(() => false)));
+      }
+      if (window.caches) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+    } catch {
+      // 清理失败也照样重载，不阻塞用户
+    }
+    window.location.reload();
   };
 
   return (
@@ -211,6 +232,18 @@ export default function LoginPage() {
               {cloudBusy ? '连接中...' : cloudConnected ? '重新连接并同步' : '连接云端并同步'}
             </button>
           </form>
+        </div>
+
+        {/* 版本标识 + 一键跳出旧 SW 缓存 */}
+        <div className="mt-5 flex items-center justify-between text-[11px] text-gray-400">
+          <span>版本 {BUILD_HASH}{BUILD_TIME ? ` · ${BUILD_TIME}` : ''}</span>
+          <button
+            type="button"
+            onClick={handleHardRefresh}
+            className="underline decoration-gray-300 hover:text-indigo-500"
+          >
+            清除缓存并重载
+          </button>
         </div>
       </div>
     </div>
