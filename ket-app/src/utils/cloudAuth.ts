@@ -4,14 +4,15 @@
  * 为什么需要它：
  *   云数据库的 RLS 用 `auth.uid()` 做行级隔离，即「谁能读自己的同步数据」取决于
  *   登录身份。本地那套 kid 用户名/密码是**离线**账号体系；云端则用 WorkBuddy 账号
- *   （手机号 / 邮箱验证码）作为身份 —— 两者是不同维度：
+ *   （邮箱验证码）作为身份 —— 两者是不同维度：
  *     · 本地 kid 账号：决定这台设备上「当前是哪个孩子在用」
  *     · 云端账号：决定「这台设备连到云端的哪份数据」
  *
- * 注册与登录统一走 `sendOtp` + `verifyOtp` 两步流程：
- *   - 家长/新用户输入手机号或邮箱 → sendOtp 发码（上游区分新老用户，返回 isExistingUser）
+ * 注册与登录统一走「发码 + 验码」两步流程：
+ *   - 家长/新用户输入邮箱 → 发码端点返回 verification_id（JWT）
  *   - 输入验证码 → verifyOtp（带上 isExistingUser），由 SDK 决定走登录还是自动注册
- *   - 无需自建后台发码，新手机号/邮箱首次验码即自动建号
+ *   - 无需自建后台发码，新邮箱首次验码即自动建号
+ *   - 手机短信登录已关闭（短信按条计费），只保留邮箱渠道
  *
  * 登录成功后：建一个本地镜像用户（id=云端 uid，无密码），复用现有分片存储；
  * 标记本机已连云端，记录 linked uid，并 rehydrate 三个学习 store。
@@ -133,7 +134,7 @@ export interface CloudAuthStatus {
 interface PendingChallenge {
   verificationId: string;
   isExistingUser: boolean;
-  /** 发码时用的标识（手机号或邮箱），验码必须传回同一个 */
+  /** 发码时用的邮箱，验码必须传回同一个 */
   identifier: string;
 }
 
@@ -220,7 +221,7 @@ export async function getCloudAuthStatus(): Promise<CloudAuthStatus> {
   return {
     signedIn: false,
     account: null,
-    message: '未连接云端：输入手机号或邮箱接收验证码即可连接，多台设备间自动同步',
+    message: '未连接云端：输入邮箱接收验证码即可连接，多台设备间自动同步',
   };
 }
 
@@ -251,15 +252,26 @@ export function clearCloudLinkedUid(): void {
 }
 
 /**
- * 发送验证码（手机号或邮箱二选一）。
+ * 发送邮箱验证码。
  *
- * 走 `sendOtp`：它只发码并返回一个 `verificationId`，上游同时给出
- * `isExistingUser`（决定验码后走登录还是注册，由 SDK 处理，本端不猜）。
+ * ⚠️ 手机短信登录已关闭（2026-11-07）：短信按条消耗云服务资源点，
+ * 邮箱验证码没有按条计费项。这里显式拒绝 phone 入参，且**不再保留任何
+ * 调用 cloud.auth.sendOtp({ phone }) 的代码路径**，确保不会误发短信。
+ *
+ * 邮箱发码直接命中 `/.cloud/auth/v1/verification`，自己读原始响应里的
+ * verification_id（JWT）。不能走 SDK 的 sendOtp：它对邮箱分支只会在缺
+ * verification_id 时直接 fail() 并丢弃响应体，拿不到验码必需的凭据；
+ * 此前拿邮件链接里的 env_id 顶替，后端报 malformed jwt: expected 3 parts got 1。
+ *
+ * 实测（正确地址 /.cloud/auth/v1/verification）：
+ *   {email, target:'ANY'}                     → {verification_id:<JWT>, expires_in:600}
+ *   {email, target:'ANY', email_redirect_to}  → {expires_in:600}   ← 带回跳就切魔法链接、不给 JWT
+ *   {email, usage:'email', email_redirect_to} → {expires_in:600}   ← SDK 一直误报 no verification_id 的原因
+ * 结论：**绝不能带 email_redirect_to**；后端会用默认登记地址生成邮件链接。
  *
  * @returns { ok, message, verificationId?, isExistingUser? }
  */
 export async function sendCloudOtp(input: {
-  phone?: string;
   email?: string;
 }): Promise<{
   ok: boolean;
@@ -267,105 +279,65 @@ export async function sendCloudOtp(input: {
   verificationId?: string;
   isExistingUser?: boolean;
 }> {
-  const phone = (input.phone ?? '').trim();
+  // 防御：即使还有旧调用点传入 phone，也绝不发短信
+  if ((input as { phone?: string }).phone) {
+    return { ok: false, message: '手机短信登录已关闭，请使用邮箱登录' };
+  }
   const email = (input.email ?? '').trim();
-
-  let identifier: string;
-  if (phone) {
-    if (!/^1[3-9]\d{9}$/.test(phone)) {
-      return { ok: false, message: '请输入正确的 11 位手机号' };
-    }
-    identifier = phone;
-  } else if (email) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return { ok: false, message: '请输入正确的邮箱地址' };
-    }
-    identifier = email;
-  } else {
-    return { ok: false, message: '请填写手机号或邮箱' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, message: '请输入正确的邮箱地址' };
   }
 
   try {
-    let challenge: { verificationId: string; isExistingUser: boolean };
-
-    if (phone) {
-      // 手机：走 SDK 正常 OTP（后端返回 verification_id + 发短信）
-      const res = await cloud.auth.sendOtp({ phone });
-      if (res?.error) {
-        return { ok: false, message: `发送失败：${res.error.message || '未知错误'}` };
+    const attempts: Array<Record<string, unknown>> = [
+      { email, target: 'ANY' },
+      { email, usage: 'email', target: 'ANY' }, // 兜底，同样不带 redirect
+    ];
+    let jwt = '';
+    let isUser = false;
+    const diag: string[] = [];
+    for (const body of attempts) {
+      const { status, payload, raw } = await postVerificationRaw(body);
+      const keys =
+        payload && typeof payload === 'object'
+          ? Object.keys(payload).join(',')
+          : String(payload ?? '').slice(0, 60);
+      // 带上响应体片段：一次区分「后端真的返回空」与「又被回退成 HTML 页面」
+      diag.push(`HTTP ${status}[${keys}] ${raw.slice(0, 120)}`);
+      if (status >= 400 || status === 0) continue;
+      const found = pickVerificationId(payload);
+      if (found) {
+        jwt = found;
+        isUser = payload?.is_user === true || payload?.isUser === true;
+        break;
       }
-      const c: any = res?.data;
-      if (!c?.verificationId) {
-        return { ok: false, message: '发送失败：服务端未返回可用的验证码流程' };
-      }
-      challenge = {
-        verificationId: String(c.verificationId),
-        isExistingUser: Boolean(c.isExistingUser),
+    }
+    if (!jwt) {
+      // 带上两次响应的字段清单 + 构建版本：一次区分「后端真的没给凭据」与
+      // 「用户手机仍跑着旧版 PWA 缓存」（旧版诊断不会带 BUILD_TAG 和响应体片段）
+      return {
+        ok: false,
+        message: `发送失败：服务端未返回可用的验证码凭据（${diag.join(' / ')}）。版本 ${BUILD_TAG}，请把这行提示原文发给我`,
       };
-    } else {
-      // 邮箱：直接命中发码端点，自己读原始响应里的 verification_id（JWT）。
-      //
-      // 不能再走 SDK 的 sendOtp：它对邮箱分支只会在缺 verification_id 时直接 fail()
-      // 并丢弃响应体，导致拿不到验码必需的凭据；此前拿邮件链接里的 env_id 顶替，
-      // 后端报 "malformed jwt: expected 3 parts got 1"（env_id 不是 JWT）。
-      //
-      // 实测（正确地址 /.cloud/auth/v1/verification）：
-      //   {email, target:'ANY'}                     → {verification_id:<JWT>, expires_in:600}
-      //   {email, target:'ANY', email_redirect_to}  → {expires_in:600}   ← 带回跳就切魔法链接、不给 JWT
-      //   {email, usage:'email', email_redirect_to} → {expires_in:600}   ← SDK 一直误报 no verification_id 的原因
-      // 结论：**绝不能带 email_redirect_to**；后端会用默认登记地址生成邮件链接。
-      // 也与手机同构（phone_number + target:'ANY'），拿到的 JWT 可直接喂给 verifyOtp。
-      const attempts: Array<Record<string, unknown>> = [
-        { email, target: 'ANY' },
-        { email, usage: 'email', target: 'ANY' }, // 兜底，同样不带 redirect
-      ];
-      let jwt = '';
-      let isUser = false;
-      const diag: string[] = [];
-      for (const body of attempts) {
-        const { status, payload, raw } = await postVerificationRaw(body);
-        const keys =
-          payload && typeof payload === 'object'
-            ? Object.keys(payload).join(',')
-            : String(payload ?? '').slice(0, 60);
-        // 带上响应体片段：一次区分「后端真的返回空」与「又被回退成 HTML 页面」
-        diag.push(`HTTP ${status}[${keys}] ${raw.slice(0, 120)}`);
-        if (status >= 400 || status === 0) continue;
-        const found = pickVerificationId(payload);
-        if (found) {
-          jwt = found;
-          isUser = payload?.is_user === true || payload?.isUser === true;
-          break;
-        }
-      }
-      if (!jwt) {
-        // 带上两次响应的字段清单 + 构建版本：一次区分「后端真的没给凭据」与
-        // 「用户手机仍跑着旧版 PWA 缓存」（旧版诊断不会带 BUILD_TAG 和响应体片段）
-        return {
-          ok: false,
-          message: `发送失败：服务端未返回可用的验证码凭据（${diag.join(' / ')}）。版本 ${BUILD_TAG}，请把这行提示原文发给我`,
-        };
-      }
-      // 记住邮箱，邮件链接回跳后登录页自动回填
-      try {
-        sessionStorage.setItem(PREFILL_EMAIL_KEY, email);
-      } catch {
-        /* ignore */
-      }
-      challenge = { verificationId: jwt, isExistingUser: isUser };
+    }
+    // 记住邮箱，邮件链接回跳后登录页自动回填
+    try {
+      sessionStorage.setItem(PREFILL_EMAIL_KEY, email);
+    } catch {
+      /* ignore */
     }
 
     pendingChallenge = {
-      verificationId: challenge.verificationId,
-      isExistingUser: challenge.isExistingUser,
-      identifier,
+      verificationId: jwt,
+      isExistingUser: isUser,
+      identifier: email,
     };
     persistChallenge(pendingChallenge);
     const emailHint =
       '验证码已发送，请查收邮件：正文若有 6 位数字验证码请直接填入下方；若只有「确认邮箱并登录」按钮，请复制按钮的链接网址，取其中 verificationCode= 后的 6 位数字填入。再点「连接云端并同步」（请在同一浏览器内完成）';
     return {
       ok: true,
-      message: phone ? '验证码已发送，请查收短信' : appendLocalPreviewHint(emailHint),
+      message: appendLocalPreviewHint(emailHint),
       verificationId: pendingChallenge.verificationId,
       isExistingUser: pendingChallenge.isExistingUser,
     };
@@ -460,9 +432,11 @@ export async function verifyCloudOtp(token: string): Promise<{
   }
   const { verificationId, isExistingUser, identifier } = pc;
   const params: any = { verificationId, token: code, isExistingUser };
-  // 验码必须传回与发码一致的标识（手机号或邮箱）
-  if (identifier.includes('@')) params.email = identifier;
-  else params.phone = identifier;
+  // 验码必须传回与发码一致的邮箱；手机短信登录已关闭，旧挑战一律要求重新发码
+  if (!identifier.includes('@')) {
+    return { ok: false, message: '手机短信登录已关闭，请用邮箱重新获取验证码' };
+  }
+  params.email = identifier;
 
   const result = await runVerifyOtp(params);
   if (result.ok) {

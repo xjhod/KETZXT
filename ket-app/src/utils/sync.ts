@@ -9,14 +9,14 @@
  *   2. **合并而非覆盖** —— 下载云端数据后与本地合并再上传，
  *      避免「另一台设备刚做的题被这台旧数据冲掉」。
  *   3. **服务端不存明文密码** —— 本地 kid 账号用 PBKDF2 派生哈希存储；
- *      云端身份走 WorkBuddy 账号（手机号验证码），不涉及本地密码。
+ *      云端身份走 WorkBuddy 账号（邮箱验证码），不涉及本地密码。
  *   4. **失败不阻塞使用** —— 网络不通或未登录时同步失败并给出原因，
  *      应用继续本地可用，不影响做题。
  *
  * 身份的两层（刻意分开）：
  *   · 本地 kid 账号：决定这台设备上「当前是哪个孩子在用」（离线也能用）
  *   · 云端 WorkBuddy 账号：决定「这台设备连到云端的哪份数据」
- *   两者独立 —— 家长用一个云端账号即可同步所有孩子的进度（一个手机号/邮箱对应一个小孩，云端数据按 owner_id = 云端 uid 分区；
+ *   两者独立 —— 家长用一个云端账号即可同步所有孩子的进度（一个邮箱对应一个小孩，云端数据按 owner_id = 云端 uid 分区；
  *   同一小孩换设备登录后落到同一份云端数据，进度自动拉回。device_id 仅作诊断列保留）。
  */
 
@@ -280,7 +280,7 @@ async function writeCloudRow(payload: SyncPayload): Promise<string> {
 export async function syncPull(): Promise<SyncStatus> {
   const session = await getCloudSession();
   if (!session) {
-    return { ok: false, message: '未连接云端，请先在「同步」里用手机号连接' };
+    return { ok: false, message: '未连接云端，请先在登录页用邮箱连接' };
   }
   try {
     const row = await readCloudRow();
@@ -306,7 +306,7 @@ export async function syncPull(): Promise<SyncStatus> {
 export async function syncPush(): Promise<SyncStatus> {
   const session = await getCloudSession();
   if (!session) {
-    return { ok: false, message: '未连接云端，请先在「同步」里用手机号连接' };
+    return { ok: false, message: '未连接云端，请先在登录页用邮箱连接' };
   }
   try {
     // 先拉一次合并，避免用旧数据覆盖云端
@@ -328,7 +328,7 @@ export async function syncPush(): Promise<SyncStatus> {
 export async function syncNow(): Promise<SyncStatus> {
   const session = await getCloudSession();
   if (!session) {
-    return { ok: false, message: '未连接云端，请先在「同步」里用手机号连接' };
+    return { ok: false, message: '未连接云端，请先在登录页用邮箱连接' };
   }
   try {
     const row = await readCloudRow();

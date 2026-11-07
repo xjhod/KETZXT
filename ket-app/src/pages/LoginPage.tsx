@@ -18,8 +18,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   // 邮件「确认邮箱并登录」按钮回跳时，取出链接里带回的验证码 / 邮箱预填
   const [prefill] = useState(takeEmailPrefill);
-  const [cloudMode, setCloudMode] = useState<'phone' | 'email'>(prefill.email ? 'email' : 'phone');
-  const [cloudPhone, setCloudPhone] = useState('');
   const [cloudEmail, setCloudEmail] = useState(prefill.email);
   const [cloudCode, setCloudCode] = useState(prefill.code);
   // ⚠️ 预填验证码 **不代表** 本机已经发过码：邮件链接常在另一个浏览器 / 邮箱 App 内打开，
@@ -32,21 +30,18 @@ export default function LoginPage() {
   const [cloudOk, setCloudOk] = useState(false);
   const [cloudConnected, setCloudConnected] = useState(isCloudConnected());
 
-  /** 发送验证码（手机号或邮箱，由 cloudMode 决定） */
+  /** 发送邮箱验证码 */
   const handleSendOtp = async () => {
     setCloudMessage('');
     setCloudOk(false);
-    const target = cloudMode === 'phone' ? cloudPhone.trim() : cloudEmail.trim();
+    const target = cloudEmail.trim();
     if (!target) {
-      setCloudMessage(cloudMode === 'phone' ? '请先填写手机号' : '请先填写邮箱');
+      setCloudMessage('请先填写邮箱');
       return;
     }
     setCloudBusy(true);
     try {
-      const res =
-        cloudMode === 'phone'
-          ? await sendCloudOtp({ phone: target })
-          : await sendCloudOtp({ email: target });
+      const res = await sendCloudOtp({ email: target });
       setCloudMessage(res.message);
       setCloudOk(res.ok);
       if (res.ok) setOtpSent(true);
@@ -62,9 +57,9 @@ export default function LoginPage() {
     e.preventDefault();
     setCloudMessage('');
     setCloudOk(false);
-    const target = cloudMode === 'phone' ? cloudPhone.trim() : cloudEmail.trim();
+    const target = cloudEmail.trim();
     if (!target || !cloudCode.trim()) {
-      setCloudMessage(cloudMode === 'phone' ? '请填写手机号和验证码' : '请填写邮箱和验证码');
+      setCloudMessage('请填写邮箱和验证码');
       return;
     }
     setCloudBusy(true);
@@ -92,13 +87,6 @@ export default function LoginPage() {
     }
   };
 
-  const switchMode = (mode: 'phone' | 'email') => {
-    setCloudMode(mode);
-    setOtpSent(false);
-    setCloudMessage('');
-    setCloudOk(false);
-  };
-
   /** 一键跳出旧版 PWA 缓存：注销 Service Worker + 清空 Cache Storage 后重载 */
   const handleHardRefresh = async () => {
     try {
@@ -123,7 +111,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">📚</div>
           <h1 className="text-3xl font-bold text-gray-800">KET 智学通</h1>
-          <p className="text-gray-600 mt-2">用手机号或邮箱连接云端后开始学习</p>
+          <p className="text-gray-600 mt-2">用邮箱连接云端，学习进度多设备自动同步</p>
         </div>
 
         {/* 云端消息提示 */}
@@ -139,7 +127,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* 云端登录（推荐：多设备自动同步学习进度） */}
+        {/* 云端登录（邮箱验证码，多设备自动同步学习进度） */}
         <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl">
           <div className="flex items-center justify-between mb-1">
             <h3 className="text-sm font-bold text-indigo-800">☁️ 云端登录（多设备）</h3>
@@ -150,63 +138,28 @@ export default function LoginPage() {
             )}
           </div>
           <p className="text-xs text-indigo-600 mb-3">
-            手机号用短信验证码登录；邮箱同样会收到 6 位数字验证码，填入下方即可。若邮件只有
-            「确认邮箱并登录」按钮，请复制按钮的链接网址，取其中「verificationCode=」后面的 6 位数字填入。
+            填写邮箱后会收到 6 位数字验证码，填入下方即可。若邮件只有「确认邮箱并登录」按钮，
+            请复制按钮的链接网址，取其中「verificationCode=」后面的 6 位数字填入。
             请在同一浏览器内完成。连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步，
-            换设备用同一账号登录即可拉回。
+            换设备用同一邮箱登录即可拉回。
           </p>
 
-          {/* 手机号 / 邮箱 切换 */}
-          <div className="flex gap-1 mb-2 p-1 bg-white/70 rounded-lg border border-indigo-200">
-            <button
-              type="button"
-              onClick={() => switchMode('phone')}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
-                cloudMode === 'phone' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
-              }`}
-            >
-              📱 手机号
-            </button>
-            <button
-              type="button"
-              onClick={() => switchMode('email')}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
-                cloudMode === 'email' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
-              }`}
-            >
-              ✉️ 邮箱
-            </button>
-          </div>
-
           <form onSubmit={handleCloudLogin} className="space-y-2">
-            {cloudMode === 'phone' ? (
-              <input
-                type="tel"
-                value={cloudPhone}
-                onChange={(e) => setCloudPhone(e.target.value)}
-                className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-                placeholder="手机号"
-                inputMode="numeric"
-                maxLength={11}
-                autoComplete="tel"
-              />
-            ) : (
-              <input
-                type="email"
-                value={cloudEmail}
-                onChange={(e) => setCloudEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-                placeholder="邮箱地址"
-                autoComplete="email"
-              />
-            )}
+            <input
+              type="email"
+              value={cloudEmail}
+              onChange={(e) => setCloudEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              placeholder="邮箱地址"
+              autoComplete="email"
+            />
             <div className="flex gap-2">
               <input
                 type="text"
                 value={cloudCode}
                 onChange={(e) => setCloudCode(e.target.value)}
                 className="flex-1 px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-                placeholder={cloudMode === 'phone' ? '短信验证码' : '邮件验证码'}
+                placeholder="邮件验证码"
                 inputMode="numeric"
                 maxLength={8}
                 autoComplete="one-time-code"
