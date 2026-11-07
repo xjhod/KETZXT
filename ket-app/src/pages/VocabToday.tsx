@@ -1,4 +1,4 @@
-// ========== 今日词汇：入场测 → 复习 → 分流首学 → 主题短文 → 结算 ==========
+// ========== 今日词汇：入场测 → 复习 → 分流首学 → 主题语境段 → 结算 ==========
 //
 // 教学口径（2026-11-07 定稿，审查后修正版）：
 //   · A 单音节规则词：听音分块 + 字母块反查（编码桥），不做 IPA 硬对齐
@@ -6,8 +6,14 @@
 //   · C 不规则/强弱读：整体音 + 例句语境，明说「这个拼法要单独记」
 //   · 听写是唯一掌握证据；选词义、跟读、拼图都不进判定
 //   · IPA 不朗读符号、不做考点；ASR 跟读不参与判定
-//   · 错词即时显示正确拼法并当场重打一遍（重打不写记忆盒子）
+//   · 错词先「再听一遍 → 遮形回想 → 自己写」，实在想不起来才显示答案照打
+//     （重打一律不写记忆盒子）
 //   · 结算只报正确率/升降盒/明日待复习，不发经验值、不报连胜
+//
+// 2026-11-07 第二轮：首学改成单个词的 5 步顺序
+//   1 只听不看（含 0.75 倍速）→ 2 数拍/辨首音 → 3 露形配块 → 4 挂上意义 → 5 整词听写
+//   模块层（按主题排队、A/B/C 分流、Leitner 调度、判定口径）一律不动。
+//   慢速复用现有整词 mp3 的 playbackRate，不新增任何音频/图片/词库字段。
 import { useMemo, useRef, useState, useEffect, type RefObject } from 'react';
 import { allThemes } from '../data/vocabulary';
 import type { PlacementChoice, VocabWordProgress, Word } from '../types';
@@ -20,9 +26,11 @@ import {
   isDictationCorrect,
   NEW_PER_DAY,
   REVIEW_PER_DAY,
+  ONSET_CANDIDATE_FORMS,
   type VocabQueueItem,
   type VocabTodayQueue,
 } from '../utils/vocabSession';
+import { buildCListeningDrill } from '../utils/wordChunks';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 type Phase = 'placement' | 'overview' | 'review' | 'learn' | 'passage' | 'result';
@@ -37,10 +45,10 @@ interface SessionStats {
 
 const EMPTY_STATS: SessionStats = { correct: 0, total: 0, up: 0, down: 0, mastered: 0 };
 
-/** 播放整词音频；w001 没有 mp3，走本地 TTS 兜底 */
-async function playWord(word: Word): Promise<void> {
-  const ok = await playAudioEl(audioFileUrl(word.id));
-  if (!ok && ttsFallbackAllowed()) speakText(word.en, { rate: 0.85 });
+/** 播放整词音频；没有 mp3 时走本地 TTS 兜底。rate < 1 即「再慢一点」 */
+async function playWord(word: Word, rate = 1): Promise<void> {
+  const ok = await playAudioEl(audioFileUrl(word.id), rate);
+  if (!ok && ttsFallbackAllowed()) speakText(word.en, { rate: rate < 1 ? 0.6 : 0.85 });
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -65,6 +73,18 @@ function PlayButton({ word, label = '🔊 听整词' }: { word: Word; label?: st
   );
 }
 
+/** 复用同一条整词 mp3，只改 playbackRate；不新增音频素材 */
+function SlowPlayButton({ word, label = '再慢一点' }: { word: Word; label?: string }) {
+  return (
+    <button
+      onClick={() => { void playWord(word, 0.75); }}
+      className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 text-sm hover:border-blue-400"
+    >
+      {label}
+    </button>
+  );
+}
+
 /** 音标只作可点参考层：点一下播标准读音，不朗读符号、不出题 */
 function IpaRef({ word }: { word: Word }) {
   if (!word.phonetic) return null;
@@ -76,6 +96,27 @@ function IpaRef({ word }: { word: Word }) {
     >
       {word.phonetic}
     </button>
+  );
+}
+
+const LEARN_STEPS = ['只听不看', '数拍辨音', '露形配块', '挂上意义', '整词听写'];
+
+function LearnStepDots({ current }: { current: number }) {
+  return (
+    <div className="mb-3">
+      <div className="flex items-center justify-between text-xs text-gray-500 mb-1.5">
+        <span>第 {current} / 5 步 · {LEARN_STEPS[current - 1]}</span>
+        <span className="text-gray-400">{LEARN_STEPS.join(' → ')}</span>
+      </div>
+      <div className="flex gap-1.5">
+        {LEARN_STEPS.map((s, i) => (
+          <div
+            key={s}
+            className={`h-1.5 flex-1 rounded-full ${i + 1 <= current ? 'bg-blue-500' : 'bg-gray-200'}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -184,37 +225,41 @@ function ChunkPuzzle({ item }: { item: VocabQueueItem }) {
   );
 }
 
-// ========== C 类：听音小练习 + 遮形回想（不用 IPA 符号、不用 ASR）==========
+// ========== 单个新词的 5 步首学（第 1~4 步；第 5 步是听写）==========
 //
-// 补强原因：C 类占全词库近六成，原来只有「整体音 + 例句 + 听写」，孩子没有做任何
-// 解码动作。这里补三个只靠整词音频和点选的轻练习：数拍、重音、首音听辨。
-// 数拍/重音只给参考值不判对错（音节数本身是音标粗估），首音是唯一判对错的一题。
-// 听写仍然是唯一掌握证据，这里的练习全部不进记忆盒子。
+// 顺序纪律：先只靠耳朵，再看词形，再挂意义，最后才默写。
+// 数拍/重音只给参考值不判对错；首音是唯一判对错的一题，答错可再听重选。
+// 听写仍然是唯一掌握证据，这里所有练习都不进记忆盒子。
 
-function CListeningDrillStep({
-  item, onGo, hidden, onToggleHidden,
+function LearnFlow({
+  item, step, onStep, onGo,
 }: {
   item: VocabQueueItem;
+  step: number;
+  onStep: (n: number) => void;
   onGo: () => void;
-  hidden: boolean;
-  onToggleHidden: () => void;
 }) {
-  const drill = item.drill;
+  const { analysis, word, relatives } = item;
+  // C 类已有 drill；A/B 类在 UI 层派生，不改数据层
+  const drill = useMemo(
+    () => item.drill ?? buildCListeningDrill(item.word, ONSET_CANDIDATE_FORMS),
+    [item.drill, item.word]
+  );
+  const [hidden, setHidden] = useState(false);
   const [beat, setBeat] = useState<number | null>(null);
   const [stress, setStress] = useState<number | null>(null);
   const [onset, setOnset] = useState<string | null>(null);
 
-  if (!drill) {
-    return <button onClick={onGo} className="btn-primary mt-4">我会读了，去听写 →</button>;
-  }
+  const withBeats = analysis.route === 'C';
+  const hasStress = withBeats && drill.stressReference !== null;
+  const onsetOk = onset === drill.onsetAnswer;
+  const step2Total = withBeats ? (hasStress ? 3 : 2) : 1;
+  const step2Done =
+    (withBeats && beat !== null ? 1 : 0) +
+    (withBeats && hasStress && stress !== null ? 1 : 0) +
+    (onsetOk ? 1 : 0);
+  const step2Ready = step2Done === step2Total;
 
-  const hasStressStep = drill.stressReference !== null;
-  const done =
-    (beat !== null ? 1 : 0) +
-    (hasStressStep ? (stress !== null ? 1 : 0) : 1) +
-    (onset === drill.onsetAnswer ? 1 : 0);
-  const total = hasStressStep ? 3 : 2;
-  const ready = done === total;
   const opt = (active: boolean) =>
     `px-3 py-1.5 rounded-lg font-mono text-sm border ${
       active
@@ -222,111 +267,258 @@ function CListeningDrillStep({
         : 'bg-white text-gray-700 border-gray-200 hover:border-blue-400'
     }`;
 
-  return (
-    <div className="mt-4 space-y-3">
-      <p className="text-xs text-gray-500">
-        先做 {total} 个小练习，把长词听成几段。只用耳朵和整词音频，不用背音标符号。
-      </p>
+  const nav = (next: number, label = '下一步 →') => (
+    <div className="flex items-center gap-3 mt-5">
+      {step > 1 && (
+        <button onClick={() => onStep(step - 1)} className="text-sm text-gray-500 hover:text-blue-600">← 上一步</button>
+      )}
+      <button onClick={() => onStep(next)} className="btn-primary ml-auto">{label}</button>
+    </div>
+  );
 
-      {/* ① 数拍：只给参考值，不判对错 */}
-      <div className="p-3 bg-indigo-50 rounded-xl">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <p className="text-sm font-medium text-gray-700">① 听一听，这个词大概有几拍？</p>
-          <PlayButton word={item.word} label="🔊 再听一遍" />
+  // ---- 第 1 步：只听不看 ----
+  if (step === 1) {
+    return (
+      <div className="card">
+        <p className="text-xs text-gray-400 mb-1">第 1 步 · 只靠耳朵</p>
+        <h3 className="text-lg font-bold text-gray-800 mb-1">先听发音，不看词形</h3>
+        <p className="text-sm text-gray-600 mb-4">听两遍，猜猜它由几个音组成。屏幕上先不出现这个单词。</p>
+        <div className="p-6 bg-blue-50 rounded-2xl flex flex-col items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <PlayButton word={word} label="🔊 听整词" />
+            <SlowPlayButton word={word} />
+          </div>
+          <p className="text-xs text-gray-500">听不清就多点几次，慢速还是同一条录音。</p>
         </div>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {drill.beatOptions.map((n) => (
-            <button key={n} onClick={() => setBeat(n)} className={opt(beat === n)}>{n} 拍</button>
-          ))}
-        </div>
-        {beat !== null && (
-          <p className="text-xs text-gray-600 mt-2">
-            参考：约 {drill.beatReference} 拍。
-            {beat === drill.beatReference ? ' 数得差不多。' : ' 不一样也没关系，再听一遍跟着读一读。'}
-            <span className="text-gray-400"> 这一步只帮你把词听分段，不算对错。</span>
-          </p>
-        )}
+        <p className="text-xs text-gray-400 mt-3">先靠耳朵把词听成几段，下一步再动笔。</p>
+        {nav(2, '听过了，下一步 →')}
       </div>
+    );
+  }
 
-      {/* ② 重音：单音节或音标无重音标记时自动跳过 */}
-      {hasStressStep ? (
-        <div className="p-3 bg-indigo-50 rounded-xl">
-          <p className="text-sm font-medium text-gray-700">② 哪一拍读得最重？</p>
+  // ---- 第 2 步：数拍 / 辨首音（A/B 单音节只保留首音）----
+  if (step === 2) {
+    return (
+      <div className="card">
+        <p className="text-xs text-gray-400 mb-1">第 2 步 · 听音分段</p>
+        <h3 className="text-lg font-bold text-gray-800 mb-1">把刚才听到的音拆开看看</h3>
+        <p className="text-xs text-gray-500 mb-4">
+          {withBeats
+            ? '先做几个只用耳朵的小练习，把长词听成几段。不用背音标符号。'
+            : '这个词不长，重点听清最开头是哪个字母（组合）。'}
+        </p>
+
+        {withBeats && (
+          <>
+            <div className="p-3 bg-indigo-50 rounded-xl mb-3">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <p className="text-sm font-medium text-gray-700">① 听一听，这个词大概有几拍？</p>
+                <div className="flex gap-1"><PlayButton word={word} label="🔊" /><SlowPlayButton word={word} label="慢" /></div>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {drill.beatOptions.map((n) => (
+                  <button key={n} onClick={() => setBeat(n)} className={opt(beat === n)}>{n} 拍</button>
+                ))}
+              </div>
+              {beat !== null && (
+                <p className="text-xs text-gray-600 mt-2">
+                  参考：约 {drill.beatReference} 拍。
+                  {beat === drill.beatReference ? ' 数得差不多。' : ' 不一样也没关系，再听一遍跟着读一读。'}
+                  <span className="text-gray-400"> 这一步只帮你把词听分段，不算对错。</span>
+                </p>
+              )}
+            </div>
+
+            {hasStress ? (
+              <div className="p-3 bg-indigo-50 rounded-xl mb-3">
+                <p className="text-sm font-medium text-gray-700">② 哪一拍读得最重？</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {drill.stressOptions.map((n) => (
+                    <button key={n} onClick={() => setStress(n)} className={opt(stress === n)}>第 {n} 拍</button>
+                  ))}
+                </div>
+                {stress !== null && (
+                  <p className="text-xs text-gray-600 mt-2">
+                    参考：重音大约在第 {drill.stressReference} 拍。点播放再核对一次，读的时候把这一拍加重。
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="p-3 bg-gray-50 rounded-xl mb-3">
+                <p className="text-xs text-gray-500">② 这个词的重音不明显，重点听整词就好。</p>
+              </div>
+            )}
+          </>
+        )}
+
+        <div className="p-3 bg-amber-50 rounded-xl">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <p className="text-sm font-medium text-gray-700">{withBeats ? '③' : '①'} 开头是哪个字母（组合）？</p>
+            <div className="flex gap-1"><PlayButton word={word} label="🔊" /><SlowPlayButton word={word} label="慢" /></div>
+          </div>
           <div className="flex flex-wrap gap-2 mt-2">
-            {drill.stressOptions.map((n) => (
-              <button key={n} onClick={() => setStress(n)} className={opt(stress === n)}>第 {n} 拍</button>
+            {drill.onsetOptions.map((o) => (
+              <button
+                key={o}
+                onClick={() => setOnset(o)}
+                disabled={onsetOk}
+                className={opt(onset === o)}
+              >
+                {o}
+              </button>
             ))}
           </div>
-          {stress !== null && (
-            <p className="text-xs text-gray-600 mt-2">
-              参考：重音大约在第 {drill.stressReference} 拍。点播放再核对一次，读的时候把这一拍加重。
-            </p>
+          {onsetOk && (
+            <p className="text-xs text-green-600 mt-2">✓ 开头是 {drill.onsetAnswer}，写的时候先写下这一块。</p>
+          )}
+          {onset && !onsetOk && (
+            <p className="text-xs text-amber-700 mt-2">再听一遍最开头，换一个试试。这一题可以重选，不扣分。</p>
           )}
         </div>
-      ) : (
-        <div className="p-3 bg-gray-50 rounded-xl">
-          <p className="text-xs text-gray-500">② 这个词的重音不明显，重点听整词就好（这一步自动完成）。</p>
-        </div>
-      )}
 
-      {/* ③ 首音听辨：唯一判对错的一题，答错可再听重选 */}
-      <div className="p-3 bg-amber-50 rounded-xl">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <p className="text-sm font-medium text-gray-700">③ 开头是哪个字母（组合）？</p>
-          <PlayButton word={item.word} label="🔊 听开头" />
+        <div className="flex items-center gap-3 flex-wrap mt-5">
+          <button onClick={() => onStep(1)} className="text-sm text-gray-500 hover:text-blue-600">← 上一步</button>
+          <button
+            onClick={() => onStep(3)}
+            disabled={!step2Ready}
+            className={`btn-primary ml-auto ${step2Ready ? '' : 'opacity-40 cursor-not-allowed'}`}
+          >
+            {step2Ready ? '下一步，看词形 →' : `完成 ${step2Done}/${step2Total} 个小练习`}
+          </button>
+          <button onClick={() => onStep(3)} className="text-xs text-gray-400 hover:text-gray-600">跳过练习</button>
         </div>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {drill.onsetOptions.map((o) => (
-            <button
-              key={o}
-              onClick={() => setOnset(o)}
-              disabled={onset === drill.onsetAnswer}
-              className={opt(onset === o)}
-            >
-              {o}
-            </button>
-          ))}
+      </div>
+    );
+  }
+
+  // ---- 第 3 步：露形配块（按路由分流，这一步才第一次出现词形）----
+  if (step === 3) {
+    const badge = { A: '听音分块', B: '词素与词族', C: '整体记忆' }[analysis.route];
+    return (
+      <div className="card">
+        <p className="text-xs text-gray-400 mb-1">第 3 步 · 露形配块</p>
+        <h3 className="text-lg font-bold text-gray-800 mb-3">现在看它长什么样</h3>
+
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <h4 className="text-3xl font-bold text-gray-800 font-mono">
+            {hidden ? '•'.repeat(Math.min(10, word.en.length)) : word.en}
+          </h4>
+          {!hidden && <IpaRef word={word} />}
         </div>
-        {onset === drill.onsetAnswer && (
-          <p className="text-xs text-green-600 mt-2">✓ 开头是 {drill.onsetAnswer}，写的时候先写下这一块。</p>
+        <div className="flex flex-wrap items-center gap-2 mt-2">
+          <PlayButton word={word} />
+          <SlowPlayButton word={word} />
+          <span className="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700">{badge}</span>
+        </div>
+
+        {analysis.route === 'A' && (
+          <>
+            <p className="text-sm text-gray-600 mt-4">{analysis.note}</p>
+            <ChunkPuzzle item={item} />
+          </>
         )}
-        {onset && onset !== drill.onsetAnswer && (
-          <p className="text-xs text-amber-700 mt-2">再听一遍最开头，换一个试试。这一题可以重选，不扣分。</p>
+
+        {analysis.route === 'B' && (
+          <div className="mt-4 p-3 bg-amber-50 rounded-xl">
+            <p className="text-sm font-medium text-gray-700 mb-2">这个词可以这样拆（词素切分自动给出，仅供参考）</p>
+            <div className="flex flex-wrap items-center gap-2">
+              {analysis.chunks.map((c, i) => (
+                <span
+                  key={`${c.text}-${i}`}
+                  className={`px-3 py-1.5 rounded-lg font-mono text-base ${
+                    c.kind === 'stem' ? 'bg-white border border-amber-300 font-semibold' : 'bg-white/70 border border-amber-200'
+                  }`}
+                >
+                  {c.text}
+                </span>
+              ))}
+            </div>
+            {analysis.stressedChunk && (
+              <p className="text-xs text-gray-500 mt-2">重音大约在第 {analysis.stressedChunk} 个音节，点播放核对一下。</p>
+            )}
+            {relatives.length > 0 ? (
+              <p className="text-xs text-gray-600 mt-2">
+                同源词：{relatives.map((r) => r.en).join(' · ')}。弱读的元音靠词族记拼写，不靠音标推。
+              </p>
+            ) : (
+              <p className="text-xs text-gray-500 mt-2">
+                词库里没找到同源词，这组词素只当参考；这个拼法主要靠听写记住。
+              </p>
+            )}
+          </div>
         )}
+
+        {analysis.route === 'C' && (
+          <div className="mt-4 space-y-3">
+            <div className="p-3 bg-gray-50 rounded-xl">
+              <p className="text-sm font-medium text-gray-700">这个拼法要单独记</p>
+              <p className="text-xs text-gray-500 mt-1">音和形对不上的词（弱读、不发音字母、固定搭配），别硬按音推。先听整词、把长词听成几段，再凭记忆写。</p>
+            </div>
+            <div className="p-3 bg-blue-50 rounded-xl">
+              <p className="text-sm font-medium text-gray-700">记字形：分成 {drill.recallSegments.length} 段来记</p>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {drill.recallSegments.map((s, i) => (
+                  <span key={`${s}-${i}`} className="px-2 py-1 bg-white border border-blue-200 rounded-lg font-mono text-sm">
+                    {s}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">只是按长度把字母分段帮记忆，不代表读音或音节。</p>
+              <button onClick={() => setHidden((h) => !h)} className="mt-2 text-xs text-blue-700 underline decoration-dotted">
+                {hidden ? '再显示单词' : '遮住单词，自己回想一遍'}
+              </button>
+              {hidden && <span className="text-xs text-gray-500 ml-2">已在上方遮住词形，想好再点开。</span>}
+            </div>
+          </div>
+        )}
+
+        <p className="text-xs text-gray-400 mt-3">{analysis.note}</p>
+        {nav(4, '下一步，看意思 →')}
+      </div>
+    );
+  }
+
+  // ---- 第 4 步：挂上意义（真实例句，零编造）----
+  return (
+    <div className="card">
+      <p className="text-xs text-gray-400 mb-1">第 4 步 · 挂上意义</p>
+      <h3 className="text-lg font-bold text-gray-800 mb-3">这个词是什么意思，怎么用</h3>
+
+      <div className="flex items-baseline gap-3 flex-wrap">
+        <span className="text-2xl font-semibold text-gray-800 font-mono">{word.en}</span>
+        <span className="text-lg text-gray-600">{word.zh}</span>
+      </div>
+      <div className="flex flex-wrap gap-2 mt-2">
+        <PlayButton word={word} />
+        <SlowPlayButton word={word} />
       </div>
 
-      {/* ④ 字形分段 + 遮形回想 */}
-      <div className="p-3 bg-blue-50 rounded-xl">
-        <p className="text-sm font-medium text-gray-700">④ 记字形：分成 {drill.recallSegments.length} 段来记</p>
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          {drill.recallSegments.map((s, i) => (
-            <span key={`${s}-${i}`} className="px-2 py-1 bg-white border border-blue-200 rounded-lg font-mono text-sm">
-              {s}
-            </span>
-          ))}
-        </div>
-        <p className="text-xs text-gray-400 mt-1">只是按长度把字母分段帮记忆，不代表读音或音节。</p>
-        <button onClick={onToggleHidden} className="mt-2 text-xs text-blue-700 underline decoration-dotted">
-          {hidden ? '再显示单词' : '遮住单词，自己回想一遍'}
-        </button>
-        {hidden && <span className="text-xs text-gray-500 ml-2">已在上方遮住词形，想好再点开。</span>}
-      </div>
-
-      <div className="flex items-center gap-3 flex-wrap pt-1">
+      <div className="mt-4 p-3 bg-blue-50 rounded-xl">
+        <p className="text-sm text-gray-700">{word.example}</p>
+        <p className="text-xs text-gray-500 mt-1">{word.exampleZh}</p>
         <button
-          onClick={onGo}
-          disabled={!ready}
-          className={`btn-primary ${ready ? '' : 'opacity-40 cursor-not-allowed'}`}
+          onClick={() => speakText(word.example, { rate: 0.85 })}
+          className="mt-2 text-xs px-2 py-1 rounded-lg bg-white border border-blue-200 text-blue-700 hover:border-blue-400"
         >
-          {ready ? '我会读了，去听写 →' : `完成 ${done}/${total} 个小练习`}
+          🔊 读句子
         </button>
-        <button onClick={onGo} className="text-xs text-gray-400 hover:text-gray-600">跳过练习，直接听写</button>
+      </div>
+      <p className="text-xs text-gray-400 mt-3">
+        例句来自词库，不是临时编的。读一遍，把音、字形和意思连在一起，下一步就凭记忆写。
+      </p>
+
+      <div className="flex items-center gap-3 mt-5">
+        <button onClick={() => onStep(3)} className="text-sm text-gray-500 hover:text-blue-600">← 上一步</button>
+        <button onClick={onGo} className="btn-primary ml-auto">我会读了，去听写 →</button>
       </div>
     </div>
   );
 }
 
-// ========== 复习 / 首学共用的听写步骤 ==========
+// ========== 第 5 步 / 复习共用的听写 ==========
+//
+// 错词不再立刻报答案：先「再听一遍 → 遮形回想 → 自己写」，
+// 回想仍不出来才显示正确拼法照打一遍。只有首次提交写记忆盒子。
 
 function DictationStep({
   item,
@@ -339,22 +531,21 @@ function DictationStep({
   onAnswer: (correct: boolean) => void;
   onNext: () => void;
 }) {
-  const [state, setState] = useState<'answering' | 'wrong' | 'fixed'>('answering');
+  const [state, setState] = useState<'answering' | 'recall' | 'showAnswer' | 'fixed'>('answering');
   const [firstCorrect, setFirstCorrect] = useState(false);
-  const [typed, setTyped] = useState('');
   const answeredRef = useRef(false);
 
   const submit = (text: string) => {
-    setTyped(text);
+    const ok = isDictationCorrect(text, item.word.en);
     if (!answeredRef.current) {
       answeredRef.current = true;
-      const ok = isDictationCorrect(text, item.word.en);
       setFirstCorrect(ok);
       onAnswer(ok);
-      setState(ok ? 'fixed' : 'wrong');
-    } else {
-      // 错词即时纠正后的重打：只练手，不再改动记忆盒子
-      if (isDictationCorrect(text, item.word.en)) setState('fixed');
+      setState(ok ? 'fixed' : 'recall');
+    } else if (state === 'recall') {
+      setState(ok ? 'fixed' : 'showAnswer');
+    } else if (state === 'showAnswer' && ok) {
+      setState('fixed');
     }
   };
 
@@ -368,9 +559,9 @@ function DictationStep({
       </div>
 
       <p className="text-2xl font-semibold text-gray-800">{item.word.zh}</p>
-      <div className="mt-1"><PlayButton word={item.word} /></div>
+      <div className="mt-1 flex flex-wrap gap-2"><PlayButton word={item.word} /><SlowPlayButton word={item.word} /></div>
 
-      {state === 'answering' ? (
+      {state === 'answering' && (
         <>
           {phase === 'review' && <HintPanel item={item} />}
           <DictationInput key={`ask-${item.word.id}`} word={item.word} onSubmit={submit} />
@@ -380,121 +571,55 @@ function DictationStep({
               : '提示会随盒子慢慢撤掉；听写正确才算数。'}
           </p>
         </>
-      ) : (
-        <div className="mt-3">
-          <p className={`font-medium ${firstCorrect ? 'text-green-600' : 'text-red-600'}`}>
-            {firstCorrect ? '✓ 写对了' : `✗ 正确拼法是 ${item.word.en}`}
+      )}
+
+      {state === 'recall' && (
+        <div className="mt-3 p-4 bg-amber-50 rounded-xl">
+          <p className="text-sm font-medium text-amber-800">这一遍没写对，先别看答案。</p>
+          <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+            再听一遍，把词形在脑子里遮住、想清楚开头和每一块，然后自己重写一次。刚才写的错字已经藏起来了。
           </p>
-          {!firstCorrect && (
-            <div className="mt-2 p-3 bg-red-50 rounded-xl">
-              <p className="text-sm text-gray-700 mb-2">
-                看清 <span className="font-mono font-semibold">{item.word.en}</span>，照着再打一遍。
-                这个词已回到 Box 1，今天会再排一次。
-              </p>
-              <DictationInput
-                key={`fix-${item.word.id}`}
-                word={item.word}
-                onSubmit={submit}
-                placeholder="照着正确拼法再打一遍"
-              />
-              <p className="text-xs text-gray-400 mt-1">重打只练手，不改变刚才记下的结果。</p>
-            </div>
-          )}
-          {state === 'fixed' && (
-            <div className="mt-3">
-              {!firstCorrect && <p className="text-sm text-green-600 mb-2">✓ 这一遍写对了，继续</p>}
-              <button onClick={onNext} className="btn-primary">下一题 →</button>
-            </div>
-          )}
-          {typed && firstCorrect && <IpaRef word={item.word} />}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ========== 首学讲解（按路由分流）==========
-
-function LearnIntro({ item, onGo }: { item: VocabQueueItem; onGo: () => void }) {
-  const { analysis, word, relatives } = item;
-  const badge = { A: '听音分块', B: '词素与词族', C: '整体记忆' }[analysis.route];
-  const [hidden, setHidden] = useState(false);
-  return (
-    <div className="card">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700">新词 · {badge}</span>
-        <span className="text-xs text-gray-400">{item.themeZh}</span>
-      </div>
-
-      <div className="flex items-baseline gap-3 flex-wrap">
-        <h3 className="text-3xl font-bold text-gray-800 font-mono">
-          {hidden ? '•'.repeat(Math.min(10, word.en.length)) : word.en}
-        </h3>
-        {!hidden && <IpaRef word={word} />}
-      </div>
-      <p className="text-lg text-gray-600 mt-1">{word.zh}</p>
-      <div className="mt-2"><PlayButton word={word} /></div>
-
-      {analysis.route === 'A' && (
-        <>
-          <p className="text-sm text-gray-600 mt-4">{analysis.note}</p>
-          <ChunkPuzzle item={item} />
-        </>
-      )}
-
-      {analysis.route === 'B' && (
-        <div className="mt-4 p-3 bg-amber-50 rounded-xl">
-          <p className="text-sm font-medium text-gray-700 mb-2">这个词可以这样拆（词素切分自动给出，仅供参考）</p>
-          <div className="flex flex-wrap items-center gap-2">
-            {analysis.chunks.map((c, i) => (
-              <span
-                key={`${c.text}-${i}`}
-                className={`px-3 py-1.5 rounded-lg font-mono text-base ${
-                  c.kind === 'stem' ? 'bg-white border border-amber-300 font-semibold' : 'bg-white/70 border border-amber-200'
-                }`}
-              >
-                {c.text}
-              </span>
-            ))}
+          <div className="flex flex-wrap gap-2 mt-2">
+            <PlayButton word={item.word} label="🔊 再听一遍" />
+            <SlowPlayButton word={item.word} />
           </div>
-          {analysis.stressedChunk && (
-            <p className="text-xs text-gray-500 mt-2">重音大约在第 {analysis.stressedChunk} 个音节，点播放核对一下。</p>
-          )}
-          {relatives.length > 0 ? (
-            <p className="text-xs text-gray-600 mt-2">
-              同源词：{relatives.map((r) => r.en).join(' · ')}。弱读的元音靠词族记拼写，不靠音标推。
-            </p>
-          ) : (
-            <p className="text-xs text-gray-500 mt-2">
-              词库里没找到同源词，这组词素只当参考；这个拼法主要靠听写记住。
-            </p>
-          )}
-        </div>
-      )}
-
-      {analysis.route === 'C' && (
-        <>
-          <div className="mt-4 p-3 bg-gray-50 rounded-xl">
-            <p className="text-sm font-medium text-gray-700">这个拼法要单独记</p>
-            <p className="text-xs text-gray-500 mt-1">音和形对不上的词（弱读、不发音字母、固定搭配），别硬按音推。先听整词、把长词听成几段，再凭记忆写。</p>
-          </div>
-          <CListeningDrillStep
-            item={item}
-            onGo={onGo}
-            hidden={hidden}
-            onToggleHidden={() => setHidden((h) => !h)}
+          <DictationInput
+            key={`recall-${item.word.id}`}
+            word={item.word}
+            onSubmit={submit}
+            placeholder="不看提示，自己再写一遍"
           />
-        </>
+          <p className="text-xs text-gray-400 mt-2">这是回想练习，不再改动记忆盒子；实在想不起来才看答案。</p>
+        </div>
       )}
 
-      <div className="mt-4 p-3 bg-blue-50 rounded-xl">
-        <p className="text-sm text-gray-700">{word.example}</p>
-        <p className="text-xs text-gray-500 mt-1">{word.exampleZh}</p>
-      </div>
-      <p className="text-xs text-gray-400 mt-3">{analysis.note}</p>
+      {state === 'showAnswer' && (
+        <div className="mt-3">
+          <p className="font-medium text-red-600">还没想起来，正确拼法是 {item.word.en}</p>
+          <div className="mt-2 p-3 bg-red-50 rounded-xl">
+            <p className="text-sm text-gray-700 mb-2">
+              看清 <span className="font-mono font-semibold">{item.word.en}</span>，照着再打一遍。
+              这个词已回到 Box 1，今天会再排一次。
+            </p>
+            <DictationInput
+              key={`fix-${item.word.id}`}
+              word={item.word}
+              onSubmit={submit}
+              placeholder="照着正确拼法再打一遍"
+            />
+            <p className="text-xs text-gray-400 mt-1">重打只练手，不改变刚才记下的结果。</p>
+          </div>
+        </div>
+      )}
 
-      {(analysis.route !== 'C' || !item.drill) && (
-        <button onClick={onGo} className="btn-primary mt-4">我会读了，去听写 →</button>
+      {state === 'fixed' && (
+        <div className="mt-3">
+          <p className="font-medium text-green-600">
+            {firstCorrect ? '✓ 写对了' : '✓ 这一次自己想起来并写对了'}
+          </p>
+          <div className="mt-1"><IpaRef word={item.word} /></div>
+          <button onClick={onNext} className="btn-primary mt-4">下一题 →</button>
+        </div>
       )}
     </div>
   );
@@ -556,7 +681,7 @@ function Placement({ onDone }: { onDone: () => void }) {
   );
 }
 
-// ========== 主题语境段（D 轮升级：真实例句 + 多空回填） ==========
+// ========== 主题语境段（真实例句 + 多空回填）==========
 
 const BLANK_MARKS = ['①', '②', '③', '④', '⑤', '⑥'];
 
@@ -751,6 +876,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
   const [reviewIdx, setReviewIdx] = useState(0);
   const [learnIdx, setLearnIdx] = useState(0);
   const [learnSub, setLearnSub] = useState<'intro' | 'dictation'>('intro');
+  const [learnStep, setLearnStep] = useState(1);
   const [stats, setStats] = useState<SessionStats>(EMPTY_STATS);
   const recordedRef = useRef(false);
 
@@ -786,6 +912,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
       setPhase('learn');
       setLearnIdx(0);
       setLearnSub('intro');
+      setLearnStep(1);
     } else {
       goAfterLearn();
     }
@@ -806,6 +933,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
     setReviewIdx(0);
     setLearnIdx(0);
     setLearnSub('intro');
+    setLearnStep(1);
     setStats(EMPTY_STATS);
     recordedRef.current = false;
     if (q.review.length) setPhase('review');
@@ -837,7 +965,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
         <TopBar onBack={onBack} title="今日词汇" />
         <div className="card bg-gradient-to-br from-blue-50 to-white">
           <h3 className="text-lg font-bold text-gray-800 mb-1">今天学这些</h3>
-          <p className="text-xs text-gray-500 mb-4">到期复习优先，再学当前主题的新词；约 10–12 分钟。</p>
+          <p className="text-xs text-gray-500 mb-4">到期复习优先，再学当前主题的新词；约 12–14 分钟。</p>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="p-3 bg-amber-50 rounded-xl">
               <p className="text-2xl font-bold text-amber-700">{Math.min(preview.review.length, REVIEW_PER_DAY)}</p>
@@ -866,7 +994,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
             <button onClick={start} className="btn-primary w-full">开始今日学习 →</button>
           )}
           <p className="text-xs text-gray-400 mt-3">
-            间隔 0/1/3/7/15 天与每轮 6 新词 / 8 复习是工程默认值，不是「最优记忆参数」。
+            每个新词按 5 步走：只听 → 辨音 → 看形 → 挂义 → 听写。间隔 0/1/3/7/15 天与每轮 6 新词 / 8 复习是工程默认值，不是「最优记忆参数」。
           </p>
         </div>
         {theme && (
@@ -905,8 +1033,15 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
     return (
       <div>
         <TopBar onBack={onBack} title={`新词 ${learnIdx + 1}/${snapshot.fresh.length}`} />
+        <LearnStepDots current={learnSub === 'intro' ? learnStep : 5} />
         {learnSub === 'intro' ? (
-          <LearnIntro key={`intro-${item.word.id}`} item={item} onGo={() => setLearnSub('dictation')} />
+          <LearnFlow
+            key={`intro-${item.word.id}`}
+            item={item}
+            step={learnStep}
+            onStep={setLearnStep}
+            onGo={() => setLearnSub('dictation')}
+          />
         ) : (
           <DictationStep
             key={`learn-${item.word.id}`}
@@ -916,7 +1051,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
             onNext={() => {
               const next = learnIdx + 1;
               if (next >= snapshot.fresh.length) goAfterLearn();
-              else { setLearnIdx(next); setLearnSub('intro'); }
+              else { setLearnIdx(next); setLearnSub('intro'); setLearnStep(1); }
             }}
           />
         )}
@@ -957,4 +1092,3 @@ function TopBar({ onBack, title }: { onBack: () => void; title: string }) {
     </div>
   );
 }
-
