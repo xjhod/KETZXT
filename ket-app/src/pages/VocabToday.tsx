@@ -556,14 +556,15 @@ function Placement({ onDone }: { onDone: () => void }) {
   );
 }
 
-// ========== 主题小短文 ==========
+// ========== 主题语境段（D 轮升级：真实例句 + 多空回填） ==========
+
+const BLANK_MARKS = ['①', '②', '③', '④', '⑤', '⑥'];
 
 function PassageStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () => void }) {
   const passage = useMemo(() => buildPassage(items), [items]);
-  const [answer, setAnswer] = useState('');
+  const [answers, setAnswers] = useState<string[]>(() => passage.blanks.map(() => ''));
   const [checked, setChecked] = useState(false);
-  const blankWord = items.find((i) => i.word.id === passage.blankWordId)?.word ?? null;
-  const last = passage.sentences[passage.sentences.length - 1];
+  const [covered, setCovered] = useState(false);
 
   if (!passage.sentences.length) {
     return (
@@ -574,53 +575,99 @@ function PassageStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () =>
     );
   }
 
-  const blankSentence = last && blankWord
-    ? last.text.replace(new RegExp(`\\b${blankWord.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'), '______')
-    : last?.text ?? '';
+  const setOne = (i: number, v: string) =>
+    setAnswers((prev) => prev.map((a, j) => (j === i ? v : a)));
+  const allFilled = answers.every((a) => a.trim().length > 0);
 
   return (
     <div className="card">
-      <h3 className="text-lg font-bold text-gray-800 mb-1">📖 主题小短文</h3>
-      <p className="text-xs text-gray-500 mb-4">下面这段由本轮单词的课本例句串成。读一遍，点句子可听发音，最后补上缺的词。</p>
-      <div className="space-y-2">
-        {passage.sentences.map((s, i) => {
-          const w = items.find((it) => it.word.id === s.wordId)?.word;
-          const isLast = i === passage.sentences.length - 1;
-          return (
-            <button
-              key={`${s.wordId}-${i}`}
-              onClick={() => { if (w) void playWord(w); }}
-              className="w-full text-left p-3 rounded-xl bg-gray-50 hover:bg-blue-50"
-            >
-              <p className="text-sm text-gray-800">{isLast && blankWord ? blankSentence : s.text}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{s.zh} · 🔊</p>
-            </button>
-          );
-        })}
-      </div>
-      {blankWord && (
-        <form
-          onSubmit={(e) => { e.preventDefault(); setChecked(true); }}
-          className="mt-4 flex gap-2"
+      <h3 className="text-lg font-bold text-gray-800 mb-1">📖 主题语境段</h3>
+      <p className="text-xs text-gray-500 mb-3">{passage.note}</p>
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <button
+          onClick={() => setCovered((v) => !v)}
+          className="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-xs hover:bg-amber-100"
         >
-          <input
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder="填出最后一个空"
-            autoComplete="off"
-            spellCheck={false}
-            className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5"
-          />
-          <button type="submit" className="btn-secondary" disabled={!answer.trim()}>检查</button>
+          {covered ? '显示英文' : '遮住英文，看中文回想'}
+        </button>
+        <span className="text-xs text-gray-400">点「🔊 读句子」用本机语音朗读整句</span>
+      </div>
+
+      <div className="space-y-2">
+        {passage.sentences.map((s, i) => (
+          <div key={`${s.wordId}-${i}`} className="p-3 rounded-xl bg-gray-50">
+            <div className="flex items-start gap-2">
+              <span className="text-xs text-blue-500 font-medium whitespace-nowrap mt-0.5">{passage.connectors[i]}</span>
+              <div className="flex-1">
+                {covered ? (
+                  <p className="text-sm text-gray-400">（英文已遮住，先看着中文回想）</p>
+                ) : (
+                  <p className="text-sm text-gray-800">
+                    {s.text.split('____').map((part, k, arr) => (
+                      <span key={k}>
+                        {part}
+                        {k < arr.length - 1 && (
+                          <span className="inline-block mx-1 px-1.5 border-b-2 border-dashed border-orange-400 font-bold text-orange-600">
+                            {BLANK_MARKS[s.blankIndex ?? 0]} ____
+                          </span>
+                        )}
+                      </span>
+                    ))}
+                  </p>
+                )}
+                <p className="text-xs text-gray-400 mt-0.5">{s.zh}</p>
+              </div>
+              <button
+                onClick={() => speakText(s.plain, { rate: 0.85 })}
+                className="text-xs px-2 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 whitespace-nowrap"
+              >
+                🔊 读句子
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {passage.blanks.length > 0 && (
+        <form
+          onSubmit={(e) => { e.preventDefault(); if (allFilled) setChecked(true); }}
+          className="mt-4 space-y-2"
+        >
+          {passage.blanks.map((b, i) => (
+            <div key={b.wordId} className="flex items-center gap-2">
+              <span className="text-sm text-gray-500 w-6">{BLANK_MARKS[i]}</span>
+              <span className="text-xs text-gray-400 w-16 truncate">{b.hint}</span>
+              <input
+                value={answers[i] ?? ''}
+                onChange={(e) => setOne(i, e.target.value)}
+                placeholder="填入句中缺的词"
+                autoComplete="off"
+                spellCheck={false}
+                disabled={checked}
+                className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm"
+              />
+            </div>
+          ))}
+          {!checked && (
+            <button type="submit" className="btn-secondary mt-1" disabled={!allFilled}>检查答案</button>
+          )}
         </form>
       )}
+
       {checked && (
-        <p className={`text-sm mt-2 ${isDictationCorrect(answer, blankWord?.en ?? '') ? 'text-green-600' : 'text-red-600'}`}>
-          {isDictationCorrect(answer, blankWord?.en ?? '')
-            ? '✓ 填对了。这一环只练语境里的用词，不计入掌握判定。'
-            : `答案是 ${blankWord?.en}。读一遍句子再往下走。`}
-        </p>
+        <div className="mt-3 text-sm space-y-1">
+          {passage.blanks.map((b, i) => {
+            const ok = isDictationCorrect(answers[i] ?? '', b.answer);
+            return (
+              <p key={b.wordId} className={ok ? 'text-green-600' : 'text-red-600'}>
+                {BLANK_MARKS[i]} {ok ? '填对了' : `答案是 ${b.answer}`}
+              </p>
+            );
+          })}
+          <p className="text-xs text-gray-400 mt-1">这一环只练语境里的用词，不计入掌握判定；听写才算数。</p>
+        </div>
       )}
+
       <button onClick={onDone} className="btn-primary mt-5">完成今日学习 →</button>
     </div>
   );
@@ -881,7 +928,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
   if (phase === 'passage' && snapshot) {
     return (
       <div>
-        <TopBar onBack={onBack} title="主题小短文" />
+        <TopBar onBack={onBack} title="主题语境段" />
         <PassageStep items={snapshot.fresh} onDone={finish} />
       </div>
     );

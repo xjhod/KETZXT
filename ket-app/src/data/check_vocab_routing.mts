@@ -19,6 +19,7 @@ import {
   isDictationCorrect, REVIEW_PER_DAY, NEW_PER_DAY,
 } from '../utils/vocabSession';
 import { applyDictation, emptyProgress, addDays } from '../utils/vocabSchedule';
+import { buildContextQuestions, blankSentence } from '../utils/contextQuestions';
 
 const words: Word[] = allThemes.flatMap((t) => t.words);
 const wordForms: ReadonlySet<string> = new Set(
@@ -168,7 +169,52 @@ console.log('DUE_TOTAL', q1.dueTotal, 'REVIEW_PICKED', q1.review.length,
   'REVIEW_THEMES', new Set(q1.review.map((x) => x.themeId)).size);
 
 const passage = buildPassage(q0.fresh);
-console.log('PASSAGE_SENTENCES', passage.sentences.length, 'BLANK_ANSWER', passage.blankAnswer);
+const exampleSet = new Set(words.map((w) => (w.example ?? '').trim()).filter(Boolean));
+const passageSentenceFromExample = passage.sentences.every((s) => exampleSet.has(s.plain));
+const passageBlankRestore = passage.blanks.every((b, i) => {
+  const target = passage.sentences.find((s) => s.blankIndex === i);
+  return !!target && target.text.replace('____', b.answer) === target.plain;
+});
+
+// ---- D 轮：语境题全量派生 + 「零编造」校验 ----
+const ctxQs = buildContextQuestions();
+const wordById = new Map(words.map((w) => [w.id, w]));
+const ctxProblems: string[] = [];
+for (const q of ctxQs) {
+  if (!q.sentence.includes('____')) ctxProblems.push(`no blank: ${q.id}`);
+  const w = wordById.get(q.wordId);
+  if (!w) { ctxProblems.push(`unknown wordId: ${q.id}`); continue; }
+  if (q.answer !== w.en) ctxProblems.push(`answer mismatch: ${q.id}`);
+  // 例句中可能句首大写（Fish / Teenagers）；用实际匹配文本还原，答案仍是词条原形
+  if (q.answer.toLowerCase() !== q.matched.toLowerCase()) ctxProblems.push(`inflected form slipped in: ${q.id}`);
+  const restored = q.sentence.replace('____', q.matched);
+  if (restored !== q.plain || !exampleSet.has(q.plain) || q.plain !== (w.example ?? '').trim()) {
+    ctxProblems.push(`sentence not from example: ${q.id}`);
+  }
+}
+// 覆盖率必须能逐条解释：跳过 = 例句中只有屈折/短语形式 + 重复例句去重
+const ctxNoMatch = words.filter((w) => !blankSentence(w)).length;
+const exampleCounts = new Map<string, number>();
+for (const w of words) {
+  if (!blankSentence(w)) continue;
+  const key = (w.example ?? '').trim();
+  exampleCounts.set(key, (exampleCounts.get(key) ?? 0) + 1);
+}
+const ctxDupLost = [...exampleCounts.values()].filter((n) => n > 1).reduce((s, n) => s + n - 1, 0);
+console.log('CONTEXT_SKIP', JSON.stringify({
+  inflectedOrPhrase: ctxNoMatch, duplicateExamples: ctxDupLost,
+  explained: ctxQs.length + ctxNoMatch + ctxDupLost,
+}));
+const ctxThemeCounts = new Map<string, number>();
+for (const q of ctxQs) ctxThemeCounts.set(q.themeId, (ctxThemeCounts.get(q.themeId) ?? 0) + 1);
+const ctxByTheme = [...ctxThemeCounts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+console.log('CONTEXT_QUESTIONS', ctxQs.length, '/', words.length,
+  'COVERAGE', `${(ctxQs.length / words.length * 100).toFixed(1)}%`);
+console.log('CONTEXT_THEMES', ctxByTheme.length, 'MIN_PER_THEME', Math.min(...ctxByTheme.map(([, n]) => n)));
+console.log('CONTEXT_PROBLEMS', ctxProblems.length, JSON.stringify(ctxProblems.slice(0, 5)));
+console.log('PASSAGE_SENTENCES', passage.sentences.length, 'BLANKS', passage.blanks.length,
+  'CONNECTORS', passage.connectors.length);
+console.log('PASSAGE_FROM_EXAMPLE', passageSentenceFromExample, 'BLANK_RESTORABLE', passageBlankRestore);
 console.log('DICT_CASE_OK', isDictationCorrect('  Mother ', 'mother'),
   'DICT_WRONG_OK', !isDictationCorrect('mothre', 'mother'));
 console.log('THEME_COUNTS_SUM', (() => {
@@ -197,7 +243,16 @@ if (placement.length !== 20 || new Set(placement.map((x) => x.word.id)).size !==
 if (placementThemes < 10) failures.push('placement sample not spread across themes');
 if (q0.review.length !== 0 || q0.fresh.length !== NEW_PER_DAY) failures.push('empty-state queue mismatch');
 if (q1.review.length !== Math.min(REVIEW_PER_DAY, q1.dueTotal)) failures.push('review cap mismatch');
-if (passage.sentences.length !== q0.fresh.length || !passage.blankAnswer) failures.push('passage build failed');
+if (passage.sentences.length < 4 || passage.blanks.length < 2) failures.push('context passage too weak');
+if (!passageSentenceFromExample) failures.push('passage contains fabricated sentences');
+if (!passageBlankRestore) failures.push('passage blanks not restorable to source example');
+if (passage.connectors.length !== passage.sentences.length) failures.push('passage connectors mismatch');
+// ---- D 轮新增断言 ----
+if (ctxQs.length < 1400) failures.push(`context question coverage too low: ${ctxQs.length}`);
+if (ctxQs.length + ctxNoMatch + ctxDupLost !== words.length) failures.push('context question skips not fully explained');
+if (ctxProblems.length) failures.push('context questions broken/fabricated: ' + ctxProblems.slice(0, 3).join(','));
+if (ctxByTheme.length !== 22 || ctxByTheme.some(([, n]) => n < 5)) failures.push('context questions not spread across all 22 themes');
+if (!blankSentence(words.find((w) => w.en === 'mother')!)) failures.push('blankSentence sanity failed');
 if (!isDictationCorrect('  Mother ', 'mother') || isDictationCorrect('mothre', 'mother')) failures.push('dictation normalize failed');
 if (!trail.some((t) => t.includes('mastered'))) failures.push('mastery never reached after spaced correct answers');
 if (wrong.boxAfter !== 1 || wrong.next.streak !== 0 || wrong.next.dueAt !== day) failures.push('wrong-answer reset failed');

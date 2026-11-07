@@ -14,6 +14,7 @@ import {
   type CListeningDrill,
   type WordAnalysis,
 } from './wordChunks';
+import { blankSentence } from './contextQuestions';
 
 export const NEW_PER_DAY = 6;
 export const REVIEW_PER_DAY = 8;
@@ -212,21 +213,88 @@ export function themeCounts(theme: VocabularyTheme, words: Record<string, VocabW
   return { total: theme.words.length, fresh, learning, mastered, due };
 }
 
-/** 主题小短文：复用现有例句，不编造新内容；最后一句挖一个空 */
-export function buildPassage(items: VocabQueueItem[]): {
-  sentences: { text: string; zh: string; wordId: string }[];
-  blankWordId: string | null;
-  blankAnswer: string;
-} {
-  const sentences = items
-    .filter((it) => !!it.word.example)
-    .map((it) => ({ text: it.word.example, zh: it.word.exampleZh, wordId: it.word.id }));
-  const blank = sentences.length ? sentences[sentences.length - 1] : null;
-  const word = blank ? wordIndex.get(blank.wordId)?.word : null;
+// ========== 主题语境段 ==========
+//
+// 只做「把词放回真实例句」这一层，不谎称是连贯故事：
+//   · 每句都取自该主题里某个词的 example，优先本轮 6 个新词
+//   · 连接词只是顺序标记（First / Then / ...），不新增任何事实内容
+//   · 多空回填（默认 3 个）替代原来「最后一句挖 1 个空」，提高提取次数
+//   · 不计入掌握判定，听写仍是唯一掌握证据
+export interface PassageSentence {
+  /** 展示文本，被挖空的句子含 ____；未挖空则为原句 */
+  text: string;
+  /** 原始例句，用于朗读与校验「没有编造」 */
+  plain: string;
+  zh: string;
+  wordId: string;
+  /** 该句对应的空序号（0-based），null 表示不挖空 */
+  blankIndex: number | null;
+}
+
+export interface PassageBlank {
+  wordId: string;
+  answer: string;
+  hint: string;
+}
+
+export interface ContextPassage {
+  sentences: PassageSentence[];
+  blanks: PassageBlank[];
+  connectors: string[];
+  note: string;
+}
+
+const PASSAGE_CONNECTORS = ['First,', 'Then,', 'Also,', 'After that,', 'Finally,', 'And'];
+const PASSAGE_SIZE = 6;
+const PASSAGE_BLANKS = 3;
+
+export function buildPassage(items: VocabQueueItem[], themeId?: string): ContextPassage {
+  const tid = themeId ?? items[0]?.themeId ?? allThemes[0].id;
+  const theme = allThemes.find((t) => t.id === tid) ?? allThemes[0];
+
+  // 本轮新词优先，不足 6 句时用同主题其它词的例句补齐
+  const chosen: Word[] = [];
+  const picked = new Set<string>();
+  for (const it of items) {
+    if (chosen.length >= PASSAGE_SIZE) break;
+    if (it.word.example && !picked.has(it.word.id)) {
+      chosen.push(it.word);
+      picked.add(it.word.id);
+    }
+  }
+  for (const w of theme.words) {
+    if (chosen.length >= PASSAGE_SIZE) break;
+    if (w.example && !picked.has(w.id)) {
+      chosen.push(w);
+      picked.add(w.id);
+    }
+  }
+
+  // 能定位原形的句子才可挖空；按本轮顺序取前 3 个
+  const blankWords: Word[] = [];
+  for (const w of chosen) {
+    if (blankWords.length >= PASSAGE_BLANKS) break;
+    if (blankSentence(w)) blankWords.push(w);
+  }
+  const blankIndexOf = new Map(blankWords.map((w, i) => [w.id, i]));
+
+  const sentences: PassageSentence[] = chosen.map((w) => {
+    const blankIndex = blankIndexOf.get(w.id) ?? null;
+    const blanked = blankIndex !== null ? blankSentence(w) : null;
+    return {
+      text: blanked?.sentence ?? w.example,
+      plain: w.example,
+      zh: w.exampleZh,
+      wordId: w.id,
+      blankIndex,
+    };
+  });
+
   return {
     sentences,
-    blankWordId: blank?.wordId ?? null,
-    blankAnswer: word?.en ?? '',
+    blanks: blankWords.map((w) => ({ wordId: w.id, answer: w.en, hint: w.zh })),
+    connectors: PASSAGE_CONNECTORS.slice(0, sentences.length),
+    note: '每一句都来自词库里该词的真实例句，按场景顺序排列。它不是连贯故事，重点是让刚学的词回到句子里再认一次。',
   };
 }
 

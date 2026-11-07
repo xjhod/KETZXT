@@ -1,10 +1,11 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { allThemes, spellingQuestions, matchingQuestions, fillBlankQuestions } from '../data/vocabulary';
+import { allThemes, spellingQuestions, matchingQuestions } from '../data/vocabulary';
 import { useProgressStore } from '../store/useProgressStore';
 import { useVocabStore, todayString } from '../store/useVocabStore';
 import { themeCounts, buildTodayQueue } from '../utils/vocabSession';
-import type { VocabularyTheme, VocabWordProgress } from '../types';
+import { buildContextQuestions } from '../utils/contextQuestions';
+import type { FillBlankQuestion, VocabularyTheme, VocabWordProgress } from '../types';
 import VocabToday from './VocabToday';
 import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/usePronunciationChecker';
 import { AudioButton } from '../components/AudioButton';
@@ -583,14 +584,15 @@ function MatchingPractice({ themeId, onBack }: { themeId: string; onBack: () => 
   );
 }
 
-// ========== 选词填空（每次10题）==========
+// ========== 课本例句填空（每次最多10题，全部来自词库真实例句）==========
 function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () => void }) {
   const theme = allThemes.find(t => t.id === themeId);
   if (!theme) return <div className="text-center py-20 text-gray-400">主题未找到，请返回重新选择</div>;
-  const allQs = fillBlankQuestions.filter(q => q.themeId === themeId);
-  const [sessionQs] = useState(() => {
-    const s = [...allQs].sort(() => Math.random() - 0.5);
-    return s.slice(0, Math.min(SESSION_SIZE, s.length));
+  // 只用「词库真实例句挖空」的语境题，旧模板句题库不再进入自由练习。
+  // 个别主题例句去重后不足 10 题，就少做几题，不用模板句凑数。
+  const [sessionQs] = useState<FillBlankQuestion[]>(() => {
+    const ctx = buildContextQuestions(themeId);
+    return [...ctx].sort(() => Math.random() - 0.5).slice(0, SESSION_SIZE);
   });
   const [idx, setIdx] = useState(0);
   const [input, setInput] = useState('');
@@ -663,7 +665,7 @@ function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () =>
       <div className="flex items-center gap-3 mb-4">
         <button onClick={onBack} className="text-blue-600 text-sm hover:underline">← 返回</button>
         <span className="text-sm text-gray-400">|</span>
-        <span className="text-sm text-gray-500">{theme.nameZh} · 选词填空</span>
+        <span className="text-sm text-gray-500">{theme.nameZh} · 课本例句填空</span>
       </div>
 
       <div className="card max-w-lg mx-auto">
@@ -679,7 +681,8 @@ function FillBlankPractice({ themeId, onBack }: { themeId: string; onBack: () =>
 
         {/* 句子 */}
         <div className="text-center mb-6">
-          <p className="text-xs text-gray-400 mb-3">在空白处填入正确的单词</p>
+          <p className="text-xs text-gray-400 mb-1">在空白处填入正确的单词</p>
+          <p className="text-xs text-gray-300 mb-3">句子取自词库中该词的真实例句，不是模板句</p>
           <div className="text-lg leading-relaxed text-gray-800">
             {q.sentence.split('____').map((part, i) => (
               <span key={i}>
@@ -896,7 +899,7 @@ export default function VocabularyPage() {
           { m: 'cards' as VocMode, label: '🃏 学习卡片' },
           { m: 'spelling' as VocMode, label: '🎤 拼写练习' },
           { m: 'matching' as VocMode, label: '🔗 词义匹配' },
-          { m: 'fillblank' as VocMode, label: '✏️ 选词填空' },
+          { m: 'fillblank' as VocMode, label: '✏️ 例句填空' },
         ].map((item) => (
           <button
             key={item.m}
