@@ -20,9 +20,27 @@
 import { cloud } from './cloud';
 import { upsertCloudUser } from './auth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
+import { CLOUD_ENDPOINT } from '../config/cloud';
 
 const SIGNED_IN_KEY = 'ket-cloud-signed-in';
 const LINKED_UID_KEY = 'ket-cloud-linked-uid';
+
+/** 线上站点地址（云应用已登记的域名，云端登录只在这里生效） */
+const CLOUD_SITE_URL = `${CLOUD_ENDPOINT}/?sharecode=ILJMMGGVHE`;
+
+/** 当前是否为本地开发预览（127.0.0.1 / localhost 未在云应用回跳白名单登记） */
+function isLocalPreview(): boolean {
+  return /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
+}
+
+/** 邮箱「确认链接」已发出后的提示文案 */
+function buildEmailSentMessage(): string {
+  const base =
+    '登录邮件已发送：请打开邮件点「确认邮箱并登录」按钮，应用会自动完成登录（邮件正文不含数字验证码，无需手输）。收不到请检查垃圾邮件箱';
+  return isLocalPreview()
+    ? `${base}。注意：当前是本地开发预览，邮件链接会跳到已登记的线上站点完成登录，本机预览不会同步登录状态；验证邮箱登录请直接打开 ${CLOUD_SITE_URL}`
+    : base;
+}
 
 /** 云端登录状态 */
 export interface CloudAccount {
@@ -217,43 +235,60 @@ export async function sendCloudOtp(input: {
         isExistingUser: Boolean(c.isExistingUser),
       };
     } else {
-      // 邮箱：走 SDK 原生 sendOtp（usage:'email'）。后端据此发送「确认链接」邮件，
-      // 用户点链接 → 平台 /__auth/ 完成验证并写回本应用同源的云端会话，
-      // 应用启动时的 restoreCloudSession 会把该会话恢复为本地镜像用户。
-      // SDK 对邮箱分支刻意不回传 verification_id，会误报 "provider returned no verification_id"，
-      // 但邮件其实已发出 —— 这里当作「链接已发送」成功处理。
+      // 邮箱：走 SDK 原生 sendOtp（usage:'email'），后端发送「确认链接」邮件。
+      //
+      // ⚠️ emailRedirectTo 必须是**云应用已登记的线上域名**，绝不能用 window.location.origin：
+      // 本地开发预览的 origin 是 http://127.0.0.1:5173，未登记时后端直接回
+      // "the redirect target is not a registered domain of this client"（发送失败且邮件不发）。
+      // 因此统一固定为 CLOUD_ENDPOINT（线上托管域名，与云 API 同源、已在白名单里）。
       const sp = new URLSearchParams(window.location.search);
       const sc = sp.get('sharecode') || 'ILJMMGGVHE';
-      const emailRedirectTo = `${window.location.origin}/?sharecode=${sc}`;
+      const redirectCandidates: Array<string | undefined> = [
+        `${CLOUD_ENDPOINT}/`,                  // 已登记的根路径（历史上发信成功）
+        `${CLOUD_ENDPOINT}/?sharecode=${sc}`,  // 带分享码，保证回跳不被分享门拦
+        undefined,                             // 兜底：不传该字段，让后端用默认登记地址
+      ];
       // 记住邮箱，邮件链接回跳后登录页自动回填
       try {
         sessionStorage.setItem(PREFILL_EMAIL_KEY, email);
       } catch {
         /* ignore */
       }
-      const res = await cloud.auth.sendOtp({ email, emailRedirectTo });
+
+      let res: any = null;
+      let domainErr = '';
+      for (const redirectTo of redirectCandidates) {
+        const creds: { email: string; emailRedirectTo?: string } = { email };
+        if (redirectTo) creds.emailRedirectTo = redirectTo;
+        const r = await cloud.auth.sendOtp(creds);
+        const errMsg = r?.error?.message || '';
+        // 只有「回跳域名未登记」才换下一个候选；其它结果（含 SDK 固定的
+        // verification_id 误报，那时邮件已发出）立即返回，避免重复发信
+        if (r?.error && /registered domain|redirect target/i.test(errMsg)) {
+          domainErr = errMsg;
+          continue;
+        }
+        res = r;
+        break;
+      }
+      if (!res) {
+        return {
+          ok: false,
+          message: `发送失败：邮件回跳地址未在云应用登记（${domainErr || '未知原因'}）`,
+        };
+      }
       if (res?.error) {
         const errMsg = res.error.message || '';
         // 邮箱分支固定误报这条；邮件已发，视为「链接已发送」
         if (/verification_id/i.test(errMsg)) {
-          return {
-            ok: true,
-            magicLink: true,
-            message:
-              '登录邮件已发送：请打开邮件点「确认邮箱并登录」按钮，应用会自动完成登录（邮件正文不含数字验证码，无需手输）。收不到请检查垃圾邮件箱',
-          };
+          return { ok: true, magicLink: true, message: buildEmailSentMessage() };
         }
         return { ok: false, message: `发送失败：${errMsg || '未知错误'}` };
       }
       // 理论上海箱分支不会回传 verification_id；若极端情况下回了，则走与手机一致的验码流程
       const c: any = res?.data;
       if (!c?.verificationId) {
-        return {
-          ok: true,
-          magicLink: true,
-          message:
-            '登录链接已发送到邮箱，请查收邮件并点击其中的「确认邮箱并登录」按钮完成登录（若收件箱没有，请检查垃圾邮件箱）',
-        };
+        return { ok: true, magicLink: true, message: buildEmailSentMessage() };
       }
       challenge = {
         verificationId: String(c.verificationId),

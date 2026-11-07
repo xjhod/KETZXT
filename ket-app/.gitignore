@@ -3,6 +3,8 @@ node_modules/
 
 # Build output
 dist/
+# 绕过批量删除保护时，旧 dist 会改名成 dist_old_<时间戳> 暂存，切勿提交
+dist_old_*/
 build/
 out/
 .build_tmp/
