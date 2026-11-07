@@ -20,7 +20,13 @@
  *   同一小孩换设备登录后落到同一份云端数据，进度自动拉回。device_id 仅作诊断列保留）。
  */
 
-import { getCurrentUser } from './auth';
+import {
+  getCurrentUser,
+  getDisplayName,
+  readNicknameProfile,
+  applyRemoteNickname,
+} from './auth';
+import type { NicknameProfile } from './auth';
 import { cloud } from './cloud';
 import { getCloudSession, markCloudConnected } from './cloudAuth';
 import { useProgressStore } from '../store/useProgressStore';
@@ -50,6 +56,8 @@ export interface SyncPayload {
   checkin: unknown;
   /** 词汇记忆进度（盒子/到期日/三态） */
   vocab: unknown;
+  /** 个人资料（目前只有昵称），随学习进度一起跨设备同步 */
+  profile?: NicknameProfile;
   /** 客户端打包时间，用于判断新旧 */
   packedAt: string;
 }
@@ -71,6 +79,7 @@ export function packPayload(): SyncPayload {
     plan: usePlanStore.getState(),
     checkin: useDailyCheckinStore.getState(),
     vocab: useVocabStore.getState(),
+    profile: readNicknameProfile(),
     packedAt: new Date().toISOString(),
   };
 }
@@ -88,6 +97,7 @@ export function packPayload(): SyncPayload {
  *   - vocab.words：按 wordId 合并，lastSeen 较新的一方整条胜出
  *     （box/dueAt/streak 是同一份状态，必须整条取，不能字段级取 max 否则会自相矛盾）
  *   - vocab.placementDone：任一方已完成即视为完成
+ *   - profile.nickname：按 nicknameUpdatedAt 取较新的一份，旧包无此字段则忽略
  */
 export function mergePayload(remote: Partial<SyncPayload> | null | undefined): number {
   if (!remote) return 0;
@@ -235,6 +245,14 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
     } as any);
   }
 
+  // ---- profile（昵称）：按 nicknameUpdatedAt 取较新的一份 ----
+  // 旧版同步包没有该字段，applyRemoteNickname 会直接忽略，不会把昵称清空。
+  if (remote.profile) {
+    if (applyRemoteNickname(remote.profile.nickname ?? '', remote.profile.nicknameUpdatedAt)) {
+      mergedCount++;
+    }
+  }
+
   return mergedCount;
 }
 
@@ -274,7 +292,8 @@ async function readCloudRow(): Promise<{ id: number; payload: any; updated_at: s
 async function writeCloudRow(payload: SyncPayload): Promise<string> {
   const deviceId = getDeviceId();
   const user = getCurrentUser();
-  const ownerName = user?.name ?? null;
+  // 云端行的展示名跟随个人中心昵称（仅为诊断可读，不参与数据合并）
+  const ownerName = user ? getDisplayName(user) : null;
 
   const existing = await readCloudRow();
 

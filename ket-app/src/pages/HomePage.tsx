@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgressStore } from '../store/useProgressStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
-import { getCurrentUser } from '../utils/auth';
+import { getCurrentUser, getDisplayName, USER_CHANGED_EVENT } from '../utils/auth';
 
 const features = [
   {
@@ -82,7 +83,13 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { getModuleStats, getWrongAnswers, sessionRecords } = useProgressStore();
   const dc = useDailyCheckinStore();
-  const currentUser = getCurrentUser();
+  // 个人中心改昵称 / 云端同步拉回昵称后，欢迎语要跟着变
+  const [currentUser, setCurrentUser] = useState(getCurrentUser);
+  useEffect(() => {
+    const refresh = () => setCurrentUser(getCurrentUser());
+    window.addEventListener(USER_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(USER_CHANGED_EVENT, refresh);
+  }, []);
 
   // 从 store 读取实时统计
   const vocabStats = getModuleStats('vocabulary');
@@ -118,7 +125,7 @@ export default function HomePage() {
     <div className="space-y-6">
       {/* 欢迎横幅 */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">👋 欢迎回来{currentUser ? `，${currentUser.name}` : ''}！</h2>
+        <h2 className="text-2xl font-bold mb-2">👋 欢迎回来{currentUser ? `，${getDisplayName(currentUser)}` : ''}！</h2>
         <p className="text-blue-100 mb-4">今天继续加油，KET 考试就在前方！</p>
         <div className="flex gap-3 flex-wrap">
           <button

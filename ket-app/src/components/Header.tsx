@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser, logout } from '../utils/auth';
+import type { SafeUser } from '../types/user';
+import {
+  getCurrentUser,
+  getDisplayName,
+  logout,
+  setNickname,
+  NICKNAME_MAX_LEN,
+  normalizeNickname,
+  USER_CHANGED_EVENT,
+} from '../utils/auth';
 import { syncNow } from '../utils/sync';
 import { isCloudConnected, unlinkCloud } from '../utils/cloudAuth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
@@ -15,14 +24,34 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncHint, setSyncHint] = useState('');
+  // 个人中心：昵称编辑态
+  const [user, setUser] = useState<SafeUser | null>(() => getCurrentUser());
+  const [editingNickname, setEditingNickname] = useState(false);
+  const [nicknameDraft, setNicknameDraft] = useState('');
+  const [profileHint, setProfileHint] = useState('');
+  const [savingNickname, setSavingNickname] = useState(false);
   const navigate = useNavigate();
-  const currentUser = getCurrentUser();
   const cloudOn = isCloudConnected();
+  const displayName = getDisplayName(user);
+
+  // 登录、改昵称、云端同步拉回资料都会写 localStorage，这里统一订阅刷新
+  useEffect(() => {
+    const refresh = () => setUser(getCurrentUser());
+    window.addEventListener(USER_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(USER_CHANGED_EVENT, refresh);
+  }, []);
+
+  const showHint = (msg: string) => {
+    setSyncHint(msg);
+    setTimeout(() => setSyncHint(''), 3000);
+  };
 
   const handleLogout = async () => {
     await unlinkCloud(); // 先解绑云端登录态（不触发 reload）
     logout();
+    setUser(null);
     setShowUserMenu(false);
+    setEditingNickname(false);
     await rehydrateAllStores(); // 清空内存中上一个用户的数据（载入 guest/空）
     navigate('/login', { replace: true });
   };
@@ -34,11 +63,54 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     setSyncHint('');
     try {
       const res = await syncNow();
-      setSyncHint(res.ok ? (res.merged ? `已同步 ${res.merged} 条` : '已同步') : res.message);
-      setTimeout(() => setSyncHint(''), 3000);
+      setUser(getCurrentUser()); // 同步可能拉回了另一台设备改过的昵称
+      showHint(res.ok ? (res.merged ? `已同步 ${res.merged} 条` : '已同步') : res.message);
     } finally {
       setSyncing(false);
     }
+  };
+
+  /**
+   * 保存昵称：先落到本机（立即生效），再尽力推到云端。
+   * 云端失败不回滚本机修改，等下次手动/自动同步补上。
+   * 传空串 = 清除自定义昵称，恢复显示账号标识。
+   */
+  const saveNickname = async (raw: string) => {
+    if (savingNickname) return;
+    setSavingNickname(true);
+    setProfileHint('');
+    const res = setNickname(raw);
+    if (!res.ok) {
+      setProfileHint(res.message);
+      setSavingNickname(false);
+      return;
+    }
+    setUser(res.user ?? getCurrentUser());
+    setEditingNickname(false);
+
+    if (isCloudConnected()) {
+      setProfileHint('昵称已保存，正在同步到云端…');
+      try {
+        const s = await syncNow();
+        setUser(getCurrentUser());
+        setProfileHint(
+          s.ok ? '昵称已保存并同步到云端' : `昵称已保存（云端暂未同步：${s.message}）`,
+        );
+        showHint(s.ok ? '昵称已同步' : '资料同步稍后重试');
+      } catch (e) {
+        setProfileHint(`昵称已保存（云端暂未同步：${(e as Error).message}）`);
+      }
+    } else {
+      setProfileHint('昵称已保存（未连接云端，仅本机显示）');
+    }
+    setSavingNickname(false);
+    setTimeout(() => setProfileHint(''), 4000);
+  };
+
+  const openNicknameEditor = () => {
+    setNicknameDraft(user?.nickname ?? '');
+    setProfileHint('');
+    setEditingNickname(true);
   };
 
   return (
@@ -70,7 +142,7 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
         <span className="text-sm text-gray-400 dark:text-gray-500 hidden md:inline">Phase 1 Demo</span>
 
         {/* 云端同步按钮 */}
-        {currentUser && (
+        {user && (
           <button
             onClick={handleSync}
             disabled={syncing || !cloudOn}
@@ -98,31 +170,107 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
           </span>
         )}
 
-        {/* 用户头像/菜单 */}
-        {currentUser && (
+        {/* 用户头像 / 个人中心 */}
+        {user && (
           <div className="relative">
             <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
+              onClick={() => {
+                setShowUserMenu(!showUserMenu);
+                setEditingNickname(false);
+                setProfileHint('');
+              }}
               className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 text-sm font-medium transition-colors hover:bg-blue-200 dark:hover:bg-blue-800"
-              title={currentUser.name}
+              title={`${displayName} · 个人中心`}
             >
-              {currentUser.name.charAt(0).toUpperCase()}
+              {Array.from(displayName)[0]?.toUpperCase() ?? 'K'}
             </button>
 
-            {/* 用户下拉菜单 */}
+            {/* 个人中心下拉面板 */}
             {showUserMenu && (
-              <div className="absolute right-0 top-10 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-                <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
-                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{currentUser.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">当前用户</p>
+              <div className="absolute right-0 top-10 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">个人中心</p>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{displayName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5" title={user.name}>
+                    账号：{user.name}
+                  </p>
+                  <p className="text-xs mt-1">
+                    <span className={cloudOn ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}>
+                      {cloudOn ? '☁️ 云端已连接 · 进度与昵称跨设备同步' : '☁️ 未连接云端 · 仅本机有效'}
+                    </span>
+                  </p>
                 </div>
 
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-gray-100 dark:border-gray-700"
-                >
-                  🚪 退出登录
-                </button>
+                {editingNickname ? (
+                  <div className="px-4 py-3">
+                    <label htmlFor="nickname-input" className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+                      设置昵称
+                    </label>
+                    <input
+                      id="nickname-input"
+                      autoFocus
+                      type="text"
+                      value={nicknameDraft}
+                      maxLength={NICKNAME_MAX_LEN * 2}
+                      placeholder="例如：小明"
+                      onChange={(e) => setNicknameDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') void saveNickname(nicknameDraft);
+                        if (e.key === 'Escape') setEditingNickname(false);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <p className="text-xs text-gray-400 mt-1.5">
+                      {Array.from(normalizeNickname(nicknameDraft)).length}/{NICKNAME_MAX_LEN} 字 · 留空则恢复显示账号
+                    </p>
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        disabled={savingNickname}
+                        onClick={() => void saveNickname(nicknameDraft)}
+                        className="flex-1 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium transition-colors"
+                      >
+                        {savingNickname ? '保存中…' : '保存'}
+                      </button>
+                      <button
+                        disabled={savingNickname}
+                        onClick={() => setEditingNickname(false)}
+                        className="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 text-sm transition-colors"
+                      >
+                        取消
+                      </button>
+                    </div>
+                    {Boolean(user.nickname) && (
+                      <button
+                        disabled={savingNickname}
+                        onClick={() => void saveNickname('')}
+                        className="w-full mt-2 text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        恢复默认（显示账号）
+                      </button>
+                    )}
+                    {profileHint && (
+                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">{profileHint}</p>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={openNicknameEditor}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      ✏️ 修改昵称
+                    </button>
+                    {profileHint && (
+                      <p className="px-4 pb-2 text-xs text-blue-600 dark:text-blue-400">{profileHint}</p>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-gray-100 dark:border-gray-700"
+                    >
+                      🚪 退出登录
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
