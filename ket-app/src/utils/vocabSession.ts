@@ -7,7 +7,13 @@
 //   · 6/8 与 0-1-3-7-15 天是工程默认值，界面不得写成"最优记忆参数"
 import { allThemes } from '../data/vocabulary';
 import type { VocabularyTheme, Word, VocabBox, VocabHintLevel, VocabWordProgress } from '../types';
-import { analyzeWord, findRelatives, type WordAnalysis } from './wordChunks';
+import {
+  analyzeWord,
+  buildCListeningDrill,
+  findRelatives,
+  type CListeningDrill,
+  type WordAnalysis,
+} from './wordChunks';
 
 export const NEW_PER_DAY = 6;
 export const REVIEW_PER_DAY = 8;
@@ -24,6 +30,8 @@ export interface VocabQueueItem {
   progress: VocabWordProgress | null;
   /** B 类同源词提示；找不到时界面把词素降级为「仅供参考」 */
   relatives: Word[];
+  /** C 类听音三小问的数据；非 C 类为 null */
+  drill: CListeningDrill | null;
 }
 
 export interface VocabTodayQueue {
@@ -53,6 +61,20 @@ const wordIndex = new Map<string, { word: Word; themeId: string; themeZh: string
   flatWords.map((x) => [x.word.id, x])
 );
 
+/**
+ * 词素切分的词干白名单：只有词库里真实存在的词形才允许被当作词干展示。
+ * 2026-11-07 实跑发现旧规则把 brother 切成 broth|er、family 切成 famil|y，
+ * 都是假词干；注入这份集合后这类词一律降级 C，不再教错。
+ */
+export const KNOWN_WORD_FORMS: ReadonlySet<string> = new Set(
+  flatWords.map((x) => x.word.en.toLowerCase()).filter((en) => /^[a-z]+$/.test(en))
+);
+
+/** 首音听辨的干扰项来源（只取纯字母开头的词形） */
+export const ONSET_CANDIDATE_FORMS: readonly string[] = flatWords
+  .map((x) => x.word.en.toLowerCase())
+  .filter((en) => /^[a-z]/.test(en));
+
 export function allVocabWords(): Word[] {
   return flatWords.map((x) => x.word);
 }
@@ -72,7 +94,7 @@ function toItem(
   kind: 'review' | 'new',
   progress: VocabWordProgress | null
 ): VocabQueueItem {
-  const analysis = analyzeWord(meta.word);
+  const analysis = analyzeWord(meta.word, KNOWN_WORD_FORMS);
   const all = allVocabWords();
   return {
     ...meta,
@@ -82,6 +104,9 @@ function toItem(
     hintLevel: hintLevelFor(progress?.box ?? 1),
     progress,
     relatives: analysis.route === 'B' ? findRelatives(meta.word.en, analysis.stem, all) : [],
+    drill: analysis.route === 'C'
+      ? buildCListeningDrill(meta.word, ONSET_CANDIDATE_FORMS)
+      : null,
   };
 }
 
@@ -117,7 +142,7 @@ export function buildPlacementSample(): { word: Word; themeId: string; themeZh: 
     const step = Math.max(1, Math.floor(t.words.length / perTheme));
     for (let i = 0; i < perTheme && i * step < t.words.length; i++) {
       const w = t.words[i * step];
-      picked.push({ word: w, themeId: t.id, themeZh: t.nameZh, analysis: analyzeWord(w) });
+      picked.push({ word: w, themeId: t.id, themeZh: t.nameZh, analysis: analyzeWord(w, KNOWN_WORD_FORMS) });
     }
   }
   // 22 主题 × 1 = 22 条，截到 20；不足则从剩余词补齐
@@ -127,7 +152,7 @@ export function buildPlacementSample(): { word: Word; themeId: string; themeZh: 
     for (const meta of flatWords) {
       if (out.length >= PLACEMENT_SIZE) break;
       if (seen.has(meta.word.id)) continue;
-      out.push({ ...meta, analysis: analyzeWord(meta.word) });
+      out.push({ ...meta, analysis: analyzeWord(meta.word, KNOWN_WORD_FORMS) });
       seen.add(meta.word.id);
     }
   }

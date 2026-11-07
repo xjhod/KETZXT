@@ -137,9 +137,11 @@ export function makeSoundChunks(en: string): WordChunk[] {
 
 // ---- B 类：词素切分（保守，宁可不切也不乱切）----
 
+// 'a' 已从前缀表移除：2026-11-07 实跑里它把 advanced / address / actress /
+// anniversary / already / actually 全部切成 a|…，属于纯误切。
 const PREFIXES = [
   'under', 'inter', 'super', 'over', 'multi', 'tele', 'auto', 'non', 'mis', 'pre',
-  'dis', 'sub', 'ex', 'un', 're', 'in', 'im', 'il', 'ir', 'de', 'en', 'a',
+  'dis', 'sub', 'ex', 'un', 're', 'in', 'im', 'il', 'ir', 'de', 'en',
 ];
 const SUFFIXES = [
   'ation', 'ition', 'tion', 'sion', 'ness', 'ment', 'able', 'ible', 'less', 'ful',
@@ -147,10 +149,41 @@ const SUFFIXES = [
   'es', 'ly', 'al', 'ic', 'en', 'ish', 'y', 's',
 ];
 
+/**
+ * 人工核过的词素切分（依据 2026-11-07 全量切分抽查结果）。
+ *   null  = 确认不是派生/复合词，禁止按词素切 → 降级 C，避免教错
+ *   数组  = 确认的复合词块，拼回去必须严格等于原词
+ * 这张表是「不教错」的兜底，规则层仍按词干真实词形自动判断。
+ */
+export const MORPHEME_OVERRIDES: Record<string, readonly string[] | null> = {
+  brother: null, mother: null, father: null, sister: null,
+  grandmother: ['grand', 'mother'], grandfather: ['grand', 'father'],
+  weather: null, shoulder: null, leather: null, computer: null,
+  character: null, library: null, history: null, family: null,
+  hungry: null, thirsty: null, pretty: null, turkey: null,
+  journey: null, chimney: null, valley: null, monkey: null,
+  traffic: null, kitchen: null, hospital: null, balcony: null,
+  between: null, chicken: null, cucumber: null, strawberry: null,
+  vocabulary: null, dictionary: null, emergency: null, necessary: null,
+  together: null, however: null, actually: null, already: null,
+  address: null, advanced: null, anniversary: null, actress: null,
+  subject: null, miserable: null, present: null, prepare: null,
+  discuss: null, disappointed: null,
+  newspaper: ['news', 'paper'], firefighter: ['fire', 'fighter'],
+  hairdresser: ['hair', 'dresser'], sunglasses: ['sun', 'glasses'],
+  downstairs: ['down', 'stairs'], snowboarding: ['snow', 'board', 'ing'],
+  // 词干不在本词库词形集合里、但词素关系确凿的复合词，人工确认后保留在 B 类
+  understand: ['under', 'stand'], underground: ['under', 'ground'],
+  underwear: ['under', 'wear'], underline: ['under', 'line'],
+  dislike: ['dis', 'like'], discover: ['dis', 'cover'],
+};
+
 export interface MorphemeSplit {
   chunks: WordChunk[];
   stem: string;
   ok: boolean;
+  /** 命中人工修正表 */
+  manual?: boolean;
 }
 
 function validStem(stem: string): boolean {
@@ -159,18 +192,50 @@ function validStem(stem: string): boolean {
   return true;
 }
 
+/**
+ * 词干必须站得住：优先要求它是词库里真实存在的词形。
+ *   · 双写辅音（swimm → swim）允许命中，但块文本不变，仍严格拼得回原词
+ *   · 未注入词形集合时退回长度判断，保证单独调用也不改变行为
+ * 这一条砍掉的是 famil|y / broth|er / librar|y / northw|est 这类假词干。
+ */
+function stemIsRealWord(stem: string, knownForms?: ReadonlySet<string>): boolean {
+  if (!knownForms || knownForms.size === 0) return validStem(stem);
+  if (knownForms.has(stem)) return true;
+  const n = stem.length;
+  if (n > 3 && stem[n - 1] === stem[n - 2] && knownForms.has(stem.slice(0, -1))) return true;
+  return false;
+}
+
 /** 只切一层前缀 + 一层后缀，词干保留原形；切不动返回 ok:false */
-export function splitMorphemes(en: string): MorphemeSplit {
+export function splitMorphemes(en: string, knownForms?: ReadonlySet<string>): MorphemeSplit {
   const bad: MorphemeSplit = { chunks: [], stem: '', ok: false };
   if (!/^[a-z]+$/.test(en) || en.length < 6) return bad;
 
+  // 人工修正优先：null 一律不切；数组必须是可还原的合法块
+  const manual = MORPHEME_OVERRIDES[en];
+  if (manual !== undefined) {
+    if (manual === null) return { ...bad, manual: true };
+    if (manual.length < 2 || manual.join('') !== en) return { ...bad, manual: true };
+    const chunks: WordChunk[] = manual.map((text) => ({ text, kind: 'stem' }));
+    return {
+      chunks,
+      stem: manual.reduce((a, b) => (b.length > a.length ? b : a), ''),
+      ok: true,
+      manual: true,
+    };
+  }
+
   let prefix = '';
   for (const p of PREFIXES) {
-    // 前缀后必须还剩一个像样的词干
-    if (en.startsWith(p) && validStem(en.slice(p.length))) {
-      prefix = p;
-      break;
-    }
+    if (!en.startsWith(p)) continue;
+    const rest = en.slice(p.length);
+    if (!validStem(rest)) continue;
+    // 长短前缀一视同仁：去掉前缀后必须仍是真实词形。
+    // 否则 mis|erable、inter|esting、sub|ject 这类假词素会混进 B 类。
+    // 真复合词（under|stand 等）不在本词库词形里，由人工修正表捞回。
+    if (!stemIsRealWord(rest, knownForms)) continue;
+    prefix = p;
+    break;
   }
   let core = prefix ? en.slice(prefix.length) : en;
 
@@ -179,7 +244,8 @@ export function splitMorphemes(en: string): MorphemeSplit {
     if (!core.endsWith(s)) continue;
     const stem = core.slice(0, -s.length);
     if (!validStem(stem)) continue;
-    // -er/-or/-ed/-es/-s/-y 这类短后缀误切率高，词干要求更长
+    // 核心收紧点：假词干一律不切（宁可降级 C，也不要展示 broth|er）
+    if (!stemIsRealWord(stem, knownForms)) continue;
     if (s.length <= 2 && stem.length < 5) continue;
     suffix = s;
     core = stem;
@@ -208,7 +274,11 @@ export function findRelatives(en: string, stem: string | null, allWords: Word[],
 
 // ---- 主入口 ----
 
-export function analyzeWord(word: Word): WordAnalysis {
+/**
+ * @param knownForms 词库里真实存在的词形集合，用于校验词素切出的词干是否站得住。
+ *                   不传时退回宽松的长度判断（仅供独立调用，UI 必须注入）。
+ */
+export function analyzeWord(word: Word, knownForms?: ReadonlySet<string>): WordAnalysis {
   const { id: wordId, en, phonetic } = word;
   const ipa = phonetic || '';
   const syllables = countSyllables(ipa);
@@ -258,13 +328,17 @@ export function analyzeWord(word: Word): WordAnalysis {
   }
 
   // B：多音节能切出词素 → 词素卡 + 同源词提示
-  const split = splitMorphemes(en);
+  const split = splitMorphemes(en, knownForms);
   if (split.ok) {
     const stress = stressedSyllable(ipa);
     return {
       ...base, route: 'B', stressedChunk: stress, chunks: split.chunks, chunkKind: 'morpheme',
-      note: '这个词由几部分组成，看词素和同源词推拼写；音标只用来核对读音。',
-      confidence: 'medium', reason: 'morpheme-split', stem: split.stem,
+      note: split.manual
+        ? '这是个复合词，认清每一部分就好记了；音标只用来核对读音。'
+        : '这个词由几部分组成，看词素和同源词推拼写；音标只用来核对读音。',
+      confidence: split.manual ? 'high' : 'medium',
+      reason: split.manual ? 'manual-morpheme' : 'morpheme-split',
+      stem: split.stem,
     };
   }
 
@@ -273,7 +347,106 @@ export function analyzeWord(word: Word): WordAnalysis {
     ...base, route: 'C', stressedChunk: stressedSyllable(ipa), chunks: [], chunkKind: 'none',
     note: '这个词的拼法要单独记：听整词、读例句，再凭记忆写。',
     confidence: 'low',
-    reason: syllables > 1 ? 'multisyllabic-no-morpheme' : 'mono-irregular-shape',
+    reason: split.manual
+      ? 'manual:no-split'
+      : syllables > 1 ? 'multisyllabic-no-morpheme' : 'mono-irregular-shape',
     stem: null,
+  };
+}
+
+// ---- C 类听音训练：不用 IPA 符号、不用 ASR，只靠整词音频与字形 ----
+//
+// 补强原因（2026-11-07 B 轮）：C 类占全词库约四成，原来只有「整体音 + 例句 + 听写」，
+// 孩子实际上没有做任何解码动作。这里补三个只需点选的轻练习，把注意力拉回
+// 「这个词听起来分几段、重音在哪、开头是什么音」，再进入整词听写。
+// 数拍与重音只给参考值、不判对错 —— 音标粗估的音节数本身就是提示，不是考点。
+
+const ONSET_DIGRAPHS = ['th', 'sh', 'ch', 'ph', 'wh', 'qu', 'kn', 'wr', 'gn', 'ps', 'ck'];
+
+/** 词首的字母块（th/sh/ch… 优先，其余取首字母） */
+export function onsetChunk(en: string): string {
+  const s = (en || '').toLowerCase();
+  for (const d of ONSET_DIGRAPHS) if (s.startsWith(d)) return d;
+  return s.slice(0, 1);
+}
+
+/** 字形分段回忆：按长度切成 2~3 段，拼接必须严格等于原词（只分字形，不声称是音节） */
+export function makeRecallSegments(en: string): string[] {
+  const s = en || '';
+  if (s.length < 4) return [s];
+  const n = s.length >= 10 ? 3 : 2;
+  const size = Math.ceil(s.length / n);
+  const out: string[] = [];
+  for (let i = 0; i < s.length; i += size) out.push(s.slice(i, i + size));
+  return out;
+}
+
+/** 确定性洗牌：同一个词每次渲染选项顺序一致，避免孩子刚看完就跳位 */
+function shuffleDeterministic<T>(arr: T[], seed: string): T[] {
+  const a = [...arr];
+  let s = 0;
+  for (const ch of seed) s = (Math.imul(s, 31) + ch.charCodeAt(0)) >>> 0;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (Math.imul(s, 1103515245) + 12345) >>> 0;
+    const j = s % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** 首音听辨：1 个正确 + 3 个不同干扰项；候选不足时用单字母补齐 */
+export function buildOnsetOptions(en: string, candidateForms: readonly string[]): string[] {
+  const answer = onsetChunk(en);
+  const options = [answer];
+  const seen = new Set(options);
+  for (const form of candidateForms) {
+    if (options.length >= 4) break;
+    const o = onsetChunk(form);
+    if (o && o !== answer && !seen.has(o)) {
+      options.push(o);
+      seen.add(o);
+    }
+  }
+  for (const c of 'bcdfghjklmnpqrstvwxyz') {
+    if (options.length >= 4) break;
+    if (!seen.has(c)) {
+      options.push(c);
+      seen.add(c);
+    }
+  }
+  return shuffleDeterministic(options, en);
+}
+
+export interface CListeningDrill {
+  /** 从音标粗估的参考拍数，只作提示不判分 */
+  beatReference: number;
+  beatOptions: number[];
+  /** 无可判断的重音时为 null，界面自动跳过重音这一步 */
+  stressReference: number | null;
+  stressOptions: number[];
+  onsetAnswer: string;
+  onsetOptions: string[];
+  recallSegments: string[];
+}
+
+export function buildCListeningDrill(word: Word, candidateForms: readonly string[]): CListeningDrill {
+  const ipa = word.phonetic || '';
+  const syllables = countSyllables(ipa);
+  const stress = stressedSyllable(ipa);
+  // 单音节词没有「重音在第几拍」可选，这一步自动跳过
+  const stressReference = syllables >= 2 && stress !== null && stress >= 1 && stress <= syllables
+    ? stress
+    : null;
+  const maxBeat = Math.min(6, Math.max(3, syllables + 2));
+  return {
+    beatReference: Math.min(syllables, maxBeat),
+    beatOptions: Array.from({ length: maxBeat }, (_, i) => i + 1),
+    stressReference,
+    stressOptions: stressReference
+      ? Array.from({ length: syllables }, (_, i) => i + 1)
+      : [],
+    onsetAnswer: onsetChunk(word.en),
+    onsetOptions: buildOnsetOptions(word.en, candidateForms),
+    recallSegments: makeRecallSegments(word.en),
   };
 }

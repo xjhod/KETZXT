@@ -3,8 +3,13 @@
 import { allThemes } from './vocabulary';
 import {
   analyzeWord,
+  buildCListeningDrill,
+  buildOnsetOptions,
   countSyllables,
+  makeRecallSegments,
   makeSoundChunks,
+  onsetChunk,
+  MORPHEME_OVERRIDES,
   splitMorphemes,
   type WordAnalysis,
 } from '../utils/wordChunks';
@@ -16,12 +21,18 @@ import {
 import { applyDictation, emptyProgress, addDays } from '../utils/vocabSchedule';
 
 const words: Word[] = allThemes.flatMap((t) => t.words);
+const wordForms: ReadonlySet<string> = new Set(
+  words.map((w) => w.en.toLowerCase()).filter((en) => /^[a-z]+$/.test(en))
+);
+const onsetCandidates: readonly string[] = words
+  .map((w) => w.en.toLowerCase())
+  .filter((en) => /^[a-z]/.test(en));
 
 const ids = words.map((w) => w.id);
 const uniqueIds = new Set(ids);
 const dupIds = ids.filter((id, i) => ids.indexOf(id) !== i);
 
-const analyses: WordAnalysis[] = words.map(analyzeWord);
+const analyses: WordAnalysis[] = words.map((w) => analyzeWord(w, wordForms));
 const byRoute: Record<string, WordAnalysis[]> = { A: [], B: [], C: [] };
 for (const a of analyses) byRoute[a.route].push(a);
 
@@ -39,7 +50,7 @@ const notRestorable = analyses.filter(
 const badA = byRoute.A.filter((a) => a.syllables !== 1 || a.chunks.length < 2);
 // B 类词素自动切比例（以多音节词为分母）
 const multi = analyses.filter((a) => a.syllables > 1);
-const bSplitOk = byRoute.B.filter((a) => splitMorphemes(a.en).ok).length;
+const bSplitOk = byRoute.B.filter((a) => splitMorphemes(a.en, wordForms).ok).length;
 const soundChunkOk = byRoute.A.filter(
   (a) => makeSoundChunks(a.en).map((c) => c.text).join('') === a.en
 ).length;
@@ -67,6 +78,63 @@ console.log('C_REASON_DIST', JSON.stringify(reasonDist));
 console.log('SAMPLE_A', JSON.stringify(sample(byRoute.A)));
 console.log('SAMPLE_B', JSON.stringify(sample(byRoute.B)));
 console.log('SAMPLE_C', JSON.stringify(sample(byRoute.C)));
+
+// ---- B 轮：词素切分收紧后的质量校验 ----
+const realStem = (stem: string): boolean => {
+  if (wordForms.has(stem)) return true;
+  const n = stem.length;
+  return n > 3 && stem[n - 1] === stem[n - 2] && wordForms.has(stem.slice(0, -1));
+};
+const bShortSuffix = byRoute.B.filter((a) => {
+  const last = a.chunks[a.chunks.length - 1];
+  return last && last.kind === 'suffix' && last.text.length <= 2;
+});
+const bFakeStem = byRoute.B.filter((a) => {
+  const s = splitMorphemes(a.en, wordForms);
+  return s.ok && !s.manual && !realStem(s.stem);
+});
+const bManual = byRoute.B.filter((a) => splitMorphemes(a.en, wordForms).manual).length;
+const overrideMiss = Object.entries(MORPHEME_OVERRIDES).filter(([en, want]) => {
+  const found = analyses.find((a) => a.en === en);
+  if (!found) return false; // 修正表里的词若不在导出词库，不算漏网
+  if (want === null) return found.chunkKind === 'morpheme';
+  return found.chunkKind !== 'morpheme' ||
+    found.chunks.map((c) => c.text).join('') !== want.join('');
+});
+console.log('B_SHORT_SUFFIX_COUNT', bShortSuffix.length, '/', byRoute.B.length);
+console.log('B_MANUAL_OVERRIDE_COUNT', bManual);
+console.log('B_FAKE_STEM_COUNT', bFakeStem.length, JSON.stringify(
+  bFakeStem.map((a) => `${a.en}=${a.chunks.map((c) => c.text).join('|')}`)
+));
+console.log('B_OVERRIDE_MISS', overrideMiss.length, JSON.stringify(overrideMiss.slice(0, 8).map(([en]) => en)));
+console.log('B_SAMPLE_AFTER_TIGHTEN', JSON.stringify(sample(byRoute.B, 12)));
+
+// ---- B 轮：C 类听音训练数据全量校验 ----
+const drillProblems: string[] = [];
+let cWithStress = 0;
+const cSyllableDist: Record<number, number> = {};
+for (let i = 0; i < words.length; i++) {
+  const a = analyses[i];
+  if (a.route !== 'C') continue;
+  cSyllableDist[a.syllables] = (cSyllableDist[a.syllables] || 0) + 1;
+  const d = buildCListeningDrill(words[i], onsetCandidates);
+  const en = a.en;
+  if (d.onsetOptions.length !== 4 || new Set(d.onsetOptions).size !== 4 ||
+      !d.onsetOptions.includes(d.onsetAnswer)) drillProblems.push(`${en}:onset`);
+  if (d.recallSegments.join('') !== en) drillProblems.push(`${en}:segment`);
+  if (!d.beatOptions.includes(d.beatReference)) drillProblems.push(`${en}:beat`);
+  if (d.stressReference !== null) {
+    cWithStress++;
+    if (!d.stressOptions.includes(d.stressReference)) drillProblems.push(`${en}:stress`);
+  }
+}
+const onsetStable = JSON.stringify(buildOnsetOptions('teacher', onsetCandidates)) ===
+  JSON.stringify(buildOnsetOptions('teacher', onsetCandidates));
+console.log('C_WITH_STRESS', cWithStress, '/', byRoute.C.length);
+console.log('C_SYLLABLE_DIST', JSON.stringify(cSyllableDist));
+console.log('C_DRILL_PROBLEMS', drillProblems.length, JSON.stringify(drillProblems.slice(0, 8)));
+console.log('ONSET_SANITY', onsetChunk('sheep'), onsetChunk('phone'), onsetChunk('cat'),
+  'STABLE', onsetStable, 'SEGMENTS', makeRecallSegments('beautiful').join(''));
 
 // ---- 会话调度 / 记忆判据实跑 ----
 console.log('=== SESSION / SCHEDULE CHECK ===');
@@ -139,7 +207,17 @@ if (notRestorable.length) failures.push('chunks not restorable: ' + notRestorabl
 if (badA.length) failures.push('A route violates mono/2+ chunks: ' + badA.slice(0, 5).map((a) => a.en).join(','));
 if (dupIds.length) failures.push('duplicate word ids: ' + dupIds.slice(0, 5).join(','));
 if (byRoute.A.length < 30) failures.push('A route too small to be useful (<30)');
+if (byRoute.B.length < 60) failures.push('B route collapsed after tightening (<60)');
 if (countSyllables('/ˈtiːtʃə/') !== 2) failures.push('countSyllables sanity failed');
+// ---- B 轮新增断言 ----
+if (bFakeStem.length) failures.push('B still shows fake stems: ' + bFakeStem.slice(0, 5).map((a) => a.en).join(','));
+if (overrideMiss.length) failures.push('manual morpheme override not applied: ' + overrideMiss.slice(0, 5).map(([en]) => en).join(','));
+if (drillProblems.length) failures.push('C listening drill data broken: ' + drillProblems.slice(0, 5).join(','));
+if (onsetChunk('sheep') !== 'sh' || onsetChunk('phone') !== 'ph' || onsetChunk('cat') !== 'c') failures.push('onsetChunk sanity failed');
+if (makeRecallSegments('beautiful').join('') !== 'beautiful') failures.push('recall segments not restorable');
+if (!onsetStable) failures.push('onset options not deterministic');
+if (cWithStress < 100) failures.push('C stress reference coverage too low');
+if (byRoute.B.filter((a) => a.reason === 'manual-morpheme').length < 2) failures.push('manual compound overrides never took effect');
 
 console.log('ASSERTIONS', failures.length === 0 ? 'PASS' : 'FAIL');
 if (failures.length) {
@@ -150,6 +228,6 @@ if (failures.length) {
 // 供外层脚本核对音频覆盖
 (globalThis as any).__VOCAB_CHECK__ = {
   wordIds: ids,
-  words: words.map((w) => ({ id: w.id, en: w.en, route: analyzeWord(w).route })),
+  words: words.map((w, i) => ({ id: w.id, en: w.en, route: analyses[i].route })),
   failures,
 };
