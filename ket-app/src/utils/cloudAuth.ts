@@ -20,7 +20,7 @@
 import { cloud } from './cloud';
 import { upsertCloudUser } from './auth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
-import { CLOUD_ENDPOINT } from '../config/cloud';
+import { CLOUD_ENDPOINT, CLOUD_PUBLISHABLE_KEY } from '../config/cloud';
 
 const SIGNED_IN_KEY = 'ket-cloud-signed-in';
 const LINKED_UID_KEY = 'ket-cloud-linked-uid';
@@ -33,13 +33,63 @@ function isLocalPreview(): boolean {
   return /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
 }
 
-/** 邮箱「确认链接」已发出后的提示文案 */
-function buildEmailSentMessage(): string {
-  const base =
-    '登录邮件已发送：请打开邮件点「确认邮箱并登录」按钮，应用会自动完成登录（邮件正文不含数字验证码，无需手输）。收不到请检查垃圾邮件箱';
+/** 本地预览不支持云端登录落地，给提示补上说明 */
+function appendLocalPreviewHint(msg: string): string {
   return isLocalPreview()
-    ? `${base}。注意：当前是本地开发预览，邮件链接会跳到已登记的线上站点完成登录，本机预览不会同步登录状态；验证邮箱登录请直接打开 ${CLOUD_SITE_URL}`
-    : base;
+    ? `${msg}。注意：当前是本地开发预览，邮件链接会跳到已登记的线上站点完成登录，本机预览不会同步登录状态；验证邮箱登录请直接打开 ${CLOUD_SITE_URL}`
+    : msg;
+}
+
+/** JWT 形态：header.payload.signature 三段 base64url。
+ *  后端 /v1/verification/verify 会把 verification_id 当 JWT 解析，
+ *  非 JWT（如邮件链接里的 env_id = "wb-..."）会报 malformed jwt: expected 3 parts got 1。 */
+function isJwtLike(s: string): boolean {
+  return /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(s);
+}
+
+/** 从发码响应体里找出可作 verification_id 的 JWT（优先标准字段名，再递归兜底） */
+function pickVerificationId(payload: any): string | null {
+  if (!payload || typeof payload !== 'object') return null;
+  const direct = payload.verification_id ?? payload.verificationId;
+  if (typeof direct === 'string' && isJwtLike(direct)) return direct;
+  // 标准字段缺失或不是 JWT（如 wb-... 形式的 env_id）时，继续在响应体里找
+  const seen = new Set<unknown>();
+  const walk = (v: unknown, depth: number): string | null => {
+    if (depth > 4 || v == null) return null;
+    if (typeof v === 'string') return isJwtLike(v) ? v : null;
+    if (typeof v !== 'object' || seen.has(v)) return null;
+    seen.add(v);
+    const values = Array.isArray(v) ? v : Object.values(v as Record<string, unknown>);
+    for (const item of values) {
+      const found = walk(item, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  };
+  return walk(payload, 0);
+}
+
+/** 直连发码端点，保留原始响应体。
+ *  SDK 的 sendOtp 对邮箱分支会在缺 verification_id 时直接 fail() 并丢掉响应，
+ *  这里自己发一次，才能拿到（可能藏在别的字段里的）验证码凭据。 */
+async function postVerificationRaw(
+  body: Record<string, unknown>,
+): Promise<{ status: number; payload: any }> {
+  const res = await fetch(`${CLOUD_ENDPOINT}/v1/verification`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-wb-webapp-access-key': CLOUD_PUBLISHABLE_KEY,
+    },
+    body: JSON.stringify(body),
+  });
+  let payload: any = null;
+  try {
+    payload = await res.json();
+  } catch {
+    payload = null;
+  }
+  return { status: res.status, payload };
 }
 
 /** 云端登录状态 */
@@ -194,8 +244,6 @@ export async function sendCloudOtp(input: {
 }): Promise<{
   ok: boolean;
   message: string;
-  /** 邮箱渠道为「魔法链接」模式时返回 true：邮件已发，需点链接完成登录 */
-  magicLink?: boolean;
   verificationId?: string;
   isExistingUser?: boolean;
 }> {
@@ -235,65 +283,53 @@ export async function sendCloudOtp(input: {
         isExistingUser: Boolean(c.isExistingUser),
       };
     } else {
-      // 邮箱：走 SDK 原生 sendOtp（usage:'email'），后端发送「确认链接」邮件。
+      // 邮箱：直接命中发码端点，自己读原始响应里的 verification_id（JWT）。
       //
-      // ⚠️ emailRedirectTo 必须是**云应用已登记的线上域名**，绝不能用 window.location.origin：
-      // 本地开发预览的 origin 是 http://127.0.0.1:5173，未登记时后端直接回
-      // "the redirect target is not a registered domain of this client"（发送失败且邮件不发）。
-      // 因此统一固定为 CLOUD_ENDPOINT（线上托管域名，与云 API 同源、已在白名单里）。
-      const sp = new URLSearchParams(window.location.search);
-      const sc = sp.get('sharecode') || 'ILJMMGGVHE';
-      const redirectCandidates: Array<string | undefined> = [
-        `${CLOUD_ENDPOINT}/`,                  // 已登记的根路径（历史上发信成功）
-        `${CLOUD_ENDPOINT}/?sharecode=${sc}`,  // 带分享码，保证回跳不被分享门拦
-        undefined,                             // 兜底：不传该字段，让后端用默认登记地址
+      // 不能再走 SDK 的 sendOtp：它对邮箱分支只会在缺 verification_id 时直接 fail()
+      // 并丢弃响应体，导致拿不到验码必需的凭据；此前拿邮件链接里的 env_id 顶替，
+      // 后端报 "malformed jwt: expected 3 parts got 1"（env_id 不是 JWT）。
+      //
+      // ⚠️ email_redirect_to 必须是已登记的线上域名，不能用 window.location.origin：
+      // 本地预览 origin = http://127.0.0.1:5173 会回 "not a registered domain"。
+      const redirectTo = `${CLOUD_ENDPOINT}/`;
+      // 先走当前线上邮件模板（链接带 verificationCode），拿不到 JWT 再退到
+      // 与手机同构的 {email, target:'ANY'}。只有前者失败才会发第二封邮件。
+      const attempts: Array<Record<string, unknown>> = [
+        { email, usage: 'email', email_redirect_to: redirectTo },
+        { email, target: 'ANY' },
       ];
+      let jwt = '';
+      let isUser = false;
+      const diag: string[] = [];
+      for (const body of attempts) {
+        const { status, payload } = await postVerificationRaw(body);
+        const keys =
+          payload && typeof payload === 'object'
+            ? Object.keys(payload).join(',')
+            : String(payload ?? '').slice(0, 60);
+        diag.push(`HTTP ${status}[${keys}]`);
+        if (status >= 400) continue;
+        const found = pickVerificationId(payload);
+        if (found) {
+          jwt = found;
+          isUser = payload?.is_user === true || payload?.isUser === true;
+          break;
+        }
+      }
+      if (!jwt) {
+        // 带上两次响应的字段清单，便于一次定位后端到底把凭据放在哪
+        return {
+          ok: false,
+          message: `发送失败：服务端未返回可用的验证码凭据（${diag.join(' / ')}）。请把这行提示原文发给我`,
+        };
+      }
       // 记住邮箱，邮件链接回跳后登录页自动回填
       try {
         sessionStorage.setItem(PREFILL_EMAIL_KEY, email);
       } catch {
         /* ignore */
       }
-
-      let res: any = null;
-      let domainErr = '';
-      for (const redirectTo of redirectCandidates) {
-        const creds: { email: string; emailRedirectTo?: string } = { email };
-        if (redirectTo) creds.emailRedirectTo = redirectTo;
-        const r = await cloud.auth.sendOtp(creds);
-        const errMsg = r?.error?.message || '';
-        // 只有「回跳域名未登记」才换下一个候选；其它结果（含 SDK 固定的
-        // verification_id 误报，那时邮件已发出）立即返回，避免重复发信
-        if (r?.error && /registered domain|redirect target/i.test(errMsg)) {
-          domainErr = errMsg;
-          continue;
-        }
-        res = r;
-        break;
-      }
-      if (!res) {
-        return {
-          ok: false,
-          message: `发送失败：邮件回跳地址未在云应用登记（${domainErr || '未知原因'}）`,
-        };
-      }
-      if (res?.error) {
-        const errMsg = res.error.message || '';
-        // 邮箱分支固定误报这条；邮件已发，视为「链接已发送」
-        if (/verification_id/i.test(errMsg)) {
-          return { ok: true, magicLink: true, message: buildEmailSentMessage() };
-        }
-        return { ok: false, message: `发送失败：${errMsg || '未知错误'}` };
-      }
-      // 理论上海箱分支不会回传 verification_id；若极端情况下回了，则走与手机一致的验码流程
-      const c: any = res?.data;
-      if (!c?.verificationId) {
-        return { ok: true, magicLink: true, message: buildEmailSentMessage() };
-      }
-      challenge = {
-        verificationId: String(c.verificationId),
-        isExistingUser: Boolean(c.isExistingUser),
-      };
+      challenge = { verificationId: jwt, isExistingUser: isUser };
     }
 
     pendingChallenge = {
@@ -302,11 +338,11 @@ export async function sendCloudOtp(input: {
       identifier,
     };
     persistChallenge(pendingChallenge);
+    const emailHint =
+      '验证码已发送：请复制邮件里「确认邮箱并登录」按钮的链接网址，把其中 verificationCode= 后的 6 位数字填到下方，再点「连接云端并同步」。请在同一浏览器内完成；若在同一浏览器点开邮件链接，应用也会自动登录。若收到两封邮件，请用最后一封';
     return {
       ok: true,
-      message: phone
-        ? '验证码已发送，请查收短信'
-        : '验证码已发送，请查收邮件（邮件里点确认按钮即可，无需手输）',
+      message: phone ? '验证码已发送，请查收短信' : appendLocalPreviewHint(emailHint),
       verificationId: pendingChallenge.verificationId,
       isExistingUser: pendingChallenge.isExistingUser,
     };
@@ -317,7 +353,7 @@ export async function sendCloudOtp(input: {
 
 /**
  * 调用 SDK 的 `verifyOtp` 完成登录 / 注册，并做本地收尾（建镜像用户、标记、切分片）。
- * 手机验证码（依赖发码时建立的 pendingChallenge）与邮箱验证码回调（依赖 URL 里的 env_id）
+ * 手机验证码与邮箱验证码回调（都依赖发码时持久化的 JWT verificationId）
  * 共用同一套「调 SDK + 建本地镜像」逻辑，避免重复。
  */
 async function runVerifyOtp(params: {
@@ -439,25 +475,18 @@ async function finishCloudSignIn(account: CloudAccount): Promise<void> {
  * 实测链接形如：
  *   /__auth/?email=...&env_id=wb-...&is_user=false&redirect_uri=...&verificationCode=147162&verifyOpt=email_code#/login
  * 托管层把 /__auth/ 回退到本 SPA，因此这些 query 参数在本页可读。
+ *
+ * ⚠️ 只取 email + verificationCode。`env_id` 是平台环境 ID，**不是** verification_id
+ * （后端会把它当 JWT 解析并报 malformed jwt: expected 3 parts got 1）；
+ * 真正的 verification_id 来自发码响应，已持久化在 ket-cloud-pending-challenge。
  */
-function readEmailCodeCallback(): {
-  email: string;
-  code: string;
-  verificationId: string;
-  isExistingUser: boolean;
-} | null {
+function readEmailCodeCallback(): { email: string; code: string } | null {
   try {
     const sp = new URLSearchParams(window.location.search);
     const email = sp.get('email');
     const code = sp.get('verificationCode');
-    const envId = sp.get('env_id');
-    if (!email || !code || !envId) return null;
-    return {
-      email,
-      code,
-      verificationId: envId,
-      isExistingUser: sp.get('is_user') === 'true',
-    };
+    if (!email || !code) return null;
+    return { email, code };
   } catch {
     return null;
   }
@@ -481,34 +510,54 @@ function cleanEmailCallbackParams(): void {
  * 应用启动时恢复云端会话 / 完成邮箱链接登录。
  *
  * 邮箱渠道：平台邮件只给「确认链接」按钮（正文无数字验证码），链接回跳时带着
- * `verificationCode` 与 `env_id`（验证会话 id）。这里取出二者直接走 verifyOtp 完成登录；
- * 失败时把后端原始错误写入 localStorage，由登录页展示，便于一次定位。
+ * `verificationCode`。真正的 `verification_id`（JWT）在**发码时**就已持久化，
+ * 这里把两者配对走 verifyOtp 完成登录；失败时把后端原始错误写入 localStorage，
+ * 由登录页展示，便于一次定位。
  *
  * 手机渠道 / 普通回访：直接读 SDK 已持久化的会话。
  */
 export async function restoreCloudSession(): Promise<boolean> {
   const cb = readEmailCodeCallback();
   if (cb) {
-    // 先落一份挑战 + 预填码，万一自动验码失败，用户仍可在登录页手动重试
-    persistChallenge({
-      verificationId: cb.verificationId,
-      isExistingUser: cb.isExistingUser,
-      identifier: cb.email,
-    });
+    // 预填邮箱 / 验证码，自动验码失败时用户仍可在登录页手动重试
     try {
       sessionStorage.setItem(PREFILL_EMAIL_KEY, cb.email);
       sessionStorage.setItem(PREFILL_CODE_KEY, cb.code);
     } catch {
       /* ignore */
     }
+    // 关键：verificationId 只能取发码响应里的 JWT，绝不能用链接里的 env_id
+    const pc = pendingChallenge ?? loadChallenge();
+    cleanEmailCallbackParams();
+    if (
+      !pc ||
+      !isJwtLike(pc.verificationId) ||
+      pc.identifier.toLowerCase() !== cb.email.toLowerCase()
+    ) {
+      // 带上具体原因，一次定位（最常见：邮件链接在另一个浏览器 / 邮箱 App 内打开，
+      // localStorage 与发码时不是同一份）
+      const why = !pc
+        ? '本机没有本次发码记录'
+        : !isJwtLike(pc.verificationId)
+          ? '本机发码凭据格式不是有效凭据'
+          : `发码邮箱与链接邮箱不一致（${pc.identifier} / ${cb.email}）`;
+      try {
+        localStorage.setItem(
+          LAST_ERROR_KEY,
+          `邮件链接已收到，但${why}（常见于邮件在另一个浏览器或邮箱 App 内打开）。请在本页点「重新发送」重新获取验证码，再把新邮件链接网址里 verificationCode= 后的 6 位数字填入下方，点「连接云端并同步」`,
+        );
+      } catch {
+        /* ignore */
+      }
+      return false;
+    }
 
     const r = await runVerifyOtp({
       email: cb.email,
-      verificationId: cb.verificationId,
+      verificationId: pc.verificationId,
       token: cb.code,
-      isExistingUser: cb.isExistingUser,
+      isExistingUser: pc.isExistingUser,
     });
-    cleanEmailCallbackParams();
     if (r.ok) {
       pendingChallenge = null;
       persistChallenge(null);

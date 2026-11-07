@@ -18,9 +18,12 @@ export default function LoginPage() {
   const [cloudPhone, setCloudPhone] = useState('');
   const [cloudEmail, setCloudEmail] = useState(prefill.email);
   const [cloudCode, setCloudCode] = useState(prefill.code);
-  const [otpSent, setOtpSent] = useState(Boolean(prefill.code));
+  // ⚠️ 预填验证码 **不代表** 本机已经发过码：邮件链接常在另一个浏览器 / 邮箱 App 内打开，
+  // 那边没有发码时持久化的凭据。若这里置 true 会禁用「获取验证码」，用户被红色提示
+  // 要求「重新获取」却点不了按钮 —— 死锁。因此永远从 false 开始。
+  const [otpSent, setOtpSent] = useState(false);
   const [cloudBusy, setCloudBusy] = useState(false);
-  // 上一次邮箱链接自动登录失败的后端原始错误（便于定位，不再静默回登录页）
+  // 上一次邮箱链接自动登录失败的原始错误（便于定位，不再静默回登录页）
   const [cloudMessage, setCloudMessage] = useState(() => takeLastCloudError() ?? '');
   const [cloudOk, setCloudOk] = useState(false);
   const [cloudConnected, setCloudConnected] = useState(isCloudConnected());
@@ -85,6 +88,13 @@ export default function LoginPage() {
     }
   };
 
+  const switchMode = (mode: 'phone' | 'email') => {
+    setCloudMode(mode);
+    setOtpSent(false);
+    setCloudMessage('');
+    setCloudOk(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
@@ -119,15 +129,17 @@ export default function LoginPage() {
             )}
           </div>
           <p className="text-xs text-indigo-600 mb-3">
-            手机号用短信验证码登录；邮箱收到邮件后请点「确认邮箱并登录」按钮，应用会自动完成登录（该邮件正文不含数字验证码，无需手输）。
-            连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步，换设备用同一账号即可拉回。
+            手机号用短信验证码登录。邮箱的确认邮件正文不含数字码：点「获取验证码」后，请复制邮件里
+            「确认邮箱并登录」按钮的链接网址，把其中「verificationCode=」后面的 6 位数字填到下方，
+            再点「连接云端并同步」。请在同一浏览器内完成。连接后，学习进度（做题记录、打卡、备考计划）
+            会在多台设备间自动同步，换设备用同一账号登录即可拉回。
           </p>
 
           {/* 手机号 / 邮箱 切换 */}
           <div className="flex gap-1 mb-2 p-1 bg-white/70 rounded-lg border border-indigo-200">
             <button
               type="button"
-              onClick={() => { setCloudMode('phone'); setOtpSent(false); }}
+              onClick={() => switchMode('phone')}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
                 cloudMode === 'phone' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
               }`}
@@ -136,7 +148,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => { setCloudMode('email'); setOtpSent(false); }}
+              onClick={() => switchMode('email')}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
                 cloudMode === 'email' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
               }`}
@@ -181,10 +193,10 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleSendOtp}
-                disabled={cloudBusy || otpSent}
+                disabled={cloudBusy}
                 className="px-3 py-2 rounded-lg text-sm font-semibold border border-indigo-300 text-indigo-700 bg-white hover:bg-indigo-50 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
-                {cloudBusy ? '发送中…' : otpSent ? '已发送' : '获取验证码'}
+                {cloudBusy ? '发送中…' : otpSent ? '重新发送' : '获取验证码'}
               </button>
             </div>
             <button
