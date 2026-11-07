@@ -2,19 +2,27 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { rehydrateAllStores } from '../store/rehydrateStores';
 import { syncNow } from '../utils/sync';
-import { sendCloudOtp, verifyCloudOtp, isCloudConnected } from '../utils/cloudAuth';
+import {
+  sendCloudOtp,
+  verifyCloudOtp,
+  isCloudConnected,
+  takeLastCloudError,
+  takeEmailPrefill,
+} from '../utils/cloudAuth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [cloudMode, setCloudMode] = useState<'phone' | 'email'>('phone');
+  // 邮件「确认邮箱并登录」按钮回跳时，取出链接里带回的验证码 / 邮箱预填
+  const [prefill] = useState(takeEmailPrefill);
+  const [cloudMode, setCloudMode] = useState<'phone' | 'email'>(prefill.email ? 'email' : 'phone');
   const [cloudPhone, setCloudPhone] = useState('');
-  const [cloudEmail, setCloudEmail] = useState('');
-  const [cloudCode, setCloudCode] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  const [cloudEmail, setCloudEmail] = useState(prefill.email);
+  const [cloudCode, setCloudCode] = useState(prefill.code);
+  const [otpSent, setOtpSent] = useState(Boolean(prefill.code));
   const [cloudBusy, setCloudBusy] = useState(false);
-  const [cloudMessage, setCloudMessage] = useState('');
+  // 上一次邮箱链接自动登录失败的后端原始错误（便于定位，不再静默回登录页）
+  const [cloudMessage, setCloudMessage] = useState(() => takeLastCloudError() ?? '');
   const [cloudOk, setCloudOk] = useState(false);
-  const [magicLink, setMagicLink] = useState(false);
   const [cloudConnected, setCloudConnected] = useState(isCloudConnected());
 
   /** 发送验证码（手机号或邮箱，由 cloudMode 决定） */
@@ -34,14 +42,7 @@ export default function LoginPage() {
           : await sendCloudOtp({ email: target });
       setCloudMessage(res.message);
       setCloudOk(res.ok);
-      if (res.ok) {
-        if (res.magicLink) {
-          // 邮箱魔法链接模式：不发验证码，提示去邮件点链接
-          setMagicLink(true);
-        } else {
-          setOtpSent(true);
-        }
-      }
+      if (res.ok) setOtpSent(true);
     } catch (err) {
       setCloudMessage('发送失败：' + String(err));
     } finally {
@@ -118,15 +119,15 @@ export default function LoginPage() {
             )}
           </div>
           <p className="text-xs text-indigo-600 mb-3">
-            用手机号或邮箱接收验证码即可连接云端。连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步。
-            一个手机号/邮箱对应一个小孩，换设备时用同一个账号登录，进度自动拉回。
+            手机号用短信验证码登录；邮箱收到邮件后请点「确认邮箱并登录」按钮，应用会自动完成登录（该邮件正文不含数字验证码，无需手输）。
+            连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步，换设备用同一账号即可拉回。
           </p>
 
           {/* 手机号 / 邮箱 切换 */}
           <div className="flex gap-1 mb-2 p-1 bg-white/70 rounded-lg border border-indigo-200">
             <button
               type="button"
-              onClick={() => { setCloudMode('phone'); setOtpSent(false); setMagicLink(false); }}
+              onClick={() => { setCloudMode('phone'); setOtpSent(false); }}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
                 cloudMode === 'phone' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
               }`}
@@ -135,7 +136,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => { setCloudMode('email'); setOtpSent(false); setMagicLink(false); }}
+              onClick={() => { setCloudMode('email'); setOtpSent(false); }}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${
                 cloudMode === 'email' ? 'bg-indigo-600 text-white' : 'text-indigo-700'
               }`}
@@ -144,33 +145,6 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {magicLink ? (
-            <div className="space-y-3">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
-                <p className="font-semibold mb-1">📧 登录链接已发送到邮箱</p>
-                <p>
-                  我们已把登录链接发送到 <span className="font-medium">{cloudEmail || '你的邮箱'}</span>。
-                  请打开邮件，点击其中的「确认登录」按钮，即可在本设备完成云端登录并同步学习进度。
-                </p>
-                <p className="mt-2 text-green-700/80">
-                  若收件箱没有，请检查垃圾邮件箱，或稍后重新获取。点击链接后会自动跳转回本应用并完成登录。
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setCloudMode('phone');
-                  setOtpSent(false);
-                  setMagicLink(false);
-                  setCloudMessage('');
-                  setCloudOk(false);
-                }}
-                className="w-full py-2 px-4 rounded-lg text-sm font-semibold border border-indigo-300 text-indigo-700 bg-white hover:bg-indigo-50"
-              >
-                改用手机号验证码登录
-              </button>
-            </div>
-          ) : (
           <form onSubmit={handleCloudLogin} className="space-y-2">
             {cloudMode === 'phone' ? (
               <input
@@ -225,7 +199,6 @@ export default function LoginPage() {
               {cloudBusy ? '连接中...' : cloudConnected ? '重新连接并同步' : '连接云端并同步'}
             </button>
           </form>
-          )}
         </div>
       </div>
     </div>

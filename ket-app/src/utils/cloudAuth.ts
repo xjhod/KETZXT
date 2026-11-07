@@ -20,17 +20,9 @@
 import { cloud } from './cloud';
 import { upsertCloudUser } from './auth';
 import { rehydrateAllStores } from '../store/rehydrateStores';
-import { CLOUD_ENDPOINT, CLOUD_PUBLISHABLE_KEY } from '../config/cloud';
 
 const SIGNED_IN_KEY = 'ket-cloud-signed-in';
 const LINKED_UID_KEY = 'ket-cloud-linked-uid';
-
-/**
- * SDK 持久化云端会话的 localStorage key（与 SDK 内部 SessionStore 一致：
- * `workbuddy-cloud.session.<publishableKey>`）。邮箱魔法链接回调时，SDK 自身没有
- * 对应的「完成登录」API，这里需要 best-effort 直接写入这个 key 来重建会话。
- */
-const SESSION_STORAGE_KEY = `workbuddy-cloud.session.${CLOUD_PUBLISHABLE_KEY}`;
 
 /** 云端登录状态 */
 export interface CloudAccount {
@@ -58,6 +50,58 @@ interface PendingChallenge {
 }
 
 let pendingChallenge: PendingChallenge | null = null;
+
+/** 发码挑战持久化：点邮件链接会重开/跳转页面，内存里的 pendingChallenge 会丢 */
+const PENDING_KEY = 'ket-cloud-pending-challenge';
+/** 邮箱链接自动验码失败时，把后端原始错误留给登录页展示（便于一次定位） */
+const LAST_ERROR_KEY = 'ket-cloud-last-error';
+const PREFILL_CODE_KEY = 'ket-cloud-prefill-code';
+const PREFILL_EMAIL_KEY = 'ket-cloud-prefill-email';
+
+function persistChallenge(c: PendingChallenge | null): void {
+  try {
+    if (c) localStorage.setItem(PENDING_KEY, JSON.stringify(c));
+    else localStorage.removeItem(PENDING_KEY);
+  } catch {
+    /* 隐私模式下 localStorage 不可用，忽略 */
+  }
+}
+
+function loadChallenge(): PendingChallenge | null {
+  try {
+    const raw = localStorage.getItem(PENDING_KEY);
+    if (!raw) return null;
+    const c = JSON.parse(raw) as PendingChallenge;
+    if (c && typeof c.verificationId === 'string' && typeof c.identifier === 'string') return c;
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+/** 取出并清除「上一次邮箱链接登录失败」的原始错误（登录页启动调用一次） */
+export function takeLastCloudError(): string | null {
+  try {
+    const v = localStorage.getItem(LAST_ERROR_KEY);
+    if (v) localStorage.removeItem(LAST_ERROR_KEY);
+    return v;
+  } catch {
+    return null;
+  }
+}
+
+/** 取出邮箱链接带回的验证码 / 邮箱，供登录页预填（手动重试用） */
+export function takeEmailPrefill(): { email: string; code: string } {
+  try {
+    const email = sessionStorage.getItem(PREFILL_EMAIL_KEY) ?? '';
+    const code = sessionStorage.getItem(PREFILL_CODE_KEY) ?? '';
+    sessionStorage.removeItem(PREFILL_EMAIL_KEY);
+    sessionStorage.removeItem(PREFILL_CODE_KEY);
+    return { email, code };
+  } catch {
+    return { email: '', code: '' };
+  }
+}
 
 /** 当前会话（没有会话返回 null） */
 export async function getCloudSession(): Promise<CloudAccount | null> {
@@ -173,43 +217,47 @@ export async function sendCloudOtp(input: {
         isExistingUser: Boolean(c.isExistingUser),
       };
     } else {
-      // 邮箱：直接命中 /v1/verification，请求体与手机同构（用 email 替代 phone_number、
-      // 同样带 target:'ANY'），让后端像手机一样回传 verification_id 并发送「数字验证码」，
-      // 彻底绕开 SDK 默认的 usage:'email' 魔法链接分支（它不发 verification_id，
-      // 导致客户端无法走验码登录）。之后完全复用手机的 verifyOtp 链路。
-      const res = await fetch(`${CLOUD_ENDPOINT}/v1/verification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-wb-webapp-access-key': CLOUD_PUBLISHABLE_KEY,
-        },
-        body: JSON.stringify({ email, target: 'ANY' }),
-      });
-      let payload: any = null;
+      // 邮箱：走 SDK 原生 sendOtp（usage:'email'）。后端据此发送「确认链接」邮件，
+      // 用户点链接 → 平台 /__auth/ 完成验证并写回本应用同源的云端会话，
+      // 应用启动时的 restoreCloudSession 会把该会话恢复为本地镜像用户。
+      // SDK 对邮箱分支刻意不回传 verification_id，会误报 "provider returned no verification_id"，
+      // 但邮件其实已发出 —— 这里当作「链接已发送」成功处理。
+      const sp = new URLSearchParams(window.location.search);
+      const sc = sp.get('sharecode') || 'ILJMMGGVHE';
+      const emailRedirectTo = `${window.location.origin}/?sharecode=${sc}`;
+      // 记住邮箱，邮件链接回跳后登录页自动回填
       try {
-        payload = await res.json();
+        sessionStorage.setItem(PREFILL_EMAIL_KEY, email);
       } catch {
-        /* 响应体非 JSON 时忽略，下面按失败处理 */
+        /* ignore */
       }
-      if (!res.ok || !payload || typeof payload !== 'object') {
-        const msg =
-          (payload && (payload.message || payload.error)) || `发送失败（HTTP ${res.status}）`;
-        return { ok: false, message: String(msg) };
+      const res = await cloud.auth.sendOtp({ email, emailRedirectTo });
+      if (res?.error) {
+        const errMsg = res.error.message || '';
+        // 邮箱分支固定误报这条；邮件已发，视为「链接已发送」
+        if (/verification_id/i.test(errMsg)) {
+          return {
+            ok: true,
+            magicLink: true,
+            message:
+              '登录邮件已发送：请打开邮件点「确认邮箱并登录」按钮，应用会自动完成登录（邮件正文不含数字验证码，无需手输）。收不到请检查垃圾邮件箱',
+          };
+        }
+        return { ok: false, message: `发送失败：${errMsg || '未知错误'}` };
       }
-      const verificationId =
-        typeof payload.verification_id === 'string' ? payload.verification_id : '';
-      if (!verificationId) {
-        // 兜底：后端仍走魔法链接、未回传 verification_id —— 降级为「去邮件点链接」
+      // 理论上海箱分支不会回传 verification_id；若极端情况下回了，则走与手机一致的验码流程
+      const c: any = res?.data;
+      if (!c?.verificationId) {
         return {
           ok: true,
           magicLink: true,
           message:
-            '登录链接已发送到邮箱，请查收邮件并点击"确认登录"按钮完成登录（若收件箱没有，请检查垃圾箱）',
+            '登录链接已发送到邮箱，请查收邮件并点击其中的「确认邮箱并登录」按钮完成登录（若收件箱没有，请检查垃圾邮件箱）',
         };
       }
       challenge = {
-        verificationId,
-        isExistingUser: Boolean(payload.is_user === true),
+        verificationId: String(c.verificationId),
+        isExistingUser: Boolean(c.isExistingUser),
       };
     }
 
@@ -218,11 +266,12 @@ export async function sendCloudOtp(input: {
       isExistingUser: challenge.isExistingUser,
       identifier,
     };
+    persistChallenge(pendingChallenge);
     return {
       ok: true,
       message: phone
         ? '验证码已发送，请查收短信'
-        : '验证码已发送，请查收邮件（若收不到请检查垃圾箱）',
+        : '验证码已发送，请查收邮件（邮件里点确认按钮即可，无需手输）',
       verificationId: pendingChallenge.verificationId,
       isExistingUser: pendingChallenge.isExistingUser,
     };
@@ -246,7 +295,12 @@ async function runVerifyOtp(params: {
   try {
     const res = await cloud.auth.verifyOtp(params as any);
     if (res?.error) {
-      return { ok: false, message: `验证失败：${res.error.message || '验证码错误'}` };
+      const e: any = res.error;
+      // 带上 kind / status，邮箱链接验码失败时登录页会把后端原始错误显示出来，便于定位
+      const detail = [e.message, e.kind ? `[${e.kind}]` : '', e.status ? `HTTP ${e.status}` : '']
+        .filter(Boolean)
+        .join(' ');
+      return { ok: false, message: `验证失败：${detail || '验证码错误'}` };
     }
     const session: any = res.data; // CloudSession
     const user: any = session?.user ?? {};
@@ -295,64 +349,23 @@ export async function verifyCloudOtp(token: string): Promise<{
   if (!code) {
     return { ok: false, message: '请输入验证码' };
   }
-  if (!pendingChallenge) {
+  // 邮箱链接回跳会重开页面，内存挑战丢失时从 localStorage 恢复
+  const pc = pendingChallenge ?? loadChallenge();
+  if (!pc) {
     return { ok: false, message: '请先点击「获取验证码」' };
   }
-  const { verificationId, isExistingUser, identifier } = pendingChallenge;
+  const { verificationId, isExistingUser, identifier } = pc;
   const params: any = { verificationId, token: code, isExistingUser };
   // 验码必须传回与发码一致的标识（手机号或邮箱）
   if (identifier.includes('@')) params.email = identifier;
   else params.phone = identifier;
 
   const result = await runVerifyOtp(params);
-  pendingChallenge = null;
-  return result;
-}
-
-/**
- * 解析邮箱验证码回调：点邮件里的「确认登录」链接跳回
- *   /__auth/?email=...&env_id=...&is_user=false&redirect_uri=...&verificationCode=147162&verifyOpt=email_code#/login
- * 后端把验证会话 ID 以 `env_id` 形式放进链接（SDK 的 sendOtp 响应未回传它，只能从这里取），
- * `verificationCode` 即验证码，`is_user` 表示是否已有账号（决定走登录还是注册）。
- */
-function readEmailCodeCallback(): {
-  email: string;
-  code: string;
-  verificationId: string;
-  isExistingUser: boolean;
-} | null {
-  try {
-    const sp = new URLSearchParams(window.location.search);
-    const email = sp.get('email');
-    const code = sp.get('verificationCode');
-    const envId = sp.get('env_id');
-    const verifyOpt = sp.get('verifyOpt');
-    if (!email || !code || !envId) return null;
-    // 仅处理明确的邮箱验证码回调；其它 verifyOpt 不在这里接管
-    if (verifyOpt && verifyOpt !== 'email_code') return null;
-    const isUserRaw = sp.get('is_user');
-    return {
-      email,
-      code,
-      verificationId: envId,
-      isExistingUser: isUserRaw === 'true',
-    };
-  } catch {
-    return null;
+  if (result.ok) {
+    pendingChallenge = null;
+    persistChallenge(null);
   }
-}
-
-/**
- * 用邮件链接回调里的验证码完成登录（邮箱渠道专用，不依赖 pendingChallenge）。
- * 把链接里的 `env_id` 当作 verificationId 传给 SDK 的 verifyOtp。
- */
-async function verifyCloudOtpFromEmailLink(
-  email: string,
-  code: string,
-  verificationId: string,
-  isExistingUser: boolean,
-): Promise<{ ok: boolean; message: string; account?: CloudAccount }> {
-  return runVerifyOtp({ email, verificationId, token: code, isExistingUser });
+  return result;
 }
 
 /** 退出云端登录（只解除本机，不删云端数据） */
@@ -386,170 +399,103 @@ async function finishCloudSignIn(account: CloudAccount): Promise<void> {
   await rehydrateAllStores();
 }
 
-/** 解码 base64url（兼容 UTF-8，如中文昵称） */
-function base64UrlDecode(str: string): string {
-  const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
-  const bin = atob(b64);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return new TextDecoder().decode(bytes);
-}
-
 /**
- * 从 URL 的 hash / query 读取隐式授权令牌（邮箱魔法链接回调大概率走这个）。
- * Gotrue 风格的魔法链接点击后，服务端会重定向回 emailRedirectTo 并在 URL 的
- * fragment / query 里带上 access_token / refresh_token / expires_in。
+ * 读取邮件「确认邮箱并登录」按钮回跳时 URL 上的参数。
+ * 实测链接形如：
+ *   /__auth/?email=...&env_id=wb-...&is_user=false&redirect_uri=...&verificationCode=147162&verifyOpt=email_code#/login
+ * 托管层把 /__auth/ 回退到本 SPA，因此这些 query 参数在本页可读。
  */
-function readImplicitGrantFromUrl(): {
-  accessToken: string;
-  refreshToken?: string;
-  expiresIn?: number;
-  exp?: number;
-  sub: string;
-  name?: string | null;
-  avatarUrl?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  raw?: Record<string, unknown>;
+function readEmailCodeCallback(): {
+  email: string;
+  code: string;
+  verificationId: string;
+  isExistingUser: boolean;
 } | null {
-  const fromHash = (() => {
-    const h = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
-    // 去掉 HashRouter 可能遗留的前导斜杠（如 #/access_token=...）
-    return new URLSearchParams(h.replace(/^\/+/, ''));
-  })();
-  const fromSearch = new URLSearchParams(window.location.search);
-  const params = fromHash.has('access_token')
-    ? fromHash
-    : fromSearch.has('access_token')
-      ? fromSearch
-      : null;
-  if (!params) return null;
-  const accessToken = params.get('access_token');
-  if (!accessToken) return null;
-  const refreshToken = params.get('refresh_token') ?? undefined;
-  const expiresInRaw = params.get('expires_in');
-  const expiresIn = expiresInRaw ? Number(expiresInRaw) : undefined;
-
-  let claims: Record<string, unknown> = {};
-  try {
-    const part = accessToken.split('.')[1];
-    if (part) claims = JSON.parse(base64UrlDecode(part));
-  } catch {
-    claims = {};
-  }
-  const sub = claims.sub ?? claims.user_id;
-  if (!sub || typeof sub !== 'string') return null;
-  return {
-    accessToken,
-    refreshToken,
-    expiresIn: typeof expiresIn === 'number' && !Number.isNaN(expiresIn) ? expiresIn : undefined,
-    exp: typeof claims.exp === 'number' ? claims.exp : undefined,
-    sub,
-    name: (claims.name as string) ?? (claims.nickname as string) ?? null,
-    avatarUrl: (claims.avatar_url as string) ?? (claims.picture as string) ?? null,
-    email: (claims.email as string) ?? null,
-    phone: (claims.phone_number as string) ?? (claims.phone as string) ?? null,
-    raw: claims,
-  };
-}
-
-/** 清掉 URL 里的 auth 令牌/参数，避免污染 HashRouter 路由（保留 sharecode 等业务参数） */
-function cleanAuthParamsFromUrl(): void {
   try {
     const sp = new URLSearchParams(window.location.search);
-    [
-      'code', 'state', 'provider', 'provider_id',
-      'access_token', 'refresh_token', 'expires_in', 'token_type',
-      // 邮箱验证码回调参数：避免刷新重复触发 / 污染 HashRouter
-      'email', 'verificationCode', 'env_id', 'is_user', 'verifyOpt', 'redirect_uri',
-    ].forEach((k) => sp.delete(k));
-    const search = sp.toString();
-    // 回到应用根路径（脱离 /__auth/ 中转路径），保留 sharecode 等业务参数
-    const newUrl = '/' + (search ? `?${search}` : '') + '#/';
-    history.replaceState(null, '', newUrl);
+    const email = sp.get('email');
+    const code = sp.get('verificationCode');
+    const envId = sp.get('env_id');
+    if (!email || !code || !envId) return null;
+    return {
+      email,
+      code,
+      verificationId: envId,
+      isExistingUser: sp.get('is_user') === 'true',
+    };
   } catch {
-    /* 忽略：清不掉也不影响登录 */
+    return null;
+  }
+}
+
+/** 清掉邮件回跳参数，避免刷新重复触发（保留 sharecode，回到根路径） */
+function cleanEmailCallbackParams(): void {
+  try {
+    const sp = new URLSearchParams(window.location.search);
+    ['email', 'verificationCode', 'env_id', 'is_user', 'verifyOpt', 'redirect_uri'].forEach((k) =>
+      sp.delete(k),
+    );
+    const s = sp.toString();
+    history.replaceState(null, '', '/' + (s ? `?${s}` : '') + '#/login');
+  } catch {
+    /* ignore */
   }
 }
 
 /**
- * 应用启动时恢复云端会话，并处理邮箱魔法链接回调。
+ * 应用启动时恢复云端会话 / 完成邮箱链接登录。
  *
- * 流程：
- *   1) 已有会话（普通回访）→ 直接复用；
- *   2) best-effort：从 URL 读隐式授权令牌（邮箱魔法链接点开后的回调）。
- *      SDK 自身没有提供处理邮箱魔法链接的 API，这里自行解析 JWT 并重建 SDK 的
- *      localStorage 会话（key = `workbuddy-cloud.session.<publishableKey>`），
- *      使之能被 getCloudSession 读到；
- *   3) 仍未恢复 → 正常未登录。
+ * 邮箱渠道：平台邮件只给「确认链接」按钮（正文无数字验证码），链接回跳时带着
+ * `verificationCode` 与 `env_id`（验证会话 id）。这里取出二者直接走 verifyOtp 完成登录；
+ * 失败时把后端原始错误写入 localStorage，由登录页展示，便于一次定位。
  *
- * 返回 true 表示已恢复 / 建立了云端会话（并已建好本地镜像用户）。
+ * 手机渠道 / 普通回访：直接读 SDK 已持久化的会话。
  */
 export async function restoreCloudSession(): Promise<boolean> {
-  // 0) 邮箱验证码回调：点邮件里的「确认登录」链接跳回
-  //    /__auth/?...&verificationCode=...&env_id=...&verifyOpt=email_code
-  //    后端把验证会话 ID 以 env_id 形式放进链接（sendOtp 响应未回传它），这里取出直接验码登录。
-  const emailCb = readEmailCodeCallback();
-  if (emailCb) {
-    const r = await verifyCloudOtpFromEmailLink(
-      emailCb.email,
-      emailCb.code,
-      emailCb.verificationId,
-      emailCb.isExistingUser,
-    );
-    // 无论成败都清掉 URL 参数（避免刷新重复触发、脱离 /__auth/ 中转路径）
-    cleanAuthParamsFromUrl();
-    if (r.ok) return true;
-    return false; // 链接失效则回登录页，让用户重新获取验证码
+  const cb = readEmailCodeCallback();
+  if (cb) {
+    // 先落一份挑战 + 预填码，万一自动验码失败，用户仍可在登录页手动重试
+    persistChallenge({
+      verificationId: cb.verificationId,
+      isExistingUser: cb.isExistingUser,
+      identifier: cb.email,
+    });
+    try {
+      sessionStorage.setItem(PREFILL_EMAIL_KEY, cb.email);
+      sessionStorage.setItem(PREFILL_CODE_KEY, cb.code);
+    } catch {
+      /* ignore */
+    }
+
+    const r = await runVerifyOtp({
+      email: cb.email,
+      verificationId: cb.verificationId,
+      token: cb.code,
+      isExistingUser: cb.isExistingUser,
+    });
+    cleanEmailCallbackParams();
+    if (r.ok) {
+      pendingChallenge = null;
+      persistChallenge(null);
+      try {
+        localStorage.removeItem(LAST_ERROR_KEY);
+      } catch {
+        /* ignore */
+      }
+      return true;
+    }
+    try {
+      localStorage.setItem(LAST_ERROR_KEY, r.message);
+    } catch {
+      /* ignore */
+    }
+    return false;
   }
 
-  // 1) 已有会话（普通回访），直接复用
   const existing = await getCloudSession();
   if (existing) {
     await finishCloudSignIn(existing);
     return true;
   }
-
-  // 2) best-effort：从 URL 读隐式授权令牌（邮箱魔法链接回调）
-  const token = readImplicitGrantFromUrl();
-  if (token) {
-    try {
-      // 计算过期时间：优先用 expires_in；没有 refreshToken 时强制给 1 小时，
-      // 避免 SDK 的 ensure() 因「即将过期且无 refreshToken」直接 abandon 会话。
-      let expiresAt: number;
-      if (token.refreshToken && token.expiresIn && token.expiresIn > 0) {
-        expiresAt = Date.now() + token.expiresIn * 1000;
-      } else if (token.exp && token.exp > 0) {
-        expiresAt = token.exp * 1000;
-      } else {
-        expiresAt = Date.now() + 3600_000;
-      }
-      const stored = {
-        accessToken: token.accessToken,
-        refreshToken: token.refreshToken ?? '',
-        expiresAt,
-        user: {
-          id: token.sub,
-          name: token.name ?? null,
-          avatarUrl: token.avatarUrl ?? null,
-          isAnonymous: false,
-          email: token.email ?? null,
-          phone: token.phone ?? null,
-          raw: token.raw ?? {},
-        },
-      };
-      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(stored));
-      cleanAuthParamsFromUrl();
-    } catch {
-      /* 重建失败则当作未登录 */
-    }
-    const restored = await getCloudSession();
-    if (restored) {
-      await finishCloudSignIn(restored);
-      return true;
-    }
-  }
-
-  // 3) 仍未恢复，正常未登录
   return false;
 }
