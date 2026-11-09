@@ -9,6 +9,9 @@ import {
   makeRecallSegments,
   makeSoundChunks,
   onsetChunk,
+  phonicsHints,
+  SOUND_RULES,
+  MORPHEME_RULES,
   MORPHEME_OVERRIDES,
   splitMorphemes,
   type WordAnalysis,
@@ -17,6 +20,7 @@ import type { VocabBox, VocabWordProgress, Word } from '../types';
 import {
   buildPlacementSample, buildTodayQueue, buildPassage, themeCounts,
   isDictationCorrect, REVIEW_PER_DAY, NEW_PER_DAY,
+  buildMeaningOptions, clampDailyCount, DAILY_NEW_OPTIONS, DAILY_REVIEW_OPTIONS,
 } from '../utils/vocabSession';
 import { applyDictation, emptyProgress, addDays } from '../utils/vocabSchedule';
 import { buildContextQuestions, blankSentence } from '../utils/contextQuestions';
@@ -273,6 +277,61 @@ if (makeRecallSegments('beautiful').join('') !== 'beautiful') failures.push('rec
 if (!onsetStable) failures.push('onset options not deterministic');
 if (cWithStress < 100) failures.push('C stress reference coverage too low');
 if (byRoute.B.filter((a) => a.reason === 'manual-morpheme').length < 2) failures.push('manual compound overrides never took effect');
+
+// ---- 2026-11-09 新增：拼读规则卡 / 词义四选一 / 每日词量 ----
+const ruleTexts = [...Object.values(SOUND_RULES), ...Object.values(MORPHEME_RULES)];
+if (ruleTexts.some((t) => /[\/\[\]ˈˌːəɪæɒɔʊʌɜ]/.test(t))) {
+  failures.push('phonics rule text contains IPA symbols (IPA must stay a reference layer)');
+}
+if (ruleTexts.some((t) => !t.includes('。') || t.length < 12)) {
+  failures.push('phonics rule text missing period or too short');
+}
+const hintCounts: Record<string, number> = { A: 0, B: 0, C: 0 };
+const hintProblems: string[] = [];
+for (const a of analyses) {
+  const hs = phonicsHints(a);
+  if (a.route === 'C' && hs.length) hintProblems.push(`C route got rule card: ${a.en}`);
+  if (hs.length) hintCounts[a.route]++;
+  if (hs.length > 3) hintProblems.push(`too many hints: ${a.en}`);
+  for (const h of hs) {
+    if (!h.chunk || !h.text) hintProblems.push(`empty hint: ${a.en}`);
+    if (h.kind !== (a.route === 'A' ? 'sound' : 'morpheme')) hintProblems.push(`hint kind mismatch: ${a.en}`);
+  }
+}
+if (hintProblems.length) failures.push('phonics hints broken: ' + hintProblems.slice(0, 5).join(','));
+if (hintCounts.A + hintCounts.B < 100) failures.push('phonics rule cards cover too few words');
+console.log('PHONICS_HINTS', JSON.stringify(hintCounts), 'RULE_ENTRIES', ruleTexts.length);
+
+const themeIdOf = new Map<string, string>();
+for (const t of allThemes) for (const w of t.words) if (!themeIdOf.has(w.id)) themeIdOf.set(w.id, t.id);
+const allZh = new Set(words.map((w) => (w.zh || '').trim()).filter(Boolean));
+const fakeItem = (w: Word) => ({
+  word: w, themeId: themeIdOf.get(w.id) ?? '', themeZh: '',
+  analysis: analyzeWord(w, wordForms), kind: 'new', box: 1, hintLevel: 1,
+  progress: null, relatives: [], drill: null,
+} as any);
+const meaningProblems: string[] = [];
+for (const w of words) {
+  const opts = buildMeaningOptions(fakeItem(w), 4);
+  if (opts.length !== 4) { meaningProblems.push(`option count ${opts.length}: ${w.en}`); continue; }
+  if (opts.filter((o) => o === (w.zh || '').trim()).length !== 1) meaningProblems.push(`correct not unique: ${w.en}`);
+  if (new Set(opts).size !== 4) meaningProblems.push(`duplicate options: ${w.en}`);
+  for (const o of opts) if (!allZh.has(o)) meaningProblems.push(`fabricated zh: ${w.en} -> ${o}`);
+  if (buildMeaningOptions(fakeItem(w), 4).join('|') !== opts.join('|')) meaningProblems.push(`not deterministic: ${w.en}`);
+}
+if (meaningProblems.length) failures.push('meaning options broken: ' + meaningProblems.slice(0, 5).join(','));
+console.log('MEANING_OPTIONS', 'words=' + words.length, 'problems=' + meaningProblems.length);
+
+if (clampDailyCount(undefined, 6, DAILY_NEW_OPTIONS) !== 6) failures.push('daily count fallback failed');
+if (clampDailyCount(999, 6, DAILY_NEW_OPTIONS) !== 6) failures.push('daily count out-of-range fallback failed');
+if (clampDailyCount('8', 6, DAILY_NEW_OPTIONS) !== 8) failures.push('daily count numeric string failed');
+if (clampDailyCount(NaN, 6, DAILY_NEW_OPTIONS) !== 6) failures.push('daily count NaN fallback failed');
+const qDefault = buildTodayQueue({ words: {}, currentThemeId: allThemes[0].id, today: '2026-11-09' });
+const qCustom = buildTodayQueue({ words: {}, currentThemeId: allThemes[0].id, today: '2026-11-09', dailyNew: 10, dailyReview: 12 });
+if (qDefault.dailyNew !== 6 || qDefault.dailyReview !== 8 || qDefault.fresh.length !== 6) failures.push('daily count default drifted');
+if (qCustom.dailyNew !== 10 || qCustom.dailyReview !== 12 || qCustom.fresh.length !== 10) failures.push('daily count override not applied');
+console.log('DAILY_COUNTS', `default=${qDefault.dailyNew}/${qDefault.dailyReview}`,
+  `custom=${qCustom.fresh.length}/${qCustom.dailyReview}`);
 
 console.log('ASSERTIONS', failures.length === 0 ? 'PASS' : 'FAIL');
 if (failures.length) {

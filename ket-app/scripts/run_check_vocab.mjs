@@ -71,6 +71,29 @@ if (report.uniqueWordsNotInCurrent !== 155 || report.sharedWithCurrent !== 404) 
   outerFailures.push('legacy report numbers drifted');
 }
 
+// ---- 2026-11-09：规则卡 / 词义四选一 / 每日词量的静态接线护栏 ----
+const page = readFileSync('src/pages/VocabToday.tsx', 'utf8');
+const storeSrc = readFileSync('src/store/useVocabStore.ts', 'utf8');
+const syncSrc = readFileSync('src/utils/sync.ts', 'utf8');
+const chunksSrc = readFileSync('src/utils/wordChunks.ts', 'utf8');
+const sessionSrc = readFileSync('src/utils/vocabSession.ts', 'utf8');
+const wiring = [
+  ['规则卡接入第 3 步', /<RuleCards hints=\{hints\} word=\{word\} \/>/.test(page)],
+  ['C 类明确不给拼读规则', /所以这一步不给拼读规则/.test(page)],
+  ['词义四选一接入第 4 步', /再认一次：这个词是什么意思？/.test(page) && /buildMeaningOptions/.test(page)],
+  ['选词义不进判定', /选词义不进记忆盒子/.test(page)],
+  ['每日词量下拉接入', /每日新词/.test(page) && /每日复习/.test(page) && /setDailyCounts/.test(page)],
+  ['规则表是白名单', /export const SOUND_RULES/.test(chunksSrc) && /export const MORPHEME_RULES/.test(chunksSrc)],
+  ['词义选项来自真实词库', /export function buildMeaningOptions/.test(sessionSrc) && /allThemes/.test(sessionSrc)],
+  ['store 持久化每日词量', /dailyCountsUpdatedAt/.test(storeSrc) && /setDailyCounts/.test(storeSrc)],
+  ['同步包合并每日词量', /useRemoteDaily/.test(syncSrc) && /dailyCountsUpdatedAt/.test(syncSrc)],
+  ['旧写死文案已移除', !/每轮 6 新词 \/ 8 复习/.test(page)],
+];
+for (const [name, passed] of wiring) {
+  console.log('WIRING', passed ? 'OK  ' : 'FAIL', name);
+  if (!passed) outerFailures.push('wiring: ' + name);
+}
+
 const ok = result.failures.length === 0 && outerFailures.length === 0;
 console.log('CHECK SCRIPT FINISHED', ok ? 'PASS' : 'FAIL');
 if (outerFailures.length) for (const f of outerFailures) console.log('OUTER_FAIL:', f);

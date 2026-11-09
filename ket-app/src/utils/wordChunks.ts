@@ -450,3 +450,80 @@ export function buildCListeningDrill(word: Word, candidateForms: readonly string
     recallSegments: makeRecallSegments(word.en),
   };
 }
+
+// ---- 拼读规则卡（补「学」层，2026-11-09）----
+//
+// 参考商用 App 的「先讲规则」一步，但只做零素材的文本规则卡：
+//   · 只对 A/B 类给出规则；C 类一律返回空数组（按音推形会教错）
+//   · 描述用「常 / 多数 / 跟着录音核对」，不写确定音值、不要求背 IPA 符号
+//   · 不含词库外的举例词、例句或音频；核对读音一律复用已有整词 mp3
+//   · 字母块按白名单分组，组文案人工核过；未命中就不显示规则卡
+export interface PhonicsHint {
+  /** 卡片上显示的字母块（silent-e 显示「词尾 e」） */
+  chunk: string;
+  text: string;
+  kind: 'sound' | 'morpheme';
+}
+
+function ruleMap(keys: readonly string[], text: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const k of keys) out[k] = text;
+  return out;
+}
+
+function ruleMapFn(keys: readonly string[], fn: (k: string) => string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const k of keys) out[k] = fn(k);
+  return out;
+}
+
+const CONSONANT_TEAMS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'gh', 'kn', 'wr'];
+const VOWEL_TEAMS = ['ee', 'oa', 'ai', 'oi', 'oy', 'ie', 'au', 'aw', 'ew', 'ey', 'oe', 'ue', 'ui', 'ei', 'al'];
+const R_TEAMS = ['ar', 'er', 'ir', 'or', 'ur'];
+const TRIGRAPH_TEAMS = ['tch', 'dge', 'eigh', 'air', 'are', 'ere', 'ire', 'ore', 'ure'];
+const DOUBLE_TEAMS = ['ss', 'll', 'ff', 'zz'];
+
+/** A 类：字母块 → 一条可读性说明。未被列出的字母块不给规则，避免编造 */
+export const SOUND_RULES: Readonly<Record<string, string>> = Object.freeze({
+  ...ruleMap(CONSONANT_TEAMS, '这几个字母合起来只发一个音，别拆开逐个读；点整词录音核对一遍。'),
+  ...ruleMap(VOWEL_TEAMS, '两个元音字母常合起来发一个音，别逐个读；点整词录音核对一遍。'),
+  ...ruleMap(R_TEAMS, '元音加 r 会改变读音，英式美式还不一样；跟着整词录音读，拼写靠这一整块记。'),
+  ...ruleMap(TRIGRAPH_TEAMS, '三个字母合起来发一个音，当作一整块记；点整词录音核对一遍。'),
+  ...ruleMap(DOUBLE_TEAMS, '两个相同辅音字母写在一起，通常只发一个音；写的时候别漏掉一个。'),
+  ...ruleMap(['ea', 'oo', 'ou', 'ow'], '这个字母组合有不止一种读法，别硬套规则；跟着整词录音读，拼写单独记。'),
+  ay: 'ay 常出现在词尾，读的是字母 A 的名称音；跟着整词录音核对一遍。',
+  igh: 'igh 里的 gh 不发音，三个字母一起读字母 I 的名称音。',
+  'silent-e': '词尾的 e 不发音，但会让前面的元音读成字母名称音；写的时候别漏掉这个 e。',
+});
+
+/** B 类：词素 → 一条结构说明。词干本身是记忆主体，不单独给规则 */
+export const MORPHEME_RULES: Readonly<Record<string, string>> = Object.freeze({
+  ...ruleMapFn(PREFIXES, (p) => `${p}- 是常见前缀：先把这一整块写下，再写后面的部分。`),
+  ...ruleMapFn(SUFFIXES, (s) => `-${s} 是常见后缀：整块一起记拼写，别按弱读的音去推字母。`),
+  ...ruleMap(
+    ['tion', 'sion', 'ation', 'ition', 'ious', 'ally'],
+    '这类后缀读音会压缩成一个轻音节，拼写按整块记，不靠音标推。'
+  ),
+});
+
+/** 按词结构派生规则卡；最多 3 条，C 类恒为空 */
+export function phonicsHints(analysis: WordAnalysis): PhonicsHint[] {
+  if (analysis.route === 'C' || analysis.chunkKind === 'none') return [];
+  const table = analysis.chunkKind === 'sound' ? SOUND_RULES : MORPHEME_RULES;
+  const out: PhonicsHint[] = [];
+  const seen = new Set<string>();
+  for (const c of analysis.chunks) {
+    if (c.kind === 'letter' || c.kind === 'stem') continue;
+    const key = c.kind === 'silent-e' ? 'silent-e' : c.text.toLowerCase();
+    const text = table[key];
+    if (!text || seen.has(key)) continue;
+    seen.add(key);
+    out.push({
+      chunk: c.kind === 'silent-e' ? '词尾 e' : c.text,
+      text,
+      kind: analysis.chunkKind === 'sound' ? 'sound' : 'morpheme',
+    });
+    if (out.length >= 3) break;
+  }
+  return out;
+}

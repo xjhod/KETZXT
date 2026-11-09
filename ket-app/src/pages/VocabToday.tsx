@@ -23,14 +23,15 @@ import {
   buildPlacementSample,
   buildTodayQueue,
   buildPassage,
+  buildMeaningOptions,
   isDictationCorrect,
-  NEW_PER_DAY,
-  REVIEW_PER_DAY,
+  DAILY_NEW_OPTIONS,
+  DAILY_REVIEW_OPTIONS,
   ONSET_CANDIDATE_FORMS,
   type VocabQueueItem,
   type VocabTodayQueue,
 } from '../utils/vocabSession';
-import { buildCListeningDrill } from '../utils/wordChunks';
+import { buildCListeningDrill, phonicsHints, type PhonicsHint } from '../utils/wordChunks';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 type Phase = 'placement' | 'overview' | 'review' | 'learn' | 'passage' | 'result';
@@ -116,6 +117,28 @@ function LearnStepDots({ current }: { current: number }) {
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+/** 拼读规则卡：只给 A/B 类，C 类无卡片；核对读音复用同一条整词 mp3 */
+function RuleCards({ hints, word }: { hints: PhonicsHint[]; word: Word }) {
+  if (hints.length === 0) return null;
+  return (
+    <div className="mt-4 p-3 bg-emerald-50 rounded-xl">
+      <p className="text-sm font-medium text-gray-700 mb-2">
+        {hints[0].kind === 'sound' ? '先看一条拼读规律' : '先看这个词的结构'}
+      </p>
+      <div className="space-y-2">
+        {hints.map((h) => (
+          <div key={h.chunk} className="flex items-start gap-2 bg-white/80 rounded-lg px-3 py-2">
+            <span className="font-mono text-sm font-semibold text-emerald-800 shrink-0">{h.chunk}</span>
+            <span className="text-xs text-gray-600 leading-relaxed">{h.text}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-2"><PlayButton word={word} label="🔊 听整词核对" /></div>
+      <p className="text-xs text-gray-400 mt-2">规律只是提示，有例外；听写写对才算记住。</p>
     </div>
   );
 }
@@ -249,6 +272,9 @@ function LearnFlow({
   const [beat, setBeat] = useState<number | null>(null);
   const [stress, setStress] = useState<number | null>(null);
   const [onset, setOnset] = useState<string | null>(null);
+  const [meaningHidden, setMeaningHidden] = useState(false);
+  const [meaningChoice, setMeaningChoice] = useState<string | null>(null);
+  const meaningOptions = useMemo(() => buildMeaningOptions(item), [item]);
 
   const withBeats = analysis.route === 'C';
   const hasStress = withBeats && drill.stressReference !== null;
@@ -394,6 +420,7 @@ function LearnFlow({
   // ---- 第 3 步：露形配块（按路由分流，这一步才第一次出现词形）----
   if (step === 3) {
     const badge = { A: '听音分块', B: '词素与词族', C: '整体记忆' }[analysis.route];
+    const hints = phonicsHints(analysis);
     return (
       <div className="card">
         <p className="text-xs text-gray-400 mb-1">第 3 步 · 露形配块</p>
@@ -410,6 +437,8 @@ function LearnFlow({
           <SlowPlayButton word={word} />
           <span className="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700">{badge}</span>
         </div>
+
+        <RuleCards hints={hints} word={word} />
 
         {analysis.route === 'A' && (
           <>
@@ -452,7 +481,7 @@ function LearnFlow({
           <div className="mt-4 space-y-3">
             <div className="p-3 bg-gray-50 rounded-xl">
               <p className="text-sm font-medium text-gray-700">这个拼法要单独记</p>
-              <p className="text-xs text-gray-500 mt-1">音和形对不上的词（弱读、不发音字母、固定搭配），别硬按音推。先听整词、把长词听成几段，再凭记忆写。</p>
+              <p className="text-xs text-gray-500 mt-1">音和形对不上的词（弱读、不发音字母、固定搭配），别硬按音推，所以这一步不给拼读规则。先听整词、把长词听成几段，再凭记忆写。</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-xl">
               <p className="text-sm font-medium text-gray-700">记字形：分成 {drill.recallSegments.length} 段来记</p>
@@ -486,7 +515,7 @@ function LearnFlow({
 
       <div className="flex items-baseline gap-3 flex-wrap">
         <span className="text-2xl font-semibold text-gray-800 font-mono">{word.en}</span>
-        <span className="text-lg text-gray-600">{word.zh}</span>
+        <span className="text-lg text-gray-600">{meaningHidden ? '••••' : word.zh}</span>
       </div>
       <div className="flex flex-wrap gap-2 mt-2">
         <PlayButton word={word} />
@@ -503,6 +532,46 @@ function LearnFlow({
           🔊 读句子
         </button>
       </div>
+
+      {meaningOptions.length >= 2 && (
+        <div className="mt-4 p-3 bg-amber-50 rounded-xl">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <p className="text-sm font-medium text-gray-700">再认一次：这个词是什么意思？</p>
+            <button
+              onClick={() => { setMeaningHidden((h) => !h); setMeaningChoice(null); }}
+              className="text-xs px-2 py-1 rounded-lg bg-white border border-amber-200 text-amber-800 hover:border-amber-400"
+            >
+              {meaningHidden ? '显示释义' : '遮住释义再选'}
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            {meaningOptions.map((o) => (
+              <button
+                key={o}
+                onClick={() => setMeaningChoice(o)}
+                disabled={meaningChoice === word.zh}
+                className={`px-3 py-2 rounded-lg text-sm text-left border ${
+                  meaningChoice === o
+                    ? o === word.zh
+                      ? 'bg-green-600 text-white border-green-600'
+                      : 'bg-amber-200 text-amber-900 border-amber-400'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-blue-400'
+                }`}
+              >
+                {o}
+              </button>
+            ))}
+          </div>
+          {meaningChoice === word.zh && (
+            <p className="text-xs text-green-600 mt-2">✓ 选对了。这一步不算分，只是把意思和词形再连一次。</p>
+          )}
+          {meaningChoice && meaningChoice !== word.zh && (
+            <p className="text-xs text-amber-700 mt-2">再看一眼词形和例句，换一个试试。这一题可以重选，不扣分。</p>
+          )}
+          <p className="text-xs text-gray-400 mt-2">选词义不进记忆盒子，听写写对才算掌握；不想做可以直接跳过。</p>
+        </div>
+      )}
+
       <p className="text-xs text-gray-400 mt-3">
         例句来自词库，不是临时编的。读一遍，把音、字形和意思连在一起，下一步就凭记忆写。
       </p>
@@ -865,6 +934,9 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
   const placementDone = useVocabStore((s) => s.placementDone);
   const currentThemeId = useVocabStore((s) => s.currentThemeId);
   const setCurrentTheme = useVocabStore((s) => s.setCurrentTheme);
+  const dailyNew = useVocabStore((s) => s.dailyNew);
+  const dailyReview = useVocabStore((s) => s.dailyReview);
+  const setDailyCounts = useVocabStore((s) => s.setDailyCounts);
   const recordDictation = useVocabStore((s) => s.recordDictation);
   const markSessionDate = useVocabStore((s) => s.markSessionDate);
   const recordAnswer = useProgressStore((s) => s.recordAnswer);
@@ -881,8 +953,8 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
   const recordedRef = useRef(false);
 
   const preview = useMemo(
-    () => buildTodayQueue({ words, currentThemeId: activeThemeId, today }),
-    [words, activeThemeId, today]
+    () => buildTodayQueue({ words, currentThemeId: activeThemeId, today, dailyNew, dailyReview }),
+    [words, activeThemeId, today, dailyNew, dailyReview]
   );
 
   const recordOne = (item: VocabQueueItem, correct: boolean, phaseName: 'review' | 'learn') => {
@@ -928,7 +1000,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
   };
 
   const start = () => {
-    const q = buildTodayQueue({ words, currentThemeId: activeThemeId, today });
+    const q = buildTodayQueue({ words, currentThemeId: activeThemeId, today, dailyNew, dailyReview });
     setSnapshot(q);
     setReviewIdx(0);
     setLearnIdx(0);
@@ -968,11 +1040,11 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
           <p className="text-xs text-gray-500 mb-4">到期复习优先，再学当前主题的新词；约 12–14 分钟。</p>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="p-3 bg-amber-50 rounded-xl">
-              <p className="text-2xl font-bold text-amber-700">{Math.min(preview.review.length, REVIEW_PER_DAY)}</p>
+              <p className="text-2xl font-bold text-amber-700">{preview.review.length}</p>
               <p className="text-xs text-gray-500">到期复习（共 {preview.dueTotal} 词待复习）</p>
             </div>
             <div className="p-3 bg-green-50 rounded-xl">
-              <p className="text-2xl font-bold text-green-700">{Math.min(preview.fresh.length, NEW_PER_DAY)}</p>
+              <p className="text-2xl font-bold text-green-700">{preview.fresh.length}</p>
               <p className="text-xs text-gray-500">新词（本主题还剩 {preview.freshRemaining} 词）</p>
             </div>
           </div>
@@ -986,6 +1058,31 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
               <option key={t.id} value={t.id}>{t.icon} {t.nameZh}（{t.words.length} 词）</option>
             ))}
           </select>
+
+          <div className="grid grid-cols-2 gap-3 mb-2">
+            <label className="block">
+              <span className="block text-xs text-gray-500 mb-1">每日新词</span>
+              <select
+                value={dailyNew}
+                onChange={(e) => setDailyCounts(Number(e.target.value), dailyReview)}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+              >
+                {DAILY_NEW_OPTIONS.map((n) => <option key={n} value={n}>{n} 个</option>)}
+              </select>
+            </label>
+            <label className="block">
+              <span className="block text-xs text-gray-500 mb-1">每日复习</span>
+              <select
+                value={dailyReview}
+                onChange={(e) => setDailyCounts(dailyNew, Number(e.target.value))}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+              >
+                {DAILY_REVIEW_OPTIONS.map((n) => <option key={n} value={n}>{n} 题</option>)}
+              </select>
+            </label>
+          </div>
+          <p className="text-xs text-gray-400 mb-4">词量下一轮生效，会随学习进度同步到其它设备。</p>
+
           {noWork ? (
             <div>
               <p className="text-sm text-gray-600 mb-3">今天没有到期复习，这个主题的新词也学完了。换一个主题继续，或去自由练习。</p>
@@ -994,7 +1091,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
             <button onClick={start} className="btn-primary w-full">开始今日学习 →</button>
           )}
           <p className="text-xs text-gray-400 mt-3">
-            每个新词按 5 步走：只听 → 辨音 → 看形 → 挂义 → 听写。间隔 0/1/3/7/15 天与每轮 6 新词 / 8 复习是工程默认值，不是「最优记忆参数」。
+            每个新词按 5 步走：只听 → 辨音 → 看形（含拼读规律）→ 挂义（含选意思）→ 听写。间隔 0/1/3/7/15 天与上面的每日词量都是工程默认值，不是「最优记忆参数」。
           </p>
         </div>
         {theme && (

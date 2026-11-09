@@ -42,6 +42,10 @@ interface VocabState {
   placementDone: boolean;
   placementAt: string | null;
   lastSessionDate: string | null;
+  /** 每日新词 / 复习题量（用户可自定义），随学习进度云同步 */
+  dailyNew: number;
+  dailyReview: number;
+  dailyCountsUpdatedAt: string | null;
 
   ensureWord: (wordId: string, themeId: string, route: VocabRoute, today: string) => void;
   recordDictation: (
@@ -53,6 +57,7 @@ interface VocabState {
     today: string
   ) => void;
   setCurrentTheme: (themeId: string) => void;
+  setDailyCounts: (dailyNew: number, dailyReview: number) => void;
   markSessionDate: (today: string) => void;
   /** 主题卡里手动把某个词重新排进今天的队列 */
   requeueWord: (wordId: string, today: string) => void;
@@ -68,6 +73,9 @@ export const useVocabStore = create<VocabState>()(
       placementDone: false,
       placementAt: null,
       lastSessionDate: null,
+      dailyNew: 6,
+      dailyReview: 8,
+      dailyCountsUpdatedAt: null,
 
       ensureWord: (wordId, themeId, route, today) => {
         set((state) => {
@@ -114,6 +122,11 @@ export const useVocabStore = create<VocabState>()(
       },
 
       setCurrentTheme: (themeId) => set({ currentThemeId: themeId }),
+      setDailyCounts: (dailyNew, dailyReview) => set({
+        dailyNew,
+        dailyReview,
+        dailyCountsUpdatedAt: new Date().toISOString(),
+      }),
       markSessionDate: (today) => set({ lastSessionDate: today }),
       requeueWord: (wordId, today) => {
         set((state) => {
@@ -128,7 +141,10 @@ export const useVocabStore = create<VocabState>()(
         });
       },
       isDoneToday: (today) => get().lastSessionDate === today,
-      reset: () => set({ words: {}, placementDone: false, placementAt: null, lastSessionDate: null }),
+      reset: () => set({
+        words: {}, placementDone: false, placementAt: null, lastSessionDate: null,
+        dailyNew: 6, dailyReview: 8, dailyCountsUpdatedAt: null,
+      }),
     }),
     {
       name: 'ket-vocab-v1', // 实际按当前用户隔离为 ket-vocab-v1:<uid>

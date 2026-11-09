@@ -33,6 +33,10 @@ import { useProgressStore } from '../store/useProgressStore';
 import { usePlanStore } from '../store/usePlanStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
 import { useVocabStore } from '../store/useVocabStore';
+import {
+  clampDailyCount, DAILY_NEW_OPTIONS, DAILY_REVIEW_OPTIONS,
+  NEW_PER_DAY, REVIEW_PER_DAY,
+} from './vocabSession';
 
 /** 云端同步表名 */
 const TABLE = 'sync_payloads';
@@ -97,6 +101,7 @@ export function packPayload(): SyncPayload {
  *   - vocab.words：按 wordId 合并，lastSeen 较新的一方整条胜出
  *     （box/dueAt/streak 是同一份状态，必须整条取，不能字段级取 max 否则会自相矛盾）
  *   - vocab.placementDone：任一方已完成即视为完成
+ *   - vocab.dailyNew / dailyReview：按 dailyCountsUpdatedAt 取较新的一份，值过白名单校验
  *   - profile.nickname：按 nicknameUpdatedAt 取较新的一份，旧包无此字段则忽略
  */
 export function mergePayload(remote: Partial<SyncPayload> | null | undefined): number {
@@ -224,6 +229,9 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
       placementDone?: boolean;
       placementAt?: string | null;
       lastSessionDate?: string | null;
+      dailyNew?: number;
+      dailyReview?: number;
+      dailyCountsUpdatedAt?: string | null;
     };
     const local = useVocabStore.getState();
     const merged: Record<string, any> = { ...local.words };
@@ -236,13 +244,29 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
         mergedCount++;
       }
     }
+    // 每日词量按修改时间取较新的一份；旧版同步包没有这两个字段时保持本机默认值。
+    // 值一律过 clampDailyCount，云端脏数据不会把队列清空或变成 NaN。
+    const localDailyStamp = String(local.dailyCountsUpdatedAt ?? '');
+    const remoteDailyStamp = String(rv.dailyCountsUpdatedAt ?? '');
+    const useRemoteDaily = Boolean(remoteDailyStamp) && remoteDailyStamp > localDailyStamp;
+    const dailyNew = clampDailyCount(
+      useRemoteDaily ? rv.dailyNew : local.dailyNew, NEW_PER_DAY, DAILY_NEW_OPTIONS
+    );
+    const dailyReview = clampDailyCount(
+      useRemoteDaily ? rv.dailyReview : local.dailyReview, REVIEW_PER_DAY, DAILY_REVIEW_OPTIONS
+    );
+    const dailyCountsUpdatedAt = useRemoteDaily ? remoteDailyStamp : (localDailyStamp || null);
     useVocabStore.setState({
       words: merged,
       currentThemeId: local.currentThemeId || rv.currentThemeId || '',
       placementDone: local.placementDone || Boolean(rv.placementDone),
       placementAt: pickLater(local.placementAt, rv.placementAt),
       lastSessionDate: pickLater(local.lastSessionDate, rv.lastSessionDate),
+      dailyNew,
+      dailyReview,
+      dailyCountsUpdatedAt,
     } as any);
+    if (useRemoteDaily) mergedCount++;
   }
 
   // ---- profile（昵称）：按 nicknameUpdatedAt 取较新的一份 ----

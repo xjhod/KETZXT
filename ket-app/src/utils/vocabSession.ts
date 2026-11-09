@@ -19,6 +19,17 @@ import { blankSentence } from './contextQuestions';
 export const NEW_PER_DAY = 6;
 export const REVIEW_PER_DAY = 8;
 export const PLACEMENT_SIZE = 20;
+/** 每日词量档位（2026-11-09 起可自定义；仍是工程默认值，不宣称最优） */
+export const DAILY_NEW_OPTIONS: readonly number[] = [4, 6, 8, 10];
+export const DAILY_REVIEW_OPTIONS: readonly number[] = [4, 6, 8, 10, 12];
+
+/** 云端脏数据 / 旧包缺字段一律回落默认，避免把队列清空 */
+export function clampDailyCount(value: unknown, fallback: number, options: readonly number[]): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  const rounded = Math.round(n);
+  return options.includes(rounded) ? rounded : fallback;
+}
 
 export interface VocabQueueItem {
   word: Word;
@@ -43,6 +54,9 @@ export interface VocabTodayQueue {
   dueTotal: number;
   /** 当前主题剩余未学词数 */
   freshRemaining: number;
+  /** 本次队列实际采用的每日词量（用户可自定义） */
+  dailyNew: number;
+  dailyReview: number;
   today: string;
 }
 
@@ -164,10 +178,14 @@ export function buildTodayQueue(input: {
   words: Record<string, VocabWordProgress>;
   currentThemeId: string;
   today: string;
+  dailyNew?: number;
+  dailyReview?: number;
 }): VocabTodayQueue {
   const { words, today } = input;
   const theme = allThemes.find((t) => t.id === input.currentThemeId) ?? allThemes[0];
   const currentThemeId = theme.id;
+  const dailyNew = clampDailyCount(input.dailyNew, NEW_PER_DAY, DAILY_NEW_OPTIONS);
+  const dailyReview = clampDailyCount(input.dailyReview, REVIEW_PER_DAY, DAILY_REVIEW_OPTIONS);
 
   // ---- 复习：全局到期，先按 dueAt（逾期越久越优先），再按盒子小优先 ----
   const due = Object.values(words)
@@ -175,7 +193,7 @@ export function buildTodayQueue(input: {
     .filter((p) => wordIndex.has(p.wordId))
     .sort((a, b) => a.dueAt.localeCompare(b.dueAt) || a.box - b.box || b.wrong - a.wrong);
   const review = interleave(
-    due.slice(0, REVIEW_PER_DAY).map((p) => toItem(wordIndex.get(p.wordId)!, 'review', p))
+    due.slice(0, dailyReview).map((p) => toItem(wordIndex.get(p.wordId)!, 'review', p))
   );
 
   // ---- 新词：当前主题内按词表顺序，跳过已入场/已学词 ----
@@ -186,7 +204,7 @@ export function buildTodayQueue(input: {
     if (p && p.status !== 'new') continue;
     freshMeta.push(meta);
   }
-  const fresh = freshMeta.slice(0, NEW_PER_DAY).map((m) => toItem(m, 'new', words[m.word.id] ?? null));
+  const fresh = freshMeta.slice(0, dailyNew).map((m) => toItem(m, 'new', words[m.word.id] ?? null));
 
   return {
     review,
@@ -194,6 +212,8 @@ export function buildTodayQueue(input: {
     currentThemeId,
     dueTotal: due.length,
     freshRemaining: freshMeta.length,
+    dailyNew,
+    dailyReview,
     today,
   };
 }
@@ -296,6 +316,38 @@ export function buildPassage(items: VocabQueueItem[], themeId?: string): Context
     connectors: PASSAGE_CONNECTORS.slice(0, sentences.length),
     note: '每一句都来自词库里该词的真实例句，按场景顺序排列。它不是连贯故事，重点是让刚学的词回到句子里再认一次。',
   };
+}
+
+// ========== 词义四选一（补「选」层，2026-11-09）==========
+//
+// 口径：干扰项只取词库里其它词的真实中文释义，零编造；同主题优先。
+//   · 不进掌握判定、不保存、答错可重选、允许跳过
+//   · 正确项位置由 wordId 决定，刷新不变（避免孩子靠记住位置蒙对）
+function stableHash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+export function buildMeaningOptions(item: VocabQueueItem, size = 4): string[] {
+  const correct = (item.word.zh || '').trim();
+  if (!correct) return [];
+  const sameTheme = flatWords.filter(
+    (x) => x.themeId === item.themeId && x.word.id !== item.word.id
+  );
+  const pool = [...sameTheme.map((x) => x.word), ...flatWords.map((x) => x.word)];
+  const seen = new Set<string>([correct]);
+  const distractors: string[] = [];
+  for (const w of pool) {
+    if (distractors.length >= size - 1) break;
+    const zh = (w.zh || '').trim();
+    if (!zh || seen.has(zh)) continue;
+    seen.add(zh);
+    distractors.push(zh);
+  }
+  const opts = [...distractors];
+  opts.splice(stableHash(item.word.id) % (opts.length + 1), 0, correct);
+  return opts;
 }
 
 /** 听写判定：忽略大小写与首尾空格；连字符/空格型短语允许空格数量不同 */
