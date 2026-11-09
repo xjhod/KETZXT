@@ -21,6 +21,7 @@ import {
   CLOUD_PUBLISHABLE_KEY,
 } from '../config/cloud';
 import type { Database } from '../config/database.types';
+import { pickTextModel } from './modelPicker';
 
 /**
  * 单例客户端 —— 全应用共用，不要重复创建。
@@ -47,17 +48,12 @@ export async function listModels(force = false): Promise<any[]> {
 /**
  * 选一个可用的模型。
  *
- * 规则（依据 skill 文档）：
- *   - disabled === true 的模型不可选，也不做兜底
- *   - 排除 'auto' 这类路由别名（它不是具体模型）
- *   - 空列表是合法结果，必须显式处理，不能硬编码模型 id
+ * ⚠️ 不能简单取列表第一个：目录首个是推理型 `hy4free`，它把输出全部放进
+ * `delta.reasoning_content`，`delta.content` 恒为空，会让 llm.ts 拿到空文本，
+ * 口语 / 写作 AI 评分一律失败（2026-11-08 线上实测）。
+ * 具体筛选规则见 utils/modelPicker.ts（纯函数，可用脚本单测）。
  */
 export async function pickModel(): Promise<{ id: string; name: string } | null> {
   const models = await listModels();
-  const usable = models.filter(
-    (m: any) => m.disabled !== true && typeof m.id === 'string' && m.id !== 'auto'
-  );
-  if (usable.length === 0) return null;
-  const chosen = usable[0];
-  return { id: chosen.id, name: chosen.name ?? chosen.id };
+  return pickTextModel(models);
 }

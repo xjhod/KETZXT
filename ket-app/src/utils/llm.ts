@@ -77,6 +77,7 @@ async function callLlmText(
     }
 
     let text = '';
+    let reasoning = '';
     for await (const chunk of cloud.llm.chat.completions.create({
       model: model.id,
       messages: [
@@ -88,12 +89,26 @@ async function callLlmText(
       response_format: { type: 'json_object' },
       signal: controller.signal,
     })) {
-      const delta = chunk.choices[0]?.delta?.content;
-      if (delta) text += delta;
+      const delta = chunk.choices[0]?.delta as
+        | { content?: string; reasoning_content?: string }
+        | undefined;
+      if (delta?.content) text += delta.content;
+      // 推理型模型（onlyReasoning）把正文放在 reasoning_content，content 恒为空。
+      // pickModel 已优先选普通文本模型，这里再留一层兜底，避免平台换模型后直接失效。
+      else if (delta?.reasoning_content) reasoning += delta.reasoning_content;
     }
 
     if (!text.trim()) {
-      return { ok: false, reason: '模型返回内容为空' };
+      if (reasoning.trim() && /\{[\s\S]*\}/.test(reasoning)) {
+        // parseJsonLoose 会从思考文本里抽出 JSON 对象
+        return { ok: true, text: reasoning };
+      }
+      return {
+        ok: false,
+        reason: reasoning.trim()
+          ? '模型只返回了思考内容，未生成评分结果，请重试'
+          : '模型返回内容为空',
+      };
     }
     return { ok: true, text };
   } catch (e) {
@@ -292,7 +307,7 @@ export async function gradeSpeechWithLLM(params: {
   if (!browserText) {
     return {
       ok: false,
-      reason: '云端语音识别暂不可用，请手动输入你的回答内容后评分',
+      reason: '还没有可评分的文字。请在输入框打出你的英文回答（或让浏览器识别出文字）后再评分',
     };
   }
 

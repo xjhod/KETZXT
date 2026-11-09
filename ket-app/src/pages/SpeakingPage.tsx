@@ -275,10 +275,12 @@ export default function SpeakingPage() {
         setLlmError(res.reason);
         return;
       }
-      setLlmError('');
+      setLlmError(null);
       setLlmSpeech(res.data);
     } catch (e) {
       console.warn('[LLM] 口语评分异常，降级：', e);
+      // 之前异常只写 console，界面上什么都没有，看起来就是「点了没反应」
+      setLlmError(`AI 评分失败：${(e as Error).message || '请稍后重试'}`);
     } finally {
       setLlmScoring(false);
     }
@@ -511,6 +513,13 @@ export default function SpeakingPage() {
         </div>
         
         {/* 评分结果 */}
+        {/* 有录音但没识别出文字：说清下一步，避免「点了评分没反应」 */}
+        {(audioUrl || audioBlob) && !(transcript || manualText).trim() && (
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3 text-xs text-amber-800 dark:text-amber-200">
+            ⚠️ 录音已完成，但浏览器没能识别出文字（国产手机浏览器常见）。请在上面的输入框打出你说的英文，再点「✅ 评分」。
+          </div>
+        )}
+
         {/* ========== AI 口语评分（可选增强） ========== */}
         {(audioUrl || audioBlob || (transcript || manualText).trim()) && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
@@ -525,7 +534,9 @@ export default function SpeakingPage() {
                     ? '🤖 AI 评分中…（约 10 秒）'
                     : !llmStatus.available
                       ? '🤖 AI 评分暂不可用（已用关键词评分）'
-                    : '🤖 让 AI 评分（按你输入的文字评分）'}
+                      : !(transcript || manualText).trim()
+                        ? '🤖 先在上方输入回答文字，再让 AI 评分'
+                        : '🤖 让 AI 评分（按你输入的文字评分）'}
                 </button>
                 {llmError && (
                   <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
@@ -662,7 +673,7 @@ export default function SpeakingPage() {
         
         {/* 操作按钮 */}
         <div className="flex space-x-4">
-          {(audioUrl || manualText.trim()) && !scoreResult && (
+          {(transcript || manualText).trim() && !scoreResult && (
             <button
               onClick={handleScore}
               className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
@@ -863,6 +874,13 @@ export default function SpeakingPage() {
           />
 
           {/* 评分结果 */}
+        {/* 有录音但没识别出文字：说清下一步，避免「点了评分没反应」 */}
+        {(audioUrl || audioBlob) && !(transcript || manualText).trim() && (
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3 text-xs text-amber-800 dark:text-amber-200">
+            ⚠️ 录音已完成，但浏览器没能识别出文字（国产手机浏览器常见）。请在上面的输入框打出你说的英文，再点「✅ 评分」。
+          </div>
+        )}
+
         {/* ========== AI 口语评分（可选增强） ========== */}
         {(audioUrl || audioBlob || (transcript || manualText).trim()) && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
@@ -877,7 +895,9 @@ export default function SpeakingPage() {
                     ? '🤖 AI 评分中…（约 10 秒）'
                     : !llmStatus.available
                       ? '🤖 AI 评分暂不可用（已用关键词评分）'
-                    : '🤖 让 AI 评分（按你输入的文字评分）'}
+                      : !(transcript || manualText).trim()
+                        ? '🤖 先在上方输入回答文字，再让 AI 评分'
+                        : '🤖 让 AI 评分（按你输入的文字评分）'}
                 </button>
                 {llmError && (
                   <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
@@ -1015,7 +1035,7 @@ export default function SpeakingPage() {
 
         {/* 操作按钮 */}
         <div className="flex space-x-4">
-          {(audioUrl || manualText.trim()) && !scoreResult && (
+          {(transcript || manualText).trim() && !scoreResult && (
             <button
               onClick={handleScore}
               className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
