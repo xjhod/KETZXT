@@ -5,9 +5,17 @@
 
 /* 自定义基础样式 */
 @layer base {
+  /* overflow-x: clip 是最后一道兜底：任何遗漏的超宽元素都不会让整页横向滚动，
+     又不像 hidden 那样创建滚动容器、影响 fixed/sticky 定位 */
+  html {
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-gray-50 text-gray-800 min-h-screen transition-colors duration-200;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow-x: clip;
+    max-width: 100%;
   }
   
   .dark body {
@@ -23,7 +31,8 @@
     @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded-lg transition-colors;
   }
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-colors duration-200;
+    /* 手机上 p-6 两侧各吃掉 24px，改为 p-4；≥640px 恢复 p-6 */
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 max-w-full min-w-0 transition-colors duration-200;
   }
   .dark .card {
     @apply bg-gray-800 border-gray-700;

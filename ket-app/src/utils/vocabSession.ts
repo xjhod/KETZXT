@@ -3,7 +3,8 @@
 // 定稿口径：
 //   · 复习优先、固定 8 题，按 dueAt 全局排序（天然跨主题），再交错打散
 //   · 当前主题新词 6 个，按词表顺序取（不是随机，保证能续学）
-//   · 提示按盒撤除：Box1/2 给字母块，Box3/4 给音标+播放，Box5 只给音频
+//   · 提示按盒撤除：Box1/2 只给首字母+字母数（默认不给字形，需主动点开），
+//     Box3/4 给音标+播放，Box5 什么都不给。一律不显示可拼出整个词的字母块，避免照抄
 //   · 6/8 与 0-1-3-7-15 天是工程默认值，界面不得写成"最优记忆参数"
 import { allThemes } from '../data/vocabulary';
 import type { VocabularyTheme, Word, VocabBox, VocabHintLevel, VocabWordProgress } from '../types';

@@ -5,6 +5,7 @@
 //   · B 多音节派生词：词素块 + 同源词提示，音标只作参考层
 //   · C 不规则/强弱读：整体音 + 例句语境，明说「这个拼法要单独记」
 //   · 听写是唯一掌握证据；选词义、跟读、拼图都不进判定
+//   · 听写作答时屏幕不得出现可拼出整个词的字母块（2026-11-09 修正照抄漏洞）
 //   · IPA 不朗读符号、不做考点；ASR 跟读不参与判定
 //   · 错词先「再听一遍 → 遮形回想 → 自己写」，实在想不起来才显示答案照打
 //     （重打一律不写记忆盒子）
@@ -104,10 +105,11 @@ const LEARN_STEPS = ['只听不看', '数拍辨音', '露形配块', '挂上意�
 
 function LearnStepDots({ current }: { current: number }) {
   return (
-    <div className="mb-3">
-      <div className="flex items-center justify-between text-xs text-gray-500 mb-1.5">
-        <span>第 {current} / 5 步 · {LEARN_STEPS[current - 1]}</span>
-        <span className="text-gray-400">{LEARN_STEPS.join(' → ')}</span>
+    <div className="mb-3 min-w-0">
+      <div className="flex items-center justify-between gap-2 text-xs text-gray-500 mb-1.5 min-w-0">
+        <span className="shrink-0">第 {current} / 5 步 · {LEARN_STEPS[current - 1]}</span>
+        {/* 五步全名在手机上会把这一行撑出屏幕，只在 ≥640px 显示 */}
+        <span className="hidden sm:inline text-gray-400 truncate">{LEARN_STEPS.join(' → ')}</span>
       </div>
       <div className="flex gap-1.5">
         {LEARN_STEPS.map((s, i) => (
@@ -131,9 +133,9 @@ function RuleCards({ hints, word }: { hints: PhonicsHint[]; word: Word }) {
       </p>
       <div className="space-y-2">
         {hints.map((h) => (
-          <div key={h.chunk} className="flex items-start gap-2 bg-white/80 rounded-lg px-3 py-2">
+          <div key={h.chunk} className="flex items-start gap-2 bg-white/80 rounded-lg px-3 py-2 min-w-0">
             <span className="font-mono text-sm font-semibold text-emerald-800 shrink-0">{h.chunk}</span>
-            <span className="text-xs text-gray-600 leading-relaxed">{h.text}</span>
+            <span className="text-xs text-gray-600 leading-relaxed min-w-0 break-words">{h.text}</span>
           </div>
         ))}
       </div>
@@ -143,46 +145,75 @@ function RuleCards({ hints, word }: { hints: PhonicsHint[]; word: Word }) {
   );
 }
 
+/**
+ * 复习提示（2026-11-09 修正）：听写是唯一掌握证据，首次作答时屏幕上
+ * 不允许出现可以拼出整个单词的字母块。旧版把 analysis.chunks 按顺序全摆出来
+ * （north → n | or | th），孩子照着抄就能过，检查形同虚设。
+ * 现在：低盒默认不给字形，主动点「需要一点提示」也只给首字母 + 字母数；
+ * 中盒只给音标参考；高盒什么都不给。错词回想阶段本就不渲染本组件。
+ */
 function HintPanel({ item }: { item: VocabQueueItem }) {
-  const { hintLevel, analysis, word } = item;
+  const { hintLevel, word } = item;
+  const [showHint, setShowHint] = useState(false);
+
   if (hintLevel === 3) {
-    return <p className="text-xs text-gray-400 mt-2">这一盒不给字母提示：听完整个词，自己在脑子里分块再写。</p>;
+    return <p className="text-xs text-gray-400 mt-2">这一盒不给任何提示：听完整个词，自己在脑子里分块再写。</p>;
   }
   if (hintLevel === 2) {
     return (
-      <div className="mt-2 flex items-center gap-2">
+      <div className="mt-2 flex items-center gap-2 flex-wrap min-w-0">
         <IpaRef word={word} />
-        <span className="text-xs text-gray-400">音标只用来核对读音，不照着它拼</span>
+        <span className="text-xs text-gray-400">只给音标核对读音，不给字母；不照着音标拼</span>
       </div>
     );
   }
-  const blocks = analysis.chunks.length
-    ? analysis.chunks.map((c) => c.text)
-    : word.en.split('');
+
+  const letters = word.en.replace(/[^A-Za-z]/g, '');
+  const first = letters[0] ?? '';
+  const rest = Math.min(Math.max(letters.length - 1, 0), 12);
+  const isPhrase = /\s/.test(word.en.trim());
   return (
-    <div className="mt-2">
-      <div className="flex flex-wrap gap-1.5">
-        {blocks.map((b, i) => (
-          <span key={`${b}-${i}`} className="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg font-mono text-sm">
-            {b}
-          </span>
-        ))}
-      </div>
+    <div className="mt-2 min-w-0">
+      {!showHint ? (
+        <button
+          onClick={() => setShowHint(true)}
+          className="text-xs px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100"
+        >
+          需要一点提示？
+        </button>
+      ) : (
+        <div className="p-3 bg-blue-50 rounded-xl">
+          <p className="font-mono text-base tracking-wider text-blue-800 break-all">
+            {first}{'_'.repeat(rest)}
+          </p>
+          <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+            {isPhrase ? '这是个短语，' : ''}开头是 <span className="font-mono font-semibold">{first}</span>，
+            一共 {letters.length} 个字母。这里不给剩下的字母，靠听音自己想出来。
+          </p>
+        </div>
+      )}
       <p className="text-xs text-gray-400 mt-1">
-        {analysis.route === 'A' ? '听音分成这几块，再写整词' : '字母块只是拼写提示，不代表读音规则'}
+        这一盒不会把整个单词摆出来：先听、再自己写，实在想不起来才点提示。
       </p>
     </div>
   );
 }
 
+/**
+ * 听写输入行（2026-11-09 修正窄屏溢出）：
+ * 旧版是 input(flex-1) + 检查 + 第三个播放按钮三列，input 缺 min-w-0，
+ * 浏览器给 input 的固有最小宽度把整行撑出手机屏幕，右侧按钮被裁掉。
+ * 现在只留两列：input 可收缩、检查按钮不收缩；音频统一用上方已有的
+ * 「听整词 / 再慢一点」，不再重复放第三个按钮。
+ */
 function DictationInput({
-  word, onSubmit, placeholder = '听一遍，把整个单词写出来',
-}: { word: Word; onSubmit: (text: string) => void; placeholder?: string }) {
+  onSubmit, placeholder = '听一遍，把整个单词写出来',
+}: { onSubmit: (text: string) => void; placeholder?: string }) {
   const [text, setText] = useState('');
   return (
     <form
       onSubmit={(e) => { e.preventDefault(); if (text.trim()) onSubmit(text); }}
-      className="mt-4 flex gap-2"
+      className="mt-4 flex gap-2 min-w-0"
     >
       <input
         autoFocus
@@ -192,10 +223,9 @@ function DictationInput({
         autoComplete="off"
         autoCapitalize="off"
         spellCheck={false}
-        className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+        className="flex-1 min-w-0 border border-gray-200 rounded-xl px-3 py-3 text-base sm:px-4 sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
       />
-      <button type="submit" className="btn-primary" disabled={!text.trim()}>检查</button>
-      <PlayButton word={word} label="🔊" />
+      <button type="submit" className="btn-primary shrink-0 whitespace-nowrap" disabled={!text.trim()}>检查</button>
     </form>
   );
 }
@@ -426,8 +456,8 @@ function LearnFlow({
         <p className="text-xs text-gray-400 mb-1">第 3 步 · 露形配块</p>
         <h3 className="text-lg font-bold text-gray-800 mb-3">现在看它长什么样</h3>
 
-        <div className="flex items-baseline gap-3 flex-wrap">
-          <h4 className="text-3xl font-bold text-gray-800 font-mono">
+        <div className="flex items-baseline gap-3 flex-wrap min-w-0">
+          <h4 className="text-3xl font-bold text-gray-800 font-mono break-all min-w-0">
             {hidden ? '•'.repeat(Math.min(10, word.en.length)) : word.en}
           </h4>
           {!hidden && <IpaRef word={word} />}
@@ -513,8 +543,8 @@ function LearnFlow({
       <p className="text-xs text-gray-400 mb-1">第 4 步 · 挂上意义</p>
       <h3 className="text-lg font-bold text-gray-800 mb-3">这个词是什么意思，怎么用</h3>
 
-      <div className="flex items-baseline gap-3 flex-wrap">
-        <span className="text-2xl font-semibold text-gray-800 font-mono">{word.en}</span>
+      <div className="flex items-baseline gap-3 flex-wrap min-w-0">
+        <span className="text-2xl font-semibold text-gray-800 font-mono break-all min-w-0">{word.en}</span>
         <span className="text-lg text-gray-600">{meaningHidden ? '••••' : word.zh}</span>
       </div>
       <div className="flex flex-wrap gap-2 mt-2">
@@ -620,20 +650,20 @@ function DictationStep({
 
   return (
     <div className="card">
-      <div className="flex items-center justify-between mb-3">
-        <span className={`text-xs px-2 py-1 rounded-full ${phase === 'review' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700'}`}>
+      <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+        <span className={`shrink-0 text-xs px-2 py-1 rounded-full ${phase === 'review' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700'}`}>
           {phase === 'review' ? `复习 · Box ${item.box}` : '新词 · 听写'}
         </span>
-        <span className="text-xs text-gray-400">{item.themeZh}</span>
+        <span className="text-xs text-gray-400 truncate text-right">{item.themeZh}</span>
       </div>
 
-      <p className="text-2xl font-semibold text-gray-800">{item.word.zh}</p>
+      <p className="text-2xl font-semibold text-gray-800 break-words">{item.word.zh}</p>
       <div className="mt-1 flex flex-wrap gap-2"><PlayButton word={item.word} /><SlowPlayButton word={item.word} /></div>
 
       {state === 'answering' && (
         <>
           {phase === 'review' && <HintPanel item={item} />}
-          <DictationInput key={`ask-${item.word.id}`} word={item.word} onSubmit={submit} />
+          <DictationInput key={`ask-${item.word.id}`} onSubmit={submit} />
           <p className="text-xs text-gray-400 mt-2">
             {phase === 'learn'
               ? '这一遍不看提示，凭刚才听到的音写。写对才算这个词的第一次提取。'
@@ -654,7 +684,6 @@ function DictationStep({
           </div>
           <DictationInput
             key={`recall-${item.word.id}`}
-            word={item.word}
             onSubmit={submit}
             placeholder="不看提示，自己再写一遍"
           />
@@ -672,7 +701,6 @@ function DictationStep({
             </p>
             <DictationInput
               key={`fix-${item.word.id}`}
-              word={item.word}
               onSubmit={submit}
               placeholder="照着正确拼法再打一遍"
             />
@@ -731,7 +759,7 @@ function Placement({ onDone }: { onDone: () => void }) {
       <p className="text-xs text-gray-400 mb-1">第一次使用 · 入场测 {idx + 1}/{sample.length}</p>
       <h3 className="text-lg font-bold text-gray-800 mb-1">这个词你认识吗？</h3>
       <p className="text-xs text-gray-500 mb-4">认识的词直接跳过首学，之后只按记忆节奏复习。</p>
-      <p className="text-3xl font-bold text-gray-800 font-mono mb-2">{cur.word.en}</p>
+      <p className="text-3xl font-bold text-gray-800 font-mono mb-2 break-all">{cur.word.en}</p>
       <div className="flex items-center gap-2 mb-3">
         <PlayButton word={cur.word} />
         <button onClick={() => setShowZh((v) => !v)} className="text-xs text-gray-500 hover:text-blue-600">
@@ -790,9 +818,9 @@ function PassageStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () =>
       <div className="space-y-2">
         {passage.sentences.map((s, i) => (
           <div key={`${s.wordId}-${i}`} className="p-3 rounded-xl bg-gray-50">
-            <div className="flex items-start gap-2">
-              <span className="text-xs text-blue-500 font-medium whitespace-nowrap mt-0.5">{passage.connectors[i]}</span>
-              <div className="flex-1">
+            <div className="flex items-start gap-2 min-w-0">
+              <span className="text-xs text-blue-500 font-medium whitespace-nowrap mt-0.5 shrink-0">{passage.connectors[i]}</span>
+              <div className="flex-1 min-w-0">
                 {covered ? (
                   <p className="text-sm text-gray-400">（英文已遮住，先看着中文回想）</p>
                 ) : (
@@ -828,9 +856,9 @@ function PassageStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () =>
           className="mt-4 space-y-2"
         >
           {passage.blanks.map((b, i) => (
-            <div key={b.wordId} className="flex items-center gap-2">
-              <span className="text-sm text-gray-500 w-6">{BLANK_MARKS[i]}</span>
-              <span className="text-xs text-gray-400 w-16 truncate">{b.hint}</span>
+            <div key={b.wordId} className="flex items-center gap-2 min-w-0">
+              <span className="text-sm text-gray-500 w-6 shrink-0">{BLANK_MARKS[i]}</span>
+              <span className="text-xs text-gray-400 w-12 sm:w-16 truncate shrink-0">{b.hint}</span>
               <input
                 value={answers[i] ?? ''}
                 onChange={(e) => setOne(i, e.target.value)}
@@ -838,7 +866,7 @@ function PassageStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () =>
                 autoComplete="off"
                 spellCheck={false}
                 disabled={checked}
-                className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                className="flex-1 min-w-0 border border-gray-200 rounded-xl px-2 sm:px-3 py-2 text-sm"
               />
             </div>
           ))}
@@ -904,7 +932,7 @@ function ResultStep({
     <div className="card text-center">
       <h3 className="text-xl font-bold text-gray-800 mb-1">今日词汇完成</h3>
       <p className="text-xs text-gray-400 mb-5">这里只报记忆状态，不记连胜、不发经验值。</p>
-      <div className="inline-flex items-center gap-6 px-8 py-4 bg-gray-50 rounded-2xl">
+      <div className="inline-flex items-center justify-center gap-3 sm:gap-6 px-4 sm:px-8 py-4 bg-gray-50 rounded-2xl max-w-full">
         <div>
           <p className="text-3xl font-bold text-blue-600">{stats.correct} / {stats.total}</p>
           <p className="text-xs text-gray-400">听写首次写对</p>
@@ -1183,9 +1211,9 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
 
 function TopBar({ onBack, title }: { onBack: () => void; title: string }) {
   return (
-    <div className="flex items-center justify-between mb-4">
-      <button onClick={onBack} className="text-sm text-gray-500 hover:text-blue-600">← 返回主题列表</button>
-      <span className="text-xs text-gray-400">{title}</span>
+    <div className="flex items-center justify-between gap-2 mb-4 min-w-0">
+      <button onClick={onBack} className="text-sm text-gray-500 hover:text-blue-600 shrink-0 whitespace-nowrap">← 返回主题列表</button>
+      <span className="text-xs text-gray-400 truncate text-right">{title}</span>
     </div>
   );
 }

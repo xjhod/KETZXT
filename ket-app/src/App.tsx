@@ -98,10 +98,10 @@ function AppContent() {
       {/* 侧边栏 - 桌面端始终显示，移动端 overlay */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} isDark={isDark} />
 
-      {/* 主内容区 */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
+      {/* 主内容区：min-w-0 阻止超宽子元素把整列（乃至整页）撑出手机屏幕 */}
+      <div className="flex-1 flex flex-col min-h-screen min-w-0 lg:ml-64">
         <Header onMenuClick={() => setSidebarOpen(true)} isDark={isDark} onToggleDark={() => setIsDark(!isDark)} />
-        <main className="flex-1 p-4 md:p-6 max-w-6xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 max-w-6xl mx-auto w-full min-w-0">
           <Routes>
             {/* 公开路由（未登录可访问） */}
             <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
