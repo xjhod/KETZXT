@@ -1,13 +1,17 @@
 // ========== 语法每日打卡页面 ==========
-// 流程：复习旧知识 → 今日新语法(归纳式) → 对比训练 → 产出练习 → 混合测验 → 完成
+// 流程：复习旧知识 → 今日新语法(讲解前置) → 对比训练 → 产出练习(真手写) → 混合测验 → 完成
 // 顶部：连续打卡 streak + 日历热力图 + 路线图进度。难度按 ROADMAP 由易到难推进，错题加权复习。
+// 2026-11-10 A 档：规则卡默认展开、精读小注默认收起、看完讲解才出学习题；
+// 产出阶段用真手写替代选项题（不进熟练判定、可跳过）；混合测验补精读派生「形式→意义」题。
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useDailyCheckinStore, todayString, type TodayLog } from '../store/useDailyCheckinStore';
 import { useProgressStore } from '../store/useProgressStore';
-import { generateSession, type DailySession, type SessionQuestion } from '../utils/grammarSession';
+import { generateSession, errorTagFor, type DailySession, type SessionQuestion } from '../utils/grammarSession';
 import { GrammarQuestionCard } from '../components/GrammarQuestionCard';
+import { WrittenProduction } from '../components/WrittenProduction';
+import { isWrittenCorrect } from '../utils/writtenProduction';
 import { SentenceAudio } from '../components/SentenceAudio';
-import { ROADMAP, getPoint } from '../data/grammarRoadmap';
+import { ROADMAP, GRAMMAR_QUESTIONS, getPoint } from '../data/grammarRoadmap';
 import { getReading } from '../data/grammarReading';
 import { stopAllAudio } from '../utils/audio';
 
@@ -114,6 +118,74 @@ function TodaySummary({ log }: { log: TodayLog }) {
   );
 }
 
+// ========== A 档：产出阶段真手写（复用词汇造句的 WrittenProduction）==========
+//
+// 数据来源：现有 200 道改错题的 sentence（错句）+ answer（正确句），零编造。
+// 口径：整句归一化比对，不判语法、不打分、不进熟练判定；错两次才给「看答案」按钮；可跳过。
+// 写之前屏幕上只有错句，没有正确句；写完后才展示正确写法与解析。
+function ProductionWrite({
+  sq, onResult, onNext,
+}: {
+  sq: SessionQuestion;
+  onResult: (correct: boolean, userAnswer: string) => void;
+  onNext: () => void;
+}) {
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [done, setDone] = useState(false);
+  const q = sq.q;
+  const tag = errorTagFor(q.explanation ?? '');
+  const wrongSentence = String(q.sentence ?? '').trim();
+  const answer = String(q.answer ?? '').trim();
+
+  return (
+    <div className="min-w-0">
+      <p className="text-sm text-gray-500 mb-3">把句子改对，自己写出完整的一句；不是在选项里挑。</p>
+      {wrongSentence && (
+        <div className="mb-3 p-3 bg-amber-50 rounded-xl min-w-0">
+          <p className="text-xs text-gray-500 mb-1">原句（有错）：</p>
+          <p className="text-base text-gray-800 break-words">{wrongSentence}</p>
+        </div>
+      )}
+      <WrittenProduction
+        title="✍️ 写出正确的句子"
+        description="整句自己写一遍。只比对拼写和词形，不判语法、不打分；这一步不进熟练判定，写不出来可以跳过。"
+        placeholder="把正确的英文句子完整写出来"
+        submitLabel="检查我写的"
+        check={(t) => isWrittenCorrect(t, answer)
+          ? { ok: true }
+          : { ok: false, reason: '和正确写法还不一样，再看一眼原句，自己重写一次' }}
+        hint={
+          <>
+            <p className="break-words">再看一眼原句：{wrongSentence}</p>
+            {tag && <p className="mt-1">可能错在：{tag}</p>}
+            <button
+              type="button"
+              onClick={() => setShowAnswer(true)}
+              className="mt-2 px-2 py-1 bg-white border border-gray-200 rounded-lg text-xs"
+            >
+              实在想不起来，看正确写法
+            </button>
+            {showAnswer && <p className="mt-2 font-medium break-words">正确写法：{answer}</p>}
+          </>
+        }
+        reveal={
+          <>
+            <p className="font-medium text-gray-700 mb-1 break-words">正确写法：{answer}</p>
+            <p className="break-words">{q.explanation}</p>
+          </>
+        }
+        onAccepted={(text) => { setDone(true); onResult(true, text); }}
+      />
+      <button
+        onClick={onNext}
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        {done ? '继续 →' : '跳过，继续 →'}
+      </button>
+    </div>
+  );
+}
+
 export default function GrammarDailyPage() {
   const dc = useDailyCheckinStore();
   const progress = useProgressStore();
@@ -127,6 +199,9 @@ export default function GrammarDailyPage() {
   const [revealRule, setRevealRule] = useState(false);
   const [finished, setFinished] = useState(false);
   const [isExtra, setIsExtra] = useState(false); // 是否为"额外练习"（不推进路线图/不重复出题）
+  // A 档：讲解前置——learn 阶段先看规则卡，点按钮才出 2 道题；精读小注默认收起
+  const [learnQuizStarted, setLearnQuizStarted] = useState(false);
+  const [activeSeg, setActiveSeg] = useState<number | null>(null);
 
   // 混合测验正确率（用于判定是否"熟练"）
   const mixedCorrect = useRef(0);
@@ -184,10 +259,13 @@ export default function GrammarDailyPage() {
     setQIdx(0);
     setRevealRule(false);
     setFinished(false);
+    setLearnQuizStarted(false);
+    setActiveSeg(null);
   }
 
-  function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string) {
-    dc.recordQuestion(sq.grammarId, correct);
+  /** skipBox=true 用于 A 档手写产出：记战报与错题，但不推进 box / 熟练判定 */
+  function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string, skipBox = false) {
+    if (!skipBox) dc.recordQuestion(sq.grammarId, correct);
     // 仅主打卡写入战报明细与已出题记录；额外练习不污染今日战报
     if (!isExtra) {
       dc.logAnswer(sq.grammarId, sq.purpose, correct);
@@ -236,6 +314,8 @@ export default function GrammarDailyPage() {
         setPhaseIdx(phaseIdx + 1);
         setQIdx(0);
         setRevealRule(false);
+        setLearnQuizStarted(false);
+        setActiveSeg(null);
       }
     }
   }
@@ -259,6 +339,12 @@ export default function GrammarDailyPage() {
 
   const curQuestions = questionsOf(currentPhase);
   const total = curQuestions.length;
+  // A 档：产出阶段遇到改错题就换成真手写；其它题型仍走原卡片
+  const isWrittenQuestion =
+    currentPhase === 'production' &&
+    curQuestions[qIdx]?.pType === 'correction' &&
+    Boolean(curQuestions[qIdx]?.q?.sentence) &&
+    Boolean(curQuestions[qIdx]?.q?.answer);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -361,7 +447,9 @@ export default function GrammarDailyPage() {
 
           <h2 className="text-lg font-bold text-gray-800 mb-1">{phases[phaseIdx]?.title}</h2>
           <p className="text-sm text-gray-400 mb-4">
-            第 {Math.min(qIdx + 1, total)} / {total} 题
+            {currentPhase === 'learn' && !learnQuizStarted
+              ? '先看规则，再读例句'
+              : `第 ${Math.min(qIdx + 1, total)} / ${total} 题`}
           </p>
 
           {/* 本阶段暂无题目（如首次打卡还没有错题可复习）→ 提供跳过 */}
@@ -379,10 +467,36 @@ export default function GrammarDailyPage() {
 
           {/* 各阶段内容 */}
           {currentPhase === 'learn' && session.learn && (
-            <div className="mb-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+            <div className="mb-4 p-4 bg-blue-50 rounded-xl border border-blue-100 min-w-0">
               <p className="font-medium text-blue-800 mb-2">
                 {session.learn.point.nameZh} · {session.learn.point.name}
               </p>
+
+              {/* A 档：规则卡默认展开，压成 3 行 + 正例/反例，全部取自现有数据 */}
+              {(() => {
+                const point = session.learn.point;
+                const lines = String(point.explanation ?? '')
+                  .split(/[。；\n]/).map((s: string) => s.trim()).filter(Boolean).slice(0, 3);
+                const good = point.examples?.[0]?.en;
+                const bad = GRAMMAR_QUESTIONS[session.learn.pointId]?.correction?.[0]?.sentence;
+                return (
+                  <div className="mb-3 p-3 bg-white rounded-xl border border-blue-100 min-w-0">
+                    <p className="text-xs font-semibold text-blue-700 mb-1">先看规则</p>
+                    <ul className="text-sm text-gray-700 space-y-0.5">
+                      {lines.map((l: string, i: number) => <li key={i} className="break-words">{i + 1}. {l}</li>)}
+                    </ul>
+                    {good && <p className="text-xs text-green-700 mt-2 break-words">✓ 正例：{good}</p>}
+                    {bad && <p className="text-xs text-amber-700 mt-1 break-words">✗ 反例：{bad}（想想哪里不对）</p>}
+                    {!revealRule ? (
+                      <button onClick={() => setRevealRule(true)} className="mt-2 text-xs text-blue-600 hover:underline">
+                        看完整讲解 ▼
+                      </button>
+                    ) : (
+                      <p className="text-xs text-gray-600 mt-2 whitespace-pre-line break-words">{point.explanation}</p>
+                    )}
+                  </div>
+                );
+              })()}
 
               {(() => {
                 const reading = getReading(session.learn.point.id);
@@ -393,22 +507,28 @@ export default function GrammarDailyPage() {
                         <span className="text-lg">{reading.mode === 'dialogue' ? '💬' : '📖'}</span>
                         <span className="text-sm font-semibold text-gray-700">{reading.title}</span>
                       </div>
-                      <p className="text-xs text-gray-500 mb-3">点小喇叭听真人发音、跟着读一读，再看看每句用到的语法。</p>
-                      <div className="space-y-2.5">
+                      <p className="text-xs text-gray-500 mb-2">点一句，看它用到的语法；小注默认收起。点小喇叭可以听真人发音。</p>
+                      <div className="space-y-2">
                         {reading.segments.map((seg, i) => (
-                          <div key={i} className="bg-white rounded-xl border border-blue-100 p-3">
-                            <div className="flex items-start justify-between gap-2">
+                          <div
+                            key={i}
+                            onClick={() => setActiveSeg(activeSeg === i ? null : i)}
+                            className={`bg-white rounded-xl border p-3 min-w-0 cursor-pointer ${
+                              activeSeg === i ? 'border-blue-400 ring-1 ring-blue-200' : 'border-blue-100'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2 min-w-0">
                               <div className="flex-1 min-w-0">
                                 {seg.speaker && (
                                   <span className="text-xs font-semibold text-blue-500 mr-1">{seg.speaker}:</span>
                                 )}
-                                <span className="text-[15px] text-gray-800 leading-relaxed">{seg.en}</span>
-                                <div className="text-sm text-gray-400 mt-0.5">{seg.zh}</div>
+                                <span className="text-[15px] text-gray-800 leading-relaxed break-words">{seg.en}</span>
+                                <div className="text-sm text-gray-400 mt-0.5 break-words">{seg.zh}</div>
                               </div>
                               <SentenceAudio audioId={seg.audio} text={seg.en} />
                             </div>
-                            {seg.note && (
-                              <div className="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5 leading-relaxed">
+                            {activeSeg === i && seg.note && (
+                              <div className="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5 leading-relaxed break-words">
                                 <span className="font-semibold">语法小注 · </span>{seg.note}
                               </div>
                             )}
@@ -434,17 +554,14 @@ export default function GrammarDailyPage() {
                 );
               })()}
 
-              {!revealRule ? (
+              {/* A 档：讲解前置。看完规则卡才出学习阶段的 2 道题，不再「先测后教」 */}
+              {!learnQuizStarted && (
                 <button
-                  onClick={() => setRevealRule(true)}
-                  className="px-3 py-1.5 bg-white border border-blue-300 text-blue-700 rounded-lg text-sm hover:bg-blue-50"
+                  onClick={() => setLearnQuizStarted(true)}
+                  className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
                 >
-                  揭示系统讲解 ▶
+                  看懂了，做 2 道题 →
                 </button>
-              ) : (
-                <div className="text-sm text-gray-700 whitespace-pre-line bg-white p-3 rounded-lg border border-blue-100">
-                  {session.learn.point.explanation}
-                </div>
               )}
             </div>
           )}
@@ -458,7 +575,7 @@ export default function GrammarDailyPage() {
             </div>
           )}
 
-          {currentPhase === 'production' && (
+          {currentPhase === 'production' && !isWrittenQuestion && (
             <p className="text-sm text-gray-500 mb-3">把句子改对 / 写对，从"认得出"到"写得出"。</p>
           )}
 
@@ -466,15 +583,24 @@ export default function GrammarDailyPage() {
             <p className="text-sm text-gray-500 mb-3">把今天和之前学过的语法混在一起练，专治"一混就乱"。</p>
           )}
 
-          {/* 当前题目 */}
-          {curQuestions[qIdx] && (
-            <GrammarQuestionCard
-              key={curQuestions[qIdx].q.id}
-              q={curQuestions[qIdx].q}
-              pType={curQuestions[qIdx].pType}
-              onResult={(correct, userAnswer) => recordAnswer(curQuestions[qIdx], correct, userAnswer)}
-              onNext={handleNext}
-            />
+          {/* 当前题目：产出阶段改真手写；learn 阶段先看讲解再出题 */}
+          {curQuestions[qIdx] && !(currentPhase === 'learn' && !learnQuizStarted) && (
+            isWrittenQuestion ? (
+              <ProductionWrite
+                key={curQuestions[qIdx].q.id}
+                sq={curQuestions[qIdx]}
+                onResult={(correct, text) => recordAnswer(curQuestions[qIdx], correct, text, true)}
+                onNext={handleNext}
+              />
+            ) : (
+              <GrammarQuestionCard
+                key={curQuestions[qIdx].q.id}
+                q={curQuestions[qIdx].q}
+                pType={curQuestions[qIdx].pType}
+                onResult={(correct, userAnswer) => recordAnswer(curQuestions[qIdx], correct, userAnswer)}
+                onNext={handleNext}
+              />
+            )
           )}
         </div>
       )}

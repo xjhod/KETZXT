@@ -1,6 +1,8 @@
 // ========== 每日语法打卡 session 生成器 ==========
 // 纯函数：根据当前学习状态生成一次打卡流程的题目集合。
-// 流程：① 复习(间隔加权抽旧错点) ② 新点学习(归纳式) ③ 对比训练(易混搭档) ④ 产出练习 ⑤ 混合测验(穿插)
+// 流程：① 复习(间隔加权抽旧错点) ② 新点学习(讲解前置) ③ 对比训练(易混搭档) ④ 产出练习 ⑤ 混合测验(穿插)
+// 2026-11-10 A 档：新增 errorTagFor（错因标签）与 buildMeaningQuestions（精读真实句子的形式→意义判断题），
+// 二者都只从现有数据派生，不新增题库内容、不改 store 结构、不动云同步。
 import {
   ROADMAP,
   GRAMMAR_QUESTIONS,
@@ -11,6 +13,57 @@ import {
   type PracticeTypeLite,
 } from '../data/grammarRoadmap';
 import type { PointProgress } from '../store/useDailyCheckinStore';
+import { getReading } from '../data/grammarReading';
+
+// ========== A 档新增（2026-11-10）：错因标签 + 形式→意义判断题 ==========
+// 口径：不新增题目内容，全部从现有 explanation / 精读段落派生，零编造。
+
+/**
+ * 从题目自带的 explanation 关键字派生错因标签。
+ * 只做分类，不生成任何解释文本；匹配不到就返回 null（界面不显示标签）。
+ */
+export function errorTagFor(explanation: string): string | null {
+  const s = explanation ?? '';
+  if (/三单|第三人称|加s|加 s|动词原形/.test(s)) return '第三人称单数';
+  if (/be\s*动词|am\s*\/\s*is\s*\/\s*are|be动词/.test(s)) return 'be 动词';
+  if (/时态|过去式|现在进行|一般过去|一般现在|时间状语/.test(s)) return '时态';
+  if (/介词|in\s*\/\s*on\s*\/\s*at/.test(s)) return '介词';
+  if (/语序|疑问句|疑问词|倒装/.test(s)) return '语序';
+  if (/复数|名词单复数|可数/.test(s)) return '名词复数';
+  return null;
+}
+
+/**
+ * 「形式→意义」判断题：题干用精读段落里的真实英文句子，
+ * 正确选项是该句自带的中文翻译，干扰项是同一篇里另一句的真实翻译。
+ * 复用 choice 的 question/options/answer 结构，GrammarQuestionCard 无需改题型。
+ */
+export function buildMeaningQuestions(grammarId: string, count = 2): SessionQuestion[] {
+  const reading = getReading(grammarId);
+  if (!reading) return [];
+  const segs = reading.segments.filter((s) => s.en?.trim() && s.zh?.trim());
+  const out: SessionQuestion[] = [];
+  for (let i = 0; i < segs.length && out.length < count; i++) {
+    const seg = segs[i];
+    const distractor = segs.find((s) => s.zh.trim() !== seg.zh.trim());
+    if (!distractor) continue;
+    out.push({
+      grammarId,
+      purpose: 'mixed',
+      pType: 'choice',
+      q: {
+        id: `${grammarId}-meaning-${out.length + 1}`,
+        grammarId,
+        question: `${seg.en.trim()} — 这句话在说什么？留意句中的动词形式。`,
+        options: shuffle([seg.zh.trim(), distractor.zh.trim()]),
+        answer: seg.zh.trim(),
+        explanation: seg.note?.trim() || '把英文句子和它的意思对上，再看用了哪种动词形式。',
+        kind: 'meaning',
+      },
+    });
+  }
+  return out;
+}
 
 export interface SessionQuestion {
   grammarId: string;
@@ -259,7 +312,16 @@ export function generateSession(input: GenInput): DailySession {
       .map((s) => ({ ...s, purpose: 'mixed' as const }));
     mixedPool.push(...extra);
   }
-  const mixed = shuffle(mixedPool).slice(0, 5);
+  // A 档：混合测验至少留 1 道「形式→意义」题，句子取自该点精读真实语料。
+  // 单独保留而不参与 shuffle 截断，否则 5 题里经常被挤掉，等于没加。
+  const meaningQs = newPointId ? buildMeaningQuestions(newPointId, 1) : [];
+  const normalPool = shuffle(mixedPool).filter(
+    (s) => !meaningQs.some((m) => m.q.id === s.q.id)
+  );
+  const mixed = shuffle([
+    ...normalPool.slice(0, Math.max(0, 5 - meaningQs.length)),
+    ...meaningQs,
+  ]);
 
   return { newPointId, review, learn, contrast, production, mixed };
 }

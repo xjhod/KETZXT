@@ -3,6 +3,7 @@
 // 样式与 GrammarPage 的 QuestionCard 保持一致。
 import { useState, useMemo } from 'react';
 import type { PracticeTypeLite } from '../data/grammarRoadmap';
+import { errorTagFor } from '../utils/grammarSession';
 
 function makeDistractor(wrong: string, correct: string): string | null {
   const strategies: Array<(w: string, _c: string) => string | null> = [
@@ -185,6 +186,11 @@ export function GrammarQuestionCard({
             {result === 'correct' ? '✅ 回答正确！' : `❌ 正确答案是：${q.answer}`}
           </p>
           <p className={`text-sm mt-1 ${result === 'correct' ? 'text-green-600' : 'text-red-600'}`}>{q.explanation}</p>
+          {result === 'wrong' && errorTagFor(q.explanation) && (
+            <p className="text-xs mt-2 text-gray-600">
+              这类题多错在：<span className="font-medium px-2 py-0.5 bg-white/70 rounded-md">{errorTagFor(q.explanation)}</span>
+            </p>
+          )}
           <button onClick={onNext} className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             继续 →
           </button>
