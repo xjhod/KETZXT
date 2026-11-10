@@ -12,6 +12,7 @@ const page = read('src/pages/VocabToday.tsx');
 const app = read('src/App.tsx');
 const css = read('src/index.css');
 const session = read('src/utils/vocabSession.ts');
+const written = read('src/components/WrittenProduction.tsx');
 
 // 截取 HintPanel 函数体，避免被文件里其它地方的 chunks.map 误判
 const hintStart = page.indexOf('function HintPanel(');
@@ -50,6 +51,12 @@ const checks = [
   ['复习头部主题名截断', /text-xs text-gray-400 truncate text-right/.test(page)],
   ['大字号英文允许断行', /font-mono break-all/.test(page)],
   ['口径注释同步', /不显示可拼出整个词的字母块/.test(session) && /照抄漏洞/.test(page)],
+
+  // ---- ③ 造句输入框（2026-11-10 新增）同样不得撑破窄屏 ----
+  ['造句 textarea 宽度受控', /w-full min-w-0 block/.test(written)],
+  ['造句按钮行允许收缩', /flex flex-wrap items-center gap-2 mt-2 min-w-0/.test(written)],
+  ['造句卡片 min-w-0', /bg-blue-50 rounded-xl min-w-0/.test(page)],
+  ['长句允许断行', /break-words/.test(written)],
 ];
 
 let failed = 0;

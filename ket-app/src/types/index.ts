@@ -277,3 +277,21 @@ export interface VocabWordProgress {
 
 /** 首次入场测的三档自评 */
 export type PlacementChoice = 'known' | 'unsure' | 'unknown';
+
+/**
+ * 孩子自己写的一句英文（词汇造句 / 后续语法手写共用结构）。
+ * 只作学习记录，**不参与任何掌握判定**；听写仍是词汇的唯一掌握证据。
+ */
+export interface VocabSentence {
+  id: string;
+  wordId: string;
+  themeId: string;
+  /** 目标词原文，便于回看时确认用到了哪个词 */
+  word: string;
+  /** 孩子写的原句，不做任何自动改写 */
+  text: string;
+  /** 本地日期 YYYY-MM-DD（用于「今天写了几句」） */
+  date: string;
+  /** ISO 时间戳，用于跨设备排序与去重 */
+  createdAt: string;
+}

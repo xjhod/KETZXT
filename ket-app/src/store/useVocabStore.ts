@@ -17,10 +17,12 @@ import type {
   VocabBox,
   VocabRoute,
   VocabWordProgress,
+  VocabSentence,
 } from '../types';
 import {
   applyDictation, emptyProgress, addDays, BOX_INTERVAL_DAYS,
 } from '../utils/vocabSchedule';
+import { MAX_WRITTEN_SENTENCES } from '../utils/writtenProduction';
 
 // 日期/间隔/判据统一放在 vocabSchedule（纯函数、可 Node 实跑），此处只做 re-export
 export {
@@ -46,6 +48,11 @@ interface VocabState {
   dailyNew: number;
   dailyReview: number;
   dailyCountsUpdatedAt: string | null;
+  /**
+   * 孩子自己写的句子（词汇造句）。与 words 分开存：
+   * words 按 lastSeen 整条覆盖，句子是独立的产出记录，混进去会被另一台设备冲掉。
+   */
+  sentences: VocabSentence[];
 
   ensureWord: (wordId: string, themeId: string, route: VocabRoute, today: string) => void;
   recordDictation: (
@@ -58,6 +65,8 @@ interface VocabState {
   ) => void;
   setCurrentTheme: (themeId: string) => void;
   setDailyCounts: (dailyNew: number, dailyReview: number) => void;
+  /** 记下一句自己写的英文；只存档，不改 boxes / streak / 掌握判定 */
+  saveSentence: (input: Omit<VocabSentence, 'id' | 'createdAt'>) => void;
   markSessionDate: (today: string) => void;
   /** 主题卡里手动把某个词重新排进今天的队列 */
   requeueWord: (wordId: string, today: string) => void;
@@ -76,6 +85,7 @@ export const useVocabStore = create<VocabState>()(
       dailyNew: 6,
       dailyReview: 8,
       dailyCountsUpdatedAt: null,
+      sentences: [],
 
       ensureWord: (wordId, themeId, route, today) => {
         set((state) => {
@@ -127,6 +137,16 @@ export const useVocabStore = create<VocabState>()(
         dailyReview,
         dailyCountsUpdatedAt: new Date().toISOString(),
       }),
+      saveSentence: (input) => set((state) => {
+        const now = new Date().toISOString();
+        const record: VocabSentence = {
+          ...input,
+          text: input.text.trim(),
+          id: `${input.wordId}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 6)}`,
+          createdAt: now,
+        };
+        return { sentences: [record, ...state.sentences].slice(0, MAX_WRITTEN_SENTENCES) };
+      }),
       markSessionDate: (today) => set({ lastSessionDate: today }),
       requeueWord: (wordId, today) => {
         set((state) => {
@@ -143,7 +163,7 @@ export const useVocabStore = create<VocabState>()(
       isDoneToday: (today) => get().lastSessionDate === today,
       reset: () => set({
         words: {}, placementDone: false, placementAt: null, lastSessionDate: null,
-        dailyNew: 6, dailyReview: 8, dailyCountsUpdatedAt: null,
+        dailyNew: 6, dailyReview: 8, dailyCountsUpdatedAt: null, sentences: [],
       }),
     }),
     {

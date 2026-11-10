@@ -37,6 +37,8 @@ import {
   clampDailyCount, DAILY_NEW_OPTIONS, DAILY_REVIEW_OPTIONS,
   NEW_PER_DAY, REVIEW_PER_DAY,
 } from './vocabSession';
+import { mergeWrittenSentences } from './writtenProduction';
+import type { VocabSentence } from '../types';
 
 /** 云端同步表名 */
 const TABLE = 'sync_payloads';
@@ -102,6 +104,7 @@ export function packPayload(): SyncPayload {
  *     （box/dueAt/streak 是同一份状态，必须整条取，不能字段级取 max 否则会自相矛盾）
  *   - vocab.placementDone：任一方已完成即视为完成
  *   - vocab.dailyNew / dailyReview：按 dailyCountsUpdatedAt 取较新的一份，值过白名单校验
+ *   - vocab.sentences：按 id 并集（产出记录不参与 words 的 lastSeen 覆盖），按时间倒序截断
  *   - profile.nickname：按 nicknameUpdatedAt 取较新的一份，旧包无此字段则忽略
  */
 export function mergePayload(remote: Partial<SyncPayload> | null | undefined): number {
@@ -232,6 +235,7 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
       dailyNew?: number;
       dailyReview?: number;
       dailyCountsUpdatedAt?: string | null;
+      sentences?: VocabSentence[];
     };
     const local = useVocabStore.getState();
     const merged: Record<string, any> = { ...local.words };
@@ -256,6 +260,13 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
       useRemoteDaily ? rv.dailyReview : local.dailyReview, REVIEW_PER_DAY, DAILY_REVIEW_OPTIONS
     );
     const dailyCountsUpdatedAt = useRemoteDaily ? remoteDailyStamp : (localDailyStamp || null);
+    // 造句记录与记忆状态分开合并：words 会被 lastSeen 较新的一方整条覆盖，
+    // 句子若塞在 words 里会被另一台设备冲掉。旧同步包没有 sentences 时保持本地。
+    const localSentences = local.sentences ?? [];
+    const sentences = mergeWrittenSentences(
+      localSentences,
+      Array.isArray(rv.sentences) ? rv.sentences : []
+    );
     useVocabStore.setState({
       words: merged,
       currentThemeId: local.currentThemeId || rv.currentThemeId || '',
@@ -265,8 +276,10 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
       dailyNew,
       dailyReview,
       dailyCountsUpdatedAt,
+      sentences,
     } as any);
     if (useRemoteDaily) mergedCount++;
+    if (sentences.length > localSentences.length) mergedCount += sentences.length - localSentences.length;
   }
 
   // ---- profile（昵称）：按 nicknameUpdatedAt 取较新的一份 ----

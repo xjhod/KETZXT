@@ -10,6 +10,9 @@
 //   · 错词先「再听一遍 → 遮形回想 → 自己写」，实在想不起来才显示答案照打
 //     （重打一律不写记忆盒子）
 //   · 结算只报正确率/升降盒/明日待复习，不发经验值、不报连胜
+//   · 2026-11-10 追加「自己写一句」：只在首学听写写对后出现，可跳过；
+//     只查是否用到目标词 + 拼写，不判语法、不打分、不进掌握判定；
+//     写之前不给可照抄的英文，写完才展示词库真实例句；存档并跨设备同步
 //
 // 2026-11-07 第二轮：首学改成单个词的 5 步顺序
 //   1 只听不看（含 0.75 倍速）→ 2 数拍/辨首音 → 3 露形配块 → 4 挂上意义 → 5 整词听写
@@ -34,6 +37,8 @@ import {
 } from '../utils/vocabSession';
 import { buildCListeningDrill, phonicsHints, type PhonicsHint } from '../utils/wordChunks';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
+import { WrittenProduction } from '../components/WrittenProduction';
+import { validateVocabSentence } from '../utils/writtenProduction';
 
 type Phase = 'placement' | 'overview' | 'review' | 'learn' | 'passage' | 'result';
 
@@ -619,6 +624,82 @@ function LearnFlow({
 // 错词不再立刻报答案：先「再听一遍 → 遮形回想 → 自己写」，
 // 回想仍不出来才显示正确拼法照打一遍。只有首次提交写记忆盒子。
 
+// ========== 第 6 步：自己写一句（产出，不计入掌握判定）==========
+//
+// 只在新词首学、听写写对之后出现；复习不重复要求造句，避免拖长每日流程。
+// 写之前屏幕上没有可照抄的英文例句；写完（校验通过）后才给词库真实例句对照。
+
+function SentenceStep({ item, today, onNext }: {
+  item: VocabQueueItem;
+  today: string;
+  onNext: () => void;
+}) {
+  const saveSentence = useVocabStore((s) => s.saveSentence);
+  const [saved, setSaved] = useState(false);
+  const example = item.word.example?.trim() ?? '';
+  const exampleZh = item.word.exampleZh?.trim() ?? '';
+
+  return (
+    <div className="mt-4 p-3 sm:p-4 bg-blue-50 rounded-xl min-w-0">
+      <WrittenProduction
+        title={`✍️ 用 ${item.word.en} 写一句英文`}
+        description="写一句自己想说的话，把这个词用进去。只查有没有用到这个词、拼写对不对；不判语法、不打分、不算掌握。写不出来可以直接跳过。"
+        placeholder={`用 ${item.word.en} 说一件今天做的事`}
+        submitLabel="记下这句话"
+        check={(t) => validateVocabSentence(t, item.word.en)}
+        hint={
+          <>
+            中文意思是「{item.word.zh}」。
+            {exampleZh ? `词库例句讲的是：${exampleZh}。` : ''}
+            先想中文，再自己写英文。
+          </>
+        }
+        reveal={
+          example ? (
+            <>
+              <p className="font-medium text-gray-700 mb-1">词库里的例句对照：</p>
+              <p className="break-words">{example}</p>
+              {exampleZh && <p className="text-gray-500 mt-0.5 break-words">{exampleZh}</p>}
+            </>
+          ) : undefined
+        }
+        onAccepted={(text) => {
+          saveSentence({
+            wordId: item.word.id,
+            themeId: item.themeId,
+            word: item.word.en,
+            text,
+            date: today,
+          });
+          setSaved(true);
+        }}
+      />
+      <button onClick={onNext} className="btn-primary mt-3 w-full sm:w-auto">
+        {saved ? '下一题 →' : '跳过，下一题 →'}
+      </button>
+      {saved && <p className="text-xs text-gray-500 mt-2">已记下，复习这个词时会再看到。</p>}
+    </div>
+  );
+}
+
+/** 复习答完后回看自己写过的句子，放在最后，避免提前泄漏词形 */
+function PastSentences({ wordId }: { wordId: string }) {
+  const sentences = useVocabStore((s) => s.sentences);
+  const mine = useMemo(
+    () => sentences.filter((s) => s.wordId === wordId).slice(0, 2),
+    [sentences, wordId]
+  );
+  if (!mine.length) return null;
+  return (
+    <div className="mt-3 p-3 bg-gray-50 rounded-xl min-w-0">
+      <p className="text-xs text-gray-500 mb-1">你以前写过：</p>
+      {mine.map((s) => (
+        <p key={s.id} className="text-sm text-gray-700 break-words">「{s.text}」</p>
+      ))}
+    </div>
+  );
+}
+
 function DictationStep({
   item,
   phase,
@@ -633,6 +714,7 @@ function DictationStep({
   const [state, setState] = useState<'answering' | 'recall' | 'showAnswer' | 'fixed'>('answering');
   const [firstCorrect, setFirstCorrect] = useState(false);
   const answeredRef = useRef(false);
+  const today = useMemo(() => todayString(), []);
 
   const submit = (text: string) => {
     const ok = isDictationCorrect(text, item.word.en);
@@ -710,12 +792,19 @@ function DictationStep({
       )}
 
       {state === 'fixed' && (
-        <div className="mt-3">
+        <div className="mt-3 min-w-0">
           <p className="font-medium text-green-600">
             {firstCorrect ? '✓ 写对了' : '✓ 这一次自己想起来并写对了'}
           </p>
           <div className="mt-1"><IpaRef word={item.word} /></div>
-          <button onClick={onNext} className="btn-primary mt-4">下一题 →</button>
+          {phase === 'learn' ? (
+            <SentenceStep item={item} today={today} onNext={onNext} />
+          ) : (
+            <>
+              <PastSentences wordId={item.word.id} />
+              <button onClick={onNext} className="btn-primary mt-4">下一题 →</button>
+            </>
+          )}
         </div>
       )}
     </div>
@@ -908,6 +997,8 @@ function ResultStep({
 }) {
   const recordSession = useProgressStore((s) => s.recordSession);
   const themeId = useVocabStore((s) => s.currentThemeId);
+  const sentences = useVocabStore((s) => s.sentences);
+  const writtenToday = sentences.filter((s) => s.date === today).length;
   const tomorrow = addDays(today, 1);
   const dueTomorrow = Object.values(words).filter(
     (p) => p.status !== 'new' && p.dueAt <= tomorrow
@@ -949,7 +1040,10 @@ function ResultStep({
         <div className="p-3 bg-blue-50 rounded-xl"><p className="font-bold text-blue-700">{stats.mastered}</p><p className="text-xs text-gray-500">新掌握</p></div>
       </div>
       <p className="text-sm text-gray-600 mt-5">明日待复习：<span className="font-semibold">{dueTomorrow}</span> 词</p>
-      <p className="text-xs text-gray-400 mt-1">掌握判据：Box 5 + 连续 2 次听写正确 + 距首次学习 ≥ 7 天</p>
+      {writtenToday > 0 && (
+        <p className="text-xs text-gray-500 mt-2">今天自己写了 {writtenToday} 句英文，复习这些词时会再看到。</p>
+      )}
+      <p className="text-xs text-gray-400 mt-1">掌握判据：Box 5 + 连续 2 次听写正确 + 距首次学习 ≥ 7 天；写句子只作记录，不参与判定</p>
       <button onClick={onBack} className="btn-primary mt-6">返回主题列表</button>
     </div>
   );
@@ -1119,7 +1213,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
             <button onClick={start} className="btn-primary w-full">开始今日学习 →</button>
           )}
           <p className="text-xs text-gray-400 mt-3">
-            每个新词按 5 步走：只听 → 辨音 → 看形（含拼读规律）→ 挂义（含选意思）→ 听写。间隔 0/1/3/7/15 天与上面的每日词量都是工程默认值，不是「最优记忆参数」。
+            每个新词按 5 步走：只听 → 辨音 → 看形（含拼读规律）→ 挂义（含选意思）→ 听写；写对之后可以再用这个词写一句英文（可跳过）。听写仍是唯一掌握证据，写句子只作记录。间隔 0/1/3/7/15 天与上面的每日词量都是工程默认值，不是「最优记忆参数」。
           </p>
         </div>
         {theme && (
