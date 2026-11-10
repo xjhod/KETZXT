@@ -6,16 +6,19 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { ROADMAP } from '../data/grammarRoadmap';
 import userScopedStorage from './userScopedStorage';
+import {
+  applyGrammarAnswer,
+  applyGrammarProduction,
+  emptyGrammarPoint,
+  isGrammarMastered,
+  migrateGrammarPoint,
+  pickNextGrammarPointId,
+  todayString,
+  type GrammarPointProgress,
+} from '../utils/grammarSchedule';
 
-export interface PointProgress {
-  grammarId: string;
-  introduced: boolean; // 是否已被作为"今日新点"学过
-  stage: number; // 0 未开始 / 1 已学 / 2 已对比产出 / 4 熟练
-  right: number;
-  wrong: number;
-  box: number; // Leitner 盒子 1-5（越大越久才复习，错题回到 1）
-  lastSeen: string | null; // 最近一次练习日期 YYYY-MM-DD
-}
+// B 档：字段定义移到 grammarSchedule.ts 纯函数层，store 与 session 生成器共用同一份。
+export type PointProgress = GrammarPointProgress;
 
 export interface TodayAnswer {
   grammarId: string;
@@ -41,6 +44,8 @@ interface DailyCheckinState {
   ensurePoint: (id: string) => void;
   getPoint: (id: string) => PointProgress;
   recordQuestion: (grammarId: string, isCorrect: boolean) => void;
+  /** B 档：手写产出只更新「连续手写正确」，不动 box / dueAt；跳过不调用 */
+  recordProduction: (grammarId: string, isCorrect: boolean) => void;
   logAnswer: (grammarId: string, phase: TodayAnswer['phase'], isCorrect: boolean) => void;
   setTodayNewPoint: (id: string | null) => void;
   markServed: (id: string) => void; // 记录主打卡已出过的题目，供额外练习去重
@@ -52,14 +57,7 @@ interface DailyCheckinState {
 }
 
 function emptyPoint(id: string): PointProgress {
-  return { grammarId: id, introduced: false, stage: 0, right: 0, wrong: 0, box: 1, lastSeen: null };
-}
-
-function todayString(d = new Date()): string {
-  const y = d.getFullYear();
-  const m = `${d.getMonth() + 1}`.padStart(2, '0');
-  const day = `${d.getDate()}`.padStart(2, '0');
-  return `${y}-${m}-${day}`;
+  return emptyGrammarPoint(id);
 }
 
 function diffDays(a: string, b: string): number {
@@ -87,20 +85,23 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
 
       getPoint: (id) => {
         const p = get().points[id];
-        return p ?? emptyPoint(id);
+        return p ? migrateGrammarPoint(p) : emptyPoint(id);
       },
 
+      // B 档：一天最多升一级 + dueAt 0/1/3/7/15 排期，全部走纯函数层
       recordQuestion: (grammarId, isCorrect) => {
         set((state) => {
           const prev = state.points[grammarId] ?? emptyPoint(grammarId);
-          const box = isCorrect ? Math.min(5, prev.box + 1) : 1;
-          const next: PointProgress = {
-            ...prev,
-            right: prev.right + (isCorrect ? 1 : 0),
-            wrong: prev.wrong + (isCorrect ? 0 : 1),
-            box,
-            lastSeen: todayString(),
-          };
+          const { next } = applyGrammarAnswer(prev, isCorrect, todayString());
+          return { points: { ...state.points, [grammarId]: next } };
+        });
+      },
+
+      // B 档：手写产出计入「连续手写正确」，是熟练判定的证据之一；不动排期
+      recordProduction: (grammarId, isCorrect) => {
+        set((state) => {
+          const prev = state.points[grammarId] ?? emptyPoint(grammarId);
+          const { next } = applyGrammarProduction(prev, isCorrect, todayString());
           return { points: { ...state.points, [grammarId]: next } };
         });
       },
@@ -146,13 +147,19 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
 
       finishPoint: (grammarId, stageReached) => {
         set((state) => {
-          const prev = state.points[grammarId] ?? emptyPoint(grammarId);
+          const t = todayString();
+          const p = migrateGrammarPoint(state.points[grammarId] ?? emptyPoint(grammarId), t);
+          // B 档：混合测验正确率只作当日反馈，不再直接把 stage 顶到 4（熟练）。
+          // 熟练只能由 isGrammarMastered 判定；旧数据 stage=4 予以保留，不倒退。
           const next: PointProgress = {
-            ...prev,
+            ...p,
             introduced: true,
-            stage: Math.max(prev.stage, stageReached),
-            lastSeen: todayString(),
+            stage: p.stage >= 4 ? 4 : Math.max(p.stage, Math.min(2, stageReached)),
+            firstLearnedAt: p.firstLearnedAt ?? t,
+            lastSeen: t,
+            updatedAt: t,
           };
+          next.mastered = isGrammarMastered(next, t);
           return { points: { ...state.points, [grammarId]: next } };
         });
       },
@@ -173,25 +180,30 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
         });
       },
 
-      // 下一个尚未"学过"的语法点；若都学过，返回第一个未熟练(stage<4)的点用于强化
-      getNextNewPointId: () => {
-        const { points } = get();
-        for (const id of ROADMAP) {
-          if (!points[id]?.introduced) return id;
-        }
-        for (const id of ROADMAP) {
-          if ((points[id]?.stage ?? 0) < 4) return id;
-        }
-        return null; // 全部熟练
-      },
+      // B 档：下一个未学过的点；都学过则取已学但未熟练的（按新判据，不再看 stage<4）
+      getNextNewPointId: () => pickNextGrammarPointId(get().points, ROADMAP, todayString()),
 
       isTodayDone: (todayStr) => get().lastCheckinDate === todayStr,
 
       reset: () => set({ points: {}, streak: 0, lastCheckinDate: null, checkinDates: [] }),
     }),
     {
-      name: 'ket-daily-checkin-v1', // 实际按当前用户隔离为 ket-daily-checkin-v1:<uid>
+      name: 'ket-daily-checkin-v1', // 不改名：改名会丢掉用户已有的打卡进度
       storage: createJSONStorage(() => userScopedStorage),
+      // B 档：旧版 points 没有 dueAt / streak / firstLearnedAt 等字段，
+      // 版本升到 2，rehydrate 时逐条补齐；旧 stage=4 保留为熟练，不倒退。
+      version: 2,
+      migrate: (persisted, version) => {
+        const state = (persisted && typeof persisted === 'object' ? persisted : {}) as Record<string, unknown>;
+        if (version < 2) {
+          const t = todayString();
+          const raw = (state.points ?? {}) as Record<string, unknown>;
+          state.points = Object.fromEntries(
+            Object.entries(raw).map(([id, p]) => [id, migrateGrammarPoint(p, t)])
+          );
+        }
+        return state as unknown as DailyCheckinState;
+      },
     }
   )
 );

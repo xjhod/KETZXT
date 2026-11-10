@@ -49,6 +49,14 @@ export const CONFUSABLE_PAIRS: [string, string][] = [
   ['G05', 'G02'], // 现在完成（与现在有关） vs 一般过去（纯过去）
   ['G06', 'G07'], // can（能力） vs must/should（必须/应该）
   ['G10', 'G17'], // 冠词 a/an/the vs 数量 some/any/much/many
+  // ---- B 档补齐（2026-11-10）：让 20 个语法点每个都至少有一个易混搭档 ----
+  ['G08', 'G09'], // 比较级 vs 最高级
+  ['G10', 'G11'], // 冠词 vs 代词
+  ['G13', 'G14'], // 介词 vs 连词
+  ['G15', 'G17'], // there be vs 数量词
+  ['G01', 'G16'], // 一般现在时 do/does vs 疑问句与否定句
+  ['G18', 'G20'], // 短语动词 vs 动名词/不定式
+  ['G04', 'G19'], // be going to 将来 vs if 条件句
 ];
 
 // ========== 3. 对比提示（解释两者的关键区别）==========
@@ -65,6 +73,13 @@ export const CONTRAST_HINTS: Record<string, string> = {
   [pairKey('G05', 'G02')]: '一般过去只讲过去（I saw him yesterday）；现在完成连接现在（I have seen him → 强调经历/结果，常配 ever/never/just）。',
   [pairKey('G06', 'G07')]: 'can = 能力/可以（I can swim）；must = 必须，should = 应该（You must stop / should study）。',
   [pairKey('G10', 'G17')]: '单数可数用 a/an（a book）；复数/不可数表"一些"用 some/any（some books / any water）。',
+  [pairKey('G08', 'G09')]: '两者相比用比较级（-er / more … than）；三者以上之最用最高级（the -est / the most …，常配 in / of）。',
+  [pairKey('G10', 'G11')]: '冠词放在名词前限定它（a book / the book）；代词是替代名词的词（I / me / my / mine）。',
+  [pairKey('G13', 'G14')]: '介词后面接名词或代词构成短语（in the room / at school）；连词连接两个句子或并列成分（and / but / because）。',
+  [pairKey('G15', 'G17')]: 'there be 说"某处有某物"（There is a book on the desk）；some / any / much / many 说的是"有多少"。',
+  [pairKey('G01', 'G16')]: '一般现在时的疑问和否定靠 do / does / don\'t / doesn\'t（Do you like it?）；be 动词句直接把 am/is/are 提前或加 not。',
+  [pairKey('G18', 'G20')]: '短语动词是"动词 + 小品词"整体表达一个意思（look after = 照顾）；动名词/不定式是动词在句中当名词或跟在另一动词后（enjoy doing / want to do）。',
+  [pairKey('G04', 'G19')]: 'be going to 说打算做的事（I am going to play）；if 条件句说"如果…就…"，if 从句用一般现在时、主句用将来时。',
 };
 
 // 取得某语法点的最佳对比搭档（首个包含它的配对中的另一个）
@@ -74,6 +89,16 @@ export function getPartner(grammarId: string): string | null {
     if (b === grammarId) return a;
   }
   return null;
+}
+
+/** B 档：某点的全部易混搭档（去重），供「交错出题」时按到期情况挑一个 */
+export function getPartners(grammarId: string): string[] {
+  const out: string[] = [];
+  for (const [a, b] of CONFUSABLE_PAIRS) {
+    const other = a === grammarId ? b : b === grammarId ? a : null;
+    if (other && other !== grammarId && !out.includes(other)) out.push(other);
+  }
+  return out;
 }
 
 export function getContrastHint(a: string, b: string): string | null {

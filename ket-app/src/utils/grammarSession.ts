@@ -1,12 +1,13 @@
 // ========== 每日语法打卡 session 生成器 ==========
 // 纯函数：根据当前学习状态生成一次打卡流程的题目集合。
-// 流程：① 复习(间隔加权抽旧错点) ② 新点学习(讲解前置) ③ 对比训练(易混搭档) ④ 产出练习 ⑤ 混合测验(穿插)
+// 流程：① 复习(到期点优先 + 错题加权) ② 新点学习(讲解前置) ③ 对比训练(真交错) ④ 产出练习 ⑤ 混合测验(当日反馈)
 // 2026-11-10 A 档：新增 errorTagFor（错因标签）与 buildMeaningQuestions（精读真实句子的形式→意义判断题），
-// 二者都只从现有数据派生，不新增题库内容、不改 store 结构、不动云同步。
+// 二者都只从现有数据派生，不新增题库内容；A 档本身不动云同步（B 档在 sync.ts 单独处理）。
+// 2026-11-10 B 档：复习按 dueAt 到期点抽、熟练判定走 grammarSchedule、对比题按语法点交替排列。
 import {
   ROADMAP,
   GRAMMAR_QUESTIONS,
-  getPartner,
+  getPartners,
   getContrastHint,
   getQuestionById,
   getPoint,
@@ -14,6 +15,15 @@ import {
 } from '../data/grammarRoadmap';
 import type { PointProgress } from '../store/useDailyCheckinStore';
 import { getReading } from '../data/grammarReading';
+import {
+  grammarDueUrgency,
+  isGrammarDue,
+  isGrammarMastered,
+  migrateGrammarPoint,
+  pickNextGrammarPointId,
+  todayString,
+  type GrammarPointProgress,
+} from './grammarSchedule';
 
 // ========== A 档新增（2026-11-10）：错因标签 + 形式→意义判断题 ==========
 // 口径：不新增题目内容，全部从现有 explanation / 精读段落派生，零编造。
@@ -97,6 +107,8 @@ export interface GenInput {
   points: Record<string, PointProgress>;
   // 来自 progressStore.getWrongAnswers('grammar') 的 (grammarId, questionId)
   wrongList: { grammarId: string; questionId: string }[];
+  // B 档：今日日期 YYYY-MM-DD，可注入以便校验脚本确定性验证；缺省取本机当天
+  today?: string;
   // 'checkin' 主打卡（默认）| 'extra' 额外练习（不推进路线图、去重不重复）
   mode?: 'checkin' | 'extra';
   // 额外练习时排除主打卡已出过的题目 id，防止重复出题
@@ -172,7 +184,10 @@ function toSession(
 
 export function generateSession(input: GenInput): DailySession {
   const { points, wrongList, mode = 'checkin', excludeIds, focusPointId } = input;
+  const t = input.today ?? todayString();
   const ne = (id: string) => notExcluded(id, excludeIds);
+  const pointOf = (id: string): GrammarPointProgress | null =>
+    points[id] ? migrateGrammarPoint(points[id], t) : null;
 
   // ---- 今日新点 / 焦点 ----
   let newPointId: string | null;
@@ -183,57 +198,68 @@ export function generateSession(input: GenInput): DailySession {
       ROADMAP.filter((id) => points[id]?.introduced).slice(-1)[0] ??
       ROADMAP[0];
   } else {
-    newPointId = null;
-    for (const id of ROADMAP) {
-      if (!points[id]?.introduced) { newPointId = id; break; }
-    }
-    if (!newPointId) {
-      for (const id of ROADMAP) {
-        if ((points[id]?.stage ?? 0) < 4) { newPointId = id; break; }
-      }
-    }
-    // 若全部熟练，选第一个点做复习日
-    if (!newPointId) newPointId = ROADMAP[0];
+    // B 档：与 store.getNextNewPointId 共用同一判据（不再用 stage<4）
+    newPointId = pickNextGrammarPointId(points, ROADMAP, t);
+    if (!newPointId) newPointId = ROADMAP[0]; // 全部熟练，复习日
   }
 
   const validWrong = wrongList.filter((w) => getQuestionById(w.grammarId, w.questionId));
 
-  // ---- ① 复习：固定 5 题，间隔加权抽旧错点；错题不足则用"低盒子 + 未熟练"补满 ----
-  const reviewCandidates: { grammarId: string; qid: string; w: number }[] = [];
-  for (const w of validWrong) {
-    const p = points[w.grammarId];
-    const weight = (p?.wrong ?? 1) + (p ? 5 - p.box : 4) + 1;
-    reviewCandidates.push({ grammarId: w.grammarId, qid: w.questionId, w: weight });
+  // ---- ① 复习：固定 5 题。B 档：到期点优先，再错题，最后低盒子补足 ----
+  const usedQids = new Set<string>();
+  const review: SessionQuestion[] = [];
+  const availableOf = (id: string) =>
+    shuffle(allOf(id).filter((s) => ne(s.q.id) && !usedQids.has(s.q.id)));
+  const pushReview = (id: string, s: SessionQuestion | null | undefined) => {
+    if (!s || review.length >= 5 || usedQids.has(s.q.id)) return;
+    usedQids.add(s.q.id);
+    review.push({ ...s, grammarId: id, purpose: 'review' });
+  };
+
+  // ① 到期点优先：按逾期天数降序，每个点先取 1 题，最该复习的不会漏
+  const dueIds = ROADMAP
+    .filter((id) => isGrammarDue(pointOf(id), t))
+    .sort((a, b) => grammarDueUrgency(pointOf(b), t) - grammarDueUrgency(pointOf(a), t));
+  for (const id of dueIds) {
+    if (review.length >= 5) break;
+    pushReview(id, availableOf(id)[0]);
   }
-  // 错题不足 5 道时，用"低盒子 + 未熟练"补满到 5 题
-  if (reviewCandidates.length < 5) {
-    for (const id of ROADMAP) {
-      const p = points[id];
-      if (p?.introduced && (p.stage ?? 0) < 4) {
-        for (const s of shuffle(allOf(id))) {
-          if (reviewCandidates.length >= 5) break;
-          if (!reviewCandidates.some((c) => c.grammarId === id && c.qid === s.q.id)) {
-            reviewCandidates.push({ grammarId: id, qid: s.q.id, w: 5 - p.box + 1 });
-          }
-        }
-      }
-      if (reviewCandidates.length >= 5) break;
+  // ② 错题补足：按「错误数 + 低盒子 + 逾期」加权
+  if (review.length < 5) {
+    const miss = validWrong
+      .filter((w) => ne(w.questionId) && !usedQids.has(w.questionId))
+      .map((w) => {
+        const p = pointOf(w.grammarId);
+        return {
+          grammarId: w.grammarId,
+          qid: w.questionId,
+          w: 10 + (p?.wrong ?? 1) + (p ? 5 - p.box : 4) + grammarDueUrgency(p, t),
+        };
+      });
+    for (const c of weightedPick(miss, (x) => x.w, 5 - review.length)) {
+      pushReview(c.grammarId, toSession(c.grammarId, c.qid, 'review'));
     }
   }
-  // 额外练习：先排除主打卡已出的题；若过滤后为空，回退到"所有已学点"去重池，避免重复刚错的题
-  const reviewPool = (() => {
-    if (mode !== 'extra') return reviewCandidates;
-    const filtered = reviewCandidates.filter((c) => ne(c.qid));
-    if (filtered.length) return filtered;
-    const extra = weakPoolItems(points, excludeIds)
-      .filter((s) => !filtered.some((c) => c.grammarId === s.grammarId && c.qid === s.q.id))
-      .map((s) => ({ grammarId: s.grammarId, qid: s.q.id, w: 2 }));
-    return [...filtered, ...extra].slice(0, 5);
-  })();
-  const reviewCount = 5; // 固定 5 题复习
-  const review = weightedPick(reviewPool, (c) => c.w, reviewCount)
-    .map((c) => toSession(c.grammarId, c.qid, 'review'))
-    .filter((x): x is SessionQuestion => x !== null);
+  // ③ 不足 5 题：低盒子 + 未熟练点补足（既有产品决策：复习环节固定 5 题）
+  if (review.length < 5) {
+    const fallbackIds = ROADMAP
+      .filter((id) => {
+        const p = pointOf(id);
+        return p?.introduced && !isGrammarMastered(p, t);
+      })
+      .sort((a, b) => (pointOf(a)?.box ?? 1) - (pointOf(b)?.box ?? 1));
+    for (const id of fallbackIds) {
+      if (review.length >= 5) break;
+      pushReview(id, availableOf(id)[0]);
+    }
+  }
+  // ④ 额外练习：题目已避开主打卡，还不够就用「所有已学点」去重池补满
+  if (mode === 'extra' && review.length < 5) {
+    for (const s of weakPoolItems(points, excludeIds)) {
+      if (review.length >= 5) break;
+      if (!usedQids.has(s.q.id)) pushReview(s.grammarId, s);
+    }
+  }
 
   // ---- ② 新点学习（归纳式）----
   let learn: LearnStep | null = null;
@@ -244,19 +270,39 @@ export function generateSession(input: GenInput): DailySession {
     learn = { pointId: newPointId, point: getPoint(newPointId), questions: sample };
   }
 
-  // ---- ③ 对比训练（易混搭档）----
+  // ---- ③ 对比训练（B 档：只跟「已学过」的点比，题目按点交替排列）----
   let contrast: ContrastStep | null = null;
   if (newPointId) {
-    const partner = getPartner(newPointId);
-    if (partner) {
-      const hint = getContrastHint(newPointId, partner);
+    const partners = getPartners(newPointId);
+    const learned = (id: string) => Boolean(pointOf(id)?.introduced);
+    // 优先已引入且到期的搭档；其次任意已引入搭档；再退其它已引入且到期的点。
+    // 没有可比对象就不硬凑（首日不拿没学过的点来"对比"，那等于提前教新点）。
+    const otherId =
+      partners.find((id) => learned(id) && isGrammarDue(pointOf(id), t)) ??
+      partners.find(learned) ??
+      dueIds.find((id) => id !== newPointId && learned(id)) ??
+      null;
+    if (otherId) {
       const fromNew = shuffleFiltered(allOf(newPointId), excludeIds)
         .slice(0, 2)
         .map((s) => ({ ...s, purpose: 'contrast' as const }));
-      const fromPartner = shuffleFiltered(allOf(partner), excludeIds)
-        .slice(0, 1)
+      const fromOther = shuffleFiltered(allOf(otherId), excludeIds)
+        .slice(0, 2)
         .map((s) => ({ ...s, purpose: 'contrast' as const }));
-      contrast = { partnerId: partner, hint, questions: shuffle([...fromNew, ...fromPartner]) };
+      // 真交错：两点的题一题一题交替，而不是 shuffle 后可能连着两题同一点
+      const flip = Math.random() < 0.5;
+      const interleaved: SessionQuestion[] = [];
+      for (let i = 0; i < Math.max(fromNew.length, fromOther.length); i++) {
+        const first = flip ? fromOther[i] : fromNew[i];
+        const second = flip ? fromNew[i] : fromOther[i];
+        if (first) interleaved.push(first);
+        if (second) interleaved.push(second);
+      }
+      contrast = {
+        partnerId: otherId,
+        hint: getContrastHint(newPointId, otherId),
+        questions: interleaved,
+      };
     }
   }
 

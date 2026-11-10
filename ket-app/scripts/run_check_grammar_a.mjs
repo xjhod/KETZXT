@@ -91,7 +91,9 @@ const session = readFileSync('src/utils/grammarSession.ts', 'utf8');
 
 ok('产出阶段接入真手写组件', /function ProductionWrite\(/.test(page) && /<ProductionWrite/.test(page));
 ok('手写复用 WrittenProduction', /<WrittenProduction/.test(page) && /isWrittenCorrect\(t, answer\)/.test(page));
-ok('手写不进熟练判定（skipBox）', /if \(!skipBox\) dc\.recordQuestion/.test(page)
+// B 档起手写计入「连续手写正确」（熟练证据之一），但仍不进 box / 排期
+ok('手写只进连续手写正确、不进 box 排期', /if \(isProduction\) dc\.recordProduction\(sq\.grammarId, correct\)/.test(page)
+  && /else dc\.recordQuestion\(sq\.grammarId, correct\)/.test(page)
   && /recordAnswer\(curQuestions\[qIdx\], correct, text, true\)/.test(page));
 ok('手写可跳过', /done \? '继续 →' : '跳过，继续 →'/.test(page));
 ok('两次失败后才给看答案按钮', /实在想不起来，看正确写法/.test(page)

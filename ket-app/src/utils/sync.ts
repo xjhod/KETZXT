@@ -38,6 +38,12 @@ import {
   NEW_PER_DAY, REVIEW_PER_DAY,
 } from './vocabSession';
 import { mergeWrittenSentences } from './writtenProduction';
+import {
+  migrateGrammarPoint,
+  newerGrammarPoint,
+  todayString as grammarTodayString,
+} from './grammarSchedule';
+import type { PointProgress } from '../store/useDailyCheckinStore';
 import type { VocabSentence } from '../types';
 
 /** 云端同步表名 */
@@ -97,7 +103,8 @@ export function packPayload(): SyncPayload {
  *   - answerRecords / sessionRecords：按 id 去重，时间新的胜出
  *   - plan.logs：按日期合并，同日取 completedAt 更新的
  *   - plan.cursor：取较大值（进度只能前进）
- *   - checkin.points：按语法点合并，right/wrong 取较大值，stage 取较大值
+ *   - checkin.points：B 档改为「整条按 updatedAt/lastSeen 取较新的一份」（box/dueAt/streak 是
+ *     同一份状态，不能字段级取 max），再对 right/wrong/stage 取较大值、firstLearnedAt 取较早值
  *   - checkin.checkinDates：并集
  *   - checkin.streak / lastCheckinDate：取较新的
  *   - vocab.words：按 wordId 合并，lastSeen 较新的一方整条胜出
@@ -196,22 +203,30 @@ export function mergePayload(remote: Partial<SyncPayload> | null | undefined): n
       checkinDates?: string[];
     };
     const local = useDailyCheckinStore.getState();
-    const points = { ...local.points };
-    for (const [id, p] of Object.entries(rp.points || {})) {
+    const gToday = grammarTodayString();
+    // mergePayload 直接 setState，绕过 persist 的 version migrate，本地旧结构也要补齐
+    const points: Record<string, PointProgress> = {};
+    for (const [id, p] of Object.entries(local.points)) {
+      points[id] = migrateGrammarPoint(p, gToday);
+    }
+    for (const [id, raw] of Object.entries(rp.points || {})) {
+      const r = migrateGrammarPoint(raw, gToday);
       const cur = points[id];
       if (!cur) {
-        points[id] = p;
+        points[id] = r;
         mergedCount++;
       } else {
-        // 计数类字段取较大值（两台设备各做了一些题，取多的那个更接近真实总量）
+        // B 档：box / dueAt / streak / lastPromotedAt 是同一份状态，整条取较新的一份，
+        // 字段级取 max 会造出「box=5 但 dueAt 还是昨天」这类自相矛盾的进度。
+        const base = newerGrammarPoint(cur, r, gToday);
         points[id] = {
-          ...cur,
-          introduced: cur.introduced || (p as any).introduced,
-          stage: Math.max(cur.stage, (p as any).stage || 0),
-          right: Math.max(cur.right, (p as any).right || 0),
-          wrong: Math.max(cur.wrong, (p as any).wrong || 0),
-          box: Math.max(cur.box, (p as any).box || 1),
-          lastSeen: pickLater(cur.lastSeen, (p as any).lastSeen) ?? cur.lastSeen,
+          ...base,
+          introduced: cur.introduced || r.introduced,
+          stage: Math.max(cur.stage, r.stage),
+          right: Math.max(cur.right, r.right),
+          wrong: Math.max(cur.wrong, r.wrong),
+          firstLearnedAt: pickEarlier(cur.firstLearnedAt, r.firstLearnedAt) ?? base.firstLearnedAt,
+          mastered: base.mastered || cur.mastered || r.mastered,
         };
       }
     }

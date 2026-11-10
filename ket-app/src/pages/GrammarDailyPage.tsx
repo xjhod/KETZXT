@@ -2,7 +2,9 @@
 // 流程：复习旧知识 → 今日新语法(讲解前置) → 对比训练 → 产出练习(真手写) → 混合测验 → 完成
 // 顶部：连续打卡 streak + 日历热力图 + 路线图进度。难度按 ROADMAP 由易到难推进，错题加权复习。
 // 2026-11-10 A 档：规则卡默认展开、精读小注默认收起、看完讲解才出学习题；
-// 产出阶段用真手写替代选项题（不进熟练判定、可跳过）；混合测验补精读派生「形式→意义」题。
+// 产出阶段用真手写替代选项题（可跳过）；混合测验补精读派生「形式→意义」题。
+// 2026-11-10 B 档：手写计入「连续手写正确」（不进 box/排期），混合测验只作当日反馈，
+// 熟练由 Box5 + 连续 2 次手写正确 + 首学 ≥7 天判定；复习按 dueAt 到期抽题。
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useDailyCheckinStore, todayString, type TodayLog } from '../store/useDailyCheckinStore';
 import { useProgressStore } from '../store/useProgressStore';
@@ -10,6 +12,7 @@ import { generateSession, errorTagFor, type DailySession, type SessionQuestion }
 import { GrammarQuestionCard } from '../components/GrammarQuestionCard';
 import { WrittenProduction } from '../components/WrittenProduction';
 import { isWrittenCorrect } from '../utils/writtenProduction';
+import { isGrammarMastered, migrateGrammarPoint } from '../utils/grammarSchedule';
 import { SentenceAudio } from '../components/SentenceAudio';
 import { ROADMAP, GRAMMAR_QUESTIONS, getPoint } from '../data/grammarRoadmap';
 import { getReading } from '../data/grammarReading';
@@ -247,7 +250,7 @@ export default function GrammarDailyPage() {
       mode === 'extra' ? new Set(dc.todayLog?.servedIds ?? []) : undefined;
     const focusPointId: string | null | undefined =
       mode === 'extra' ? (dc.todayLog?.newPointId ?? null) : undefined;
-    const s = generateSession({ points: dc.points, wrongList, mode, excludeIds, focusPointId });
+    const s = generateSession({ points: dc.points, wrongList, mode, excludeIds, focusPointId, today });
     if (mode === 'checkin') dc.setTodayNewPoint(s.newPointId);
     setIsExtra(mode === 'extra');
     mixedCorrect.current = 0;
@@ -263,9 +266,10 @@ export default function GrammarDailyPage() {
     setActiveSeg(null);
   }
 
-  /** skipBox=true 用于 A 档手写产出：记战报与错题，但不推进 box / 熟练判定 */
-  function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string, skipBox = false) {
-    if (!skipBox) dc.recordQuestion(sq.grammarId, correct);
+  /** isProduction=true 用于手写产出：不进 box/排期，但计入「连续手写正确」（B 档熟练证据） */
+  function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string, isProduction = false) {
+    if (isProduction) dc.recordProduction(sq.grammarId, correct);
+    else dc.recordQuestion(sq.grammarId, correct);
     // 仅主打卡写入战报明细与已出题记录；额外练习不污染今日战报
     if (!isExtra) {
       dc.logAnswer(sq.grammarId, sq.purpose, correct);
@@ -303,9 +307,9 @@ export default function GrammarDailyPage() {
       if (currentPhase === 'mixed') {
         // 结算：仅主打卡才推进路线图 + 完成打卡；额外练习只结束本轮
         if (!isExtra) {
-          const acc = mixedTotal.current > 0 ? mixedCorrect.current / mixedTotal.current : 1;
-          const stageReached = acc >= 0.8 ? 4 : 2;
-          if (session?.newPointId) dc.finishPoint(session.newPointId, stageReached);
+          // B 档：混合测验正确率只作当日反馈，不再直接判熟练。
+          // 熟练由 grammarSchedule 的 Box5 + 连续 2 次手写正确 + 首学 ≥7 天决定。
+          if (session?.newPointId) dc.finishPoint(session.newPointId, 2);
           dc.completeCheckin(today);
         }
         setFinished(true);
@@ -322,7 +326,9 @@ export default function GrammarDailyPage() {
 
   // ============ 顶部统计 ============
   const learnedCount = ROADMAP.filter((id) => dc.points[id]?.introduced).length;
-  const proficientCount = ROADMAP.filter((id) => (dc.points[id]?.stage ?? 0) >= 4).length;
+  const proficientCount = ROADMAP.filter(
+    (id) => dc.points[id] && isGrammarMastered(migrateGrammarPoint(dc.points[id], today), today),
+  ).length;
 
   // 日历热力图（最近 70 天）
   const heatmap = useMemo(() => {
@@ -383,6 +389,9 @@ export default function GrammarDailyPage() {
               style={{ width: `${(learnedCount / ROADMAP.length) * 100}%` }}
             />
           </div>
+          <p className="text-xs text-gray-400 mt-1.5">
+            熟练判据：Box 5 + 连续 2 次手写正确 + 距首次学习 ≥ 7 天；混合测验正确率只作当天反馈
+          </p>
         </div>
       </div>
 
