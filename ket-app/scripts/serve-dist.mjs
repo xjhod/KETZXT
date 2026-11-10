@@ -12,6 +12,10 @@
  *   3) Service Worker 与 manifest 不做缓存，保证更新能立刻生效；
  *      带 hash 的构建产物（assets/*.js|css）可以长期缓存
  *   4) 正确设置 Content-Type，避免 .mp3 / .wasm 等被浏览器误判
+ *   5) /api/health：只读探针，用于验证同源 /api/* 是否被边缘层放行、
+ *      POST 大 body 是否可达，以及冷启动 / 热请求的真实延迟。
+ *      只统计字节数，不缓冲、不回显请求体、不落盘、不记日志。
+ *      正式 ASR 接口必须另加鉴权、限流与体积上限，不要复用本端点的宽松行为。
  */
 
 import { createServer } from 'http';
@@ -27,6 +31,15 @@ const ROOT = process.env.BUILD_OUT_DIR
   : join(APP_DIR, 'dist');
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = '0.0.0.0';
+
+const HEALTH_PATH = '/api/health';
+// 只有 Origin 命中白名单才回 CORS 头，绝不发 Access-Control-Allow-Origin: *
+const ALLOWED_ORIGINS = new Set(
+  (process.env.ASR_ALLOWED_ORIGINS || 'https://ketzxt-99302.app.workbuddy.host')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+);
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -67,10 +80,80 @@ async function tryFile(pathname) {
   }
 }
 
+function healthHeaders(req, extra = {}) {
+  const headers = {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    ...extra,
+  };
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    headers['Access-Control-Allow-Origin'] = origin;
+    headers['Vary'] = 'Origin';
+  }
+  return headers;
+}
+
+function sendHealthJson(req, res, status, payload) {
+  const body = JSON.stringify(payload);
+  res.writeHead(status, healthHeaders(req, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Content-Length': Buffer.byteLength(body),
+  }));
+  res.end(body);
+}
+
+/** 流式计数，不保留音频内容；超限也不提前断开，避免客户端拿到空响应 */
+async function countBodyBytes(req) {
+  let bytes = 0;
+  for await (const chunk of req) bytes += chunk.length;
+  return bytes;
+}
+
+async function handleHealth(req, res, url, startedAt) {
+  const method = (req.method || 'GET').toUpperCase();
+  const base = {
+    ok: true,
+    service: 'ket-serve-dist-health',
+    method,
+    path: url.pathname,
+    uptimeSec: Math.round(process.uptime()),
+    serverTime: new Date().toISOString(),
+  };
+
+  if (method === 'OPTIONS') {
+    res.writeHead(204, healthHeaders(req, {
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '600',
+    }));
+    res.end();
+    return;
+  }
+  if (method !== 'GET' && method !== 'POST') {
+    sendHealthJson(req, res, 405, { ...base, ok: false, error: 'method_not_allowed' });
+    return;
+  }
+
+  // 探针故意不设体积上限：要测的正是「边缘层会不会拦大 body」
+  const receivedBytes = method === 'POST' ? await countBodyBytes(req) : 0;
+  sendHealthJson(req, res, 200, {
+    ...base,
+    receivedBytes,
+    handlerMs: Date.now() - startedAt,
+  });
+}
+
 const server = createServer(async (req, res) => {
+  const startedAt = Date.now();
   try {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     let pathname = decodeURIComponent(url.pathname);
+
+    // API 探针必须排在 SPA fallback 之前，否则会被回成 index.html
+    if (pathname === HEALTH_PATH) {
+      await handleHealth(req, res, url, startedAt);
+      return;
+    }
 
     let file = await tryFile(pathname);
 
