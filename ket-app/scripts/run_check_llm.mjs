@@ -61,9 +61,10 @@ check('推理型兜底有明确失败原因', /模型只返回了思考内容/.t
 check('无文字时提示改为输入引导', /请在输入框打出你的英文回答/.test(llmSrc));
 check('AI 评分异常会显示在界面', /AI 评分失败：/.test(pageSrc));
 check('按钮文案区分无文字状态', /先在上方输入回答文字/.test(pageSrc));
-check('关键词评分按钮要求有文字', /\(transcript \|\| manualText\)\.trim\(\) && !scoreResult/.test(pageSrc));
+check('评分按钮只认确认框文字', /answerText\.trim\(\) && !scoreResult && !llmSpeech/.test(pageSrc));
 check('录音无识别结果有引导条', /浏览器没能识别出文字/.test(pageSrc));
-check('两处 Part 都已改动', (pageSrc.match(/浏览器没能识别出文字/g) || []).length === 2);
+check('两处 Part 复用同一评分面板', (pageSrc.match(/\{renderAiPanel\(\)\}/g) || []).length === 2);
+check('确认框是唯一评分输入', /browserTranscript: textOnly/.test(pageSrc) && !/manualText/.test(pageSrc));
 
 // ---- 3. 线上端到端：真实目录 -> 选中模型 -> 真的能吐出 JSON ----
 const ENDPOINT = 'https://ketzxt-99302.app.workbuddy.host';

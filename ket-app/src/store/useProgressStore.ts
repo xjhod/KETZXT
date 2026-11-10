@@ -36,6 +36,10 @@ export interface AnswerRecord {
   correctAnswer: string;
   isCorrect: boolean;
   answeredAt: string;   // ISO 时间戳
+  /** 口语 P0：本次达标所依据的分数（可选，旧数据无此字段） */
+  score?: number;
+  /** 口语 P0：llm=AI 综合分 / local=离线参考分 */
+  scoreSource?: 'llm' | 'local';
 }
 
 // 一次完整练习的会话记录
@@ -72,6 +76,12 @@ interface ProgressStore {
   // Actions
   /** 记录单题答案 */
   recordAnswer: (record: Omit<AnswerRecord, 'id' | 'answeredAt'>) => void;
+  /**
+   * 口语 P0：按固定 id 覆盖式写入。同一题先给离线参考分、AI 评分回来后升级为正式分，
+   * 只保留一条记录，避免错题本里出现两条互相矛盾的分数。
+   * 云同步按 id 取 answeredAt 较新的一条，天然生效。
+   */
+  upsertAnswer: (record: Omit<AnswerRecord, 'answeredAt'>) => void;
   /** 记录完整会话 */
   recordSession: (record: Omit<SessionRecord, 'id' | 'completedAt'>) => void;
   /** 获取错题列表（可按模块筛选） */
@@ -106,6 +116,14 @@ export const useProgressStore = create<ProgressStore>()(
           const records = [newRecord, ...state.answerRecords];
           // 保留最新 1000 条
           return { answerRecords: records.slice(0, 1000) };
+        });
+      },
+
+      upsertAnswer: (record) => {
+        const next: AnswerRecord = { ...record, answeredAt: new Date().toISOString() };
+        set((state) => {
+          const rest = state.answerRecords.filter((r) => r.id !== record.id);
+          return { answerRecords: [next, ...rest].slice(0, 1000) };
         });
       },
 

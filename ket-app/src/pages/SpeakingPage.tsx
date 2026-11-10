@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { speakingPart1, speakingPart2 } from '../data/speaking';
 import { useSpeechTranscriber } from '../hooks/useSpeechTranscriber';
@@ -17,59 +17,27 @@ import {
   type LlmStatus,
   type LlmSpeechResult,
 } from '../utils/llm';
+import { scoreAnswer, type ScoreResult } from '../utils/speakingScore';
+import {
+  type SpeechEvidence,
+  type AsrSource,
+  EVIDENCE_TTL_DAYS,
+  listSpeechEvidence,
+  putSpeechEvidence,
+  patchSpeechEvidence,
+  pruneSpeechEvidence,
+  clearSpeechEvidence,
+  getSpeechEvidence,
+  speechEvidenceAvailable,
+} from '../utils/speechEvidence';
 
-// ========== 类型定义 ==========
-interface ScoreResult {
-  score: number;
-  matchedKeywords: string[];
-  wordCount: number;
-  feedback: string;
-}
 
-// ========== 评分函数（简化版）==========
-function scoreAnswer(transcript: string, keywords: string[]): ScoreResult {
-  if (!transcript || transcript.trim().length === 0) {
-    return {
-      score: 0,
-      matchedKeywords: [],
-      wordCount: 0,
-      feedback: '请尝试回答。点击"开始录音"按钮，然后回答题目。',
-    };
-  }
-
-  const words = transcript.toLowerCase().split(/\s+/).filter(w => w.length > 0);
-  const matchedKeywords = keywords.filter(kw => 
-    words.some(w => w.includes(kw.toLowerCase()))
-  );
-  
-  // 1. 关键词匹配（50分）
-  const keywordScore = (matchedKeywords.length / keywords.length) * 50;
-  
-  // 2. 流利度（单词数，最多50分）
-  const fluencyScore = Math.min(words.length / 5, 10) * 5;
-  
-  // 3. 总分
-  const totalScore = Math.round(keywordScore + fluencyScore);
-  
-  // 4. 生成反馈
-  let feedback = '';
-  if (totalScore >= 80) {
-    feedback = `太棒了！你的回答非常好。你提到了 ${matchedKeywords.join(', ')} 等关键词。`;
-  } else if (totalScore >= 60) {
-    feedback = `很好！你的回答不错。可以尝试提到更多关键词：${keywords.filter(k => !matchedKeywords.includes(k)).join(', ')}。`;
-  } else if (totalScore >= 40) {
-    feedback = `不错，但还可以更好。建议多说一些内容，并尝试用到这些词：${keywords.join(', ')}。`;
-  } else {
-    feedback = `继续练习！试着用完整的句子回答，并用到这些关键词：${keywords.join(', ')}。`;
-  }
-  
-  return {
-    score: totalScore,
-    matchedKeywords,
-    wordCount: words.length,
-    feedback,
-  };
-}
+const ASR_SOURCE_LABEL: Record<AsrSource, string> = {
+  browser: '浏览器识别（未修改）',
+  edited: '浏览器识别后已由你改正',
+  manual: '键盘输入',
+  none: '无文字',
+};
 
 // ========== 播放标准答案（优先预生成 mp3，缺失则回退浏览器 TTS）==========
 async function playModelAnswer(id: string, text: string): Promise<void> {
@@ -102,7 +70,7 @@ function TranscriptPanel({
       {transcript && (
         <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded">
           <p className="text-xs text-green-800 dark:text-green-300 mb-1">
-            📝 识别结果（真实语音识别）：
+            📝 原始识别（可能有错，请在下方确认框改正）：
           </p>
           <p className="text-sm text-green-700 dark:text-green-300">{transcript}</p>
         </div>
@@ -116,7 +84,7 @@ function TranscriptPanel({
       {!transcript && !error && !isRecording && (
         <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            点击下方「开始录音」后说出你的回答，系统会自动识别文字并评分。
+            点击下方「开始录音」后说出你的回答；识别结果会进入下方确认框，可先改正再评分。
           </p>
         </div>
       )}
@@ -128,60 +96,156 @@ function TranscriptPanel({
 export default function SpeakingPage() {
   const navigate = useNavigate();
   
-  // 状态
+  // ========== 状态 ==========
   const [activePart, setActivePart] = useState<1 | 2>(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
-  // AI 口语评分（可选增强）：不可用时降级到上面的关键词评分
   const [llmStatus, setLlmStatus] = useState<LlmStatus>({ available: false, llm: false, asr: false });
   const [llmSpeech, setLlmSpeech] = useState<LlmSpeechResult | null>(null);
   const [llmScoring, setLlmScoring] = useState(false);
-  /** AI 评分失败的原因（给用户看的提示，null 表示没有错误） */
+  /** AI 评分失败的原因（给用户看的提示） */
   const [llmError, setLlmError] = useState<string | null>(null);
   const [showKeywords, setShowKeywords] = useState(false);
   const [imgError, setImgError] = useState(false);
-  const [manualText, setManualText] = useState('');
-  // 录音环境：能力探测 + 实际使用的录音方式 + 给用户看的提示
+  /** 唯一送进评分的文字：ASR 结果自动填入，孩子可改；也支持纯键盘输入 */
+  const [answerText, setAnswerText] = useState('');
+  const answerEditedRef = useRef(false);
   const [recorderCap, setRecorderCap] = useState<RecorderCapability>('mediarecorder');
   const [recorderNote, setRecorderNote] = useState('');
+  const [evidenceList, setEvidenceList] = useState<SpeechEvidence[]>([]);
+  const [evidenceNote, setEvidenceNote] = useState('');
+  const [flagged, setFlagged] = useState(false);
 
-  // 真实语音识别（Web Speech API，无需大模型）
   const transcriber = useSpeechTranscriber();
   const transcript = transcriber.transcript;
-
-  // 进度记录（从 store 取 action，避免整页重渲染）
-  const recordAnswer = useProgressStore((s) => s.recordAnswer);
+  const upsertAnswer = useProgressStore((s) => s.upsertAnswer);
   const recordSession = useProgressStore((s) => s.recordSession);
-  // 本轮会话累计（用 ref 避免触发重渲染）
-  const sessionStatsRef = useRef({ total: 0, correct: 0 });
-  const questionScoredRef = useRef(false); // 当前题是否已计入本轮回话累计（防重复）
-  const roundStartRef = useRef(Date.now()); // 本轮开始时间（用于估算时长）
 
-  // 当前 Part 的题量（一轮题数）
-  const TOTAL = activePart === 1 ? speakingPart1.length : speakingPart2.length;
-  
-  // 录音相关（用兼容层，MediaRecorder 不可用时自动降级到 Web Audio）
+  const sessionStatsRef = useRef({ total: 0, correct: 0 });
+  const questionScoredRef = useRef(false);
+  const roundStartRef = useRef(Date.now());
+  /** 一次答题一个固定 id：离线参考分与 AI 分写同一条进度记录、同一条本机证据 */
+  const answerIdRef = useRef('');
+  const lastCorrectRef = useRef<boolean | null>(null);
   const recorderHandleRef = useRef<RecorderHandle | null>(null);
-  
-  // 当前题目
+  const recordingAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const TOTAL = activePart === 1 ? speakingPart1.length : speakingPart2.length;
   const currentPart1 = speakingPart1[currentIndex % speakingPart1.length];
   const currentPart2 = speakingPart2[currentIndex % speakingPart2.length];
-  
-  // ========== 录音功能 ==========
-  const startRecording = useCallback(async () => {
+  const currentQuestion = activePart === 1 ? currentPart1 : currentPart2;
+  const keywords = currentQuestion.keywords;
+
+  // ASR 最终文本自动填入确认框；孩子一旦手动改过就不再覆盖
+  useEffect(() => {
+    const t = transcript.trim();
+    if (t && !answerEditedRef.current) setAnswerText(t);
+  }, [transcript]);
+
+  useEffect(() => {
+    let alive = true;
+    fetchLlmStatus().then((s) => { if (alive) setLlmStatus(s); });
+    return () => { alive = false; };
+  }, []);
+
+  // 本机证据：启动时清掉 7 天前的旧录音，并载入复核列表
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      await pruneSpeechEvidence();
+      const list = await listSpeechEvidence();
+      if (alive) setEvidenceList(list);
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  useEffect(() => () => { if (audioUrl) URL.revokeObjectURL(audioUrl); }, [audioUrl]);
+
+  // ========== 录音与评分 ==========
+  function ensureAnswerId(): string {
+    if (!answerIdRef.current) answerIdRef.current = `speaking-${currentQuestion.id}-${Date.now()}`;
+    return answerIdRef.current;
+  }
+
+  function asrSource(): AsrSource {
+    if (!transcript.trim()) return answerText.trim() ? 'manual' : 'none';
+    return answerEditedRef.current ? 'edited' : 'browser';
+  }
+
+  /** 送进 LLM 的题目：Part 1 用英文原题；Part 2 带齐 3 个讨论问题与作答提示 */
+  function questionTextFor(): string {
+    if (activePart === 1) return currentPart1.question;
+    return `${currentPart2.questions.join(' / ')}（作答提示：${currentPart2.tips.join('；')}）`;
+  }
+
+  /** 一次答题只记一条：AI 分回来后覆盖同一 id，错题本里不出现两条矛盾分数 */
+  function writeRecord(score: number, source: 'local' | 'llm') {
+    const isCorrect = score >= 60;
+    upsertAnswer({
+      id: ensureAnswerId(),
+      module: 'speaking',
+      exerciseType: activePart === 1 ? 'speaking_p1' : 'speaking_p2',
+      subjectId: currentQuestion.id,
+      subjectName: `口语 Part ${activePart}`,
+      questionId: currentQuestion.id,
+      questionText: questionTextFor(),
+      userAnswer: answerText.trim(),
+      correctAnswer: keywords.join('、'),
+      isCorrect,
+      score,
+      scoreSource: source,
+    });
+    if (!questionScoredRef.current) {
+      sessionStatsRef.current.total += 1;
+      questionScoredRef.current = true;
+    }
+    const delta = (isCorrect ? 1 : 0) - (lastCorrectRef.current ? 1 : 0);
+    sessionStatsRef.current.correct = Math.max(0, sessionStatsRef.current.correct + delta);
+    lastCorrectRef.current = isCorrect;
+  }
+
+  /** 本机证据：同 id 合并；音频只存本机，绝不进 sync payload */
+  async function saveEvidence(patch: Partial<SpeechEvidence>) {
+    if (!speechEvidenceAvailable()) return;
+    const id = ensureAnswerId();
+    const now = new Date().toISOString();
+    const prev = await getSpeechEvidence(id);
+    const base: SpeechEvidence = prev ?? {
+      id, questionId: currentQuestion.id, part: activePart,
+      createdAt: now, updatedAt: now,
+      audio: audioBlob ?? null,
+      audioMime: audioBlob?.type || '',
+      audioBytes: audioBlob?.size || 0,
+      rawTranscript: transcript.trim(),
+      asrSource: asrSource(),
+      confirmedText: answerText.trim(),
+      score: null, scoreSource: null, modelId: null, llmResult: null, flagged: false,
+    };
+    await putSpeechEvidence({ ...base, ...patch, id, updatedAt: now, confirmedText: answerText.trim() });
+    setEvidenceList(await listSpeechEvidence());
+  }
+
+  async function startRecording() {
     setRecorderNote(recorderHint());
     try {
-      // 兼容层：优先 MediaRecorder，失败自动降级到 Web Audio（录成 WAV）
       const handle = await startRecorderCapture();
       recorderHandleRef.current = handle;
       setRecorderCap(handle === null ? 'none' : detectRecorderCapability());
       setIsRecording(true);
-      setScoreResult(null); // 清除之前的评分
-      setLlmSpeech(null);   // 清除旧的 AI 评分
-      // 浏览器自带识别在国产安卓上必然失败，这里失败不影响录音（云端 ASR 兜底）
+      setScoreResult(null);
+      setLlmSpeech(null);
+      setLlmError(null);
+      setAnswerText('');
+      setFlagged(false);
+      answerEditedRef.current = false;
+      answerIdRef.current = '';
+      // 不重置 lastCorrectRef：同一题重录属于新一次尝试，但会话计数仍按「一题一次」计，
+      // 重置会让 correct 重复累加、甚至超过 total。
+      setEvidenceNote('');
+      // 浏览器自带识别在国产安卓上必然失败，这里失败不影响录音（P1 云端 ASR 兜底）
       transcriber.start();
     } catch (err) {
       console.error('无法访问麦克风：', err);
@@ -193,18 +257,9 @@ export default function SpeakingPage() {
       );
       alert('无法开始录音：' + (msg || '未知原因'));
     }
-  }, [activePart, currentIndex, currentPart1, transcriber]);
-  
-  // 探一次后端可用性：决定要不要显示「AI 评分」入口
-  useEffect(() => {
-    let alive = true;
-    fetchLlmStatus().then((s) => {
-      if (alive) setLlmStatus(s);
-    });
-    return () => { alive = false; };
-  }, []);
+  }
 
-  const stopRecording = useCallback(async () => {
+  async function stopRecording() {
     const handle = recorderHandleRef.current;
     if (handle && isRecording) {
       setIsRecording(false);
@@ -212,64 +267,47 @@ export default function SpeakingPage() {
         const { blob, capability } = await handle.stop();
         recorderHandleRef.current = null;
         setRecorderCap(capability);
-        // 边界：微信内置浏览器等环境下 MediaRecorder 可能不报错却录不到声音，
-        // 表现为 blob 几乎为空。这种情况要明确告诉用户，而不是让 AI 评分报「转写失败」。
+        // 微信内置浏览器等环境下 MediaRecorder 可能不报错却录不到声音
         if (blob.size < 1000) {
           setRecorderNote(
-            '这次没有录到声音（部分浏览器会静默失败）。请重试，或改用下面的键盘输入 —— ' +
+            '这次没有录到声音（部分浏览器会静默失败）。请重试，或改用下面的确认框输入 —— ' +
             '用键盘输入同样能得到 AI 的语法与内容批改。'
           );
           return;
         }
         setAudioBlob(blob);
-        // 创建播放 URL
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
+        setAudioUrl(URL.createObjectURL(blob));
       } catch (e) {
         console.error('录音结束失败：', e);
       }
     }
-    transcriber.stop(); // 停止语音识别，保留最终转录文本
-  }, [isRecording, transcriber]);
-  
-  // ========== 播放录音 ==========
-  const playRecording = useCallback(() => {
-    if (audioUrl) {
-      stopAllAudio(); // 先停掉正在播放的示范音频/TTS，避免叠音
-      const audio = new Audio(audioUrl);
-      audio.play();
+    transcriber.stop();
+  }
+
+  function playRecording() {
+    if (!audioUrl) return;
+    stopAllAudio();
+    if (recordingAudioRef.current) {
+      recordingAudioRef.current.pause();
+      recordingAudioRef.current.currentTime = 0;
     }
-  }, [audioUrl]);
-  
-  // ========== 评分 ==========
-  /**
-   * AI 口语评分：把识别到的文字发给云端 LLM，按 KET A2 口语标准评分。
-   *
-   * ⚠️ 云服务没有音频模型，转写（ASR）依赖浏览器自带识别或用户手动输入。
-   *    国产浏览器上浏览器识别必然为空 —— 此时必须走「手动输入」路径。
-   * 失败时保持原有 scoreResult（关键词评分）不变，功能不降级。
-   */
-  const handleAiScore = useCallback(async () => {
-    const textOnly = (transcript || manualText).trim();
+    const audio = new Audio(audioUrl);
+    recordingAudioRef.current = audio;
+    void audio.play().catch(() => setRecorderNote('录音回放失败，请重试'));
+  }
+
+  /** AI 评分：只吃确认框里的定稿文字，成功后升级同一条进度记录 */
+  async function handleAiScore() {
+    const textOnly = answerText.trim();
     if (!textOnly || llmScoring) return;
     setLlmScoring(true);
     try {
-      const isPart1 = activePart === 1;
-      const q = isPart1 ? currentPart1 : currentPart2;
-      const questionText = isPart1
-        ? (currentPart1.questionZh || currentPart1.question)
-        : (currentPart2.questions[0] || q.id);
-      const keywords = isPart1 ? currentPart1.keywords : currentPart2.keywords;
-
       const res = await gradeSpeechWithLLM({
-        question: questionText,
+        question: questionTextFor(),
         keywords,
-        modelAnswer: isPart1 ? currentPart1.modelAnswer : undefined,
-        // 浏览器自带的识别结果；国产浏览器上它必然为空，
-        // 此时用手输的文字兜底（服务端直接基于文字评分，不需要音频）
+        modelAnswer: activePart === 1 ? currentPart1.modelAnswer : undefined,
         browserTranscript: textOnly,
       });
-
       if (!res.ok) {
         console.warn('[LLM] 口语评分降级：', res.reason);
         setLlmError(res.reason);
@@ -277,62 +315,96 @@ export default function SpeakingPage() {
       }
       setLlmError(null);
       setLlmSpeech(res.data);
+      writeRecord(res.data.score, 'llm');
+      await saveEvidence({
+        score: res.data.score,
+        scoreSource: 'llm',
+        modelId: res.data.modelId ?? null,
+        llmResult: res.data,
+      });
     } catch (e) {
       console.warn('[LLM] 口语评分异常，降级：', e);
-      // 之前异常只写 console，界面上什么都没有，看起来就是「点了没反应」
       setLlmError(`AI 评分失败：${(e as Error).message || '请稍后重试'}`);
     } finally {
       setLlmScoring(false);
     }
-  }, [llmScoring, activePart, currentPart1, currentPart2, transcript, manualText]);
+  }
 
-
-  const handleScore = useCallback(() => {
-    const answer = (transcript || manualText).trim();
+  /** 离线参考分：确定性、可测，AI 评分成功后自动让位 */
+  function handleScore() {
+    const answer = answerText.trim();
     if (!answer) {
-      alert('请先录音获取识别结果，或在下方输入框输入文字后评分。');
+      alert('请先在确认框里写出你的英文回答，再评分。');
       return;
     }
-
-    const keywords = activePart === 1 ? currentPart1.keywords : currentPart2.keywords;
     const result = scoreAnswer(answer, keywords);
     setScoreResult(result);
+    writeRecord(result.score, 'local');
+    void saveEvidence({ score: result.score, scoreSource: 'local' });
+  }
 
-    // 口语达标制：60 分及以上记为"达标"（相当于答对）
-    const isCorrect = result.score >= 60;
-    const q = activePart === 1 ? currentPart1 : currentPart2;
-    const questionText =
-      activePart === 1
-        ? (currentPart1.questionZh || currentPart1.question)
-        : (currentPart2.questions[0] || q.id);
+  function handleReScore() {
+    setLlmSpeech(null);
+    setLlmError(null);
+    void handleAiScore();
+  }
 
-    // 记录单题（用于错题本 / 答题历史）
-    recordAnswer({
-      module: 'speaking',
-      exerciseType: activePart === 1 ? 'speaking_p1' : 'speaking_p2',
-      subjectId: q.id,
-      subjectName: `口语 Part ${activePart}`,
-      questionId: q.id,
-      questionText,
-      userAnswer: answer,
-      correctAnswer: keywords.join('、'),
-      isCorrect,
-    });
+  async function handleFlagWrong() {
+    // 只改标记位，避免把整段音频重新结构化克隆一次
+    const patched = await patchSpeechEvidence(ensureAnswerId(), { flagged: true });
+    if (!patched) await saveEvidence({ flagged: true });
+    setEvidenceList(await listSpeechEvidence());
+    setFlagged(true);
+    setEvidenceNote('已标记「我觉得评错了」，可在本机记录里回听复核。');
+  }
 
-    // 累计到本轮回话（每题只计一次，避免重复点"评分"重复累加）
-    if (!questionScoredRef.current) {
-      sessionStatsRef.current.total += 1;
-      if (isCorrect) sessionStatsRef.current.correct += 1;
-      questionScoredRef.current = true;
+  async function playEvidenceAudio(id: string) {
+    const rec = await getSpeechEvidence(id);
+    if (!rec?.audio) {
+      setEvidenceNote('这条没有录音（当时是键盘输入）。');
+      return;
     }
-  }, [transcript, activePart, currentPart1, currentPart2, recordAnswer]);
+    stopAllAudio();
+    const url = URL.createObjectURL(rec.audio);
+    const audio = new Audio(url);
+    audio.onended = () => URL.revokeObjectURL(url);
+    void audio.play().catch(() => {
+      URL.revokeObjectURL(url);
+      setEvidenceNote('这条录音无法播放。');
+    });
+  }
 
-  // ========== 下一题 ==========
-  const handleNext = useCallback(() => {
-    // 计算下一题索引：若回到 0 说明刚完成一轮，记录本轮回话
+  async function clearAllEvidence() {
+    if (!window.confirm('确定清除本机全部录音与评分记录吗？此操作不可恢复。')) return;
+    await clearSpeechEvidence();
+    setEvidenceList([]);
+    setEvidenceNote('本机录音已全部清除。');
+  }
+
+  /** 换题 / 换 Part 时把所有评分态一次清干净（修上一题分数残留） */
+  function resetQuestionState() {
+    setAudioBlob(null);
+    setAudioUrl(null);
+    transcriber.reset();
+    setAnswerText('');
+    answerEditedRef.current = false;
+    answerIdRef.current = '';
+    lastCorrectRef.current = null;
+    setScoreResult(null);
+    setLlmSpeech(null);
+    setLlmError(null);
+    setFlagged(false);
+    setShowKeywords(false);
+    setImgError(false);
+    setEvidenceNote('');
+    setRecorderNote('');
+    questionScoredRef.current = false;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+
+  function handleNext() {
     const nextIndex = currentIndex + 1;
     const justFinishedRound = nextIndex % TOTAL === 0;
-
     if (justFinishedRound) {
       recordSession({
         module: 'speaking',
@@ -343,36 +415,131 @@ export default function SpeakingPage() {
         total: sessionStatsRef.current.total,
         duration: Math.round((Date.now() - roundStartRef.current) / 1000),
       });
-      // 重置本轮累计
       sessionStatsRef.current = { total: 0, correct: 0 };
       roundStartRef.current = Date.now();
     }
-
     setCurrentIndex(nextIndex);
-    setAudioBlob(null);
-    setAudioUrl(null);
-    transcriber.reset();
-    setManualText('');
-    setScoreResult(null);
-    setShowKeywords(false);
-    setImgError(false);
-    questionScoredRef.current = false;
+    resetQuestionState();
+  }
 
-    // 停止 TTS
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-  }, [currentIndex, TOTAL, activePart, transcriber, recordSession]);
-  
-  // ========== 清理 URL ==========
-  useEffect(() => {
-    return () => {
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-      }
-    };
-  }, [audioUrl]);
-  
+  /** 两处 Part 共用的评分面板：一个分数口径 + 复核入口 */
+  const renderAiPanel = () => {
+    if (!(audioUrl || audioBlob || answerText.trim())) return null;
+    return (
+      <div>
+        {(audioUrl || audioBlob) && !answerText.trim() && (
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3 text-xs text-amber-800 dark:text-amber-200">
+            ⚠️ 录音已完成，但浏览器没能识别出文字（国产手机浏览器常见）。请在上面的确认框打出你说的英文，再点「✅ 评分」。
+          </div>
+        )}
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
+          {!llmSpeech ? (
+            <>
+              <button
+                onClick={handleAiScore}
+                disabled={llmScoring || !llmStatus.available || !answerText.trim()}
+                className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {llmScoring
+                  ? '🤖 AI 评分中…（约 10 秒）'
+                  : !llmStatus.available
+                    ? '🤖 AI 评分暂不可用（已用离线参考分）'
+                    : !answerText.trim()
+                      ? '🤖 先在上方输入回答文字，再让 AI 评分'
+                      : '🤖 让 AI 评分（按你确认的文字评分）'}
+              </button>
+              {llmError && (
+                <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
+              )}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between flex-wrap gap-1">
+                <p className="text-xs font-bold text-purple-700">🤖 AI 口语评分（本次正式分数）</p>
+                <div className="flex gap-2 flex-wrap">
+                  {[
+                    { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
+                    { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
+                    { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
+                  ].map((s) => (
+                    <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
+                  ))}
+                  <span className="text-xs font-bold text-purple-700">综合 {llmSpeech.score}</span>
+                </div>
+              </div>
+
+              <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
+                <p className="font-medium text-gray-700 mb-1">📝 本次评分依据的文字（你确认过的）</p>
+                <p className="text-gray-600 break-words">{answerText}</p>
+                <p className="mt-1 text-[11px] text-gray-500">
+                  来源：{ASR_SOURCE_LABEL[asrSource()]} · 发音、语调、互动交流未评估
+                  {llmSpeech.modelId ? ` · 模型 ${llmSpeech.modelId}` : ''}
+                </p>
+              </div>
+
+              {scoreResult && (
+                <p className="text-[11px] text-gray-500">
+                  内容覆盖：命中 {scoreResult.matchedKeywords.length} / {keywords.length} 个信息点 · 不同词 {scoreResult.distinctWordCount} 个（共 {scoreResult.wordCount} 词）
+                </p>
+              )}
+
+              {llmSpeech.feedback && (
+                <div className="text-xs bg-purple-50 border border-purple-100 rounded p-2">
+                  <p className="font-medium text-purple-800 mb-1">总体评价</p>
+                  <p className="text-gray-700">{llmSpeech.feedback}</p>
+                </div>
+              )}
+
+              {llmSpeech.grammarIssues.length > 0 && (
+                <div className="text-xs bg-amber-50 border border-amber-100 rounded p-2">
+                  <p className="font-medium text-amber-800 mb-1">⚠️ 语法问题</p>
+                  {llmSpeech.grammarIssues.map((g, i) => (
+                    <p key={i} className="text-gray-700 mt-0.5">· {g}</p>
+                  ))}
+                </div>
+              )}
+
+              {llmSpeech.suggestions.length > 0 && (
+                <div className="text-xs bg-green-50 border border-green-100 rounded p-2">
+                  <p className="font-medium text-green-800 mb-1">💡 改进建议</p>
+                  {llmSpeech.suggestions.map((s, i) => (
+                    <p key={i} className="text-gray-700 mt-0.5">{i + 1}. {s}</p>
+                  ))}
+                </div>
+              )}
+
+              {llmSpeech.sampleAnswer && (
+                <details className="text-xs">
+                  <summary className="cursor-pointer text-purple-700 hover:underline">查看示范回答</summary>
+                  <p className="text-gray-700 bg-gray-50 border border-gray-200 rounded p-2 mt-1">{llmSpeech.sampleAnswer}</p>
+                </details>
+              )}
+
+              <div className="flex flex-wrap gap-2 pt-1">
+                <button
+                  onClick={playRecording}
+                  disabled={!audioUrl}
+                  className="px-2 py-1 text-[11px] rounded border border-blue-200 text-blue-600 disabled:opacity-40"
+                >▶️ 回听录音</button>
+                <button
+                  onClick={handleReScore}
+                  disabled={llmScoring}
+                  className="px-2 py-1 text-[11px] rounded border border-purple-200 text-purple-700 disabled:opacity-40"
+                >🔁 重新评分</button>
+                <button
+                  onClick={() => void handleFlagWrong()}
+                  className="px-2 py-1 text-[11px] rounded border border-amber-200 text-amber-700"
+                >{flagged ? '已标记评错' : '我觉得评错了'}</button>
+              </div>
+              {evidenceNote && <p className="text-[11px] text-amber-600">{evidenceNote}</p>}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // ========== 渲染 Part 1 ==========
   const renderPart1 = () => {
     const q = currentPart1;
@@ -475,15 +642,16 @@ export default function SpeakingPage() {
           {/* 手动输入（语音识别不可用时的替代方案）*/}
           <div className="w-full mt-2">
             <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
-              或用键盘输入你的回答：
+              请确认你所说的英文（识别可能有错，可以直接改正；也可以直接在这里打字）：
             </label>
             <textarea
-              value={manualText}
-              onChange={(e) => setManualText(e.target.value)}
+              value={answerText}
+              onChange={(e) => { setAnswerText(e.target.value); answerEditedRef.current = true; }}
               rows={3}
-              placeholder="在此输入英文回答，例如：I like playing football with my friends."
+              placeholder="在此确认或输入英文回答，例如：I like playing football with my friends."
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+            <p className="mt-1 text-[11px] text-gray-400">评分只依据这个框里的文字；改正识别错误后再评分更准确。</p>
           </div>
 
           {/* 录音回放 */}
@@ -513,108 +681,12 @@ export default function SpeakingPage() {
         </div>
         
         {/* 评分结果 */}
-        {/* 有录音但没识别出文字：说清下一步，避免「点了评分没反应」 */}
-        {(audioUrl || audioBlob) && !(transcript || manualText).trim() && (
-          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3 text-xs text-amber-800 dark:text-amber-200">
-            ⚠️ 录音已完成，但浏览器没能识别出文字（国产手机浏览器常见）。请在上面的输入框打出你说的英文，再点「✅ 评分」。
-          </div>
-        )}
+        {renderAiPanel()}
 
-        {/* ========== AI 口语评分（可选增强） ========== */}
-        {(audioUrl || audioBlob || (transcript || manualText).trim()) && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
-            {!llmSpeech ? (
-              <>
-                <button
-                  onClick={handleAiScore}
-                  disabled={llmScoring || !llmStatus.available || !(transcript || manualText).trim()}
-                  className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {llmScoring
-                    ? '🤖 AI 评分中…（约 10 秒）'
-                    : !llmStatus.available
-                      ? '🤖 AI 评分暂不可用（已用关键词评分）'
-                      : !(transcript || manualText).trim()
-                        ? '🤖 先在上方输入回答文字，再让 AI 评分'
-                        : '🤖 让 AI 评分（按你输入的文字评分）'}
-                </button>
-                {llmError && (
-                  <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
-                )}
-              </>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold text-purple-700">🤖 AI 口语评分</p>
-                  <div className="flex gap-2">
-                    {[
-                      { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
-                      { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
-                      { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
-                    ].map((s) => (
-                      <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
-                    ))}
-                    <span className="text-xs font-bold text-purple-700">综合 {llmSpeech.score}</span>
-                  </div>
-                </div>
-
-                {llmSpeech.transcript && (
-                  <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
-                    <p className="font-medium text-gray-700 mb-1">
-                      🎤 识别到的内容
-                      <span className="text-gray-500 font-normal">
-                        （评分基于你输入/转写的文字，不评估发音、语调与流利度）
-                      </span>
-                    </p>
-                    <p className="text-gray-600">{llmSpeech.transcript}</p>
-                  </div>
-                )}
-
-                {llmSpeech.feedback && (
-                  <div className="text-xs bg-purple-50 border border-purple-100 rounded p-2">
-                    <p className="font-medium text-purple-800 mb-1">总体评价</p>
-                    <p className="text-gray-700">{llmSpeech.feedback}</p>
-                  </div>
-                )}
-
-                {llmSpeech.grammarIssues.length > 0 && (
-                  <div className="text-xs bg-amber-50 border border-amber-100 rounded p-2">
-                    <p className="font-medium text-amber-800 mb-1">⚠️ 语法问题</p>
-                    {llmSpeech.grammarIssues.map((g, i) => (
-                      <p key={i} className="text-gray-700 mt-0.5">· {g}</p>
-                    ))}
-                  </div>
-                )}
-
-                {llmSpeech.suggestions.length > 0 && (
-                  <div className="text-xs bg-green-50 border border-green-100 rounded p-2">
-                    <p className="font-medium text-green-800 mb-1">💡 改进建议</p>
-                    {llmSpeech.suggestions.map((s, i) => (
-                      <p key={i} className="text-gray-700 mt-0.5">{i + 1}. {s}</p>
-                    ))}
-                  </div>
-                )}
-
-                {llmSpeech.sampleAnswer && (
-                  <details className="text-xs">
-                    <summary className="cursor-pointer text-purple-700 hover:underline">
-                      查看示范回答
-                    </summary>
-                    <p className="text-gray-700 bg-gray-50 border border-gray-200 rounded p-2 mt-1">
-                      {llmSpeech.sampleAnswer}
-                    </p>
-                  </details>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-
-        {scoreResult && (
+        {scoreResult && !llmSpeech && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h4 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
-              ✅ 评分结果
+              ✅ 离线参考分（AI 评分后自动替换）
             </h4>
             
             <div className="space-y-4">
@@ -657,7 +729,7 @@ export default function SpeakingPage() {
               {/* 流利度 */}
               <div>
                 <div className="text-sm text-gray-700 dark:text-gray-300">
-                  单词数：{scoreResult.wordCount} 词
+                  不同词数：{scoreResult.distinctWordCount} 个（共 {scoreResult.wordCount} 词）
                 </div>
               </div>
               
@@ -673,7 +745,7 @@ export default function SpeakingPage() {
         
         {/* 操作按钮 */}
         <div className="flex space-x-4">
-          {(transcript || manualText).trim() && !scoreResult && (
+          {answerText.trim() && !scoreResult && !llmSpeech && (
             <button
               onClick={handleScore}
               className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
@@ -837,15 +909,16 @@ export default function SpeakingPage() {
           {/* 手动输入（语音识别不可用时的替代方案）*/}
           <div className="w-full mt-2">
             <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
-              或用键盘输入你的回答：
+              请确认你所说的英文（识别可能有错，可以直接改正；也可以直接在这里打字）：
             </label>
             <textarea
-              value={manualText}
-              onChange={(e) => setManualText(e.target.value)}
+              value={answerText}
+              onChange={(e) => { setAnswerText(e.target.value); answerEditedRef.current = true; }}
               rows={3}
-              placeholder="在此输入英文回答，覆盖各个讨论问题。"
+              placeholder="在此确认或输入英文回答，覆盖各个讨论问题。"
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+            <p className="mt-1 text-[11px] text-gray-400">评分只依据这个框里的文字；改正识别错误后再评分更准确。</p>
           </div>
 
           {/* 录音回放 */}
@@ -874,108 +947,12 @@ export default function SpeakingPage() {
           />
 
           {/* 评分结果 */}
-        {/* 有录音但没识别出文字：说清下一步，避免「点了评分没反应」 */}
-        {(audioUrl || audioBlob) && !(transcript || manualText).trim() && (
-          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3 text-xs text-amber-800 dark:text-amber-200">
-            ⚠️ 录音已完成，但浏览器没能识别出文字（国产手机浏览器常见）。请在上面的输入框打出你说的英文，再点「✅ 评分」。
-          </div>
-        )}
+        {renderAiPanel()}
 
-        {/* ========== AI 口语评分（可选增强） ========== */}
-        {(audioUrl || audioBlob || (transcript || manualText).trim()) && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3">
-            {!llmSpeech ? (
-              <>
-                <button
-                  onClick={handleAiScore}
-                  disabled={llmScoring || !llmStatus.available || !(transcript || manualText).trim()}
-                  className="w-full text-xs py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {llmScoring
-                    ? '🤖 AI 评分中…（约 10 秒）'
-                    : !llmStatus.available
-                      ? '🤖 AI 评分暂不可用（已用关键词评分）'
-                      : !(transcript || manualText).trim()
-                        ? '🤖 先在上方输入回答文字，再让 AI 评分'
-                        : '🤖 让 AI 评分（按你输入的文字评分）'}
-                </button>
-                {llmError && (
-                  <p className="mt-2 text-[11px] text-amber-600 dark:text-amber-400">{llmError}</p>
-                )}
-              </>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold text-purple-700">🤖 AI 口语评分</p>
-                  <div className="flex gap-2">
-                    {[
-                      { l: '内容', v: llmSpeech.contentScore, c: 'text-blue-600' },
-                      { l: '语法', v: llmSpeech.grammarScore, c: 'text-green-600' },
-                      { l: '词汇', v: llmSpeech.vocabularyScore, c: 'text-cyan-600' },
-                    ].map((s) => (
-                      <span key={s.l} className={`text-[11px] font-bold ${s.c}`}>{s.l} {s.v}</span>
-                    ))}
-                    <span className="text-xs font-bold text-purple-700">综合 {llmSpeech.score}</span>
-                  </div>
-                </div>
-
-                {llmSpeech.transcript && (
-                  <div className="text-xs bg-gray-50 border border-gray-200 rounded p-2">
-                    <p className="font-medium text-gray-700 mb-1">
-                      🎤 识别到的内容
-                      <span className="text-gray-500 font-normal">
-                        （评分基于你输入/转写的文字，不评估发音、语调与流利度）
-                      </span>
-                    </p>
-                    <p className="text-gray-600">{llmSpeech.transcript}</p>
-                  </div>
-                )}
-
-                {llmSpeech.feedback && (
-                  <div className="text-xs bg-purple-50 border border-purple-100 rounded p-2">
-                    <p className="font-medium text-purple-800 mb-1">总体评价</p>
-                    <p className="text-gray-700">{llmSpeech.feedback}</p>
-                  </div>
-                )}
-
-                {llmSpeech.grammarIssues.length > 0 && (
-                  <div className="text-xs bg-amber-50 border border-amber-100 rounded p-2">
-                    <p className="font-medium text-amber-800 mb-1">⚠️ 语法问题</p>
-                    {llmSpeech.grammarIssues.map((g, i) => (
-                      <p key={i} className="text-gray-700 mt-0.5">· {g}</p>
-                    ))}
-                  </div>
-                )}
-
-                {llmSpeech.suggestions.length > 0 && (
-                  <div className="text-xs bg-green-50 border border-green-100 rounded p-2">
-                    <p className="font-medium text-green-800 mb-1">💡 改进建议</p>
-                    {llmSpeech.suggestions.map((s, i) => (
-                      <p key={i} className="text-gray-700 mt-0.5">{i + 1}. {s}</p>
-                    ))}
-                  </div>
-                )}
-
-                {llmSpeech.sampleAnswer && (
-                  <details className="text-xs">
-                    <summary className="cursor-pointer text-purple-700 hover:underline">
-                      查看示范回答
-                    </summary>
-                    <p className="text-gray-700 bg-gray-50 border border-gray-200 rounded p-2 mt-1">
-                      {llmSpeech.sampleAnswer}
-                    </p>
-                  </details>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-
-          {scoreResult && (
+        {scoreResult && !llmSpeech && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h4 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
-                ✅ 评分结果
+                ✅ 离线参考分（AI 评分后自动替换）
               </h4>
 
               <div className="space-y-4">
@@ -1018,7 +995,7 @@ export default function SpeakingPage() {
                 {/* 流利度 */}
                 <div>
                   <div className="text-sm text-gray-700 dark:text-gray-300">
-                    单词数：{scoreResult.wordCount} 词
+                    不同词数：{scoreResult.distinctWordCount} 个（共 {scoreResult.wordCount} 词）
                   </div>
                 </div>
 
@@ -1035,7 +1012,7 @@ export default function SpeakingPage() {
 
         {/* 操作按钮 */}
         <div className="flex space-x-4">
-          {(transcript || manualText).trim() && !scoreResult && (
+          {answerText.trim() && !scoreResult && !llmSpeech && (
             <button
               onClick={handleScore}
               className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
@@ -1088,13 +1065,8 @@ export default function SpeakingPage() {
           onClick={() => {
             setActivePart(1);
             setCurrentIndex(0);
-            setAudioBlob(null);
-            setAudioUrl(null);
-            transcriber.reset();
-            setImgError(false);
-            setScoreResult(null);
+            resetQuestionState();
             sessionStatsRef.current = { total: 0, correct: 0 };
-            questionScoredRef.current = false;
             roundStartRef.current = Date.now();
           }}
           className={`flex-1 py-3 rounded-lg text-sm font-semibold transition ${
@@ -1109,13 +1081,8 @@ export default function SpeakingPage() {
           onClick={() => {
             setActivePart(2);
             setCurrentIndex(0);
-            setAudioBlob(null);
-            setAudioUrl(null);
-            transcriber.reset();
-            setImgError(false);
-            setScoreResult(null);
+            resetQuestionState();
             sessionStatsRef.current = { total: 0, correct: 0 };
-            questionScoredRef.current = false;
             roundStartRef.current = Date.now();
           }}
           className={`flex-1 py-3 rounded-lg text-sm font-semibold transition ${
@@ -1131,12 +1098,52 @@ export default function SpeakingPage() {
       {/* 内容区域 */}
       {activePart === 1 ? renderPart1() : renderPart2()}
       
+      {/* 本机录音与评分记录：仅存此设备，不进云同步 */}
+      <details className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <summary className="cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-200">
+          📼 本机录音与评分记录（{evidenceList.length}）· 仅存此设备，{EVIDENCE_TTL_DAYS} 天后自动清除
+        </summary>
+        <p className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
+          录音只保存在这台设备，不上传云端、不随跨设备同步。可回听复核分数；觉得评错了可标记，作为后续校准依据。
+        </p>
+        {evidenceList.length === 0 ? (
+          <p className="mt-2 text-xs text-gray-400">暂无记录。</p>
+        ) : (
+          <ul className="mt-3 space-y-2">
+            {evidenceList.map((e) => (
+              <li key={e.id} className="text-xs border border-gray-200 dark:border-gray-700 rounded-lg p-2">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <span className="text-gray-700 dark:text-gray-200 break-words">
+                    {new Date(e.createdAt).toLocaleString('zh-CN', { hour12: false })} · Part {e.part} · {e.questionId}
+                    {' · '}{e.score === null ? '未评分' : `${e.score} 分（${e.scoreSource === 'llm' ? 'AI 评分' : '离线参考分'}）`}
+                    {e.flagged && ' · ⚠️ 已标记评错'}
+                  </span>
+                  <button
+                    onClick={() => void playEvidenceAudio(e.id)}
+                    disabled={!e.audio}
+                    className="px-2 py-1 rounded border border-blue-200 text-blue-600 disabled:opacity-40"
+                  >▶️ 回听</button>
+                </div>
+                {e.rawTranscript !== e.confirmedText && (
+                  <p className="mt-1 text-[11px] text-gray-500 break-words">原始识别：{e.rawTranscript || '（无）'}</p>
+                )}
+                <p className="mt-1 text-[11px] text-gray-600 dark:text-gray-300 break-words">定稿：{e.confirmedText || '（无）'}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="mt-3 flex items-center gap-3 flex-wrap">
+          <button onClick={() => void clearAllEvidence()} className="text-[11px] text-red-600 underline">清除本机全部录音</button>
+          {evidenceNote && <span className="text-[11px] text-amber-600">{evidenceNote}</span>}
+        </div>
+      </details>
+
       {/* 提示信息 */}
       <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
         <p className="text-sm text-yellow-800 dark:text-yellow-300">
           💡 <strong>提示：</strong> 
-          评分基于你输入或转写的文字内容（评内容、语法、词汇），不评发音与语调。
-          可点「开始录音」让浏览器把你说的话转成文字，部分国产手机浏览器识别可能不可用，此时直接在下方输入框打字也能评分。标准答案播放使用预生成音频（手机/电脑发音一致）。
+          评分基于确认框里的文字内容（评内容、语法、词汇），发音、语调与互动交流未评估。
+          录音后识别结果会自动填入确认框，请先改正识别错误再评分；部分国产手机浏览器识别不可用，此时直接在确认框打字也能评分。本机录音仅存此设备、7 天后自动清除。
         </p>
       </div>
     </div>

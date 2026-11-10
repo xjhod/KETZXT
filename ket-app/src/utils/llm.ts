@@ -31,7 +31,8 @@ export interface LlmWritingResult {
 
 /** 口语评分结果（基于文字内容评分，不含发音/语调/流利度） */
 export interface LlmSpeechResult {
-  transcript: string;
+  /** 实际使用的模型 id（仅本机证据留存，用于复现评分） */
+  modelId?: string;
   score: number;
   contentScore: number;
   grammarScore: number;
@@ -67,7 +68,7 @@ async function callLlmText(
   system: string,
   user: string,
   maxTokens = 1200
-): Promise<{ ok: true; text: string } | { ok: false; reason: string }> {
+): Promise<{ ok: true; text: string; modelId: string } | { ok: false; reason: string }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -101,7 +102,7 @@ async function callLlmText(
     if (!text.trim()) {
       if (reasoning.trim() && /\{[\s\S]*\}/.test(reasoning)) {
         // parseJsonLoose 会从思考文本里抽出 JSON 对象
-        return { ok: true, text: reasoning };
+        return { ok: true, text: reasoning, modelId: model.id };
       }
       return {
         ok: false,
@@ -110,7 +111,7 @@ async function callLlmText(
           : '模型返回内容为空',
       };
     }
-    return { ok: true, text };
+    return { ok: true, text, modelId: model.id };
   } catch (e) {
     const err = e as Error & { error?: { code?: string } };
     if (err?.name === 'AbortError') {
@@ -268,10 +269,12 @@ const SPEECH_SYSTEM = `你是 KET（A2）英语口语的评分老师，对象是
 2. 语法：句子结构是否有明显错误（错误要指出并给正确说法）。
 3. 词汇：是否够用、是否有误用。
 4. 评分不要过于苛刻：只要意思能被理解，就应给出鼓励性的分数。
+5. 每条语法问题和改进建议都必须引用学生原句里的具体片段作为证据；原文里找不到的错误不要写。
+6. 不要复述或改写学生的回答，也不要输出 transcript 字段——前端以孩子确认过的文字为准。
 
-⚠️ 重要前提：你只看到学生**输入或转写的文字**，听不到真实发音、语调与流利度。
-因此不要凭空给出"流利度""发音"类分数，也不要在建议里假定学生说得快慢或结巴。
-只基于文字内容评价内容、语法、词汇即可。
+⚠️ 重要前提：你只看到学生**确认过的文字**，听不到真实发音、语调与流利度。
+因此不要凭空给出"流利度""发音""互动交流"类分数，也不要在建议里假定学生说得快慢或结巴。
+只基于文字内容评价内容、语法、词汇即可；未评估的维度由前端明确标注。
 
 必须输出的 JSON 结构：
 {
@@ -279,7 +282,6 @@ const SPEECH_SYSTEM = `你是 KET（A2）英语口语的评分老师，对象是
   "contentScore": 0-100,       // 内容
   "grammarScore": 0-100,       // 语法
   "vocabularyScore": 0-100,    // 词汇
-  "transcript": "你收到的学生回答原文",
   "feedback": "一段话总体评价（中文，2-3 句）",
   "grammarIssues": ["具体语法错误：学生原句 -> 正确说法"],
   "suggestions": ["2-4 条口语改进建议（中文，具体可操作，聚焦内容/语法/词汇）"],
@@ -337,7 +339,6 @@ ${browserText}
     contentScore: number;
     grammarScore: number;
     vocabularyScore: number;
-    transcript: string;
     feedback: string;
     grammarIssues: string[];
     suggestions: string[];
@@ -351,8 +352,9 @@ ${browserText}
   return {
     ok: true,
     data: {
-      transcript:
-        typeof parsed.transcript === 'string' && parsed.transcript ? parsed.transcript : browserText,
+      // 不再把 LLM 回显的 transcript 交给界面：那可能是被改写的假原文。
+      // 前端一律用孩子确认过的文字展示与复核，评分结果只回传分数和评语。
+      modelId: res.modelId,
       score: clampScore(parsed.score),
       contentScore: clampScore(parsed.contentScore),
       grammarScore: clampScore(parsed.grammarScore),
