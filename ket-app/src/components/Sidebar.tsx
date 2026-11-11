@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { isExamModeOn, EXAM_MODE_EVENT } from '../utils/examMode';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -14,22 +15,28 @@ interface MenuItem {
   locked?: boolean;
 }
 
-const menuItems: MenuItem[] = [
+// 一科一入口：六个能力 + 两个工具。语法不再拆成「语法学习 / 每日语法」两项。
+const baseMenuItems: MenuItem[] = [
   { to: '/', label: '首页', icon: '🏠' },
-  { to: '/plan-today', label: '今日备考', icon: '📌' },
-  { to: '/vocabulary', label: '词汇学习', icon: '📚' },
-  { to: '/grammar', label: '语法学习', icon: '📝' },
-  { to: '/grammar-daily', label: '每日语法', icon: '📆' },
-  { to: '/reading', label: '阅读理解', icon: '📖' },
-  { to: '/listening', label: '听力训练', icon: '🎧' },
-  { to: '/speaking', label: '口语练习', icon: '🎤' },
-  { to: '/study-plan', label: '备考计划', icon: '🎯' },
+  { to: '/vocabulary', label: '词汇', icon: '📚' },
+  { to: '/grammar-daily', label: '语法', icon: '📝' },
+  { to: '/reading', label: '阅读', icon: '📖' },
+  { to: '/listening', label: '听力', icon: '🎧' },
+  { to: '/speaking', label: '口语', icon: '🎤' },
+  { to: '/writing', label: '作文', icon: '✍️' },
   { to: '/statistics', label: '学习统计', icon: '📊' },
   { to: '/wrong', label: '错题本', icon: '📕' },
 ];
 
+// 备考是进阶综合能力，仅在备考模式开启后出现
+const examMenuItems: MenuItem[] = [
+  { to: '/plan-today', label: '备考 · 今日题组', icon: '📌' },
+  { to: '/study-plan', label: '备考 · 1 年计划', icon: '🎯' },
+];
+
 export default function Sidebar({ isOpen, onClose, isDark }: SidebarProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const [examOn, setExamOn] = useState(isExamModeOn);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -37,6 +44,14 @@ export default function Sidebar({ isOpen, onClose, isDark }: SidebarProps) {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  useEffect(() => {
+    const refresh = () => setExamOn(isExamModeOn());
+    window.addEventListener(EXAM_MODE_EVENT, refresh);
+    return () => window.removeEventListener(EXAM_MODE_EVENT, refresh);
+  }, []);
+
+  const menuItems = examOn ? [...baseMenuItems, ...examMenuItems] : baseMenuItems;
 
   // 移动端 overlay 点击背景关闭
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -84,8 +99,8 @@ export default function Sidebar({ isOpen, onClose, isDark }: SidebarProps) {
 
       {/* 底部信息 */}
       <div className={`px-5 py-3 border-t ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
-        <p className="text-xs text-gray-400">Phase 1+</p>
-        <p className="text-xs text-gray-300 mt-0.5">词汇 + 语法 + 阅读 + 听力</p>
+        <p className="text-xs text-gray-400">按能力分科</p>
+        <p className="text-xs text-gray-300 mt-0.5">词汇 · 语法 · 阅读 · 听力 · 口语 · 作文</p>
       </div>
     </div>
   );

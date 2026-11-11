@@ -23,6 +23,7 @@ import { SYNC_INTERVAL_OPTIONS, describeNextCheck, formatSyncTime } from '../uti
 import { isCloudConnected, unlinkCloud, getCloudLinkedUid } from '../utils/cloudAuth';
 import { inspectLocalShards, maskUid, type ShardInfo } from '../utils/localShards';
 import { rehydrateAllStores } from '../store/rehydrateStores';
+import { isExamModeOn, setExamMode, EXAM_MODE_EVENT } from '../utils/examMode';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -51,6 +52,13 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   // 本机分片诊断（只读，打开时才扫描 localStorage）
   const [showShards, setShowShards] = useState(false);
   const [shards, setShards] = useState<ShardInfo[]>([]);
+  // 备考模式开关：与首页、侧栏靠事件同步
+  const [examOn, setExamOn] = useState(isExamModeOn);
+  useEffect(() => {
+    const refresh = () => setExamOn(isExamModeOn());
+    window.addEventListener(EXAM_MODE_EVENT, refresh);
+    return () => window.removeEventListener(EXAM_MODE_EVENT, refresh);
+  }, []);
   const navigate = useNavigate();
   const cloudOn = isCloudConnected();
   const displayName = getDisplayName(user);
@@ -349,6 +357,21 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
                     {profileHint && (
                       <p className="px-4 pb-2 text-xs text-blue-600 dark:text-blue-400">{profileHint}</p>
                     )}
+                    {/* 备考模式：综合能力训练，能力打底后再开；默认关闭 */}
+                    <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={examOn}
+                          onChange={(e) => setExamMode(e.target.checked)}
+                          className="w-4 h-4 shrink-0 accent-blue-600"
+                        />
+                        <span className="text-xs text-gray-700 dark:text-gray-200">显示备考入口（进阶）</span>
+                      </label>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1.5 leading-snug break-words">
+                        备考把六个能力合成一套综合题，建议词汇、语法打底后再开。开启后首页与侧栏会出现备考入口。
+                      </p>
+                    </div>
                     {/* 周期兜底：可感知、可改频率。应用关闭时不后台运行，文案不夸大 */}
                     <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700">
                       <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">⏰ 自动同步</p>

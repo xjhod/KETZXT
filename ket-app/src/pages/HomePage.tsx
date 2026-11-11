@@ -3,20 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useProgressStore } from '../store/useProgressStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
 import { getCurrentUser, getDisplayName, USER_CHANGED_EVENT } from '../utils/auth';
+import { isExamModeOn, setExamMode, EXAM_MODE_EVENT } from '../utils/examMode';
 
+// 一科一入口：按孩子当前的学习优先级排（词汇 → 语法 → 阅读 → 听力 → 口语 → 作文）。
+// 不做综合每日训练；「今日备考 / 备考计划」是进阶综合能力，收进备考模式，默认不占主线。
 const features = [
   {
-    title: '每日语法打卡',
-    desc: '每天10分钟 · 语法稳步进阶',
-    icon: '📆',
-    to: '/grammar-daily',
-    color: 'from-teal-400 to-teal-600',
-    bg: 'bg-teal-50',
-    border: 'border-teal-100',
-  },
-  {
-    title: '词汇学习',
-    desc: '21个主题 · 1500词 · 语音拼写练习',
+    title: '词汇',
+    desc: '今日新词 + 复习 · 21 主题 · 1500 词',
     icon: '📚',
     to: '/vocabulary',
     color: 'from-blue-400 to-blue-600',
@@ -24,17 +18,17 @@ const features = [
     border: 'border-blue-100',
   },
   {
-    title: '语法学习',
-    desc: '20个考点 · 2000题 · 讲解+练习',
+    title: '语法',
+    desc: '每日打卡主线 · 20 考点 · 2000 题',
     icon: '📝',
-    to: '/grammar',
-    color: 'from-green-400 to-green-600',
-    bg: 'bg-green-50',
-    border: 'border-green-100',
+    to: '/grammar-daily',
+    color: 'from-teal-400 to-teal-600',
+    bg: 'bg-teal-50',
+    border: 'border-teal-100',
   },
   {
-    title: '阅读理解',
-    desc: '5大题型 · 150篇文章',
+    title: '阅读',
+    desc: '5 大题型 · 150 篇文章',
     icon: '📖',
     to: '/reading',
     color: 'from-purple-400 to-purple-600',
@@ -42,8 +36,8 @@ const features = [
     border: 'border-purple-100',
   },
   {
-    title: '听力训练',
-    desc: '5大Part · 75套真题',
+    title: '听力',
+    desc: '5 大 Part · 75 套真题',
     icon: '🎧',
     to: '/listening',
     color: 'from-orange-400 to-orange-600',
@@ -51,8 +45,8 @@ const features = [
     border: 'border-orange-100',
   },
   {
-    title: '口语练习',
-    desc: '2大Part · 30道题目 · 录音评测',
+    title: '口语',
+    desc: '2 大 Part · 30 道题 · 录音评测',
     icon: '🎤',
     to: '/speaking',
     color: 'from-red-400 to-pink-600',
@@ -60,19 +54,10 @@ const features = [
     border: 'border-red-100',
   },
   {
-    title: '今日备考',
-    desc: '按计划出题 · 每日一练 · 自动打卡',
-    icon: '📌',
-    to: '/plan-today',
-    color: 'from-orange-400 to-red-500',
-    bg: 'bg-orange-50',
-    border: 'border-orange-100',
-  },
-  {
-    title: '备考计划',
-    desc: '1年四阶段 · 48周任务 · 写作优先',
-    icon: '🎯',
-    to: '/study-plan',
+    title: '作文',
+    desc: '不定期进行 · 12 道题 · 写完自动存档',
+    icon: '✍️',
+    to: '/writing',
     color: 'from-indigo-400 to-indigo-600',
     bg: 'bg-indigo-50',
     border: 'border-indigo-100',
@@ -85,10 +70,17 @@ export default function HomePage() {
   const dc = useDailyCheckinStore();
   // 个人中心改昵称 / 云端同步拉回昵称后，欢迎语要跟着变
   const [currentUser, setCurrentUser] = useState(getCurrentUser);
+  // 备考模式开关可在首页或个人中心切换，两处靠事件同步
+  const [examOn, setExamOn] = useState(isExamModeOn);
   useEffect(() => {
     const refresh = () => setCurrentUser(getCurrentUser());
     window.addEventListener(USER_CHANGED_EVENT, refresh);
     return () => window.removeEventListener(USER_CHANGED_EVENT, refresh);
+  }, []);
+  useEffect(() => {
+    const refresh = () => setExamOn(isExamModeOn());
+    window.addEventListener(EXAM_MODE_EVENT, refresh);
+    return () => window.removeEventListener(EXAM_MODE_EVENT, refresh);
   }, []);
 
   // 从 store 读取实时统计
@@ -132,37 +124,37 @@ export default function HomePage() {
             onClick={() => navigate('/vocabulary')}
             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            📚 开始学词汇
-          </button>
-          <button
-            onClick={() => navigate('/grammar')}
-            className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          >
-            📝 开始学语法
+            📚 学词汇
           </button>
           <button
             onClick={() => navigate('/grammar-daily')}
             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            📆 每日打卡
+            📝 学语法
           </button>
           <button
             onClick={() => navigate('/reading')}
             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            📖 开始练阅读
+            📖 练阅读
           </button>
           <button
             onClick={() => navigate('/listening')}
             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            🎧 开始练听力
+            🎧 练听力
           </button>
           <button
             onClick={() => navigate('/speaking')}
             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            🎤 开始练口语
+            🎤 练口语
+          </button>
+          <button
+            onClick={() => navigate('/writing')}
+            className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            ✍️ 写作文
           </button>
           {wrongCount > 0 && (
             <button
@@ -211,7 +203,7 @@ export default function HomePage() {
 
       {/* 功能模块入口 */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">学习模块</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">学习能力</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {features.map((f) => {
             const desc =
@@ -236,6 +228,49 @@ export default function HomePage() {
             </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* 备考模式：综合能力训练，能力打底后再开；默认不占主线 */}
+      <div className="rounded-xl border border-dashed border-gray-300 p-4 min-w-0">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="min-w-0 flex-1">
+            <h4 className="font-semibold text-gray-700 text-sm">🎯 备考模式（进阶）</h4>
+            <p className="text-xs text-gray-500 mt-1 break-words">
+              {examOn
+                ? '综合套题 + 1 年计划，适合词汇、语法打底之后使用。'
+                : '把六个能力合成一套综合题练。孩子有一定基础后再开启，也可以在右上角头像 → 个人中心里打开。'}
+            </p>
+          </div>
+          {examOn ? (
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={() => navigate('/plan-today')}
+                className="px-3 py-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs transition-colors"
+              >
+                今日备考
+              </button>
+              <button
+                onClick={() => navigate('/study-plan')}
+                className="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs transition-colors"
+              >
+                备考计划
+              </button>
+              <button
+                onClick={() => setExamMode(false)}
+                className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs transition-colors"
+              >
+                关闭
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setExamMode(true)}
+              className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs transition-colors shrink-0"
+            >
+              开启
+            </button>
+          )}
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import { useProgressStore } from './useProgressStore';
 import { usePlanStore } from './usePlanStore';
 import { useDailyCheckinStore } from './useDailyCheckinStore';
 import { useVocabStore } from './useVocabStore';
+import { useWritingStore } from './useWritingStore';
 
 export async function rehydrateAllStores(): Promise<void> {
   await Promise.all([
@@ -13,5 +14,6 @@ export async function rehydrateAllStores(): Promise<void> {
     usePlanStore.persist.rehydrate(),
     useDailyCheckinStore.persist.rehydrate(),
     useVocabStore.persist.rehydrate(),
+    useWritingStore.persist.rehydrate(),
   ]);
 }

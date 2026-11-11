@@ -13,6 +13,7 @@ import StatisticsPage from './pages/StatisticsPage';
 import LoginPage from './pages/LoginPage';
 import StudyPlanPage from './pages/StudyPlanPage';
 import PlanTodayPage from './pages/PlanTodayPage';
+import WritingPage from './pages/WritingPage';
 import { getCurrentUser } from './utils/auth';
 import { restoreCloudSession } from './utils/cloudAuth';
 import { startAutoSync, stopAutoSync } from './utils/autoSync';
@@ -123,6 +124,7 @@ function AppContent() {
             <Route path="/reading" element={<RequireAuth><ReadingPage /></RequireAuth>} />
             <Route path="/listening" element={<RequireAuth><ListeningPage /></RequireAuth>} />
             <Route path="/speaking" element={<RequireAuth><SpeakingPage /></RequireAuth>} />
+            <Route path="/writing" element={<RequireAuth><WritingPage /></RequireAuth>} />
             <Route path="/plan-today" element={<RequireAuth><PlanTodayPage /></RequireAuth>} />
             <Route path="/study-plan" element={<RequireAuth><StudyPlanPage /></RequireAuth>} />
             <Route path="/wrong" element={<RequireAuth><WrongPage /></RequireAuth>} />

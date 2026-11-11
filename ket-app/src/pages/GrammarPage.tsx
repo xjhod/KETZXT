@@ -579,9 +579,9 @@ export default function GrammarPage() {
     <div>
       <div className="flex items-center gap-3 mb-2">
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/grammar-daily')}
           className="text-blue-600 text-sm hover:underline flex items-center gap-1"
-        >← 返回首页</button>
+        >← 返回语法</button>
       </div>
       <h2 className="text-xl font-bold text-gray-800 mb-1">📝 语法学习</h2>
       <p className="text-sm text-gray-400 mb-6">20 个 KET 核心语法考点，讲解 + 练习 + 测验</p>

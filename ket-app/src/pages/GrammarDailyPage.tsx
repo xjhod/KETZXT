@@ -6,6 +6,7 @@
 // 2026-11-10 B 档：手写计入「累计手写正确」（不进 box/排期），混合测验只作当日反馈，
 // 熟练由 Box5 + 累计 2 次手写正确 + 首学 ≥7 天判定；复习按 dueAt 到期抽题。
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDailyCheckinStore, todayString, type TodayLog } from '../store/useDailyCheckinStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { generateSession, errorTagFor, type DailySession, type SessionQuestion } from '../utils/grammarSession';
@@ -190,6 +191,7 @@ function ProductionWrite({
 }
 
 export default function GrammarDailyPage() {
+  const navigate = useNavigate();
   const dc = useDailyCheckinStore();
   const progress = useProgressStore();
 
@@ -354,12 +356,18 @@ export default function GrammarDailyPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">每日语法打卡</h1>
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+        <h1 className="text-2xl font-bold text-gray-800">语法</h1>
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">
             🔥 连续 {dc.streak} 天
           </span>
+          <button
+            onClick={() => navigate('/grammar')}
+            className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs transition-colors"
+          >
+            自由刷题 · 2000 题 →
+          </button>
         </div>
       </div>
 
