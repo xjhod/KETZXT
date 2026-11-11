@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { SafeUser } from '../types/user';
 import {
@@ -26,10 +26,14 @@ interface HeaderProps {
   onToggleDark: () => void;
 }
 
+type HintTone = 'info' | 'ok' | 'error';
+
 export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncHint, setSyncHint] = useState('');
+  const [hintTone, setHintTone] = useState<HintTone>('info');
+  const hintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 个人中心：昵称编辑态
   const [user, setUser] = useState<SafeUser | null>(() => getCurrentUser());
   const [editingNickname, setEditingNickname] = useState(false);
@@ -70,10 +74,21 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     return () => window.removeEventListener(USER_CHANGED_EVENT, refresh);
   }, []);
 
-  const showHint = (msg: string) => {
+  // 手机端唯一可见的同步反馈。多次提示必须清掉上一条的定时器，
+  // 否则「正在同步…」的 3 秒定时器会把随后到达的真实结果提前抹掉。
+  const showHint = (msg: string, tone: HintTone = 'info') => {
+    if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
     setSyncHint(msg);
-    setTimeout(() => setSyncHint(''), 3000);
+    setHintTone(tone);
+    hintTimerRef.current = setTimeout(() => {
+      setSyncHint('');
+      hintTimerRef.current = null;
+    }, 4000);
   };
+
+  useEffect(() => () => {
+    if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+  }, []);
 
   const handleLogout = async () => {
     // 退出前把本机最新进度推上云；必须在 unlinkCloud 之前完成，
@@ -90,14 +105,26 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
 
   /** 手动同步：走自动同步的同一条串行队列，避免和防抖上传并发 */
   const handleSync = async () => {
-    if (syncing) return;
+    // 任何情况下点击都要有可见反馈，绝不静默 return（旧版这里直接 return，
+    // 手机端提示又是 hidden sm:inline，用户看到的就是「点了没反应」）。
+    if (syncing) {
+      showHint('正在同步，请稍候…', 'info');
+      return;
+    }
+    if (!cloudOn) {
+      showHint('未连接云端：请在登录页用同一邮箱连接后再同步', 'error');
+      return;
+    }
     setSyncing(true);
-    setSyncHint('');
+    showHint('正在同步到云端…', 'info');
     try {
-      await flushAutoSync();
+      const res = await flushAutoSync();
       setUser(getCurrentUser()); // 同步可能拉回了另一台设备改过的昵称
-      const s = getAutoSyncState();
-      showHint(s.phase === 'ok' ? '已同步' : (s.lastError || '同步失败'));
+      if (res.ok) showHint('已同步到云端', 'ok');
+      else if (res.timedOut) showHint(res.message, 'info'); // 后台仍在跑，不误报失败
+      else showHint(res.message, 'error');
+    } catch (e) {
+      showHint(`同步失败：${(e as Error).message}`, 'error');
     } finally {
       setSyncing(false);
     }
@@ -124,13 +151,12 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     if (isCloudConnected()) {
       setProfileHint('昵称已保存，正在同步到云端…');
       try {
-        await flushAutoSync();
-        const s = getAutoSyncState();
+        const res = await flushAutoSync();
         setUser(getCurrentUser());
         setProfileHint(
-          s.phase === 'ok' ? '昵称已保存并同步到云端' : `昵称已保存（云端暂未同步：${s.lastError || '请稍后重试'}）`,
+          res.ok ? '昵称已保存并同步到云端' : `昵称已保存（云端暂未同步：${res.message}）`,
         );
-        showHint(s.phase === 'ok' ? '昵称已同步' : '资料同步稍后重试');
+        showHint(res.ok ? '昵称已同步' : '资料同步稍后重试', res.ok ? 'ok' : 'info');
       } catch (e) {
         setProfileHint(`昵称已保存（云端暂未同步：${(e as Error).message}）`);
       }
@@ -179,10 +205,10 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
         {user && (
           <button
             onClick={handleSync}
-            disabled={syncing || !cloudOn}
+            aria-label="立即同步到云端"
             className={`p-2 rounded-lg transition-colors text-lg ${
               !cloudOn
-                ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                ? 'text-gray-400 dark:text-gray-500'
                 : syncing
                   ? 'text-blue-400 animate-pulse'
                   : 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
@@ -190,24 +216,24 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
             title={
               cloudOn
                 ? `${syncLabel} · 点击立即同步`
-                : '未连接云端，请在登录页连接'
+                : '未连接云端，点击查看详情'
             }
           >
             ☁️
           </button>
         )}
 
-        {/* 同步结果提示 */}
-        {(syncHint || cloudOn) && (
+        {/* 宽屏常驻状态；窄屏靠下方的 toast，不占顶栏宽度 */}
+        {cloudOn && (
           <span
             className={`text-xs whitespace-nowrap truncate max-w-[170px] hidden sm:inline-block align-middle ${
               autoSync.phase === 'error'
                 ? 'text-red-600 dark:text-red-400'
                 : 'text-blue-600 dark:text-blue-400'
             }`}
-            title={syncHint || syncLabel}
+            title={syncLabel}
           >
-            {syncHint || syncLabel}
+            {syncLabel}
           </span>
         )}
 
@@ -370,6 +396,24 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
           className="fixed inset-0 z-40"
           onClick={() => setShowUserMenu(false)}
         />
+      )}
+
+      {/* 同步结果 toast：手机端唯一可见的反馈。绝对定位不占顶栏宽度，
+          max-w-[75vw] + right-3 保证 320px 窄屏也不会横向溢出。 */}
+      {syncHint && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`absolute right-3 top-full mt-1.5 z-[60] max-w-[75vw] sm:max-w-[280px] min-w-0 break-words rounded-lg border px-3 py-2 text-xs leading-snug shadow-lg ${
+            hintTone === 'error'
+              ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300'
+              : hintTone === 'ok'
+                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300'
+                : 'border-blue-200 dark:border-blue-800 bg-white dark:bg-gray-800 text-blue-700 dark:text-blue-300'
+          }`}
+        >
+          {syncHint}
+        </div>
       )}
     </header>
   );

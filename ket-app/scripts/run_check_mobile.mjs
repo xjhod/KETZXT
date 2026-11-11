@@ -108,6 +108,15 @@ if (!cssFile || !chrome) {
     </form>
   </div>
 </div>
+<!-- 2026-11-11 新增：☁️ 同步提示 toast 必须在 320px 窄屏内，不能撑出视口 -->
+<div id="w320-toast" style="width:320px;box-sizing:border-box;padding:16px;position:relative">
+  <header class="relative flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+    <span class="text-lg">☁️</span>
+    <div id="sync-toast" role="status" class="absolute right-3 top-full mt-1.5 z-[60] max-w-[75vw] sm:max-w-[280px] min-w-0 break-words rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs leading-snug shadow-lg text-blue-700">
+      网络较慢，同步仍在后台进行，稍后会自动完成，请稍候片刻再查看结果
+    </div>
+  </header>
+</div>
 <pre id="out"></pre>
 <script>
 window.addEventListener('load', function () {
@@ -117,8 +126,12 @@ window.addEventListener('load', function () {
     return id + '=' + (el.scrollWidth - el.clientWidth);
   });
   var w = document.getElementById('w320');
-  document.getElementById('out').textContent = 'PROBE_RESULT ' + res.join(',') +
-    ',body=' + (document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  var toast = document.getElementById('sync-toast');
+  var toastWrap = document.getElementById('w320-toast');
+  res.push('toast=' + Math.round(toast.getBoundingClientRect().right - toastWrap.getBoundingClientRect().right));
+  res.push('toastInner=' + (toast.scrollWidth - toast.clientWidth));
+  res.push('body=' + (document.documentElement.scrollWidth - document.documentElement.clientWidth));
+  document.getElementById('out').textContent = 'PROBE_RESULT ' + res.join(',');
 });
 <\/script></body></html>`;
   const probePath = path.join('dist', '__mobile_probe.html');
@@ -146,6 +159,12 @@ window.addEventListener('load', function () {
       console.log('CHECK', overflowOk ? 'OK  ' : 'FAIL', '窄屏输入行与整页无横向溢出');
       console.log('CHECK', reproduced ? 'OK  ' : 'WARN', '旧三列结构确实会溢出（对照复现）');
       if (!overflowOk) failed += 1;
+      // toast 右边界相对 320px 容器右边界不得超过 1px，内部也不得横向滚动
+      const toastOk = Number.isFinite(vals.toast) && vals.toast <= 1
+        && Number.isFinite(vals.toastInner) && vals.toastInner <= 1;
+      console.log('  同步提示 toast：右边界超出 =', vals.toast, 'px | 内部溢出 =', vals.toastInner, 'px');
+      console.log('CHECK', toastOk ? 'OK  ' : 'FAIL', '同步提示 toast 320px 不横向溢出');
+      if (!toastOk) failed += 1;
     }
   } catch (e) {
     console.log('BROWSER_PROBE SKIP 浏览器启动失败:', String(e.message).slice(0, 160));
