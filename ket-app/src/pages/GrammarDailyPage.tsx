@@ -3,8 +3,8 @@
 // 顶部：连续打卡 streak + 日历热力图 + 路线图进度。难度按 ROADMAP 由易到难推进，错题加权复习。
 // 2026-11-10 A 档：规则卡默认展开、精读小注默认收起、看完讲解才出学习题；
 // 产出阶段用真手写替代选项题（可跳过）；混合测验补精读派生「形式→意义」题。
-// 2026-11-10 B 档：手写计入「连续手写正确」（不进 box/排期），混合测验只作当日反馈，
-// 熟练由 Box5 + 连续 2 次手写正确 + 首学 ≥7 天判定；复习按 dueAt 到期抽题。
+// 2026-11-10 B 档：手写计入「累计手写正确」（不进 box/排期），混合测验只作当日反馈，
+// 熟练由 Box5 + 累计 2 次手写正确 + 首学 ≥7 天判定；复习按 dueAt 到期抽题。
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useDailyCheckinStore, todayString, type TodayLog } from '../store/useDailyCheckinStore';
 import { useProgressStore } from '../store/useProgressStore';
@@ -124,7 +124,7 @@ function TodaySummary({ log }: { log: TodayLog }) {
 // ========== A 档：产出阶段真手写（复用词汇造句的 WrittenProduction）==========
 //
 // 数据来源：现有 200 道改错题的 sentence（错句）+ answer（正确句），零编造。
-// 口径：整句归一化比对，不判语法、不打分、不进熟练判定；错两次才给「看答案」按钮；可跳过。
+// 口径：整句归一化比对，不判语法、不打分；写对累计 1 次手写正确（熟练证据之一，不动 box/dueAt）；错两次才给「看答案」按钮；可跳过。写错/跳过不回调、不清零。
 // 写之前屏幕上只有错句，没有正确句；写完后才展示正确写法与解析。
 function ProductionWrite({
   sq, onResult, onNext,
@@ -151,7 +151,7 @@ function ProductionWrite({
       )}
       <WrittenProduction
         title="✍️ 写出正确的句子"
-        description="整句自己写一遍。只比对拼写和词形，不判语法、不打分；这一步不进熟练判定，写不出来可以跳过。"
+        description="整句自己写一遍。只比对拼写和词形，不判语法、不打分；每写对一次就累计 1 次手写正确，是判定熟练的证据之一；写不出来可以跳过。"
         placeholder="把正确的英文句子完整写出来"
         submitLabel="检查我写的"
         check={(t) => isWrittenCorrect(t, answer)
@@ -206,7 +206,7 @@ export default function GrammarDailyPage() {
   const [learnQuizStarted, setLearnQuizStarted] = useState(false);
   const [activeSeg, setActiveSeg] = useState<number | null>(null);
 
-  // 混合测验正确率（用于判定是否"熟练"）
+  // 混合测验正确率（仅当日战报反馈，不判熟练）
   const mixedCorrect = useRef(0);
   const mixedTotal = useRef(0);
   // 额外练习本轮成绩（不写入主打卡战报）
@@ -266,7 +266,7 @@ export default function GrammarDailyPage() {
     setActiveSeg(null);
   }
 
-  /** isProduction=true 用于手写产出：不进 box/排期，但计入「连续手写正确」（B 档熟练证据） */
+  /** isProduction=true 用于手写产出：不进 box/排期，但计入「累计手写正确」（B 档熟练证据） */
   function recordAnswer(sq: SessionQuestion, correct: boolean, userAnswer: string, isProduction = false) {
     if (isProduction) dc.recordProduction(sq.grammarId, correct);
     else dc.recordQuestion(sq.grammarId, correct);
@@ -308,7 +308,7 @@ export default function GrammarDailyPage() {
         // 结算：仅主打卡才推进路线图 + 完成打卡；额外练习只结束本轮
         if (!isExtra) {
           // B 档：混合测验正确率只作当日反馈，不再直接判熟练。
-          // 熟练由 grammarSchedule 的 Box5 + 连续 2 次手写正确 + 首学 ≥7 天决定。
+          // 熟练由 grammarSchedule 的 Box5 + 累计 2 次手写正确 + 首学 ≥7 天决定。
           if (session?.newPointId) dc.finishPoint(session.newPointId, 2);
           dc.completeCheckin(today);
         }
@@ -390,7 +390,7 @@ export default function GrammarDailyPage() {
             />
           </div>
           <p className="text-xs text-gray-400 mt-1.5">
-            熟练判据：Box 5 + 连续 2 次手写正确 + 距首次学习 ≥ 7 天；混合测验正确率只作当天反馈
+            熟练判据：Box 5 + 累计 2 次手写正确 + 距首次学习 ≥ 7 天；混合测验正确率只作当天反馈
           </p>
         </div>
       </div>

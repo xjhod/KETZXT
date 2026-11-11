@@ -9,7 +9,7 @@ export { addDays, daysBetween, todayString };
 
 /** 各盒子的复习间隔（天）。与词汇 Leitner 一致，便于两边对照 */
 export const GRAMMAR_BOX_INTERVAL_DAYS: Record<number, number> = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 15 };
-/** 熟练 = Box 5 + 连续 2 次手写正确 + 距首次学习 ≥ 7 天 */
+/** 熟练 = Box 5 + 累计 2 次手写正确 + 距首次学习 ≥ 7 天（写错/跳过不清零，UI 只在写对时回调） */
 export const GRAMMAR_MASTER_STREAK = 2;
 export const GRAMMAR_MASTER_MIN_DAYS = 7;
 
@@ -23,7 +23,7 @@ export interface GrammarPointProgress {
   lastSeen: string | null; // 最近一次练题日期 YYYY-MM-DD
   // ---- B 档新增字段 ----
   dueAt: string | null; // 下次到期日 YYYY-MM-DD
-  streak: number; // 连续手写正确次数（手写产出是唯一掌握证据）
+  streak: number; // 累计手写正确次数（手写产出是唯一掌握证据；字段名保留以兼容已持久化数据）
   firstLearnedAt: string | null; // 首次学习日
   lastPromotedAt: string | null; // 最近一次升盒日期，保证「一天最多升一级」
   mastered: boolean; // 是否已判熟练
@@ -92,7 +92,7 @@ export function migrateGrammarPoint(
   };
 }
 
-/** 熟练判定：只认 Box5 + 连续 2 次手写正确 + 首学 ≥7 天；混合测验正确率不参与 */
+/** 熟练判定：只认 Box5 + 累计 2 次手写正确 + 首学 ≥7 天；混合测验正确率不参与 */
 export function isGrammarMastered(
   p: GrammarPointProgress | null | undefined,
   today = todayString(),
@@ -174,9 +174,9 @@ export function applyGrammarAnswer(
 
 /**
  * 一次手写产出后的状态转移（A 档手写在 B 档起计入熟练判定）。
- * 只更新连续手写正确次数，不动 box / dueAt / 升盒节奏：
+ * 只更新累计手写正确次数，不动 box / dueAt / 升盒节奏：
  * 手写是「掌握证据」，选择题是「排期证据」，两条链分开才不会互相污染。
- * 跳过不调用本函数，因此既不算对也不算错。
+ * 跳过 / 写错都不调用本函数，因此既不算对也不算错、也不清零。
  */
 export function applyGrammarProduction(
   raw: GrammarPointProgress | unknown,

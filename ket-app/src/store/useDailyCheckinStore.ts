@@ -44,7 +44,7 @@ interface DailyCheckinState {
   ensurePoint: (id: string) => void;
   getPoint: (id: string) => PointProgress;
   recordQuestion: (grammarId: string, isCorrect: boolean) => void;
-  /** B 档：手写产出只更新「连续手写正确」，不动 box / dueAt；跳过不调用 */
+  /** B 档：手写产出只更新「累计手写正确」，不动 box / dueAt；跳过不调用 */
   recordProduction: (grammarId: string, isCorrect: boolean) => void;
   logAnswer: (grammarId: string, phase: TodayAnswer['phase'], isCorrect: boolean) => void;
   setTodayNewPoint: (id: string | null) => void;
@@ -97,7 +97,7 @@ export const useDailyCheckinStore = create<DailyCheckinState>()(
         });
       },
 
-      // B 档：手写产出计入「连续手写正确」，是熟练判定的证据之一；不动排期
+      // B 档：手写产出计入「累计手写正确」，是熟练判定的证据之一；不动排期
       recordProduction: (grammarId, isCorrect) => {
         set((state) => {
           const prev = state.points[grammarId] ?? emptyPoint(grammarId);

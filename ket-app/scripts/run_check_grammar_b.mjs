@@ -1,6 +1,6 @@
 // ========== 语法 B 档校验（2026-11-10）==========
 // 用法：node scripts/run_check_grammar_b.mjs （在 ket-app 目录下）
-// 校验范围：dueAt 到期调度、一天最多升一级、熟练判定（Box5+连续手写+7天）、
+// 校验范围：dueAt 到期调度、一天最多升一级、熟练判定（Box5+累计手写+7天）、
 // 混合测验降级、旧数据迁移、云同步整条合并、20 点易混搭档、对比题真交错。
 // 与 A 档脚本互补：A 档管「内容/呈现」，B 档管「调度/持久化」。
 import { rolldown } from 'rolldown';
@@ -39,7 +39,7 @@ function mk(id, o = {}) {
 
 console.log('--- 1. 间隔表与升盒（0/1/3/7/15、一天最多升一级）---');
 ok('间隔表对齐词汇 Leitner', JSON.stringify(sch.GRAMMAR_BOX_INTERVAL_DAYS) === JSON.stringify({ 1: 0, 2: 1, 3: 3, 4: 7, 5: 15 }));
-ok('熟练常量 = 连续 2 次 / ≥7 天', sch.GRAMMAR_MASTER_STREAK === 2 && sch.GRAMMAR_MASTER_MIN_DAYS === 7);
+ok('熟练常量 = 累计 2 次 / ≥7 天', sch.GRAMMAR_MASTER_STREAK === 2 && sch.GRAMMAR_MASTER_MIN_DAYS === 7);
 
 const empty = sch.emptyGrammarPoint('G01', DAY);
 ok('新点默认 Box1、当天到期、streak0', empty.box === 1 && empty.dueAt === DAY && empty.streak === 0);
@@ -70,13 +70,13 @@ ok('答错不动手写 streak', wrong.next.streak === across.streak);
 const afterWrong = sch.applyGrammarAnswer(wrong.next, true, DAY);
 ok('回盒当天不允许再连升', afterWrong.boxAfter === 1, `box=${afterWrong.boxAfter}`);
 
-console.log('--- 2. 熟练判定：Box5 + 连续 2 次手写正确 + 首学 ≥7 天 ---');
+console.log('--- 2. 熟练判定：Box5 + 累计 2 次手写正确 + 首学 ≥7 天 ---');
 const base = mk('G01', { box: 5, streak: 0, firstLearnedAt: '2026-11-01', dueAt: '2026-11-25' });
 ok('仅 Box5 + 7 天，没有手写 → 不熟练', !sch.isGrammarMastered(base, DAY));
 const oneWrite = sch.applyGrammarProduction(base, true, DAY).next;
 ok('手写 1 次 → streak=1，仍不熟练', oneWrite.streak === 1 && !sch.isGrammarMastered(oneWrite, DAY));
 const twoWrites = sch.applyGrammarProduction(oneWrite, true, DAY).next;
-ok('连续手写 2 次 → 判熟练', twoWrites.streak === 2 && sch.isGrammarMastered(twoWrites, DAY));
+ok('累计手写 2 次 → 判熟练', twoWrites.streak === 2 && sch.isGrammarMastered(twoWrites, DAY));
 ok('手写不动 box / dueAt', twoWrites.box === base.box && twoWrites.dueAt === base.dueAt);
 const broke = sch.applyGrammarProduction(twoWrites, false, DAY).next;
 ok('手写写错 → streak 清零，但已熟练不倒退', broke.streak === 0 && broke.mastered === true);
