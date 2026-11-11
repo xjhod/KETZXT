@@ -14,8 +14,12 @@ import {
   getAutoSyncState,
   subscribeAutoSync,
   flushAutoSync,
+  getPeriodicSyncInfo,
+  setSyncIntervalDays,
   type AutoSyncState,
+  type PeriodicSyncInfo,
 } from '../utils/autoSync';
+import { SYNC_INTERVAL_OPTIONS, describeNextCheck, formatSyncTime } from '../utils/syncSchedule';
 import { isCloudConnected, unlinkCloud, getCloudLinkedUid } from '../utils/cloudAuth';
 import { inspectLocalShards, maskUid, type ShardInfo } from '../utils/localShards';
 import { rehydrateAllStores } from '../store/rehydrateStores';
@@ -42,6 +46,8 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   const [savingNickname, setSavingNickname] = useState(false);
   // 自动同步状态（启动 / 防抖 / 切后台 / 退出前的上传都由 autoSync 统一驱动）
   const [autoSync, setAutoSync] = useState<AutoSyncState>(() => getAutoSyncState());
+  // 周期兜底：频率、上次成功时间、下次检查，都在个人中心可见
+  const [periodic, setPeriodic] = useState<PeriodicSyncInfo>(() => getPeriodicSyncInfo());
   // 本机分片诊断（只读，打开时才扫描 localStorage）
   const [showShards, setShowShards] = useState(false);
   const [shards, setShards] = useState<ShardInfo[]>([]);
@@ -66,6 +72,12 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   })();
 
   useEffect(() => subscribeAutoSync(setAutoSync), []);
+  // 同步成功/失败都会刷新「上次成功 / 下次检查」；再每分钟刷一次倒计时
+  useEffect(() => subscribeAutoSync(() => setPeriodic(getPeriodicSyncInfo())), []);
+  useEffect(() => {
+    const id = setInterval(() => setPeriodic(getPeriodicSyncInfo()), 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   // 登录、改昵称、云端同步拉回资料都会写 localStorage，这里统一订阅刷新
   useEffect(() => {
@@ -171,6 +183,13 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     setNicknameDraft(user?.nickname ?? '');
     setProfileHint('');
     setEditingNickname(true);
+  };
+
+  /** 改兜底频率：只写本机偏好（不同设备可以各自设），改完立刻重新评估 */
+  const changeSyncInterval = (raw: string) => {
+    const d = setSyncIntervalDays(Number(raw));
+    setPeriodic(getPeriodicSyncInfo());
+    showHint(d === 1 ? '已设为每天自动同步一次' : `已设为每 ${d} 天自动同步一次`, 'ok');
   };
 
   return (
@@ -330,6 +349,41 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
                     {profileHint && (
                       <p className="px-4 pb-2 text-xs text-blue-600 dark:text-blue-400">{profileHint}</p>
                     )}
+                    {/* 周期兜底：可感知、可改频率。应用关闭时不后台运行，文案不夸大 */}
+                    <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">⏰ 自动同步</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-snug break-words">
+                        做题后自动上传；另外
+                        {SYNC_INTERVAL_OPTIONS.find((o) => o.days === periodic.intervalDays)?.label ?? '每天'}
+                        自动同步一次（兜底）。应用打开时最长 30 分钟检查一次；关闭时不会后台运行，下次打开会立即同步。
+                      </p>
+                      <label htmlFor="sync-interval" className="block text-[10px] text-gray-500 dark:text-gray-400 mt-2 mb-1">
+                        兜底频率
+                      </label>
+                      <select
+                        id="sync-interval"
+                        value={periodic.intervalDays}
+                        onChange={(e) => changeSyncInterval(e.target.value)}
+                        className="w-full min-w-0 max-w-full px-2 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-xs text-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-400"
+                      >
+                        {SYNC_INTERVAL_OPTIONS.map((o) => (
+                          <option key={o.days} value={o.days}>{o.label}</option>
+                        ))}
+                      </select>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1.5 break-words">
+                        上次成功：{formatSyncTime(periodic.lastSyncAt)}
+                      </p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 break-words">
+                        下次检查：{describeNextCheck(periodic.checkInMs)}
+                        {periodic.failed ? ' · 上次失败，会自动重试' : ''}
+                      </p>
+                      <button
+                        onClick={handleSync}
+                        className="w-full min-w-0 mt-2 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs transition-colors"
+                      >
+                        立即同步到云端
+                      </button>
+                    </div>
                     <button
                       onClick={() => {
                         if (!showShards) {

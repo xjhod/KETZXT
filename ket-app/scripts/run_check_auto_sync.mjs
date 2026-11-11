@@ -74,8 +74,84 @@ ok('损坏 JSON 不抛异常', broken.length === 1 && broken[0].answerRecords ==
 ok('uid 遮盖不泄露全号', maskUid(U1) === '211895…2144', maskUid(U1));
 ok('短 uid 原样返回', maskUid('abc') === 'abc');
 
+// ---- 1b. syncSchedule 周期兜底纯函数实跑（2026-11-11） ----
+const schedule = await bundleModule('src/utils/syncSchedule.ts');
+const {
+  DAY_MS, PERIODIC_CHECK_MS, RETRY_AFTER_MS,
+  SYNC_INTERVAL_OPTIONS, LAST_SYNC_KEY, INTERVAL_KEY,
+  normalizeIntervalDays, readIntervalDays, writeIntervalDays,
+  readLastSyncAt, writeLastSyncAt, decidePeriodicSync,
+  describeNextCheck, formatSyncTime,
+} = schedule;
+
+function mockKV(initial = {}) {
+  const m = new Map(Object.entries(initial));
+  return {
+    getItem(k) { return m.has(k) ? m.get(k) : null; },
+    setItem(k, v) { m.set(k, String(v)); },
+    _map: m,
+  };
+}
+const T0 = Date.UTC(2026, 10, 11, 1, 0, 0);
+const base = (over = {}) => ({
+  now: T0, lastSyncAt: null, intervalMs: DAY_MS, connected: true,
+  lastAttemptAt: null, lastFailed: false, ...over,
+});
+
+ok('周期常量符合口径', DAY_MS === 86_400_000 && PERIODIC_CHECK_MS === 1_800_000 && RETRY_AFTER_MS === 600_000);
+ok('频率只有 1/3/7 天三档', SYNC_INTERVAL_OPTIONS.map((o) => o.days).join(',') === '1,3,7');
+ok('非法频率一律回落到每天', [0, 2, 99, -1, 'abc', null, undefined].every((v) => normalizeIntervalDays(v) === 1));
+ok('3/7 天频率保留', normalizeIntervalDays(3) === 3 && normalizeIntervalDays(7) === 7 && normalizeIntervalDays('3') === 3);
+ok('元数据键不带分片冒号（不会被 localShards 统计）', !LAST_SYNC_KEY.includes(':') && !INTERVAL_KEY.includes(':'));
+
+const kv = mockKV();
+ok('默认频率为每天', readIntervalDays(kv) === 1);
+ok('频率写入后可持久读回', writeIntervalDays(kv, 3) === 3 && readIntervalDays(kv) === 3 && kv.getItem(INTERVAL_KEY) === '3');
+ok('频率写入非法值被纠正', writeIntervalDays(kv, 999) === 1 && readIntervalDays(kv) === 1);
+ok('从未同步时读到 null', readLastSyncAt(kv, T0) === null);
+writeLastSyncAt(kv, T0 - 2 * DAY_MS);
+ok('上次成功时间可持久读回', readLastSyncAt(kv, T0) === T0 - 2 * DAY_MS);
+ok('损坏的时间值按无效处理', readLastSyncAt(mockKV({ [LAST_SYNC_KEY]: 'oops' }), T0) === null);
+ok('负数时间按无效处理', readLastSyncAt(mockKV({ [LAST_SYNC_KEY]: '-5' }), T0) === null);
+ok('未来时间按无效处理（防系统时钟改动锁死兜底）', readLastSyncAt(mockKV({ [LAST_SYNC_KEY]: String(T0 + DAY_MS) }), T0) === null);
+ok('storage 抛异常不崩', (() => {
+  const bad = { getItem() { throw new Error('denied'); }, setItem() { throw new Error('denied'); } };
+  return readLastSyncAt(bad, T0) === null && readIntervalDays(bad) === 1 && (writeLastSyncAt(bad, T0), true);
+})());
+
+const dOff = decidePeriodicSync(base({ connected: false }));
+ok('未连接云端不触发、仍定期检查', dOff.shouldSync === false && dOff.reason === 'no-connection' && dOff.checkInMs === PERIODIC_CHECK_MS);
+ok('从未成功同步 → 立即兜底一次', decidePeriodicSync(base()).shouldSync === true && decidePeriodicSync(base()).reason === 'never-synced');
+ok('刚同步过 → 不重复上传', decidePeriodicSync(base({ lastSyncAt: T0 - 60_000 })).shouldSync === false);
+ok('整 1 天到期 → 触发', decidePeriodicSync(base({ lastSyncAt: T0 - DAY_MS })).reason === 'due');
+ok('差 1 分钟不到 1 天 → 不触发', (() => {
+  const d = decidePeriodicSync(base({ lastSyncAt: T0 - DAY_MS + 60_000 }));
+  return d.shouldSync === false && d.reason === 'not-due';
+})());
+ok('每 3 天：2 天前不触发', decidePeriodicSync(base({ lastSyncAt: T0 - 2 * DAY_MS, intervalMs: 3 * DAY_MS })).shouldSync === false);
+ok('每 3 天：3 天前触发', decidePeriodicSync(base({ lastSyncAt: T0 - 3 * DAY_MS, intervalMs: 3 * DAY_MS })).reason === 'due');
+ok('每 7 天：6 天前不触发', decidePeriodicSync(base({ lastSyncAt: T0 - 6 * DAY_MS, intervalMs: 7 * DAY_MS })).shouldSync === false);
+ok('上次失败、刚失败 → 等重试窗口', (() => {
+  const d = decidePeriodicSync(base({ lastSyncAt: T0 - 60_000, lastFailed: true, lastAttemptAt: T0 - 60_000 }));
+  return d.shouldSync === false && d.reason === 'not-due' && d.checkInMs <= RETRY_AFTER_MS;
+})());
+ok('上次失败、过了 10 分钟 → 自动重试', decidePeriodicSync(base({ lastFailed: true, lastAttemptAt: T0 - RETRY_AFTER_MS })).reason === 'retry');
+ok('失败优先于「刚同步过」', decidePeriodicSync(base({ lastSyncAt: T0 - 60_000, lastFailed: true, lastAttemptAt: T0 - RETRY_AFTER_MS })).shouldSync === true);
+ok('首次失败无尝试时间也会重试', decidePeriodicSync(base({ lastFailed: true, lastAttemptAt: null })).reason === 'retry');
+ok('检查间隔夹在 1~30 分钟', (() => {
+  const samples = [
+    decidePeriodicSync(base({ lastSyncAt: T0 - 1000 })).checkInMs,
+    decidePeriodicSync(base({ lastSyncAt: T0 - DAY_MS + 1000 })).checkInMs,
+    decidePeriodicSync(base({ lastFailed: true, lastAttemptAt: T0 - 1000 })).checkInMs,
+  ];
+  return samples.every((ms) => ms >= 60_000 && ms <= PERIODIC_CHECK_MS);
+})());
+ok('下次检查文案可读', describeNextCheck(PERIODIC_CHECK_MS) === '约 30 分钟后' && describeNextCheck(0) === '即将检查');
+ok('上次成功时间文案可读', formatSyncTime(null) === '本机还没有成功同步过' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(formatSyncTime(T0)));
+
 // ---- 2. 静态接线护栏 ----
 const auto = read('src/utils/autoSync.ts');
+const scheduleSrc = read('src/utils/syncSchedule.ts');
 const app = read('src/App.tsx');
 const header = read('src/components/Header.tsx');
 const login = read('src/pages/LoginPage.tsx');
@@ -133,6 +209,29 @@ ok('登录页文案说明真实同步时机', has(login, '退出登录或切到�
 ok('P0 证据仍不进云同步', !has(sync, 'speechEvidence') && !has(sync, 'audioBlob'));
 ok('autoSync 不导入/不调用本机证据库', !has(auto, "from './speechEvidence'") && !has(auto, 'putSpeechEvidence') && !has(auto, 'saveSpeechEvidence') && !has(auto, 'audioBlob'));
 ok('证据文件保留 7 天 TTL', has(evidence, 'EVIDENCE_TTL_DAYS'));
+
+// ---- 2c. 周期兜底（每天/几天自动同步一次）接线 ----
+const shardsSrc = read('src/utils/localShards.ts');
+const startAt = auto.indexOf('export function startAutoSync');
+const periodicRegisterAt = auto.indexOf('schedulePeriodicCheck(PERIODIC_CHECK_MS);', startAt);
+const cloudGuardAt = auto.indexOf('if (!isCloudConnected()) return;', startAt);
+ok('周期判定来自 syncSchedule 纯函数', has(auto, "from './syncSchedule'") && has(auto, 'decidePeriodicSync({') && has(scheduleSrc, 'export function decidePeriodicSync'));
+ok('成功同步持久化上次成功时间', has(auto, 'writeLastSyncAt(safeStorage(), lastPushAt)'));
+ok('失败 10 分钟后自动重试', (auto.match(/schedulePeriodicCheck\(RETRY_AFTER_MS\)/g) || []).length >= 2);
+ok('成功后重排 30 分钟检查', has(auto, 'schedulePeriodicCheck(PERIODIC_CHECK_MS)'));
+ok('周期表是动态 setTimeout，不是死板的 24h 定时器', has(auto, 'periodicTimer = setTimeout') && !has(auto, 'setInterval('));
+ok('周期表在云端连接守卫之前注册（登录后不重挂载也生效）', periodicRegisterAt > -1 && cloudGuardAt > periodicRegisterAt);
+ok('启动必传仍在，周期表不替代启动同步', has(auto, '// 启动补一次') && has(auto, 'void doSync(true);'));
+ok('恢复可见时补周期检查（移动端会冻结后台定时器）', has(auto, 'onVisibilityChange') && has(auto, 'runPeriodicCheck();'));
+ok('stopAutoSync 清理周期定时器', has(auto, 'clearTimeout(periodicTimer)'));
+ok('多标签去重：每次从 localStorage 重读上次成功时间', has(auto, 'lastSyncAt: readLastSyncAt(safeStorage())') && has(auto, '另一个标签刚成功同步过'));
+ok('本机元数据不进云同步 payload', !has(sync, 'ket-autosync') && !has(sync, 'syncSchedule') && !has(auto, 'packPayload'));
+ok('元数据键不被分片诊断扫描', !has(shardsSrc, 'ket-autosync'));
+ok('Header 显示周期状态与频率设置', ['getPeriodicSyncInfo()', 'setSyncIntervalDays(', 'SYNC_INTERVAL_OPTIONS', 'describeNextCheck(', 'formatSyncTime(', 'id="sync-interval"'].every((s) => has(header, s)));
+ok('频率下拉窄屏受控', has(header, 'w-full min-w-0 max-w-full') && has(header, 'break-words'));
+ok('个人中心有立即同步入口', (header.match(/立即同步到云端/g) || []).length >= 2);
+ok('文案不夸大：应用关闭时不会后台运行', has(header, '关闭时不会后台运行') && has(login, '应用关闭时不会后台运行'));
+ok('登录页说明默认频率与可配', has(login, '默认每天') && has(login, '每 7 天'));
 
 console.log(`\n${passed} passed, ${failures.length} failed`);
 if (failures.length) {

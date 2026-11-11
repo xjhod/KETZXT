@@ -13,6 +13,9 @@
  *   3) 所有同步串行排队，避免退出登录、切后台、防抖任务并发互相踩。
  *   4) 失败不阻塞使用，只记状态；UI 通过 subscribeAutoSync 展示。
  *   5) 不改 sync.ts 的合并规则；口语本机证据库仍只存本机，不进云。
+ *   6) 时间兜底：应用开着时每 N 天（默认 1 天，可设 1/3/7）自动同步一次，
+ *      最长 30 分钟检查一次；失败 10 分钟后自动重试。判定逻辑在 syncSchedule.ts
+ *      纯函数里。应用关闭时不后台运行，下次打开仍会启动同步。
  */
 
 import { isCloudConnected } from './cloudAuth';
@@ -21,11 +24,42 @@ import { useProgressStore } from '../store/useProgressStore';
 import { usePlanStore } from '../store/usePlanStore';
 import { useDailyCheckinStore } from '../store/useDailyCheckinStore';
 import { useVocabStore } from '../store/useVocabStore';
+import {
+  DAY_MS,
+  PERIODIC_CHECK_MS,
+  RETRY_AFTER_MS,
+  decidePeriodicSync,
+  readIntervalDays,
+  readLastSyncAt,
+  writeIntervalDays,
+  writeLastSyncAt,
+  type PeriodicSyncDecision,
+  type PeriodicSyncReason,
+  type SyncIntervalDays,
+} from './syncSchedule';
 
 const DEBOUNCE_MS = 4_000;
 const MIN_INTERVAL_MS = 15_000;
 const STARTUP_THROTTLE_MS = 30_000;
 const FLUSH_TIMEOUT_MS = 8_000;
+
+/** 访问 localStorage 本身在隐私模式/沙箱里也可能抛，统一包一层 */
+function safeStorage(): Storage | null {
+  try {
+    return typeof window === 'undefined' ? null : window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+export interface PeriodicSyncInfo {
+  intervalDays: SyncIntervalDays;
+  lastSyncAt: number | null;
+  checkInMs: number;
+  reason: PeriodicSyncReason;
+  connected: boolean;
+  failed: boolean;
+}
 
 export type AutoSyncPhase = 'off' | 'idle' | 'pending' | 'syncing' | 'ok' | 'error';
 
@@ -48,6 +82,10 @@ let lastPushAt = 0;
 let lastStartupSyncAt = 0;
 let unsubs: Array<() => void> = [];
 let queue: Promise<unknown> = Promise.resolve();
+/** 周期兜底定时器（动态重排，不是一个死板的 24h setInterval） */
+let periodicTimer: ReturnType<typeof setTimeout> | null = null;
+let lastAttemptAt: number | null = null;
+let lastFailed = false;
 
 function emit(patch: Partial<AutoSyncState>): void {
   const next = { ...state, ...patch };
@@ -77,6 +115,63 @@ function enqueue<T>(task: () => Promise<T>): Promise<T | null> {
     .catch(() => null); // 失败不阻断后续任务，但如实告知调用方
   queue = next;
   return next;
+}
+
+// ---- 周期兜底：时间驱动，与变更驱动并行 ----
+// 判定全部交给 syncSchedule.ts 纯函数；这里只负责按判定结果排定时器。
+function currentDecision(): PeriodicSyncDecision {
+  return decidePeriodicSync({
+    now: Date.now(),
+    // 每次都从 localStorage 重读，而不是用内存变量：同浏览器多开标签时，
+    // 另一个标签刚成功同步过，这里就会看到很小的 elapsed，自然跳过，避免重复上传。
+    lastSyncAt: readLastSyncAt(safeStorage()),
+    intervalMs: readIntervalDays(safeStorage()) * DAY_MS,
+    connected: isCloudConnected(),
+    lastAttemptAt,
+    lastFailed,
+  });
+}
+
+function schedulePeriodicCheck(delayMs: number): void {
+  if (!started) return;
+  if (periodicTimer) clearTimeout(periodicTimer);
+  periodicTimer = setTimeout(() => {
+    periodicTimer = null;
+    runPeriodicCheck();
+  }, Math.max(60_000, Math.min(PERIODIC_CHECK_MS, delayMs)));
+}
+
+function runPeriodicCheck(): void {
+  if (!started) return;
+  const d = currentDecision();
+  if (d.shouldSync) {
+    // force=true：周期同步是低频兜底，不必再受 15 秒最小间隔顺延。
+    // doSync 成功/失败后会按新状态重排下一次检查。
+    void doSync(true);
+  } else {
+    schedulePeriodicCheck(d.checkInMs);
+  }
+}
+
+/** UI 读取：频率、上次成功时间、下次检查、失败状态 */
+export function getPeriodicSyncInfo(): PeriodicSyncInfo {
+  const storage = safeStorage();
+  const d = currentDecision();
+  return {
+    intervalDays: readIntervalDays(storage),
+    lastSyncAt: readLastSyncAt(storage),
+    checkInMs: d.checkInMs,
+    reason: d.reason,
+    connected: isCloudConnected(),
+    failed: lastFailed,
+  };
+}
+
+/** 用户在个人中心改频率：落本机 + 立刻重新评估（频率变短且已到期就马上补一次） */
+export function setSyncIntervalDays(days: number): SyncIntervalDays {
+  const d = writeIntervalDays(safeStorage(), days);
+  runPeriodicCheck();
+  return d;
 }
 
 function onStoreChange(): void {
@@ -115,16 +210,27 @@ function doSync(force: boolean): Promise<SyncStatus | null> {
       // syncPush 本身先 readCloudRow + mergePayload，再打包上传，
       // 因此不会用空本地状态覆盖云端，也能把本机未上传的改动补上。
       const res = await syncPush();
+      lastAttemptAt = Date.now();
       if (res.ok) {
-        lastPushAt = Date.now();
-        emit({ phase: 'ok', lastOkAt: new Date().toISOString(), lastError: '' });
+        lastPushAt = lastAttemptAt;
+        lastFailed = false;
+        // 持久化：刷新页面后仍知道「上次成功同步」是什么时候，
+        // 周期兜底才不会因为内存变量清零而永远判成「从未同步」。
+        writeLastSyncAt(safeStorage(), lastPushAt);
+        emit({ phase: 'ok', lastOkAt: new Date(lastPushAt).toISOString(), lastError: '' });
+        schedulePeriodicCheck(PERIODIC_CHECK_MS);
       } else {
+        lastFailed = true;
         emit({ phase: 'error', lastError: res.message });
+        schedulePeriodicCheck(RETRY_AFTER_MS); // 10 分钟后自动重试，不用人记着点
       }
       return res;
     } catch (e) {
       const res: SyncStatus = { ok: false, message: (e as Error).message };
+      lastAttemptAt = Date.now();
+      lastFailed = true;
       emit({ phase: 'error', lastError: res.message });
+      schedulePeriodicCheck(RETRY_AFTER_MS);
       return res;
     } finally {
       suppressed = false;
@@ -179,8 +285,13 @@ export async function flushAutoSync(timeoutMs = FLUSH_TIMEOUT_MS): Promise<Flush
   }
 }
 
-function onHidden(): void {
-  if (document.visibilityState === 'hidden') schedulePush(true, true);
+function onVisibilityChange(): void {
+  if (document.visibilityState === 'hidden') {
+    schedulePush(true, true);
+  } else {
+    // 移动端把后台标签的定时器冻结甚至丢弃，恢复可见时补一次周期检查并重新排表
+    runPeriodicCheck();
+  }
 }
 function onPageHide(): void {
   schedulePush(true, true);
@@ -199,15 +310,20 @@ export function startAutoSync(): void {
     useDailyCheckinStore.subscribe(onStoreChange),
     useVocabStore.subscribe(onStoreChange),
   ];
-  document.addEventListener('visibilitychange', onHidden);
+  document.addEventListener('visibilitychange', onVisibilityChange);
   window.addEventListener('pagehide', onPageHide);
   window.addEventListener('online', onOnline);
   emit({ phase: isCloudConnected() ? 'idle' : 'off' });
 
+  // 周期表必须在「未连接云端」时也起：用户可能进来后才在登录页连接，
+  // App 不会重新挂载，周期检查要能在连上之后自动生效。
+  schedulePeriodicCheck(PERIODIC_CHECK_MS);
+
   if (!isCloudConnected()) return;
   if (Date.now() - lastStartupSyncAt < STARTUP_THROTTLE_MS) return;
   lastStartupSyncAt = Date.now();
-  // 启动补一次：把上次会话没来得及上传的进度推上云，同时合并云端数据
+  // 启动补一次：把上次会话没来得及上传的进度推上云，同时合并云端数据。
+  // 每次打开都拉最新，不因「N 天没到」而省掉 —— 周期表只是兜底，不替代启动同步。
   void doSync(true);
 }
 
@@ -216,11 +332,15 @@ export function stopAutoSync(): void {
   started = false;
   for (const u of unsubs) u();
   unsubs = [];
-  document.removeEventListener('visibilitychange', onHidden);
+  document.removeEventListener('visibilitychange', onVisibilityChange);
   window.removeEventListener('pagehide', onPageHide);
   window.removeEventListener('online', onOnline);
   if (timer) {
     clearTimeout(timer);
     timer = null;
+  }
+  if (periodicTimer) {
+    clearTimeout(periodicTimer);
+    periodicTimer = null;
   }
 }

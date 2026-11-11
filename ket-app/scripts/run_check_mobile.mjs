@@ -117,6 +117,15 @@ if (!cssFile || !chrome) {
     </div>
   </header>
 </div>
+<!-- 2026-11-11 新增：个人中心「兜底频率」下拉必须在 320px 窄屏内，不撑破 w-72 面板 -->
+<div id="w320-sync" style="width:320px;box-sizing:border-box;padding:16px">
+  <div id="sync-panel" style="width:288px;box-sizing:border-box;padding:16px" class="card">
+    <select id="sync-select" class="w-full min-w-0 max-w-full px-2 py-1.5 rounded-lg border border-gray-300 bg-white text-xs">
+      <option>每天</option><option>每 3 天</option><option>每 7 天</option>
+    </select>
+    <p class="text-[10px] break-words">上次成功：2026-11-11 08:43 · 下次检查：约 30 分钟后 · 上次失败，会自动重试</p>
+  </div>
+</div>
 <pre id="out"></pre>
 <script>
 window.addEventListener('load', function () {
@@ -130,6 +139,12 @@ window.addEventListener('load', function () {
   var toastWrap = document.getElementById('w320-toast');
   res.push('toast=' + Math.round(toast.getBoundingClientRect().right - toastWrap.getBoundingClientRect().right));
   res.push('toastInner=' + (toast.scrollWidth - toast.clientWidth));
+  var sel = document.getElementById('sync-select');
+  var syncPanel = document.getElementById('sync-panel');
+  var syncWrap = document.getElementById('w320-sync');
+  res.push('selectRight=' + Math.round(sel.getBoundingClientRect().right - syncWrap.getBoundingClientRect().right));
+  res.push('selectInner=' + (sel.scrollWidth - sel.clientWidth));
+  res.push('panelInner=' + (syncPanel.scrollWidth - syncPanel.clientWidth));
   res.push('body=' + (document.documentElement.scrollWidth - document.documentElement.clientWidth));
   document.getElementById('out').textContent = 'PROBE_RESULT ' + res.join(',');
 });
@@ -165,6 +180,14 @@ window.addEventListener('load', function () {
       console.log('  同步提示 toast：右边界超出 =', vals.toast, 'px | 内部溢出 =', vals.toastInner, 'px');
       console.log('CHECK', toastOk ? 'OK  ' : 'FAIL', '同步提示 toast 320px 不横向溢出');
       if (!toastOk) failed += 1;
+      // 个人中心自动同步频率下拉：右边界、内部、面板内部都不能横向溢出
+      const syncOk = Number.isFinite(vals.selectRight) && vals.selectRight <= 1
+        && Number.isFinite(vals.selectInner) && vals.selectInner <= 1
+        && Number.isFinite(vals.panelInner) && vals.panelInner <= 1;
+      console.log('  自动同步频率下拉：右边界超出 =', vals.selectRight, 'px | 内部溢出 =', vals.selectInner,
+        'px | 面板内部溢出 =', vals.panelInner, 'px');
+      console.log('CHECK', syncOk ? 'OK  ' : 'FAIL', '自动同步设置 320px 不横向溢出');
+      if (!syncOk) failed += 1;
     }
   } catch (e) {
     console.log('BROWSER_PROBE SKIP 浏览器启动失败:', String(e.message).slice(0, 160));
