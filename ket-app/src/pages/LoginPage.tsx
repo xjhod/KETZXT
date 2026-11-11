@@ -140,8 +140,8 @@ export default function LoginPage() {
           <p className="text-xs text-indigo-600 mb-3">
             填写邮箱后会收到 6 位数字验证码，填入下方即可。若邮件只有「确认邮箱并登录」按钮，
             请复制按钮的链接网址，取其中「verificationCode=」后面的 6 位数字填入。
-            请在同一浏览器内完成。连接后，学习进度（做题记录、打卡、备考计划）会在多台设备间自动同步，
-            换设备用同一邮箱登录即可拉回。
+            请在同一浏览器内完成。连接后做题、打卡、背单词会自动上传，退出登录或切到后台也会补传；
+            换设备用同一邮箱登录即可拉回。右上角 ☁️ 可手动同步。
           </p>
 
           <form onSubmit={handleCloudLogin} className="space-y-2">

@@ -15,6 +15,7 @@ import StudyPlanPage from './pages/StudyPlanPage';
 import PlanTodayPage from './pages/PlanTodayPage';
 import { getCurrentUser } from './utils/auth';
 import { restoreCloudSession } from './utils/cloudAuth';
+import { startAutoSync, stopAutoSync } from './utils/autoSync';
 import { useState, useEffect, type ReactElement } from 'react';
 
 // ========== 认证保护组件 ==========
@@ -66,17 +67,25 @@ function AppContent() {
 
   useEffect(() => {
     let cancelled = false;
+    let syncStarted = false;
     (async () => {
       try {
         await restoreCloudSession();
       } catch {
         /* 恢复失败不影响渲染未登录态 */
       } finally {
-        if (!cancelled) setAuthReady(true);
+        if (!cancelled) {
+          // 会话恢复完成后才开自动同步：这时 isCloudConnected 与用户分片都已就绪。
+          // 启动那一次同步会把上次会话没来得及上传的进度补上云。
+          startAutoSync();
+          syncStarted = true;
+          setAuthReady(true);
+        }
       }
     })();
     return () => {
       cancelled = true;
+      if (syncStarted) stopAutoSync();
     };
   }, []);
 

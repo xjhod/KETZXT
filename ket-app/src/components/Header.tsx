@@ -10,8 +10,14 @@ import {
   normalizeNickname,
   USER_CHANGED_EVENT,
 } from '../utils/auth';
-import { syncNow } from '../utils/sync';
-import { isCloudConnected, unlinkCloud } from '../utils/cloudAuth';
+import {
+  getAutoSyncState,
+  subscribeAutoSync,
+  flushAutoSync,
+  type AutoSyncState,
+} from '../utils/autoSync';
+import { isCloudConnected, unlinkCloud, getCloudLinkedUid } from '../utils/cloudAuth';
+import { inspectLocalShards, maskUid, type ShardInfo } from '../utils/localShards';
 import { rehydrateAllStores } from '../store/rehydrateStores';
 
 interface HeaderProps {
@@ -30,9 +36,32 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   const [nicknameDraft, setNicknameDraft] = useState('');
   const [profileHint, setProfileHint] = useState('');
   const [savingNickname, setSavingNickname] = useState(false);
+  // 自动同步状态（启动 / 防抖 / 切后台 / 退出前的上传都由 autoSync 统一驱动）
+  const [autoSync, setAutoSync] = useState<AutoSyncState>(() => getAutoSyncState());
+  // 本机分片诊断（只读，打开时才扫描 localStorage）
+  const [showShards, setShowShards] = useState(false);
+  const [shards, setShards] = useState<ShardInfo[]>([]);
   const navigate = useNavigate();
   const cloudOn = isCloudConnected();
   const displayName = getDisplayName(user);
+
+  const syncLabel = (() => {
+    if (!cloudOn) return '未连接云端';
+    switch (autoSync.phase) {
+      case 'syncing': return '同步中…';
+      case 'pending': return '待同步';
+      case 'error': return `同步失败：${autoSync.lastError}`;
+      case 'ok': {
+        const t = autoSync.lastOkAt
+          ? new Date(autoSync.lastOkAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+          : '';
+        return `已自动同步 ${t}`.trim();
+      }
+      default: return '自动同步已开启';
+    }
+  })();
+
+  useEffect(() => subscribeAutoSync(setAutoSync), []);
 
   // 登录、改昵称、云端同步拉回资料都会写 localStorage，这里统一订阅刷新
   useEffect(() => {
@@ -47,7 +76,10 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   };
 
   const handleLogout = async () => {
-    await unlinkCloud(); // 先解绑云端登录态（不触发 reload）
+    // 退出前把本机最新进度推上云；必须在 unlinkCloud 之前完成，
+    // 否则会话一注销，这次上传就拿不到 auth.uid() 了。
+    await flushAutoSync();
+    await unlinkCloud(); // 再解绑云端登录态（不触发 reload）
     logout();
     setUser(null);
     setShowUserMenu(false);
@@ -56,15 +88,16 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     navigate('/login', { replace: true });
   };
 
-  /** 手动同步：拉取云端合并后，把合并结果回传（保证云端是完整状态） */
+  /** 手动同步：走自动同步的同一条串行队列，避免和防抖上传并发 */
   const handleSync = async () => {
     if (syncing) return;
     setSyncing(true);
     setSyncHint('');
     try {
-      const res = await syncNow();
+      await flushAutoSync();
       setUser(getCurrentUser()); // 同步可能拉回了另一台设备改过的昵称
-      showHint(res.ok ? (res.merged ? `已同步 ${res.merged} 条` : '已同步') : res.message);
+      const s = getAutoSyncState();
+      showHint(s.phase === 'ok' ? '已同步' : (s.lastError || '同步失败'));
     } finally {
       setSyncing(false);
     }
@@ -91,12 +124,13 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     if (isCloudConnected()) {
       setProfileHint('昵称已保存，正在同步到云端…');
       try {
-        const s = await syncNow();
+        await flushAutoSync();
+        const s = getAutoSyncState();
         setUser(getCurrentUser());
         setProfileHint(
-          s.ok ? '昵称已保存并同步到云端' : `昵称已保存（云端暂未同步：${s.message}）`,
+          s.phase === 'ok' ? '昵称已保存并同步到云端' : `昵称已保存（云端暂未同步：${s.lastError || '请稍后重试'}）`,
         );
-        showHint(s.ok ? '昵称已同步' : '资料同步稍后重试');
+        showHint(s.phase === 'ok' ? '昵称已同步' : '资料同步稍后重试');
       } catch (e) {
         setProfileHint(`昵称已保存（云端暂未同步：${(e as Error).message}）`);
       }
@@ -155,7 +189,7 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
             }`}
             title={
               cloudOn
-                ? syncing ? '同步中...' : '点击同步到云端'
+                ? `${syncLabel} · 点击立即同步`
                 : '未连接云端，请在登录页连接'
             }
           >
@@ -164,9 +198,16 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
         )}
 
         {/* 同步结果提示 */}
-        {syncHint && (
-          <span className="text-xs text-blue-600 dark:text-blue-400 whitespace-nowrap hidden sm:inline">
-            {syncHint}
+        {(syncHint || cloudOn) && (
+          <span
+            className={`text-xs whitespace-nowrap truncate max-w-[170px] hidden sm:inline-block align-middle ${
+              autoSync.phase === 'error'
+                ? 'text-red-600 dark:text-red-400'
+                : 'text-blue-600 dark:text-blue-400'
+            }`}
+            title={syncHint || syncLabel}
+          >
+            {syncHint || syncLabel}
           </span>
         )}
 
@@ -262,6 +303,52 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
                     </button>
                     {profileHint && (
                       <p className="px-4 pb-2 text-xs text-blue-600 dark:text-blue-400">{profileHint}</p>
+                    )}
+                    <button
+                      onClick={() => {
+                        if (!showShards) {
+                          setShards(inspectLocalShards(getCurrentUser()?.id ?? null, localStorage));
+                        }
+                        setShowShards(!showShards);
+                        setProfileHint('');
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      本机数据分片（诊断）
+                    </button>
+                    {showShards && (
+                      <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700">
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 break-all">
+                          账号 ID：{getCloudLinkedUid() ? maskUid(getCloudLinkedUid()!) : '未连接云端'}
+                        </p>
+                        <div className="mt-1.5 max-h-44 overflow-y-auto space-y-1.5">
+                          {shards.length === 0 ? (
+                            <p className="text-[11px] text-gray-400">本机没有找到学习数据分片</p>
+                          ) : shards.map((s) => (
+                            <div key={s.uid} className="rounded border border-gray-200 dark:border-gray-600 p-2">
+                              <div className="flex items-center justify-between gap-2 min-w-0">
+                                <span className="font-mono text-[11px] text-gray-700 dark:text-gray-200 break-all min-w-0">
+                                  {maskUid(s.uid)}
+                                </span>
+                                {s.isCurrent && (
+                                  <span className="shrink-0 text-[10px] px-1.5 py-0.5 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded">
+                                    当前
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 break-words leading-snug">
+                                答题 {s.answerRecords} · 会话 {s.sessionRecords} · 词汇 {s.vocabWords} · 语法点 {s.grammarPoints} · 计划 {s.planLogs} · 造句 {s.sentences}
+                              </p>
+                              <p className="text-[10px] text-gray-400">
+                                {(s.bytes / 1024).toFixed(1)} KB · {s.storeKeys.length} 个分片
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-1.5 leading-snug">
+                          只读诊断，不合并、不删除。两台设备账号 ID 一致才会同步到同一份数据。
+                        </p>
+                      </div>
                     )}
                     <button
                       onClick={handleLogout}
