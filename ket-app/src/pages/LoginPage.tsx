@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { rehydrateAllStores } from '../store/rehydrateStores';
 import { syncNow } from '../utils/sync';
+import { rememberCurrentAccount } from '../utils/accountSwitch';
 import {
   sendCloudOtp,
   verifyCloudOtp,
@@ -71,6 +72,8 @@ export default function LoginPage() {
 
       // 登录成功：先把三个学习 store 从「当前用户」分片重新载入
       await rehydrateAllStores();
+      // 记住本机会话快照：下次在这台设备可免验证码直接切回该账号
+      rememberCurrentAccount();
 
       // 登录成功 -> 立刻做一次完整同步（拉取 + 合并 + 上传）
       const res = await syncNow();

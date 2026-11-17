@@ -16,6 +16,7 @@ import PlanTodayPage from './pages/PlanTodayPage';
 import WritingPage from './pages/WritingPage';
 import { getCurrentUser } from './utils/auth';
 import { restoreCloudSession } from './utils/cloudAuth';
+import { rememberCurrentAccount } from './utils/accountSwitch';
 import { startAutoSync, stopAutoSync } from './utils/autoSync';
 import { useState, useEffect, type ReactElement } from 'react';
 
@@ -72,6 +73,8 @@ function AppContent() {
     (async () => {
       try {
         await restoreCloudSession();
+        // 启动恢复会话后补登档案（覆盖魔法链接回跳等不经 LoginPage 的路径）
+        rememberCurrentAccount();
       } catch {
         /* 恢复失败不影响渲染未登录态 */
       } finally {

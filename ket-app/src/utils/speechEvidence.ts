@@ -2,6 +2,12 @@
 // 只存当前设备，绝不进 sync payload、绝不上传云端。
 // 儿童语音合规：音频不落服务端、不写日志，7 天自动清除，用户可一键清空。
 // 用途：分数可复核（回放 + 重评 + 「我觉得评错了」），以及后续 P2 做人工标注校准集。
+//
+// 多账号隔离：一台设备两个孩子时，录音证据按当前账号 uid 过滤，A 看不到 B 的。
+// 新记录写入时自动盖 uid；读取/更新/清空都只碰当前账号的。旧版无 uid 的记录
+// （多账号功能之前存的）暂对当前账号可见，7 天 TTL 到期自动清掉，不做破坏性迁移。
+
+import { getCurrentUser } from './auth';
 
 const DB_NAME = 'ket-speaking-evidence';
 const STORE = 'records';
@@ -14,6 +20,8 @@ export type ScoreSource = 'local' | 'llm';
 
 export interface SpeechEvidence {
   id: string;
+  /** 所属账号 uid（多账号隔离）；旧记录可能缺失，读取时按「无 uid = 当前账号」兼容 */
+  uid?: string;
   questionId: string;
   part: 1 | 2;
   createdAt: string;
@@ -39,6 +47,20 @@ export interface SpeechEvidence {
 
 export function speechEvidenceAvailable(): boolean {
   return typeof indexedDB !== 'undefined';
+}
+
+/** 当前账号 uid；未登录时返回空串（证据面板在登录后才会用） */
+function currentUid(): string {
+  return getCurrentUser()?.id ?? '';
+}
+
+/**
+ * 记录是否属于当前账号。
+ * 旧记录没有 uid 字段（多账号功能之前存的），视为当前账号可见，避免升级后
+ * 自己以前录的证据突然消失；7 天 TTL 会自然清掉，不做破坏性迁移。
+ */
+function belongsToCurrent(rec: SpeechEvidence, uid: string): boolean {
+  return !rec.uid || rec.uid === uid;
 }
 
 function requestToPromise<T>(req: IDBRequest<T>): Promise<T> {
@@ -84,7 +106,8 @@ export async function putSpeechEvidence(record: SpeechEvidence): Promise<boolean
   try {
     const db = await openDb();
     const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put(record);
+    // 写入时盖当前账号 uid；已在别处带 uid 的（如回写）保持原值不动
+    tx.objectStore(STORE).put({ ...record, uid: record.uid || currentUid() });
     await txDone(tx);
     return true;
   } catch (e) {
@@ -101,7 +124,7 @@ export async function getSpeechEvidence(id: string): Promise<SpeechEvidence | nu
     const found = await requestToPromise<SpeechEvidence | undefined>(
       tx.objectStore(STORE).get(id) as IDBRequest<SpeechEvidence | undefined>
     );
-    return found ?? null;
+    return found && belongsToCurrent(found, currentUid()) ? found : null;
   } catch {
     return null;
   }
@@ -113,10 +136,14 @@ export async function listSpeechEvidence(limit = 12): Promise<SpeechEvidence[]> 
   try {
     const db = await openDb();
     const tx = db.transaction(STORE, 'readonly');
+    const uid = currentUid();
     const all = await requestToPromise<SpeechEvidence[]>(
       tx.objectStore(STORE).getAll() as IDBRequest<SpeechEvidence[]>
     );
-    return all.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit);
+    return all
+      .filter((r) => belongsToCurrent(r, uid))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .slice(0, limit);
   } catch {
     return [];
   }
@@ -135,8 +162,8 @@ export async function patchSpeechEvidence(
     const prev = await requestToPromise<SpeechEvidence | undefined>(
       store.get(id) as IDBRequest<SpeechEvidence | undefined>
     );
-    if (!prev) return false;
-    store.put({ ...prev, ...patch, id, updatedAt: new Date().toISOString() });
+    if (!prev || !belongsToCurrent(prev, currentUid())) return false;
+    store.put({ ...prev, ...patch, id, uid: prev.uid || currentUid(), updatedAt: new Date().toISOString() });
     await txDone(tx);
     return true;
   } catch (e) {
@@ -165,12 +192,20 @@ export async function pruneSpeechEvidence(ttlDays = EVIDENCE_TTL_DAYS): Promise<
   }
 }
 
+/** 只清空当前账号的证据（多账号设备互不误删）；旧的无 uid 记录也算当前账号的 */
 export async function clearSpeechEvidence(): Promise<boolean> {
   if (!speechEvidenceAvailable()) return false;
   try {
     const db = await openDb();
+    const uid = currentUid();
     const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).clear();
+    const store = tx.objectStore(STORE);
+    const all = await requestToPromise<SpeechEvidence[]>(
+      store.getAll() as IDBRequest<SpeechEvidence[]>
+    );
+    for (const r of all) {
+      if (belongsToCurrent(r, uid)) store.delete(r.id);
+    }
     await txDone(tx);
     return true;
   } catch {

@@ -24,6 +24,14 @@ import { isCloudConnected, unlinkCloud, getCloudLinkedUid } from '../utils/cloud
 import { inspectLocalShards, maskUid, type ShardInfo } from '../utils/localShards';
 import { rehydrateAllStores } from '../store/rehydrateStores';
 import { isExamModeOn, setExamMode, EXAM_MODE_EVENT } from '../utils/examMode';
+import {
+  listProfiles,
+  rememberCurrentAccount,
+  removeProfile,
+  switchAccount,
+  maskLabel,
+  type AccountProfile,
+} from '../utils/accountSwitch';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -52,6 +60,9 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
   // 本机分片诊断（只读，打开时才扫描 localStorage）
   const [showShards, setShowShards] = useState(false);
   const [shards, setShards] = useState<ShardInfo[]>([]);
+  // 本机账号档案（多账号切换）：打开面板时才读取，切换后靠 reload 刷新
+  const [profiles, setProfiles] = useState<AccountProfile[]>([]);
+  const [switchingUid, setSwitchingUid] = useState<string | null>(null);
   // 备考模式开关：与首页、侧栏靠事件同步
   const [examOn, setExamOn] = useState(isExamModeOn);
   useEffect(() => {
@@ -114,6 +125,9 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     // 退出前把本机最新进度推上云；必须在 unlinkCloud 之前完成，
     // 否则会话一注销，这次上传就拿不到 auth.uid() 了。
     await flushAutoSync();
+    // 退出前留存会话快照：下次在这台设备重新进来可直接切换，不用再发验证码。
+    // 必须在 unlinkCloud（会清 SDK 会话槽）之前保存。
+    rememberCurrentAccount();
     await unlinkCloud(); // 再解绑云端登录态（不触发 reload）
     logout();
     setUser(null);
@@ -121,6 +135,53 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
     setEditingNickname(false);
     await rehydrateAllStores(); // 清空内存中上一个用户的数据（载入 guest/空）
     navigate('/login', { replace: true });
+  };
+
+  /** 打开个人中心时刷新账号档案列表 */
+  const refreshProfiles = () => setProfiles(listProfiles());
+
+  /**
+   * 切到另一个本机账号：先 flush 当前号进度 → 换 SDK 会话槽 + 本地身份 → reload。
+   * 会话槽失效（另一台设备续期过）时预检会拦下，提示重发验证码。
+   */
+  const handleSwitchAccount = async (uid: string) => {
+    if (switchingUid) return;
+    if (uid === getCurrentUser()?.id) {
+      showHint('已经是当前账号', 'info');
+      return;
+    }
+    setSwitchingUid(uid);
+    showHint('正在保存当前进度并切换账号…', 'info');
+    try {
+      // 先推当前号进度。超时不等于失败（后台仍在跑），但 reload 会中断它，
+      // 因此超时就阻止切换，让用户稍后重试，避免丢当前号最后几分钟的数据。
+      const flushed = await flushAutoSync(25000);
+      if (flushed.timedOut) {
+        showHint('当前进度还在同步，请稍等片刻再切换', 'error');
+        return;
+      }
+      const res = await switchAccount(uid);
+      if (!res.ok) {
+        refreshProfiles(); // 失效账号已被移出档案
+        showHint(res.message, 'error');
+        return;
+      }
+      showHint('切换成功，正在重新加载…', 'ok');
+      // reload 重置五个 store 内存、autoSync 订阅与 SDK 内存态，确保完全切到新身份
+      window.location.reload();
+    } catch (e) {
+      showHint(`切换失败：${(e as Error).message}`, 'error');
+    } finally {
+      setSwitchingUid(null);
+    }
+  };
+
+  /** 移除某个存档账号；若移除的是当前账号，则走完整退出登录 */
+  const handleRemoveProfile = (uid: string) => {
+    removeProfile(uid);
+    refreshProfiles();
+    showHint(uid === getCurrentUser()?.id ? '已移除，正在退出…' : '已从切换列表移除', 'ok');
+    if (uid === getCurrentUser()?.id) void handleLogout();
   };
 
   /** 手动同步：走自动同步的同一条串行队列，避免和防抖上传并发 */
@@ -269,6 +330,7 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
           <div className="relative">
             <button
               onClick={() => {
+                if (!showUserMenu) refreshProfiles();
                 setShowUserMenu(!showUserMenu);
                 setEditingNickname(false);
                 setProfileHint('');
@@ -357,6 +419,56 @@ export default function Header({ onMenuClick, isDark, onToggleDark }: HeaderProp
                     {profileHint && (
                       <p className="px-4 pb-2 text-xs text-blue-600 dark:text-blue-400">{profileHint}</p>
                     )}
+                    {/* 本机多账号切换：一台设备两个孩子，切换不用重新发验证码 */}
+                    <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">🔄 切换账号</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-snug break-words mb-2">
+                        本机已记住 {profiles.length} 个账号。切换会先保存当前进度，通常不用再收验证码；若提示登录过期，重新连一次即可。
+                      </p>
+                      <div className="space-y-1.5 max-h-44 overflow-y-auto">
+                        {profiles.map((p) => {
+                          const isCurrent = p.uid === getCurrentUser()?.id;
+                          const shownName = p.nickname || maskLabel(p.label);
+                          return (
+                            <div key={p.uid} className={`rounded border p-2 ${isCurrent ? 'border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-600'}`}>
+                              <div className="flex items-center justify-between gap-2 min-w-0">
+                                <span className="text-xs font-medium text-gray-800 dark:text-gray-100 truncate min-w-0" title={p.label}>
+                                  {shownName}
+                                  {isCurrent && <span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded">当前</span>}
+                                </span>
+                                {!isCurrent && (
+                                  <button
+                                    onClick={() => void handleSwitchAccount(p.uid)}
+                                    disabled={switchingUid !== null}
+                                    className="shrink-0 text-[11px] px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white transition-colors"
+                                  >
+                                    {switchingUid === p.uid ? '切换中…' : '切换'}
+                                  </button>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-gray-400 mt-0.5 truncate">{maskLabel(p.label)}</p>
+                              <button
+                                onClick={() => handleRemoveProfile(p.uid)}
+                                className="mt-1 text-[10px] text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                              >
+                                {isCurrent ? '退出并移除此账号' : '从列表移除'}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <button
+                        onClick={() => {
+                          // 添加账号走完整退出：flush + 存当前快照 + 解绑，再到登录页用另一邮箱连一次。
+                          // handleLogout 已包含 rememberCurrentAccount，当前号可直接切回。
+                          showHint('请用另一个邮箱登录，登录后会记住这个账号', 'info');
+                          void handleLogout();
+                        }}
+                        className="w-full min-w-0 mt-2 px-3 py-1.5 rounded-lg border border-dashed border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                      >
+                        ＋ 添加另一个账号
+                      </button>
+                    </div>
                     {/* 备考模式：综合能力训练，能力打底后再开；默认关闭 */}
                     <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700">
                       <label className="flex items-center gap-2 cursor-pointer">
