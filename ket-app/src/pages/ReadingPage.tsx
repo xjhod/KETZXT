@@ -774,6 +774,8 @@ function Part5View({ article }: { article: typeof part5Articles[0] }) {
 // ==================== 文章列表页 ====================
 function ArticleListView({ pt, onSelectArticle, onBack }: { pt: ReadingPart; onSelectArticle: (i: number) => void; onBack: () => void }) {
   const pi = PART_INFO[pt];
+  // 难度筛选：默认全部，可只看「较难」。状态跨题型保留，切题型后仍在难题档。
+  const [diffFilter, setDiffFilter] = useState<'all' | 'easy' | 'medium' | 'hard'>('all');
 
   function getArticles(): any[] {
     switch (pt) {
@@ -794,17 +796,55 @@ function ArticleListView({ pt, onSelectArticle, onBack }: { pt: ReadingPart; onS
   const dc: Record<string, string> = { easy: 'bg-green-100 text-green-700', medium: 'bg-yellow-100 text-yellow-700', hard: 'bg-red-100 text-red-700' };
   const dl: Record<string, string> = { easy: '简单', medium: '中等', hard: '较难' };
 
+  const all = getArticles();
+  // 保留原始索引 i：主页面用 partXArticles[si] 取值，筛选后不能用新序号。
+  const filtered = all
+    .map((a, i) => ({ a, i }))
+    .filter(({ a }) => diffFilter === 'all' || a.difficulty === diffFilter);
+  const counts = {
+    all: all.length,
+    easy: all.filter((a: any) => a.difficulty === 'easy').length,
+    medium: all.filter((a: any) => a.difficulty === 'medium').length,
+    hard: all.filter((a: any) => a.difficulty === 'hard').length,
+  };
+  const filters: { key: typeof diffFilter; label: string }[] = [
+    { key: 'all', label: '全部' },
+    { key: 'easy', label: '简单' },
+    { key: 'medium', label: '中等' },
+    { key: 'hard', label: '较难' },
+  ];
+
   return (<div>
     <button onClick={onBack} className="text-blue-600 text-sm hover:underline mb-3 flex items-center gap-1">← 返回题型选择</button>
     <h3 className="text-lg font-bold text-gray-800 mb-1">{pi.icon} {pi.label}</h3>
-    <p className="text-sm text-gray-400 mb-4">{pi.desc}</p>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-      {getArticles().map((a, i) => (<div key={a.id} onClick={() => onSelectArticle(i)} className="card p-4 cursor-pointer hover:shadow-md hover:border-blue-200 transition-all">
-        <h4 className="font-semibold text-gray-800 mb-1">{a.titleZh}</h4>
-        <p className="text-xs text-gray-400 mb-2">{getSub(a)}</p>
-        <span className={`text-xs px-2 py-0.5 rounded ${dc[a.difficulty]}`}>{dl[a.difficulty]}</span>
-      </div>))}
+    <p className="text-sm text-gray-400 mb-3">{pi.desc}</p>
+    {/* 难度筛选：flex-wrap 防 320px 窄屏溢出 */}
+    <div className="flex flex-wrap gap-2 mb-4">
+      {filters.map(f => (
+        <button
+          key={f.key}
+          onClick={() => setDiffFilter(f.key)}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            diffFilter === f.key
+              ? 'bg-blue-600 text-white border-blue-600'
+              : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
+          }`}
+        >
+          {f.label} {counts[f.key]}
+        </button>
+      ))}
     </div>
+    {filtered.length === 0 ? (
+      <div className="card p-6 text-center text-sm text-gray-400">该难度暂无题目，试试其他难度。</div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {filtered.map(({ a, i }) => (<div key={a.id} onClick={() => onSelectArticle(i)} className="card p-4 cursor-pointer hover:shadow-md hover:border-blue-200 transition-all">
+          <h4 className="font-semibold text-gray-800 mb-1">{a.titleZh}</h4>
+          <p className="text-xs text-gray-400 mb-2">{getSub(a)}</p>
+          <span className={`text-xs px-2 py-0.5 rounded ${dc[a.difficulty]}`}>{dl[a.difficulty]}</span>
+        </div>))}
+      </div>
+    )}
   </div>);
 }
 

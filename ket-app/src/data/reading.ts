@@ -4,6 +4,7 @@
 // ============================================================
 
 import { part1Hard, part2Hard, part3ClozeHard, part3RCHard, part4TFHard, part5Hard } from './readingHard.ts';
+import { part1HardExtra, part2HardExtra, part3ClozeHardExtra, part3RCHardExtra, part4TFHardExtra, part5HardExtra } from './readingHardExtra.ts';
 
 // ==================== 类型定义 ====================
 
@@ -949,6 +950,7 @@ export const part1Articles: Part1Article[] = [
   },
 
   ...part1Hard,
+  ...part1HardExtra,
 ];
 
 export const part2Articles: Part2Article[] = [
@@ -2204,6 +2206,7 @@ export const part2Articles: Part2Article[] = [
   }
 ,
   ...part2Hard,
+  ...part2HardExtra,
 ];
 
 export const part3ClozeArticles: Part3ClozeArticle[] = [  {
@@ -3627,6 +3630,7 @@ export const part3ClozeArticles: Part3ClozeArticle[] = [  {
     topic: '日常生活',
   },
   ...part3ClozeHard,
+  ...part3ClozeHardExtra,
 ];
 
 // ==================== Part 3-2 数据 ====================
@@ -4828,6 +4832,7 @@ At the end of the project, the class had a small exhibition. Parents came to see
   },
 
   ...part3RCHard,
+  ...part3RCHardExtra,
 ];
 
 export const part4TFArticles: Part4TFArticle[] = [
@@ -6033,6 +6038,7 @@ export const part4TFArticles: Part4TFArticle[] = [
   },
 
   ...part4TFHard,
+  ...part4TFHardExtra,
 ];
 
 export const part5Articles: Part5Article[] = [
@@ -6458,6 +6464,7 @@ export const part5Articles: Part5Article[] = [
   },
 
   ...part5Hard,
+  ...part5HardExtra,
 ];
 
 export const allReadingArticles = [

@@ -714,7 +714,7 @@ export const part3RCHard: Part3RCArticle[] = [
     difficulty: 'hard',
     topic: '爱好',
     article: `Sam is twelve years old and he loves maps. He has maps of every country in his room. At weekends, he does not play video games. Instead, he studies old maps in the library. Last month, he found a map from 1900. It showed a small lake that is not on modern maps. Sam walked for two hours and found the lake. He was very happy. His teacher says Sam will be a great explorer one day. Sam wants to visit all the places on his maps before he is twenty.`,
-    articleZh: `Sam 十二岁，他热爱地图。他房间里挂着每个国家的地图。周末他不玩电子游戏，而是去图书馆研究旧地图。上个月，他发现了一张 1900 年的地图，上面有一个现代地图上没有的小湖。Sam 走了两个小时，找到了那个湖，他非常高兴。他的老师说 Sam 将来会成为一名伟大的探险家。Sam 想在二十岁前走遍地图上所有的地eration方。`,
+    articleZh: `Sam 十二岁，他热爱地图。他房间里挂着每个国家的地图。周末他不玩电子游戏，而是去图书馆研究旧地图。上个月，他发现了一张 1900 年的地图，上面有一个现代地图上没有的小湖。Sam 走了两个小时，找到了那个湖，他非常高兴。他的老师说 Sam 将来会成为一名伟大的探险家。Sam 想在二十岁前走遍地图上所有的地方。`,
     questions: [
       { id: 'p3r-h01-1', question: 'What does Sam do at weekends instead of playing games?', questionZh: 'Sam 周末不玩游戏，而是做什么？', options: ['Studies old maps in the library', 'Plays football', 'Watches films', 'Visits his teacher'], answer: 'Studies old maps in the library', explanation: '原文说 Instead, he studies old maps in the library。' },
       { id: 'p3r-h01-2', question: 'What was special about the map from 1900?', questionZh: '1900 年的地图特别在哪里？', options: ['It was very small', 'It showed a lake missing on modern maps', 'It was in colour', 'It was Sam’s own drawing'], answer: 'It showed a lake missing on modern maps', explanation: '原文说 a small lake that is not on modern maps。' },
