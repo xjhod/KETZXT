@@ -66,4 +66,5 @@ export const STORE_BASE_KEYS = [
   'ket-daily-checkin-v1',
   'ket-vocab-v1',
   'ket-writing-v1',
+  'ket-mnemonic-v1',
 ];

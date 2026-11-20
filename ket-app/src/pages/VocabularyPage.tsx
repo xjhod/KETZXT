@@ -11,6 +11,7 @@ import VocabToday from './VocabToday';
 import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/usePronunciationChecker';
 import { AudioButton } from '../components/AudioButton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import MnemonicCard from '../components/MnemonicCard';
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 
 // ========== 常量 ==========
@@ -942,6 +943,9 @@ export default function VocabularyPage() {
           掌握 = Box 5 + 连续 2 次听写正确 + 间隔 ≥ 7 天。
         </p>
       </div>
+
+      {/* 错词 AI 助记：错次≥3 的难词，按需生成中文联想线索（本机缓存，不进掌握判定） */}
+      <MnemonicCard />
 
       {/* 功能选择：以下四项为自由练习，不计入掌握判定 */}
       <p className="text-xs text-gray-400 mb-2">下方为自由练习，不计入掌握判定；也可以用每个主题卡里的折叠入口。</p>

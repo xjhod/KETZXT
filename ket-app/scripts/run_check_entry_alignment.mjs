@@ -85,8 +85,11 @@ ok(writingStore.includes('partialize') && writingStore.includes('drafts'), '作�
 ok(hasNone(writingStore, ["from '../utils/sync'", "from './sync'", 'syncPush(', 'mergePayload(']), '作文存档不接云同步');
 ok(rehydrate.includes('useWritingStore.persist.rehydrate()'), '切换账号时作文存档会重新载入，不串号');
 ok(scoped.includes("'ket-writing-v1'"), '分片键清单收录作文存档');
-ok((scoped.match(/'ket-[a-z-]+-v1'/g) || []).length === 5, '分片键清单恰好 5 个 store');
+ok(scoped.includes("'ket-mnemonic-v1'"), '分片键清单收录助记缓存');
+ok((scoped.match(/'ket-[a-z-]+-v1'/g) || []).length === 6, '分片键清单恰好 6 个 store');
+ok(rehydrate.includes('useMnemonicStore.persist.rehydrate()'), '切换账号时助记缓存会重新载入，不串号');
 ok(hasNone(sync, ['writing', 'ket-writing-v1']), '云同步 payload 未被误加入作文数据');
+ok(hasNone(sync, ['mnemonic', 'ket-mnemonic-v1']), '云同步 payload 未被误加入助记缓存');
 
 // 备考开关：默认关闭，三处联动
 ok(examMode.includes("=== '1'") && examMode.includes('let fallback = false'), '备考模式默认关闭');

@@ -15,6 +15,7 @@
  */
 
 import { cloud, pickModel } from './cloud';
+import { MNEMONIC_SYSTEM, buildMnemonicUser, parseMnemonic } from './mnemonic';
 
 // ========== 类型 ==========
 
@@ -365,4 +366,22 @@ ${browserText}
       sampleAnswer: typeof parsed.sampleAnswer === 'string' ? parsed.sampleAnswer : '',
     },
   };
+}
+
+/**
+ * 错词助记：为一个难词生成一句中文联想提示。
+ * 失败返回 null（不阻塞 UI，助记只是增强线索，不进掌握判定）。
+ */
+export async function generateMnemonic(word: {
+  en: string;
+  zh: string;
+  phonetic?: string;
+  example?: string;
+}): Promise<{ ok: true; hint: string } | { ok: false; reason: string }> {
+  if (!word?.en?.trim()) return { ok: false, reason: '单词为空' };
+  const res = await callLlmText(MNEMONIC_SYSTEM, buildMnemonicUser(word), 200);
+  if (!res.ok) return { ok: false, reason: res.reason };
+  const hint = parseMnemonic(res.text);
+  if (!hint) return { ok: false, reason: 'AI 助记结果解析失败，请重试' };
+  return { ok: true, hint };
 }
