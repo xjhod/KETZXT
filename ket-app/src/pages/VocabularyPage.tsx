@@ -5,6 +5,7 @@ import { useProgressStore } from '../store/useProgressStore';
 import { useVocabStore, todayString } from '../store/useVocabStore';
 import { themeCounts, buildTodayQueue } from '../utils/vocabSession';
 import { buildContextQuestions } from '../utils/contextQuestions';
+import { buildReviewLoad, loadWarningText, type LoadLevel } from '../utils/reviewLoad';
 import type { FillBlankQuestion, VocabularyTheme, VocabWordProgress } from '../types';
 import VocabToday from './VocabToday';
 import { usePronunciationChecker, isSpeechRecognitionSupported } from '../hooks/usePronunciationChecker';
@@ -14,6 +15,23 @@ import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../uti
 
 // ========== 常量 ==========
 const SESSION_SIZE = 10;
+
+// 复习负载预警的配色（light 主题：浅底深字，level 决定颜色）
+const LOAD_BG: Record<LoadLevel, string> = {
+  ok: 'bg-blue-50',
+  busy: 'bg-amber-50',
+  overload: 'bg-red-50',
+};
+const LOAD_TEXT: Record<LoadLevel, string> = {
+  ok: 'text-blue-700',
+  busy: 'text-amber-700',
+  overload: 'text-red-700',
+};
+const LOAD_ICON: Record<LoadLevel, string> = {
+  ok: '✓',
+  busy: '!',
+  overload: '!!',
+};
 
 // ========== 结果总结页 ==========
 function SessionResult({ correct, total, onBack, onRetry }: { correct: number; total: number; onBack: () => void; onRetry: () => void }) {
@@ -822,6 +840,7 @@ export default function VocabularyPage() {
 
   const words = useVocabStore((s) => s.words);
   const placementDone = useVocabStore((s) => s.placementDone);
+  const dailyReview = useVocabStore((s) => s.dailyReview);
   const currentThemeId = useVocabStore((s) => s.currentThemeId);
   const setCurrentTheme = useVocabStore((s) => s.setCurrentTheme);
   const requeueWord = useVocabStore((s) => s.requeueWord);
@@ -833,6 +852,10 @@ export default function VocabularyPage() {
   );
   const activeTheme = allThemes.find((t) => t.id === activeThemeId) ?? allThemes[0];
   const isDoneToday = useVocabStore((s) => s.isDoneToday(today));
+  const reviewLoad = useMemo(
+    () => buildReviewLoad(words, today, dailyReview),
+    [words, today, dailyReview]
+  );
 
   const startToday = (theme?: string) => {
     if (theme) setCurrentTheme(theme);
@@ -881,6 +904,35 @@ export default function VocabularyPage() {
           <span className="text-green-700">新词 <b>{todayQueue.fresh.length}</b> 个</span>
           <span className="text-gray-500">当前主题：<b>{activeTheme.nameZh}</b></span>
         </div>
+        {/* 复习负载预警：未来 30 天到期分布，防堆积弃坑（只读，不改判分） */}
+        {reviewLoad.next30 > 0 && (
+          <div className={`mb-3 p-2.5 rounded-xl ${LOAD_BG[reviewLoad.level]}`}>
+            <div className="flex items-center justify-between flex-wrap gap-1 mb-1.5">
+              <span className={`text-xs font-bold ${LOAD_TEXT[reviewLoad.level]}`}>
+                {LOAD_ICON[reviewLoad.level]} 复习节奏 · {loadWarningText(reviewLoad)}
+              </span>
+              <span className="text-xs text-gray-500 whitespace-nowrap">
+                7天 {reviewLoad.next7} / 30天 {reviewLoad.next30}
+              </span>
+            </div>
+            <div className="flex items-end gap-[2px] h-8">
+              {reviewLoad.buckets.map((b) => {
+                const peakCount = reviewLoad.peak?.count ?? 0;
+                const h = peakCount > 0 ? Math.max(2, Math.round((b.count / peakCount) * 100)) : 2;
+                const isPeak = b.date === reviewLoad.peak?.date && b.count > 0;
+                return (
+                  <div
+                    key={b.date}
+                    title={`${b.date} · ${b.count} 词到期`}
+                    className={`flex-1 rounded-sm ${isPeak ? 'bg-orange-400' : b.count > reviewLoad.dailyCapacity ? 'bg-amber-300' : 'bg-blue-200'}`}
+                    style={{ height: `${h}%` }}
+                  />
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-gray-400 mt-1">左=今天，右=30 天后；橙色为到期高峰</p>
+          </div>
+        )}
         {!placementDone && (
           <p className="text-xs text-amber-600 mb-2">第一次进入会先做 20 词入场测，认识的词直接跳过首学。</p>
         )}
