@@ -25,6 +25,29 @@ function localTime(iso: string): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
+/** 语法/词汇/结构三维分数条（规则层本地算，或 AI 精评均可复用） */
+function DimensionBars({ dims }: { dims: { label: string; score: number; color: string }[] }) {
+  return (
+    <div className="space-y-1.5 my-2">
+      {dims.map((d) => (
+        <div key={d.label} className="flex items-center gap-2 min-w-0">
+          <span className="text-[11px] text-gray-500 w-8 shrink-0">{d.label}</span>
+          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden min-w-0">
+            <div className={`h-full rounded-full ${d.color}`} style={{ width: `${Math.max(0, Math.min(100, d.score))}%` }} />
+          </div>
+          <span className="text-[11px] font-bold text-gray-600 w-7 text-right shrink-0">{d.score}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const DIM_BAR_COLORS = [
+  { label: '语法', color: 'bg-blue-400' },
+  { label: '词汇', color: 'bg-green-400' },
+  { label: '结构', color: 'bg-amber-400' },
+];
+
 export default function WritingPage() {
   const navigate = useNavigate();
   const entriesMap = useWritingStore((s) => s.entries);
@@ -95,7 +118,7 @@ export default function WritingPage() {
 
   const submit = () => {
     if (!text.trim()) return;
-    const r = gradeWriting(text, prompt.minWords, prompt.points);
+    const r = gradeWriting(text, prompt.minWords, prompt.points, prompt.kind);
     setReport(r);
     setLlmResult(null);
     setLlmError('');
@@ -294,6 +317,37 @@ export default function WritingPage() {
               </div>
               <p className="text-xs text-gray-600 mb-2 break-words">{report.summary}</p>
 
+              {/* 三维度分步反馈：语法/词汇/结构，离线也有 */}
+              {report.dimensions && (
+                <div className="mb-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                  <p className="text-[11px] font-bold text-slate-600 mb-1.5">✍️ 分步评分（本地）</p>
+                  <DimensionBars
+                    dims={DIM_BAR_COLORS.map((d, i) => ({
+                      label: d.label,
+                      color: d.color,
+                      score: [report.dimensions!.grammar, report.dimensions!.vocabulary, report.dimensions!.structure][i].score,
+                    }))}
+                  />
+                  <details>
+                    <summary className="cursor-pointer text-[11px] text-blue-600 hover:underline">展开逐维度点评</summary>
+                    <div className="mt-1.5 space-y-2">
+                      {[
+                        { label: '语法', data: report.dimensions.grammar },
+                        { label: '词汇', data: report.dimensions.vocabulary },
+                        { label: '结构', data: report.dimensions.structure },
+                      ].map((d) => (
+                        <div key={d.label} className="text-[11px]">
+                          <p className="font-medium text-gray-700">{d.label}</p>
+                          {d.data.comments.map((c, i) => (
+                            <p key={i} className="text-gray-500 mt-0.5 break-words">· {c}</p>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                </div>
+              )}
+
               <div className="space-y-1 mb-2">
                 {report.points.map((pt) => (
                   <div key={pt.label} className="flex items-start gap-1.5 text-xs min-w-0">
@@ -359,6 +413,30 @@ export default function WritingPage() {
                         <span className="text-[11px] font-bold text-purple-600">综合 {llmResult.overallScore}</span>
                       </div>
                     </div>
+                    {llmResult.grammarScore !== undefined && llmResult.vocabularyScore !== undefined && llmResult.structureScore !== undefined && (
+                      <div className="p-2 rounded-xl bg-purple-50/50">
+                        <p className="text-[11px] font-bold text-purple-600 mb-1">🤖 AI 分步评分</p>
+                        <DimensionBars
+                          dims={[
+                            { label: '语法', score: llmResult.grammarScore, color: DIM_BAR_COLORS[0].color },
+                            { label: '词汇', score: llmResult.vocabularyScore, color: DIM_BAR_COLORS[1].color },
+                            { label: '结构', score: llmResult.structureScore, color: DIM_BAR_COLORS[2].color },
+                          ]}
+                        />
+                        {[
+                          { label: '语法', comments: llmResult.grammarComments },
+                          { label: '词汇', comments: llmResult.vocabularyComments },
+                          { label: '结构', comments: llmResult.structureComments },
+                        ].filter((d) => d.comments && d.comments.length > 0).map((d) => (
+                          <div key={d.label} className="text-[11px] mt-1">
+                            <p className="font-medium text-gray-700">{d.label}</p>
+                            {d.comments!.map((c, i) => (
+                              <p key={i} className="text-gray-600 mt-0.5 break-words">· {c}</p>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     {llmResult.contentComments.length > 0 && (
                       <div className="text-xs bg-blue-50 border border-blue-100 rounded p-2 break-words">
                         <p className="font-medium text-blue-800 mb-1">内容点评</p>

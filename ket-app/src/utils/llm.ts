@@ -28,6 +28,13 @@ export interface LlmWritingResult {
   languageComments: string[];
   suggestions: string[];
   betterVersion: string;
+  /** 语法/词汇/结构三维分（可选：旧存档缺此字段不报错） */
+  grammarScore?: number;
+  vocabularyScore?: number;
+  structureScore?: number;
+  grammarComments?: string[];
+  vocabularyComments?: string[];
+  structureComments?: string[];
 }
 
 /** 口语评分结果（基于文字内容评分，不含发音/语调/流利度） */
@@ -186,13 +193,20 @@ const WRITING_SYSTEM = `你是 KET（A2）英语写作的批改老师，对象�
 必须输出的 JSON 结构：
 {
   "contentScore": 0-100,        // 内容切题度：是否答到题目问的三件事
-  "languageScore": 0-100,      // 语言质量：语法、词汇、句式准确度与地道程度
+  "languageScore": 0-100,      // 语言质量总体分（语法、词汇、结构综合）
   "overallScore": 0-100,       // 综合分（KET 官方写作分档参考：Good/Weak）
   "contentComments": ["针对每个要点是否写到、写得如何的具体点评"],
-  "languageComments": ["具体的语法/用词问题，引用学生的原句"],
+  "languageComments": ["总体语言问题，引用学生的原句"],
+  "grammarScore": 0-100,       // 语法准确度：时态、主谓一致、冠词、介词
+  "vocabularyScore": 0-100,    // 词汇：用词是否恰当、有无重复堆砌、拼写
+  "structureScore": 0-100,     // 结构：句子连贯、连接词、邮件/故事格式
+  "grammarComments": ["具体语法问题：引用原句 -> 怎么改"],
+  "vocabularyComments": ["具体用词问题：哪里可换更好的词"],
+  "structureComments": ["关于连贯与格式的具体建议"],
   "suggestions": ["2-4 条最值得改进的建议，要具体可操作"],
   "betterVersion": "一篇同样内容、但语言更好的示范改写（保持学生原意，不要加新内容）"
-}`;
+}
+每个维度分都要有对应的具体点评（引用原句中的片段作为证据），原文里找不到的问题不要写。`;
 
 /**
  * 写作增强批改。失败时返回 null —— 调用方继续用规则层结果，功能不降级。
@@ -241,6 +255,12 @@ ${text}
     overallScore: number;
     contentComments: string[];
     languageComments: string[];
+    grammarScore?: number;
+    vocabularyScore?: number;
+    structureScore?: number;
+    grammarComments?: string[];
+    vocabularyComments?: string[];
+    structureComments?: string[];
     suggestions: string[];
     betterVersion: string;
   }>(res.text);
@@ -256,6 +276,12 @@ ${text}
     overallScore: clampScore(parsed.overallScore),
     contentComments: toStringArray(parsed.contentComments),
     languageComments: toStringArray(parsed.languageComments),
+    grammarScore: typeof parsed.grammarScore === 'number' ? clampScore(parsed.grammarScore) : undefined,
+    vocabularyScore: typeof parsed.vocabularyScore === 'number' ? clampScore(parsed.vocabularyScore) : undefined,
+    structureScore: typeof parsed.structureScore === 'number' ? clampScore(parsed.structureScore) : undefined,
+    grammarComments: toStringArray(parsed.grammarComments),
+    vocabularyComments: toStringArray(parsed.vocabularyComments),
+    structureComments: toStringArray(parsed.structureComments),
     suggestions: toStringArray(parsed.suggestions),
     betterVersion: typeof parsed.betterVersion === 'string' ? parsed.betterVersion : '',
   };

@@ -36,6 +36,21 @@ export interface GrammarIssue {
   suggestion: string;
 }
 
+/** 一个维度的评分结果（规则层/LLM 共用同一形状） */
+export interface DimensionScore {
+  /** 0-100 的粗略引导分 */
+  score: number;
+  /** 针对该维度的具体点评（中文） */
+  comments: string[];
+}
+
+/** 三个能力维度 */
+export interface DimensionScores {
+  grammar: DimensionScore;
+  vocabulary: DimensionScore;
+  structure: DimensionScore;
+}
+
 export interface WritingReport {
   wordCount: number;
   minWords: number;
@@ -50,6 +65,11 @@ export interface WritingReport {
   grammarIssues: GrammarIssue[];
   /** 一句话总评 */
   summary: string;
+  /**
+   * 语法/词汇/结构三维反馈（规则层本地算，离线也有）。
+   * 可选：旧存档缺此字段不报错；UI 用 ?. 兜底。
+   */
+  dimensions?: DimensionScores;
 }
 
 // ========== 词数统计 ==========
@@ -189,12 +209,107 @@ export function checkGrammar(text: string): GrammarIssue[] {
   return issues;
 }
 
+// ========== 三维度评分（规则层本地算，离线也有反馈）==========
+//
+// 沿用「宁可漏报，不可误报」：分数只作粗略引导，点评一律给「可以怎么做」，
+// 不把可疑点说成铁定错误。三维度与要点覆盖相互独立。
+
+const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
+
+/** 语法维度：复用已有的可疑点检测，按处数温和扣分 */
+export function assessGrammar(issues: GrammarIssue[]): DimensionScore {
+  const comments = issues.slice(0, 5).map((it) => `${it.fragment}：${it.message}（建议 ${it.suggestion}）`);
+  const score = clamp(100 - issues.length * 12);
+  if (comments.length === 0) comments.push('没有发现明显的语法可疑点，保持得很好');
+  return { score, comments };
+}
+
+/** 词汇维度：看拼写可疑点 + 用词多样性，鼓励换词而非判定水平 */
+export function assessVocabulary(text: string, issues: GrammarIssue[]): DimensionScore {
+  const comments: string[] = [];
+  let penalty = 0;
+
+  const spelling = issues.filter((it) => /拼写|an apple|元音/.test(it.message));
+  if (spelling.length > 0) {
+    penalty += spelling.length * 8;
+    comments.push(`有 ${spelling.length} 处拼写/冠词可再检查一下（${spelling.slice(0, 3).map((s) => s.fragment).join('、')}）`);
+  }
+
+  const words = text.toLowerCase().match(/[a-z]+(?:'[a-z]+)?/g) || [];
+  const wc = words.length;
+  if (wc >= 8) {
+    const unique = new Set(words).size;
+    const ttr = unique / wc; // type-token ratio
+    if (ttr < 0.5) {
+      penalty += 10;
+      comments.push('有些词重复得比较多，可以试着换个说法表达同一个意思');
+    } else {
+      comments.push('用词有变化，读起来不单调');
+    }
+  } else {
+    comments.push('再多写几句，就能看出用词的变化了');
+  }
+
+  const filler = (text.toLowerCase().match(/\b(very|good|nice|happy|things?)\b/g) || []).length;
+  if (filler >= 4) {
+    penalty += 6;
+    comments.push('very / good 这类词用得较多，可以换成更具体的词');
+  }
+  if (comments.length === 0) comments.push('用词清楚，意思表达得到位');
+  return { score: clamp(100 - penalty), comments: comments.slice(0, 5) };
+}
+
+/** 结构维度：看句数、逻辑连接词、邮件/故事的格式信号 */
+export function assessStructure(text: string, kind: 'email' | 'story' = 'email'): DimensionScore {
+  const comments: string[] = [];
+  let penalty = 0;
+
+  const sentences = text.split(/[.!?]+/).map((s) => s.trim()).filter((s) => s.length > 0);
+  if (sentences.length < 3) {
+    penalty += 15;
+    comments.push(`目前写了 ${sentences.length} 句，试着再补 1–2 句让内容更完整`);
+  } else {
+    comments.push(`一共 ${sentences.length} 句，段落结构清楚`);
+  }
+
+  const connectors = text.toLowerCase().match(/\b(and|but|because|so|first|then|after|finally|when|because)\b/g) || [];
+  const uniqueConnectors = new Set(connectors);
+  if (uniqueConnectors.size === 0) {
+    penalty += 10;
+    comments.push('可以加一两个连接词（and / but / because / then），让句子更连贯');
+  } else {
+    comments.push(`用到了 ${[...uniqueConnectors].slice(0, 4).join(' / ')} 等连接词`);
+  }
+
+  const lower = text.toLowerCase();
+  if (kind === 'email') {
+    const hasGreeting = /dear\b/.test(lower);
+    const hasClosing = /\b(best wishes|see you soon|bye|yours)\b/.test(lower);
+    if (!hasGreeting || !hasClosing) {
+      penalty += 8;
+      comments.push('邮件记得以 Dear 开头、以 Best wishes / See you soon 结尾');
+    } else {
+      comments.push('邮件的开头和结尾格式正确');
+    }
+  } else {
+    const hasNarrative = /\b(one day|yesterday|last week|finally|suddenly)\b/.test(lower);
+    if (!hasNarrative) {
+      penalty += 6;
+      comments.push('故事可以用 One day / Finally 这类词交代时间顺序');
+    } else {
+      comments.push('有清楚的时间/叙事线索');
+    }
+  }
+  return { score: clamp(100 - penalty), comments: comments.slice(0, 5) };
+}
+
 // ========== 汇总批改 ==========
 
 export function gradeWriting(
   text: string,
   minWords: number,
-  points: WritingPoint[]
+  points: WritingPoint[],
+  kind: 'email' | 'story' = 'email'
 ): WritingReport {
   const wordCount = countWords(text);
   const wordCountOk = wordCount >= minWords;
@@ -232,5 +347,10 @@ export function gradeWriting(
     passed,
     grammarIssues,
     summary,
+    dimensions: {
+      grammar: assessGrammar(grammarIssues),
+      vocabulary: assessVocabulary(text, grammarIssues),
+      structure: assessStructure(text, kind),
+    },
   };
 }

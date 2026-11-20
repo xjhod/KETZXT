@@ -15,6 +15,7 @@ import {
 } from '../data/grammarRoadmap';
 import type { PointProgress } from '../store/useDailyCheckinStore';
 import { getReading } from '../data/grammarReading';
+import { interleaveBy } from './interleave';
 import {
   grammarDueUrgency,
   isGrammarDue,
@@ -364,10 +365,13 @@ export function generateSession(input: GenInput): DailySession {
   const normalPool = shuffle(mixedPool).filter(
     (s) => !meaningQs.some((m) => m.q.id === s.q.id)
   );
-  const mixed = shuffle([
-    ...normalPool.slice(0, Math.max(0, 5 - meaningQs.length)),
-    ...meaningQs,
-  ]);
+  // 混合测验按题型（fill/choice/correction）交错，避免同一题型连做；
+  // meaning 题仍保留在末尾、不参与打散（沿用上方注释的既有约束）。
+  const normalMixed = interleaveBy(
+    normalPool.slice(0, Math.max(0, 5 - meaningQs.length)),
+    (s) => s.pType
+  );
+  const mixed = [...normalMixed, ...meaningQs];
 
   return { newPointId, review, learn, contrast, production, mixed };
 }

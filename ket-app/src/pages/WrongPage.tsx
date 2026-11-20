@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgressStore, type ModuleType, type AnswerRecord } from '../store/useProgressStore';
+import { pickWrongReview, wrongReviewHint } from '../utils/wrongReview';
+import { todayString } from '../utils/vocabSchedule';
 
 const MODULE_LABELS: Record<ModuleType, { label: string; icon: string; color: string; bg: string }> = {
   vocabulary: { label: '词汇', icon: '📚', color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
@@ -221,6 +223,13 @@ export default function WrongPage() {
 
   const totalWrong = getWrongAnswers().length;
 
+  // 今日复盘：3 天前错过的题（全局，不受模块 Tab 筛选影响）
+  const reviewList = useMemo(
+    () => pickWrongReview(getWrongAnswers(), todayString()),
+    // getWrongAnswers 非稳定引用，用 totalWrong 变化时重算即可（错题增删会变）
+    [totalWrong] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
   return (
     <div className="max-w-2xl mx-auto space-y-5 pb-8">
       {/* 页头 */}
@@ -260,6 +269,24 @@ export default function WrongPage() {
           );
         })}
       </div>
+
+      {/* 今日复盘：3 天前的错题再推一次（可折叠，复用 WrongCard） */}
+      {reviewList.length > 0 && (
+        <div className="rounded-2xl border-2 border-amber-200 bg-amber-50/60 p-3">
+          <p className="text-sm font-bold text-amber-800 mb-2">
+            🔁 今日复盘 · {wrongReviewHint(reviewList.length)}
+          </p>
+          <div className="space-y-3">
+            {reviewList.map((record) => (
+              <WrongCard
+                key={'review-' + record.id}
+                record={record}
+                onRemove={() => removeFromWrong(record.questionId, record.subjectId)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 筛选 Tab */}
       <div className="flex gap-2 flex-wrap">

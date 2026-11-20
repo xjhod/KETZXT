@@ -6,6 +6,7 @@ import {
 } from '../data/reading';
 import { useProgressStore } from '../store/useProgressStore';
 import { isBlankCorrect, acceptedAnswersLabel } from '../utils/readingScore';
+import { interleaveBy } from '../utils/interleave';
 
 type ReadingPart = 'part1' | 'part2' | 'part3c' | 'part3r' | 'part4' | 'part5';
 
@@ -798,9 +799,14 @@ function ArticleListView({ pt, onSelectArticle, onBack }: { pt: ReadingPart; onS
 
   const all = getArticles();
   // 保留原始索引 i：主页面用 partXArticles[si] 取值，筛选后不能用新序号。
-  const filtered = all
+  const rawFiltered = all
     .map((a, i) => ({ a, i }))
     .filter(({ a }) => diffFilter === 'all' || a.difficulty === diffFilter);
+  // 「全部」档按难度交错排列：hard 题是后来追加在数组末尾的，不交错会导致连续多篇较难。
+  // 交错只重排展示顺序，{a,i} 整体移动、i 仍是原数组索引 → 答案/索引不错位。
+  const filtered = diffFilter === 'all'
+    ? interleaveBy(rawFiltered, (x) => (x.a.difficulty as string) || 'medium')
+    : rawFiltered;
   const counts = {
     all: all.length,
     easy: all.filter((a: any) => a.difficulty === 'easy').length,
