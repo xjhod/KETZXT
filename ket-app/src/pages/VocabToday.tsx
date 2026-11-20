@@ -20,11 +20,10 @@
 //   慢速复用现有整词 mp3 的 playbackRate，不新增任何音频/图片/词库字段。
 import { useMemo, useRef, useState, useEffect, type RefObject } from 'react';
 import { allThemes } from '../data/vocabulary';
-import type { PlacementChoice, VocabWordProgress, Word } from '../types';
+import type { VocabWordProgress, Word } from '../types';
 import { useVocabStore, todayString, addDays } from '../store/useVocabStore';
 import { useProgressStore } from '../store/useProgressStore';
 import {
-  buildPlacementSample,
   buildTodayQueue,
   buildPassage,
   buildMeaningOptions,
@@ -41,7 +40,7 @@ import { WrittenProduction } from '../components/WrittenProduction';
 import { validateVocabSentence } from '../utils/writtenProduction';
 import { findReunionArticles, splitHighlighted } from '../utils/contextReunion';
 
-type Phase = 'placement' | 'overview' | 'review' | 'learn' | 'passage' | 'reunion' | 'result';
+type Phase = 'overview' | 'review' | 'learn' | 'passage' | 'reunion' | 'result';
 
 interface SessionStats {
   correct: number;
@@ -812,62 +811,6 @@ function DictationStep({
   );
 }
 
-// ========== 入场测 ==========
-
-function Placement({ onDone }: { onDone: () => void }) {
-  const sample = useMemo(() => buildPlacementSample(), []);
-  const completePlacement = useVocabStore((s) => s.completePlacement);
-  const today = useMemo(() => todayString(), []);
-  const [idx, setIdx] = useState(0);
-  const [choices, setChoices] = useState<Record<string, PlacementChoice>>({});
-  const [showZh, setShowZh] = useState(false);
-  const cur = sample[idx];
-
-  const choose = (choice: PlacementChoice) => {
-    const next = { ...choices, [cur.word.id]: choice };
-    setChoices(next);
-    setShowZh(false);
-    if (idx + 1 >= sample.length) {
-      const payload: Record<string, { themeId: string; route: 'A' | 'B' | 'C'; choice: PlacementChoice }> = {};
-      for (const s of sample) {
-        payload[s.word.id] = {
-          themeId: s.themeId,
-          route: s.analysis.route,
-          choice: next[s.word.id] ?? 'unknown',
-        };
-      }
-      completePlacement(payload, today);
-      onDone();
-    } else {
-      setIdx(idx + 1);
-    }
-  };
-
-  if (!cur) return null;
-  return (
-    <div className="card max-w-xl mx-auto">
-      <p className="text-xs text-gray-400 mb-1">第一次使用 · 入场测 {idx + 1}/{sample.length}</p>
-      <h3 className="text-lg font-bold text-gray-800 mb-1">这个词你认识吗？</h3>
-      <p className="text-xs text-gray-500 mb-4">认识的词直接跳过首学，之后只按记忆节奏复习。</p>
-      <p className="text-3xl font-bold text-gray-800 font-mono mb-2 break-all">{cur.word.en}</p>
-      <div className="flex items-center gap-2 mb-3">
-        <PlayButton word={cur.word} />
-        <button onClick={() => setShowZh((v) => !v)} className="text-xs text-gray-500 hover:text-blue-600">
-          {showZh ? cur.word.zh : '看中文提示'}
-        </button>
-      </div>
-      <div className="grid grid-cols-3 gap-2 mt-5">
-        <button onClick={() => choose('known')} className="px-2 py-3 rounded-xl bg-green-50 text-green-700 text-sm hover:bg-green-100">认识</button>
-        <button onClick={() => choose('unsure')} className="px-2 py-3 rounded-xl bg-amber-50 text-amber-700 text-sm hover:bg-amber-100">不确定</button>
-        <button onClick={() => choose('unknown')} className="px-2 py-3 rounded-xl bg-gray-100 text-gray-600 text-sm hover:bg-gray-200">不认识</button>
-      </div>
-      <div className="mt-4 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className="h-full bg-blue-400 transition-all" style={{ width: `${((idx + 1) / sample.length) * 100}%` }} />
-      </div>
-    </div>
-  );
-}
-
 // ========== 主题语境段（真实例句 + 多空回填）==========
 
 const BLANK_MARKS = ['①', '②', '③', '④', '⑤', '⑥'];
@@ -1129,7 +1072,6 @@ function ResultStep({
 
 export default function VocabToday({ onBack }: { onBack: () => void }) {
   const words = useVocabStore((s) => s.words);
-  const placementDone = useVocabStore((s) => s.placementDone);
   const currentThemeId = useVocabStore((s) => s.currentThemeId);
   const setCurrentTheme = useVocabStore((s) => s.setCurrentTheme);
   const dailyNew = useVocabStore((s) => s.dailyNew);
@@ -1141,7 +1083,7 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
 
   const today = useMemo(() => todayString(), []);
   const activeThemeId = currentThemeId || allThemes[0].id;
-  const [phase, setPhase] = useState<Phase>(placementDone ? 'overview' : 'placement');
+  const [phase, setPhase] = useState<Phase>('overview');
   const [snapshot, setSnapshot] = useState<VocabTodayQueue | null>(null);
   const [reviewIdx, setReviewIdx] = useState(0);
   const [learnIdx, setLearnIdx] = useState(0);
@@ -1215,16 +1157,6 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
     markSessionDate(today);
     setPhase('result');
   };
-
-  // ---- 入场测 ----
-  if (phase === 'placement') {
-    return (
-      <div>
-        <TopBar onBack={onBack} title="今日词汇 · 入场测" />
-        <Placement onDone={() => setPhase('overview')} />
-      </div>
-    );
-  }
 
   // ---- 概览 ----
   if (phase === 'overview') {

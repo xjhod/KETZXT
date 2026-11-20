@@ -8,6 +8,7 @@
 //   · 6/8 与 0-1-3-7-15 天是工程默认值，界面不得写成"最优记忆参数"
 import { allThemes } from '../data/vocabulary';
 import type { VocabularyTheme, Word, VocabBox, VocabHintLevel, VocabWordProgress } from '../types';
+import { isPlacementRemnant } from './vocabSchedule';
 import {
   analyzeWord,
   buildCListeningDrill,
@@ -189,23 +190,30 @@ export function buildTodayQueue(input: {
   const dailyReview = clampDailyCount(input.dailyReview, REVIEW_PER_DAY, DAILY_REVIEW_OPTIONS);
 
   // ---- 复习：全局到期，先按 dueAt（逾期越久越优先），再按盒子小优先 ----
+  // 排除入场测残留词：它们没被真正学过，不该出现在复习队列里。
   const due = Object.values(words)
     .filter((p) => p.status !== 'new' && p.dueAt <= today)
+    .filter((p) => !isPlacementRemnant(p))
     .filter((p) => wordIndex.has(p.wordId))
     .sort((a, b) => a.dueAt.localeCompare(b.dueAt) || a.box - b.box || b.wrong - a.wrong);
   const review = interleave(
     due.slice(0, dailyReview).map((p) => toItem(wordIndex.get(p.wordId)!, 'review', p))
   );
 
-  // ---- 新词：当前主题内按词表顺序，跳过已入场/已学词 ----
+  // ---- 新词：当前主题内按词表顺序，跳过已学词 ----
+  // 入场测残留词视为未学，允许重走首学；传 null progress 让它从 Box 1 起（不继承假高盒）。
   const freshMeta: { word: Word; themeId: string; themeZh: string }[] = [];
   for (const meta of flatWords) {
     if (meta.themeId !== currentThemeId) continue;
     const p = words[meta.word.id];
-    if (p && p.status !== 'new') continue;
+    if (p && p.status !== 'new' && !isPlacementRemnant(p)) continue;
     freshMeta.push(meta);
   }
-  const fresh = freshMeta.slice(0, dailyNew).map((m) => toItem(m, 'new', words[m.word.id] ?? null));
+  const fresh = freshMeta.slice(0, dailyNew).map((m) => {
+    const p = words[m.word.id];
+    const progress = p && isPlacementRemnant(p) ? null : (p ?? null);
+    return toItem(m, 'new', progress);
+  });
 
   return {
     review,

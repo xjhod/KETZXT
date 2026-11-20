@@ -20,7 +20,7 @@ import type {
   VocabSentence,
 } from '../types';
 import {
-  applyDictation, emptyProgress, addDays, BOX_INTERVAL_DAYS,
+  applyDictation, emptyProgress, addDays, BOX_INTERVAL_DAYS, isPlacementRemnant,
 } from '../utils/vocabSchedule';
 import { MAX_WRITTEN_SENTENCES } from '../utils/writtenProduction';
 
@@ -100,7 +100,11 @@ export const useVocabStore = create<VocabState>()(
       },
 
       recordDictation: (wordId, themeId, route, correct, today) => {
-        const base = get().words[wordId] ?? emptyProgress(wordId, themeId, route, today);
+        const stored = get().words[wordId];
+        // 入场测残留词首次听写：从 Box 1 全新起算，不继承自报的假高盒。
+        const base = !stored || isPlacementRemnant(stored)
+          ? emptyProgress(wordId, themeId, route, today)
+          : stored;
         const prev: VocabWordProgress = {
           ...base,
           themeId: base.themeId || themeId,

@@ -28,6 +28,18 @@ export function daysBetween(a: string | null, b: string): number {
   return Math.round((db - da) / 86400000);
 }
 
+/**
+ * 入场测残留词（旧版已 abolish，兼容老数据）。
+ * 旧入场测把「自报认识」的词直接写成 learning + box 2/3，但没有真实听写证据。
+ * 这类词必须当新词从 Box 1 重走首学，不能按假高盒进复习、也不能让首次听写从 box 3 起。
+ * 判定刻意收紧：只有「learning 状态 + 从未听写过（无时间戳、对错全 0）」才算，
+ * 任何有真实记录（right/wrong>0）的词一律不动。
+ */
+export function isPlacementRemnant(p: VocabWordProgress): boolean {
+  return p.status === 'learning' &&
+    p.lastSeen === null && p.firstLearnedAt === null && p.right === 0 && p.wrong === 0;
+}
+
 export function emptyProgress(
   wordId: string,
   themeId: string,

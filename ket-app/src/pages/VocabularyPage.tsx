@@ -840,7 +840,6 @@ export default function VocabularyPage() {
   const [themeId, setThemeId] = useState<string>('');
 
   const words = useVocabStore((s) => s.words);
-  const placementDone = useVocabStore((s) => s.placementDone);
   const dailyReview = useVocabStore((s) => s.dailyReview);
   const currentThemeId = useVocabStore((s) => s.currentThemeId);
   const setCurrentTheme = useVocabStore((s) => s.setCurrentTheme);
@@ -933,9 +932,6 @@ export default function VocabularyPage() {
             </div>
             <p className="text-[10px] text-gray-400 mt-1">左=今天，右=30 天后；橙色为到期高峰</p>
           </div>
-        )}
-        {!placementDone && (
-          <p className="text-xs text-amber-600 mb-2">第一次进入会先做 20 词入场测，认识的词直接跳过首学。</p>
         )}
         <button onClick={() => startToday()} className="btn-primary">开始今日学习 →</button>
         <p className="text-xs text-gray-400 mt-2">
