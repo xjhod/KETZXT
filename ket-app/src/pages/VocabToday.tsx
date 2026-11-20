@@ -39,8 +39,9 @@ import { buildCListeningDrill, phonicsHints, type PhonicsHint } from '../utils/w
 import { audioFileUrl, playAudioEl, speakText, ttsFallbackAllowed } from '../utils/audio';
 import { WrittenProduction } from '../components/WrittenProduction';
 import { validateVocabSentence } from '../utils/writtenProduction';
+import { findReunionArticles, splitHighlighted } from '../utils/contextReunion';
 
-type Phase = 'placement' | 'overview' | 'review' | 'learn' | 'passage' | 'result';
+type Phase = 'placement' | 'overview' | 'review' | 'learn' | 'passage' | 'reunion' | 'result';
 
 interface SessionStats {
   correct: number;
@@ -984,6 +985,81 @@ function PassageStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () =>
   );
 }
 
+// ========== 语境重逢：当天新词回到题库真实短文 ==========
+// 只展示（不判分、不进掌握判定）：短文字字来自 reading.ts，命中词高亮，中文译文可展开。
+function ReunionStep({ items, onDone }: { items: VocabQueueItem[]; onDone: () => void }) {
+  const freshWords = items.map((it) => it.word);
+  const reunion = useMemo(() => findReunionArticles(freshWords, 1)[0] ?? null, [items]);
+  const [showZh, setShowZh] = useState(false);
+
+  if (!reunion) {
+    return (
+      <div className="card text-center">
+        <h3 className="text-lg font-bold text-gray-800 mb-2">🌱 语境重逢</h3>
+        <p className="text-sm text-gray-500">今天学的词暂时没有在阅读短文里遇到，明天继续。</p>
+        <button onClick={onDone} className="btn-primary mt-4">完成今日学习 →</button>
+      </div>
+    );
+  }
+
+  const segments = splitHighlighted(reunion.text, reunion.matchSpans);
+  const partLabel: Record<string, string> = { '1': '看图配对', '2': '信息匹配', '3c': '完形填空', '3r': '阅读理解', '4': '正误判断', '5': '短文填词' };
+
+  return (
+    <div className="card">
+      <h3 className="text-lg font-bold text-gray-800 mb-1">🌱 语境重逢</h3>
+      <p className="text-xs text-gray-500 mb-3">
+        今天学的词，出现在这篇真实短文里。读一读，认一次就好 —— 不计分。
+      </p>
+
+      <div className="flex flex-wrap items-center gap-1.5 mb-3">
+        <span className="text-xs text-gray-500">今天遇到：</span>
+        {reunion.matchedWords.map((w) => (
+          <span key={w} className="px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">{w}</span>
+        ))}
+      </div>
+
+      <div className="p-3 rounded-xl bg-gray-50">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-gray-800">{reunion.titleZh || reunion.title}</p>
+            <p className="text-xs text-gray-400">KET Reading · {partLabel[reunion.part] ?? reunion.part}</p>
+          </div>
+          <button
+            onClick={() => speakText(reunion.text, { rate: 0.85 })}
+            className="text-xs px-2 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 whitespace-nowrap"
+          >
+            🔊 读短文
+          </button>
+        </div>
+        <p className="text-sm text-gray-800 leading-relaxed">
+          {segments.map((seg, i) => seg.highlight ? (
+            <mark key={i} className="bg-orange-100 text-orange-800 font-medium rounded px-0.5">{seg.text}</mark>
+          ) : (
+            <span key={i}>{seg.text}</span>
+          ))}
+        </p>
+        {reunion.translation && (
+          <div className="mt-3">
+            <button
+              onClick={() => setShowZh((v) => !v)}
+              className="text-xs text-blue-600 hover:text-blue-800"
+            >
+              {showZh ? '收起中文' : '看中文对照'}
+            </button>
+            {showZh && <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{reunion.translation}</p>}
+          </div>
+        )}
+      </div>
+
+      <p className="text-xs text-gray-400 mt-3">
+        这一环只让刚学的词换个地方再出现一次，帮助记忆；不答题、不打分、不影响盒子。
+      </p>
+      <button onClick={onDone} className="btn-primary mt-4">完成今日学习 →</button>
+    </div>
+  );
+}
+
 // ========== 结算 ==========
 
 function ResultStep({
@@ -1283,7 +1359,17 @@ export default function VocabToday({ onBack }: { onBack: () => void }) {
     return (
       <div>
         <TopBar onBack={onBack} title="主题语境段" />
-        <PassageStep items={snapshot.fresh} onDone={finish} />
+        <PassageStep items={snapshot.fresh} onDone={() => setPhase('reunion')} />
+      </div>
+    );
+  }
+
+  // ---- 语境重逢（当天新词回到题库真实短文）----
+  if (phase === 'reunion' && snapshot) {
+    return (
+      <div>
+        <TopBar onBack={onBack} title="语境重逢" />
+        <ReunionStep items={snapshot.fresh} onDone={finish} />
       </div>
     );
   }
