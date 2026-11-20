@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgressStore, type ModuleType, type AnswerRecord } from '../store/useProgressStore';
 import { pickWrongReview, wrongReviewHint } from '../utils/wrongReview';
 import { todayString } from '../utils/vocabSchedule';
+import { findListeningRetry, isFillCorrect, isChoiceCorrect, type ListeningRetry } from '../utils/listeningRetry';
+import { playAudioFile as playListeningAudio } from '../listeningAudioBridge';
 
 const MODULE_LABELS: Record<ModuleType, { label: string; icon: string; color: string; bg: string }> = {
   vocabulary: { label: '词汇', icon: '📚', color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
@@ -42,6 +44,132 @@ function formatDate(iso: string) {
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
+// ========== 听力错题「真重做」：重听音频 → 真正作答 → 自动判分 ==========
+function ListeningRetryPanel({ retry, onResult }: { retry: ListeningRetry; onResult: (ok: boolean) => void }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [picked, setPicked] = useState('');
+  const [input, setInput] = useState('');
+  const [shuffled] = useState<string[]>(() => {
+    const arr = [...retry.options];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  });
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
+  const [triedAudioId, setTriedAudioId] = useState<string | null>(null);
+
+  const play = async () => {
+    setIsPlaying(true);
+    await playListeningAudio(retry.audioId, retry.audioText);
+    setIsPlaying(false);
+    setTriedAudioId(retry.audioId);
+  };
+
+  // 首次展开时自动播放一次（安卓不自动播，留给手动按钮）
+  useEffect(() => {
+    if (!isAndroidForRetry()) return;
+    let cancelled = false;
+    (async () => {
+      await playListeningAudio(retry.audioId, retry.audioText);
+      if (!cancelled) setTriedAudioId(retry.audioId);
+    })();
+    return () => { cancelled = true; };
+    // 仅在挂载时播一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const canSubmit = retry.kind === 'choice' ? !!picked : input.trim().length > 0;
+  const submit = () => {
+    if (!canSubmit) return;
+    const ok = retry.kind === 'choice'
+      ? isChoiceCorrect(picked, retry.correctAnswer)
+      : isFillCorrect(input, retry.correctAnswer);
+    setFeedback(ok ? 'correct' : 'wrong');
+    onResult(ok);
+  };
+
+  return (
+    <div className="mt-4 p-4 bg-white/90 rounded-lg border border-orange-200">
+      <h4 className="text-sm font-bold text-orange-700 mb-2">🎧 重听重做</h4>
+      <p className="text-xs text-gray-500 mb-2">{retry.prompt}</p>
+      <button
+        onClick={play}
+        disabled={isPlaying}
+        className={`text-sm px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-60 ${isPlaying ? 'animate-pulse' : ''}`}
+      >
+        {isPlaying ? '播放中…' : triedAudioId ? '🔊 再听一遍' : '🔊 播放听力'}
+      </button>
+
+      {retry.kind === 'choice' ? (
+        <div className="mt-3 grid grid-cols-1 gap-2">
+          {shuffled.map((opt, i) => (
+            <button
+              key={i}
+              onClick={() => setPicked(opt)}
+              className={`text-left text-sm px-3 py-2 rounded-lg border transition-colors ${
+                picked === opt ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300'
+              }`}
+            >
+              {String.fromCharCode(65 + i)}. {opt}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-3">
+          {retry.options.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {retry.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => setInput(opt)}
+                  className={`text-sm px-3 py-1.5 rounded-lg border ${input === opt ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          ) : null}
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="听后填入答案"
+            className="mt-2 w-full text-sm px-3 py-2 rounded-lg border border-gray-200 focus:border-orange-400 outline-none"
+          />
+        </div>
+      )}
+
+      <button
+        onClick={submit}
+        disabled={!canSubmit}
+        className="mt-3 w-full py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+      >
+        提交答案
+      </button>
+
+      {feedback && (
+        <div className={`mt-3 p-2.5 rounded-lg text-sm ${feedback === 'correct' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+          {feedback === 'correct' ? '✅ 答对了' : `❌ 答错了，正确答案：${retry.correctAnswer}`}
+          <div className="mt-2">
+            <button onClick={() => setShowTranscript((v) => !v)} className="text-xs text-blue-500 hover:underline">
+              {showTranscript ? '收起原文' : '📄 查看原文对照'}
+            </button>
+            {showTranscript && <p className="mt-1 text-xs text-gray-600 leading-relaxed whitespace-pre-line">{retry.transcript}</p>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// 安卓自动播放策略：非安卓才自动播，安卓留给手动点击（与听力页一致）
+function isAndroidForRetry(): boolean {
+  if (typeof navigator === 'undefined') return true;
+  return !/Android/i.test(navigator.userAgent);
+}
+
 function WrongCard({ record, onRemove }: { record: AnswerRecord; onRemove: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const [practicing, setPracticing] = useState(false);
@@ -49,6 +177,14 @@ function WrongCard({ record, onRemove }: { record: AnswerRecord; onRemove: () =>
   const [showSuccess, setShowSuccess] = useState(false);
   const { recordAnswer, hasConsecutiveCorrect } = useProgressStore();
   const mod = MODULE_LABELS[record.module];
+
+  // 听力错题：尝试反查原题做真重做；查不到则回退到手动自评
+  const retry = useMemo(
+    () => record.module === 'listening'
+      ? findListeningRetry(record.exerciseType, record.questionId)
+      : null,
+    [record.module, record.exerciseType, record.questionId]
+  );
 
   const handlePracticeResult = (isCorrect: boolean) => {
     // 记录这次练习结果
@@ -139,45 +275,57 @@ function WrongCard({ record, onRemove }: { record: AnswerRecord; onRemove: () =>
         </div>
       </div>
 
-      {/* 练习模式 */}
+      {/* 练习模式：听力有原题可做真重做，其余保持手动自评 */}
       {practicing && (
-        <div className="mt-4 p-4 bg-white/80 rounded-lg border border-blue-200">
-          <h4 className="text-sm font-bold text-blue-700 mb-3">📝 练习模式</h4>
-          <p className="text-sm text-gray-600 mb-3">请重新练习此题，然后选择本次练习结果：</p>
+        retry ? (
+          <div>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-xs text-gray-500">连续答对：</span>
+              {[1, 2, 3].map((i) => (
+                <span key={i} className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${i <= consecutiveCorrect ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-400'}`}>{i}</span>
+              ))}
+            </div>
+            <ListeningRetryPanel retry={retry} onResult={handlePracticeResult} />
+          </div>
+        ) : (
+          <div className="mt-4 p-4 bg-white/80 rounded-lg border border-blue-200">
+            <h4 className="text-sm font-bold text-blue-700 mb-3">📝 练习模式</h4>
+            <p className="text-sm text-gray-600 mb-3">请重新练习此题，然后选择本次练习结果：</p>
 
-          {/* 连续正确次数 */}
-          <div className="mb-3 flex items-center gap-2">
-            <span className="text-xs text-gray-500">连续正确：</span>
-            {[1, 2, 3].map((i) => (
-              <span
-                key={i}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
-                  i <= consecutiveCorrect
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gray-200 text-gray-400'
-                }`}
+            {/* 连续正确次数 */}
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-xs text-gray-500">连续正确：</span>
+              {[1, 2, 3].map((i) => (
+                <span
+                  key={i}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                    i <= consecutiveCorrect
+                      ? 'bg-green-500 text-white'
+                      : 'bg-gray-200 text-gray-400'
+                  }`}
+                >
+                  {i}
+                </span>
+              ))}
+            </div>
+
+            {/* 练习结果按钮 */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => handlePracticeResult(true)}
+                className="flex-1 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
               >
-                {i}
-              </span>
-            ))}
+                ✅ 这次答对了
+              </button>
+              <button
+                onClick={() => handlePracticeResult(false)}
+                className="flex-1 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors"
+              >
+                ❌ 这次答错了
+              </button>
+            </div>
           </div>
-
-          {/* 练习结果按钮 */}
-          <div className="flex gap-3">
-            <button
-              onClick={() => handlePracticeResult(true)}
-              className="flex-1 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
-            >
-              ✅ 这次答对了
-            </button>
-            <button
-              onClick={() => handlePracticeResult(false)}
-              className="flex-1 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors"
-            >
-              ❌ 这次答错了
-            </button>
-          </div>
-        </div>
+        )
       )}
 
       {/* 操作按钮 */}

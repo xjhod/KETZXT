@@ -3,33 +3,49 @@ import { useNavigate } from 'react-router-dom';
 import { part1Sets, part2Sets, part3Sets, part4Sets, part5Sets } from '../data/listening';
 import { useProgressStore } from '../store/useProgressStore';
 import type { ListeningPart1Set, ListeningPart2Set, ListeningPart3Set, ListeningPart3Question, ListeningPart4Set, ListeningPart4Option, ListeningPart5Set } from '../types';
-import { audioFileUrl, playAudioEl, speakText, stopAllAudio, ttsFallbackAllowed, isAndroidDevice } from '../utils/audio';
+import { stopAllAudio, isAndroidDevice } from '../utils/audio';
+import { readRate, readLoop, writeRate, writeLoop, ALLOWED_RATES } from '../utils/listeningPlayback';
+import { playAudioFile } from '../listeningAudioBridge';
 
 // ========== 语音合成播放（带 Audio fallback，兼容移动端）==========
 if (typeof window !== 'undefined' && window.speechSynthesis) {
   // 触发浏览器异步加载语音列表（部分浏览器首屏不立即就绪）
   window.speechSynthesis.getVoices();
 }
+// playAudioFile 统一走 listeningAudioBridge（听页与错题重做共用，读本机语速/循环配置）
 
-// ========== 优先播放预生成音频文件（已修复子路径 404），缺失时回退系统 TTS ==========
-function playAudioFile(id: string, fallbackText: string, rate = 0.9): Promise<void> {
-  // Android Chrome 的 speechSynthesis 走本地 TTS 引擎（离线可用，不被墙），
-  // 因此允许 mp3 失败时回退 TTS 朗读（被墙的是 SpeechRecognition/ASR）。
-  const fallback = ttsFallbackAllowed() ? fallbackText : '';
-  return new Promise((resolve) => {
-    let settled = false;
-    const once = () => { if (!settled) { settled = true; resolve(); } };
-    playAudioEl(audioFileUrl(id), rate).then((ok) => {
-      if (ok) {
-        once();
-      } else if (fallback) {
-        // 文件缺失/加载失败：回退系统 TTS（speakText 自带看门狗）
-        speakText(fallback, { rate, onEnd: once });
-      } else {
-        once();
-      }
-    });
-  });
+// ========== 播放设置条：语速三档 + 循环开关（本机保存）==========
+function PlaybackBar() {
+  const [rate, setRate] = useState<number>(readRate());
+  const [loop, setLoop] = useState<boolean>(readLoop());
+
+  const chooseRate = (r: number) => { writeRate(r); setRate(r); };
+  const toggleLoop = () => { const next = !loop; writeLoop(next); setLoop(next); };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 mb-4 p-2.5 bg-white/70 rounded-xl border border-gray-100">
+      <span className="text-xs text-gray-500 mr-1">语速</span>
+      {ALLOWED_RATES.map((r) => (
+        <button
+          key={r}
+          onClick={() => chooseRate(r)}
+          className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${
+            rate === r ? 'bg-purple-500 text-white border-purple-500' : 'bg-white text-gray-600 border-gray-200 hover:border-purple-300'
+          }`}
+        >
+          {r === 0.75 ? '慢速 0.75×' : r === 1 ? '正常 1×' : '快速 1.25×'}
+        </button>
+      ))}
+      <button
+        onClick={toggleLoop}
+        className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${
+          loop ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
+        }`}
+      >
+        {loop ? '🔁 循环 2 遍 · 开' : '🔁 循环播放'}
+      </button>
+    </div>
+  );
 }
 
 // ========== Part 1 练习视图 ==========
@@ -322,7 +338,17 @@ function Part4Practice({ set, onBack }: { set: ListeningPart4Set; onBack: () => 
         <div className="bg-white rounded-2xl shadow p-8 text-center max-w-md mx-auto">
           <p className="text-4xl mb-2">{pct >= 80 ? '\u{1F389}' : pct >= 50 ? '\u{1F44D}' : '\u{1F4AA}'}</p>
           <p className="text-3xl font-bold mb-2" style={{ color }}>{correct} / {total}</p>
-          <p className="text-gray-500 text-sm mb-6">{pct >= 80 ? '\u5F88\u68D2\uFF01\u542C\u529B\u80FD\u529B\u5F88\u5F3A\uFF01' : pct >= 50 ? '\u4E0D\u9519\uFF0C\u7EE7\u7EED\u52A0\u6CB9\uFF01' : '\u591A\u542C\u51E0\u904D\uFF0C\u4E0B\u6B21\u4F1A\u66F4\u597D\uFF01'}</p>
+          <p className="text-gray-500 text-sm mb-4">{pct >= 80 ? '\u5F88\u68D2\uFF01\u542C\u529B\u80FD\u529B\u5F88\u5F3A\uFF01' : pct >= 50 ? '\u4E0D\u9519\uFF0C\u7EE7\u7EED\u52A0\u6CB9\uFF01' : '\u591A\u542C\u51E0\u904D\uFF0C\u4E0B\u6B21\u4F1A\u66F4\u597D\uFF01'}</p>
+          <details className="text-left mb-5">
+            <summary className="text-xs text-blue-500 cursor-pointer hover:underline mb-2">📄 查看全部听力原文</summary>
+            <div className="mt-2 space-y-2">
+              {set.questions.map((qq, qi) => (
+                <p key={qq.id} className="p-2 bg-gray-50 rounded-lg text-xs text-gray-600 leading-relaxed">
+                  <b className="text-gray-500">Q{qi + 1}.</b> {qq.speakerA}: {qq.audioText}
+                </p>
+              ))}
+            </div>
+          </details>
           <button onClick={() => { setIdx(0); setSelected(null); setSubmitted(false); setSessionDone(false); correctCountRef.current = 0; startTime.current = Date.now(); }} className="btn-primary mr-3">\u518D\u7EC3\u4E00\u6B21</button>
           <button onClick={onBack} className="px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600 transition-all font-medium">\u8FD4\u56DE\u5217\u8868</button>
         </div>
@@ -714,6 +740,12 @@ function Part3Practice({ set, onBack }: { set: ListeningPart3Set; onBack: () => 
               );
             })}
           </div>
+          {set.transcript && (
+            <details className="text-left mb-4">
+              <summary className="text-xs text-blue-500 cursor-pointer hover:underline">📄 查看完整对话原文</summary>
+              <p className="mt-2 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 leading-relaxed whitespace-pre-line">{set.transcript}</p>
+            </details>
+          )}
           <button onClick={onBack} className="btn-primary">返回列表</button>
         </div>
       )}
@@ -887,11 +919,11 @@ function SetListPage({ part, onBack, onSelectSet }: {
   onSelectSet: (s: any) => void;
 }) {
   const partMeta: Record<number, { nameZh: string; icon: string; desc: string }> = {
-    1: { nameZh: '看图选答案', icon: '🖼️', desc: '看图片，选择对应答案' },
-    2: { nameZh: '信息匹配', icon: '🔗', desc: '听独白，匹配人物与需求' },
-    3: { nameZh: '听录音填空', icon: '✏️', desc: '听录音，填写缺失单词' },
-    4: { nameZh: '选择题', icon: '📝', desc: '听对话，回答选择题' },
-    5: { nameZh: '听写填空', icon: '📋', desc: '听独白，填写笔记信息' },
+    1: { nameZh: '看图选答案', icon: '🖼️', desc: '看图片，选择听到的一句' },
+    2: { nameZh: '独白填空', icon: '✏️', desc: '听独白，填写缺失的单词' },
+    3: { nameZh: '长对话选择', icon: '💬', desc: '听长对话，回答选择题' },
+    4: { nameZh: '图片选择', icon: '🎯', desc: '听短对话，选出对应图片' },
+    5: { nameZh: '笔记填空', icon: '📋', desc: '听独白，补全笔记信息' },
   };
 
   const meta = partMeta[part] || partMeta[1];
@@ -978,26 +1010,30 @@ export default function ListeningPage() {
 
   // ====== 渲染：练习视图 ======
   if (screen === 'practice' && activeSet) {
-    if (activeSet.part === 1) {
-      return <Part1Practice set={activeSet} onBack={goBack} />;
-    }
-    if (activeSet.part === 2) {
-      return <Part2Practice set={activeSet} onBack={goBack} />;
-    }
-    if (activeSet.part === 3) {
-      return <Part3Practice set={activeSet} onBack={goBack} />;
-    }
-    if (activeSet.part === 4) {
-      return <Part4Practice set={activeSet} onBack={goBack} />;
-    }
-    if (activeSet.part === 5) {
-      return <Part5Practice set={activeSet} onBack={goBack} />;
+    let view = null;
+    if (activeSet.part === 1) view = <Part1Practice set={activeSet} onBack={goBack} />;
+    if (activeSet.part === 2) view = <Part2Practice set={activeSet} onBack={goBack} />;
+    if (activeSet.part === 3) view = <Part3Practice set={activeSet} onBack={goBack} />;
+    if (activeSet.part === 4) view = <Part4Practice set={activeSet} onBack={goBack} />;
+    if (activeSet.part === 5) view = <Part5Practice set={activeSet} onBack={goBack} />;
+    if (view) {
+      return (
+        <div>
+          <div className="max-w-2xl mx-auto px-1"><PlaybackBar /></div>
+          {view}
+        </div>
+      );
     }
   }
 
   // ====== 渲染：套题列表 ======
   if (screen === 'sets') {
-    return <SetListPage part={activePart} onBack={goBack} onSelectSet={selectSet} />;
+    return (
+      <div>
+        <div className="max-w-2xl mx-auto px-1"><PlaybackBar /></div>
+        <SetListPage part={activePart} onBack={goBack} onSelectSet={selectSet} />
+      </div>
+    );
   }
 
   // ====== 渲染：主页（Part 选择）======
@@ -1016,6 +1052,8 @@ export default function ListeningPage() {
         <p className="text-sm text-gray-400 mt-1">选择题型，开始练习</p>
       </div>
 
+      <div className="max-w-2xl mx-auto"><PlaybackBar /></div>
+
       {/* Part 卡片网格 — 用原生 div + onclick 确保点击可靠 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
 
@@ -1033,7 +1071,7 @@ export default function ListeningPage() {
           <p className="text-xs mt-2 text-purple-500">{part1Sets.length} 套题 · 点击开始</p>
         </div>
 
-        {/* Part 2: 信息匹配 */}
+        {/* Part 2: 独白填空 */}
         <div
           onClick={() => goToSets(2)}
           className="rounded-2xl p-5 text-left transition-all border-2 bg-white hover:shadow-lg cursor-pointer border-gray-100 hover:border-blue-300 active:scale-[0.97] select-none"
@@ -1041,13 +1079,13 @@ export default function ListeningPage() {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter') goToSets(2); }}
         >
-          <div className="text-3xl mb-2">🔗</div>
-          <p className="font-bold text-gray-800">信息匹配</p>
-          <p className="text-xs text-gray-400">听独白，匹配人物与需求</p>
+          <div className="text-3xl mb-2">✏️</div>
+          <p className="font-bold text-gray-800">独白填空</p>
+          <p className="text-xs text-gray-400">听独白，填写缺失的单词</p>
           <p className="text-xs mt-2 text-blue-500">{part2Sets.length} 套题 · 点击开始</p>
         </div>
 
-        {/* Part 3: 听录音填空 */}
+        {/* Part 3: 长对话选择 */}
         <div
           onClick={() => goToSets(3)}
           className="rounded-2xl p-5 text-left transition-all border-2 bg-white hover:shadow-lg cursor-pointer border-gray-100 hover:border-green-300 active:scale-[0.97] select-none"
@@ -1055,13 +1093,13 @@ export default function ListeningPage() {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter') goToSets(3); }}
         >
-          <div className="text-3xl mb-2">✏️</div>
-          <p className="font-bold text-gray-800">听录音填空</p>
-          <p className="text-xs text-gray-400">听录音，填写缺失单词</p>
+          <div className="text-3xl mb-2">💬</div>
+          <p className="font-bold text-gray-800">长对话选择</p>
+          <p className="text-xs text-gray-400">听长对话，回答选择题</p>
           <p className="text-xs mt-2 text-green-500">{part3Sets.length} 套题 · 点击开始</p>
         </div>
 
-        {/* Part 4: 选择题 */}
+        {/* Part 4: 图片选择 */}
         <div
           onClick={() => goToSets(4)}
           className="rounded-2xl p-5 text-left transition-all border-2 bg-white hover:shadow-lg cursor-pointer border-gray-100 hover:border-orange-300 active:scale-[0.97] select-none"
@@ -1069,9 +1107,9 @@ export default function ListeningPage() {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter') goToSets(4); }}
         >
-          <div className="text-3xl mb-2">📝</div>
-          <p className="font-bold text-gray-800">选择题</p>
-          <p className="text-xs text-gray-400">听对话，回答选择题</p>
+          <div className="text-3xl mb-2">🎯</div>
+          <p className="font-bold text-gray-800">图片选择</p>
+          <p className="text-xs text-gray-400">听短对话，选出对应图片</p>
           <p className="text-xs mt-2 text-orange-500">{part4Sets.length} 套题 · 点击开始</p>
         </div>
 
@@ -1084,8 +1122,8 @@ export default function ListeningPage() {
           onKeyDown={(e) => { if (e.key === 'Enter') goToSets(5); }}
         >
           <div className="text-3xl mb-2">📋</div>
-          <p className="font-bold text-gray-800">听写填空</p>
-          <p className="text-xs text-gray-400">听独白，填写笔记信息</p>
+          <p className="font-bold text-gray-800">笔记填空</p>
+          <p className="text-xs text-gray-400">听独白，补全笔记信息</p>
           <p className="text-xs mt-2 text-yellow-500">{part5Sets.length} 套题 · 点击开始</p>
         </div>
 
