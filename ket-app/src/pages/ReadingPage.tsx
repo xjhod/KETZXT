@@ -5,6 +5,7 @@ import {
   part3RCArticles, part4TFArticles, part5Articles,
 } from '../data/reading';
 import { useProgressStore } from '../store/useProgressStore';
+import { isBlankCorrect, acceptedAnswersLabel } from '../utils/readingScore';
 
 type ReadingPart = 'part1' | 'part2' | 'part3c' | 'part3r' | 'part4' | 'part5';
 
@@ -651,12 +652,9 @@ function Part5View({ article }: { article: typeof part5Articles[0] }) {
     if (!showResult) setAnswers(prev => ({ ...prev, [pos]: v }));
   };
 
-  const isCorrect = (b: typeof article.blanks[0]) => {
-    const u = (answers[b.position] || '').trim().toLowerCase();
-    if (!u) return false;
-    if (b.accept && b.accept.length) return b.accept.map(a => a.toLowerCase()).includes(u);
-    return u === b.answer.toLowerCase();
-  };
+  // 判分统一走 readingScore：主答案 answer 与其他可接受答案 accept 都算对，
+  // 且与下方「正确答案」展示共用同一份列表，不再出现「填了显示出来的答案却判错」。
+  const isCorrect = (b: typeof article.blanks[0]) => isBlankCorrect(answers[b.position], b);
 
   const score = useMemo(
     () => article.blanks.filter(b => isCorrect(b)).length,
@@ -671,7 +669,7 @@ function Part5View({ article }: { article: typeof part5Articles[0] }) {
         questionId: `${article.id}-b${b.position}`,
         questionText: `[开放填空] 第${b.position}空`,
         userAnswer: answers[b.position] || '（未作答）',
-        correctAnswer: b.accept && b.accept.length ? [b.answer, ...b.accept].join(' / ') : b.answer,
+        correctAnswer: acceptedAnswersLabel(b),
         isCorrect: isCorrect(b),
       });
     });
@@ -699,7 +697,7 @@ function Part5View({ article }: { article: typeof part5Articles[0] }) {
           const bcls = ok
             ? 'px-2 py-1 rounded text-sm font-medium bg-green-100 text-green-800 border border-green-300'
             : 'px-2 py-1 rounded text-sm font-medium bg-red-100 text-red-800 border border-red-300';
-          const correctText = b.accept && b.accept.length ? [b.answer, ...b.accept].join('/') : b.answer;
+          const correctText = acceptedAnswersLabel(b);
           out.push(
             <span key={'b' + idx} className="inline-flex items-center mx-1 align-middle">
               <span className={bcls}>{ok ? (u || '?') : `${u || '?'} → ${correctText}`}</span>
