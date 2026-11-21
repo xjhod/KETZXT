@@ -11,6 +11,12 @@
     overflow-x: clip;
   }
 
+  /* 禁止下拉刷新与橡皮筋回弹：长题目滚到顶继续下拉不再触发整页 reload */
+  html, body {
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+  }
+
   body {
     @apply bg-gray-50 text-gray-800 min-h-screen transition-colors duration-200;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;

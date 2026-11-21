@@ -6,8 +6,10 @@
 //   · 可跳过由调用方负责，本组件不强制提交
 //   · 不打分、不判语法、不改任何记忆状态；通过只回调 onAccepted
 //   · 手机窄屏：textarea 宽度 100%、flex 带 min-w-0、长句 break-words
+//   · 可选 draftKey：输入中自动存本地草稿，下拉刷新 / 误重载后可恢复未提交内容
 import { useState, type ReactNode } from 'react';
 import type { WrittenCheck } from '../utils/writtenProduction';
+import { loadWrittenDraft, saveWrittenDraft, clearWrittenDraft } from '../utils/writtenDraft';
 
 interface WrittenProductionProps {
   title: string;
@@ -20,6 +22,8 @@ interface WrittenProductionProps {
   reveal?: ReactNode;
   check: (text: string) => WrittenCheck;
   onAccepted: (text: string) => void;
+  /** 草稿隔离键（如 grammar:xxx / vocab:xxx）；不传则不做草稿持久化 */
+  draftKey?: string;
 }
 
 export function WrittenProduction({
@@ -31,22 +35,36 @@ export function WrittenProduction({
   reveal,
   check,
   onAccepted,
+  draftKey,
 }: WrittenProductionProps) {
-  const [text, setText] = useState('');
+  // 有 draftKey 时从草稿恢复「输入中」状态；提交成功后草稿即被清除，
+  // 所以刷新后若草稿存在，必然是尚未提交的半句话，恢复它不会造成重复计数。
+  const draft = draftKey ? loadWrittenDraft(draftKey) : null;
+  const [text, setText] = useState(draft?.text ?? '');
   const [err, setErr] = useState('');
-  const [attempts, setAttempts] = useState(0);
-  const [accepted, setAccepted] = useState('');
+  const [attempts, setAttempts] = useState(draft?.attempts ?? 0);
+  const [accepted, setAccepted] = useState(draft?.accepted ?? '');
+
+  // 输入即存草稿（仅存本体字段，err 是即时校验反馈无需持久化）
+  const updateText = (value: string) => {
+    setText(value);
+    if (err) setErr('');
+    if (draftKey) saveWrittenDraft(draftKey, { text: value, attempts });
+  };
 
   const submit = () => {
     const value = text.trim();
     const result = check(value);
     if (!result.ok) {
+      const nextAttempts = attempts + 1;
       setErr(result.reason ?? '再试一次');
-      setAttempts((n) => n + 1);
+      setAttempts(nextAttempts);
+      if (draftKey) saveWrittenDraft(draftKey, { text, attempts: nextAttempts });
       return;
     }
     setErr('');
     setAccepted(value);
+    if (draftKey) clearWrittenDraft(draftKey); // 已提交且同步落盘，草稿作废
     onAccepted(value);
   };
 
@@ -64,7 +82,7 @@ export function WrittenProduction({
         >
           <textarea
             value={text}
-            onChange={(e) => { setText(e.target.value); if (err) setErr(''); }}
+            onChange={(e) => updateText(e.target.value)}
             placeholder={placeholder}
             rows={2}
             maxLength={160}

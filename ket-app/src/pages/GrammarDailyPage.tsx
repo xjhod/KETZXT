@@ -151,6 +151,7 @@ function ProductionWrite({
         </div>
       )}
       <WrittenProduction
+        draftKey={`grammar:${q.id ?? sq.grammarId}`}
         title="✍️ 写出正确的句子"
         description="整句自己写一遍。只比对拼写和词形，不判语法、不打分；每写对一次就累计 1 次手写正确，是判定熟练的证据之一；写不出来可以跳过。"
         placeholder="把正确的英文句子完整写出来"

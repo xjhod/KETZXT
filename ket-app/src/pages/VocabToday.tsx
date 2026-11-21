@@ -642,6 +642,7 @@ function SentenceStep({ item, today, onNext }: {
   return (
     <div className="mt-4 p-3 sm:p-4 bg-blue-50 rounded-xl min-w-0">
       <WrittenProduction
+        draftKey={`vocab:${item.word.id}`}
         title={`✍️ 用 ${item.word.en} 写一句英文`}
         description="写一句自己想说的话，把这个词用进去。只查有没有用到这个词、拼写对不对；不判语法、不打分、不算掌握。写不出来可以直接跳过。"
         placeholder={`用 ${item.word.en} 说一件今天做的事`}
